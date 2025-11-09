@@ -7,7 +7,7 @@ class CustomTheme {
   // * * * * * * * * * * * * *** Light *** * * * * * * * * * * * *
   static final ThemeData lightTheme = ThemeData.light().copyWith(
     appBarTheme: AppBarTheme(
-      color: AppColor.white,
+      backgroundColor: AppColor.white,
       iconTheme: IconThemeData(color: AppColor.white, size: 35),
       centerTitle: true,
     ),
@@ -19,7 +19,7 @@ class CustomTheme {
   // * * * * * * * * * * * * *** Dark *** * * * * * * * * * * * *
   static final ThemeData darkTheme = ThemeData.dark().copyWith(
     appBarTheme: AppBarTheme(
-      color: AppColor.white,
+      backgroundColor: AppColor.white,
       iconTheme: IconThemeData(color: AppColor.white, size: 35),
       centerTitle: true,
     ),
