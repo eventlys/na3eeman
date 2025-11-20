@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
-import '../Auth/otp_verification_page.dart';
-import '../Auth/reset_password.dart';
-import '../Auth/forgot_password.dart';
-import '../Packages/HomePages/login.dart';
-import '../Packages/HomePages/signup.dart';
-import '../Packages/HomePages/customer_home.dart';
-import '../Packages/HomePages/barber_home.dart';
-// import '../Packages/HomePages/owner_home.dart';
-import '../Packages/HomePages/admin_home.dart';
-import '../Packages/Lists/appointments_page.dart';
-import '../Packages/Lists/shops.dart';
-import '../Packages/Navigations/Favorites.dart';
-import '../Packages/Navigations/cart_page.dart';
-// import '../Packages/Navigations/favorites_page.dart';
-import '../Packages/Navigations/history_page.dart';
-import '../Packages/Navigations/logout.dart';
-import '../Packages/Navigations/profile_page.dart';
-import '../Packages/Navigations/reports.dart';
-import '../Packages/Navigations/settings.dart';
-import '../Packages/Navigations/shop_owner_dashboard.dart';
-import '../Packages/Navigations/staff_management_page.dart';
-// import '../Provider/favorites_provider.dart';
-// import '../Services/favorites_service.dart';
+import '../Packages/features/Navigations/Favorites.dart';
+import '../Packages/features/Navigations/history_page.dart';
+import '../Packages/features/Navigations/logout.dart';
+import '../Packages/features/Navigations/reports.dart';
+import '../Packages/features/Navigations/settings.dart';
+import '../Packages/features/appointments/pages/appointments_page.dart';
+import '../Packages/features/auth/pages/forgot_password.dart';
+import '../Packages/features/auth/pages/otp_verification_page.dart';
+import '../Packages/features/auth/pages/login.dart';
+import '../Packages/features/auth/pages/reset_password.dart';
+import '../Packages/features/auth/pages/signup.dart';
+import '../Packages/features/home/pages/barber_home.dart';
+import '../Packages/features/home/pages/admin_home.dart';
+import '../Packages/features/Navigations/cart_page.dart';
+import '../Packages/features/home/pages/customer_home.dart';
+import '../Packages/features/profile/pages/profile_page.dart';
+import '../Packages/features/shop/pages/shop_owner_dashboard.dart';
+import '../Packages/features/shop/pages/shops.dart';
+import '../Packages/features/shop/widgets/staff_management_page.dart';
+
 
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {

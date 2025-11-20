@@ -1,0 +1,213 @@
+class SecurityValidators {
+  static final RegExp _emailRegex = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+  );
+
+  static final RegExp _phoneRegex = RegExp(
+    r'^[+]?[0-9]{10,15}$'
+  );
+
+  static final RegExp _passwordRegex = RegExp(
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+  );
+
+  static final RegExp _htmlRegex = RegExp(
+    r'<[^>]*>',
+    multiLine: true,
+  );
+
+  static final RegExp _sqlInjectionRegex = RegExp(
+    r'(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|ALTER|CREATE|TRUNCATE)\b)',
+    caseSensitive: false,
+  );
+
+  static String? validateEmailSecurity(String? email) {
+    if (email == null || email.isEmpty) return 'Email is required';
+
+    // Check for HTML tags
+    if (_htmlRegex.hasMatch(email)) {
+      return 'Invalid email format';
+    }
+
+    // Check for SQL injection patterns
+    if (_sqlInjectionRegex.hasMatch(email)) {
+      return 'Invalid email format';
+    }
+
+    // Validate email format
+    if (!_emailRegex.hasMatch(email)) {
+      return 'Please enter a valid email address';
+    }
+
+    // Check email length
+    if (email.length > 254) {
+      return 'Email is too long';
+    }
+
+    return null;
+  }
+
+  static String? validatePasswordSecurity(String? password) {
+    if (password == null || password.isEmpty) return 'Password is required';
+
+    // Check for HTML tags
+    if (_htmlRegex.hasMatch(password)) {
+      return 'Invalid password format';
+    }
+
+    // Check for SQL injection patterns
+    if (_sqlInjectionRegex.hasMatch(password)) {
+      return 'Invalid password format';
+    }
+
+    // Check minimum length
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+
+    // Check for strong password (optional)
+    if (!_passwordRegex.hasMatch(password)) {
+      return 'Password must include uppercase, lowercase, number, and special character';
+    }
+
+    return null;
+  }
+
+  static String? sanitizeInput(String? input) {
+    if (input == null) return null;
+
+    // Remove HTML tags
+    var sanitized = input.replaceAll(_htmlRegex, '');
+
+    // Trim whitespace
+    sanitized = sanitized.trim();
+
+    // Limit length
+    if (sanitized.length > 1000) {
+      sanitized = sanitized.substring(0, 1000);
+    }
+
+    return sanitized;
+  }
+
+  static String? validateNameSecurity(String? name) {
+    if (name == null || name.isEmpty) return 'Name is required';
+
+    final sanitized = sanitizeInput(name);
+    if (sanitized != name) {
+      return 'Name contains invalid characters';
+    }
+
+    // Check for SQL injection
+    if (_sqlInjectionRegex.hasMatch(name)) {
+      return 'Invalid name format';
+    }
+
+    // Check length
+    if (name.length < 2) {
+      return 'Name must be at least 2 characters';
+    }
+
+    if (name.length > 50) {
+      return 'Name is too long';
+    }
+
+    return null;
+  }
+
+  static bool isPotentialMaliciousInput(String input) {
+    return _htmlRegex.hasMatch(input) ||
+           _sqlInjectionRegex.hasMatch(input) ||
+           input.contains('javascript:') ||
+           input.contains('data:') ||
+           input.length > 10000;
+  }
+
+  static Map<String, dynamic> sanitizeMap(Map<String, dynamic> data) {
+    final sanitized = <String, dynamic>{};
+
+    for (final entry in data.entries) {
+      if (entry.value is String) {
+        sanitized[entry.key] = sanitizeInput(entry.value as String);
+      } else {
+        sanitized[entry.key] = entry.value;
+      }
+    }
+
+    return sanitized;
+  }
+}
+class Validators {
+  static String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
+  static String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    }
+    final phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return 'Please enter a valid phone number';
+    }
+    return null;
+  }
+
+  static String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Name is required';
+    }
+    if (value.length < 2) {
+      return 'Name must be at least 2 characters long';
+    }
+    return null;
+  }
+
+  static String? validateRequired(String? value, String fieldName) {
+    if (value == null || value.isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
+
+  static String? validateHourlyRate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Hourly rate is required';
+    }
+    final rate = double.tryParse(value);
+    if (rate == null) {
+      return 'Please enter a valid number';
+    }
+    if (rate < 0) {
+      return 'Hourly rate cannot be negative';
+    }
+    return null;
+  }
+
+  static String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+
+    return null;
+  }
+
+  static String? validateMinLength(String? value, int minLength, String fieldName) {
+    if (value == null || value.length < minLength) {
+      return '$fieldName must be at least $minLength characters';
+    }
+
+    return null;
+  }
+}

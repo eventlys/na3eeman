@@ -49,10 +49,18 @@ dependencies:
   pdf: ^3.10.4
   printing: ^5.10.3
   intl: ^0.20.2
+  get_it: ^8.0.2
+  pull_to_refresh: ^2.0.0
+  firebase_messaging: ^16.0.4
+  flutter_local_notifications: ^19.5.0
+  firebase_analytics: ^12.0.4
+  sentry_flutter: ^9.8.0
+  flutter_secure_storage: ^9.2.4
+  mockito: ^5.5.1
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
+  flutter_facebook_auth: ^7.1.2
 #  neumorphic: ^3.2.1
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
   easy_localization: ^3.0.7+1
@@ -64,11 +72,26 @@ dependencies:
   path: ^1.8.3
   geolocator: ^9.0.2
   fl_chart: ^0.66.0
+  get: ^4.7.2
+  hive: ^2.2.3
+  connectivity_plus: ^7.0.0
+  workmanager: ^0.9.0+3
+  image_picker: ^1.2.0
+  permission_handler: ^12.0.1
+  in_app_update: ^4.2.5
+  share_plus: ^12.0.1
+  local_auth: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+  device_info_plus: ^12.2.0
+  timezone: ^0.10.1
+  crypto: ^3.0.7
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+#  flutter_driver_extension_extensions: ^0.0.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -87,6 +110,16 @@ flutter:
     - assets/icons/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"  # Your logo file
+  # Optional configurations:
+#  adaptive_icon_foreground: "assets/images/logo_foreground.png"
+  adaptive_icon_background: "transparent"  # Background color
+  min_sdk_android: 21
+  ios_remove_alpha_chanel: true
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

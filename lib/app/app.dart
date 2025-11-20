@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../features/sidebar/sidebar.dart';
-import '../features/sidebar/sidebar_controller.dart';
+
+import '../Packages/features/Navigation/sidebar.dart';
+import '../Packages/features/Navigation/sidebar_controller.dart';
 
 class App extends StatefulWidget {
   const App({super.key});

@@ -1,0 +1,1040 @@
+import 'package:flutter/material.dart';
+
+class AccessibilityUtils {
+  static const double _largeTextScale = 1.3;
+  static const double _extraLargeTextScale = 2.0;
+
+  static bool isLargeText(BuildContext context) {
+    return MediaQuery.of(context).textScaleFactor > _largeTextScale;
+  }
+
+  static bool isExtraLargeText(BuildContext context) {
+    return MediaQuery.of(context).textScaleFactor > _extraLargeTextScale;
+  }
+
+  static bool isBoldTextEnabled(BuildContext context) {
+    return MediaQuery.of(context).boldText;
+  }
+
+  static double getAdjustedFontSize(BuildContext context, double baseSize) {
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    return baseSize * textScale;
+  }
+
+  static EdgeInsets getAdjustedPadding(BuildContext context, EdgeInsets basePadding) {
+    if (isLargeText(context)) {
+      return basePadding * 1.2;
+    }
+    if (isExtraLargeText(context)) {
+      return basePadding * 1.5;
+    }
+    return basePadding;
+  }
+
+  static double getAdjustedIconSize(BuildContext context, double baseSize) {
+    if (isLargeText(context)) {
+      return baseSize * 1.2;
+    }
+    if (isExtraLargeText(context)) {
+      return baseSize * 1.5;
+    }
+    return baseSize;
+  }
+}
+
+class AccessibleWidget extends StatelessWidget {
+  final Widget child;
+  final String? semanticLabel;
+  final bool excludeSemantics;
+
+  const AccessibleWidget({
+    super.key,
+    required this.child,
+    this.semanticLabel,
+    this.excludeSemantics = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: semanticLabel,
+      excludeSemantics: excludeSemantics,
+      child: child,
+    );
+  }
+}
+
+class AccessibleButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+  final String semanticLabel;
+  final ButtonStyle? style;
+
+  const AccessibleButton({
+    super.key,
+    required this.onPressed,
+    required this.child,
+    required this.semanticLabel,
+    this.style,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: semanticLabel,
+      button: true,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: style,
+        child: child,
+      ),
+    );
+  }
+}
+
+class HighContrastTheme {
+  static ThemeData get highContrastLight {
+    return ThemeData.light().copyWith(
+      colorScheme: const ColorScheme.highContrastLight(),
+      scaffoldBackgroundColor: Colors.white,
+      cardColor: Colors.white,
+    );
+  }
+
+  static ThemeData get highContrastDark {
+    return ThemeData.dark().copyWith(
+      colorScheme: const ColorScheme.highContrastDark(),
+      scaffoldBackgroundColor: Colors.black,
+      cardColor: Colors.grey[900],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'dart:math';
+
+import 'package:na3eeman/Old_core/utils/extensions.dart';
+
+// Animation helpers
+class AnimationHelpers {
+  const AnimationHelpers._();
+
+  // Curve animations
+  static const Curve easeInOut = Curves.easeInOut;
+  static const Curve bounceOut = Curves.bounceOut;
+  static const Curve elasticOut = Curves.elasticOut;
+  static const Curve fastOutSlowIn = Curves.fastOutSlowIn;
+
+  // Common durations
+  static const Duration quick = Duration(milliseconds: 200);
+  static const Duration normal = Duration(milliseconds: 300);
+  static const Duration slow = Duration(milliseconds: 500);
+  static const Duration pageTransition = Duration(milliseconds: 400);
+
+  // Staggered animation delays
+  static Duration staggeredDelay(int index, {Duration baseDelay = const Duration(milliseconds: 100)}) {
+    return baseDelay * index;
+  }
+
+  // Parallax effect calculation
+  static double calculateParallaxOffset(ScrollMetrics position, double extent, double cardHeight) {
+    return -((position.pixels - extent) / cardHeight);
+  }
+}
+
+// Date and time helpers
+class DateTimeHelpers {
+  const DateTimeHelpers._();
+
+  static String formatTimeOfDay(TimeOfDay time) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    return DateFormat.jm().format(dt);
+  }
+
+  static String formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+
+    if (hours > 0) {
+      return '${hours}h ${minutes}m';
+    } else {
+      return '${minutes}m';
+    }
+  }
+
+  static String formatTimeRange(DateTime start, DateTime end) {
+    final startFormat = DateFormat.jm();
+    final endFormat = DateFormat.jm();
+    return '${startFormat.format(start)} - ${endFormat.format(end)}';
+  }
+
+  static bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  static bool isSameWeek(DateTime a, DateTime b) {
+    final startOfWeekA = a.subtract(Duration(days: a.weekday - 1));
+    final startOfWeekB = b.subtract(Duration(days: b.weekday - 1));
+    return isSameDay(startOfWeekA, startOfWeekB);
+  }
+
+  static List<DateTime> getDaysInRange(DateTime start, DateTime end) {
+    final days = <DateTime>[];
+    var current = start.startOfDay;
+    final endDate = end.startOfDay;
+
+    while (current.isBefore(endDate) || current.isAtSameMomentAs(endDate)) {
+      days.add(current);
+      current = current.add(const Duration(days: 1));
+    }
+
+    return days;
+  }
+
+  static DateTime getStartOfWeek(DateTime date) {
+    return date.subtract(Duration(days: date.weekday - 1));
+  }
+
+  static DateTime getEndOfWeek(DateTime date) {
+    return getStartOfWeek(date).add(const Duration(days: 6));
+  }
+
+  static int getWeekNumber(DateTime date) {
+    final firstDay = DateTime(date.year, 1, 1);
+    final firstMonday = firstDay.add(Duration(days: (8 - firstDay.weekday) % 7));
+    if (date.isBefore(firstMonday)) {
+      return DateTime(date.year - 1, 12, 28).weekNumber;
+    }
+    final diff = date.difference(firstMonday).inDays;
+    return (diff ~/ 7) + 1;
+  }
+}
+
+// Number and calculation helpers
+class MathHelpers {
+  const MathHelpers._();
+
+  static double lerp(double a, double b, double t) => a + (b - a) * t;
+  static double clamp(double value, double min, double max) => value.clamp(min, max).toDouble();
+
+  static double calculatePercentage(double part, double total) {
+    if (total == 0) return 0;
+    return (part / total) * 100;
+  }
+
+  static double calculatePartFromPercentage(double percentage, double total) {
+    return (percentage / 100) * total;
+  }
+
+  static double calculateGrowthRate(double current, double previous) {
+    if (previous == 0) return 0;
+    return ((current - previous) / previous) * 100;
+  }
+
+  static double calculateAverage(List<double> numbers) {
+    if (numbers.isEmpty) return 0;
+    return numbers.reduce((a, b) => a + b) / numbers.length;
+  }
+
+  static double calculateMedian(List<double> numbers) {
+    if (numbers.isEmpty) return 0;
+    final sorted = numbers..sort();
+    final middle = sorted.length ~/ 2;
+    if (sorted.length.isOdd) {
+      return sorted[middle];
+    } else {
+      return (sorted[middle - 1] + sorted[middle]) / 2;
+    }
+  }
+
+  static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const earthRadius = 6371; // Earth's radius in kilometers
+
+    final dLat = _toRadians(lat2 - lat1);
+    final dLon = _toRadians(lon2 - lon1);
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) *
+        sin(dLon / 2) * sin(dLon / 2);
+
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  static double _toRadians(double degree) => degree * pi / 180;
+}
+
+// String manipulation helpers
+class StringHelpers {
+  const StringHelpers._();
+
+  static String truncateWithEllipsis(String text, int maxLength) {
+    if (text.length <= maxLength) return text;
+    return '${text.substring(0, maxLength)}...';
+  }
+
+  static String capitalizeWords(String text) {
+    if (text.isEmpty) return text;
+    return text.split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+    }).join(' ');
+  }
+
+  static String maskEmail(String email) {
+    final parts = email.split('@');
+    if (parts.length != 2) return email;
+    final username = parts[0];
+    final domain = parts[1];
+
+    if (username.length <= 2) return email;
+
+    final maskedUsername = '${username[0]}${'*' * (username.length - 2)}${username[username.length - 1]}';
+    return '$maskedUsername@$domain';
+  }
+
+  static String maskPhoneNumber(String phone) {
+    if (phone.length < 4) return phone;
+    final visibleDigits = phone.substring(phone.length - 4);
+    return '***$visibleDigits';
+  }
+
+  static String formatFileSize(int bytes, {int decimals = 2}) {
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB"];
+    final i = (log(bytes) / log(1024)).floor();
+    return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
+  }
+
+  static String pluralize(int count, String singular, [String? plural]) {
+    if (count == 1) return singular;
+    return plural ?? '${singular}s';
+  }
+
+  static String formatList(List<String> items, {String separator = ', ', String lastSeparator = ' and '}) {
+    if (items.isEmpty) return '';
+    if (items.length == 1) return items.first;
+    if (items.length == 2) return '${items.first}$lastSeparator${items.last}';
+
+    final allExceptLast = items.sublist(0, items.length - 1).join(separator);
+    return '$allExceptLast$lastSeparator${items.last}';
+  }
+
+  static String generateId({int length = 8, String prefix = ''}) {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    final id = String.fromCharCodes(
+      Iterable.generate(
+        length,
+        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+      ),
+    );
+    return prefix.isEmpty ? id : '$prefix$id';
+  }
+}
+
+// Color helpers
+class ColorHelpers {
+  const ColorHelpers._();
+
+  static Color hexToColor(String hexColor) {
+    hexColor = hexColor.replaceAll('#', '');
+
+    if (hexColor.length == 6) {
+      hexColor = 'FF$hexColor';
+    } else if (hexColor.length == 8) {
+      // Already has alpha channel
+    } else {
+      throw FormatException('Invalid hex color format: $hexColor');
+    }
+
+    return Color(int.parse(hexColor, radix: 16));
+  }
+
+  static Color parseColor(dynamic color) {
+    if (color is Color) {
+      return color;
+    } else if (color is String) {
+      return hexToColor(color);
+    } else {
+      return Colors.grey;
+    }
+  }
+
+  static Color getContrastColor(Color color) {
+    final luminance = color.computeLuminance();
+    return luminance > 0.5 ? Colors.black : Colors.white;
+  }
+
+  static Color blendColors(Color color1, Color color2, double ratio) {
+    final invRatio = 1.0 - ratio;
+    return Color.fromARGB(
+      255,
+      (color1.red * invRatio + color2.red * ratio).round(),
+      (color1.green * invRatio + color2.green * ratio).round(),
+      (color1.blue * invRatio + color2.blue * ratio).round(),
+    );
+  }
+
+  static List<Color> generateAnalogousColors(Color baseColor, {int count = 5}) {
+    final hsl = HSLColor.fromColor(baseColor);
+    final step = 30.0 / (count - 1);
+    final colors = <Color>[];
+
+    for (var i = 0; i < count; i++) {
+      final hue = (hsl.hue + (i * step - (count - 1) * step / 2)) % 360;
+      colors.add(hsl.withHue(hue).toColor());
+    }
+
+    return colors;
+  }
+
+  static List<Color> generateMonochromaticColors(Color baseColor, {int count = 5}) {
+    final hsl = HSLColor.fromColor(baseColor);
+    final step = 1.0 / (count + 1);
+    final colors = <Color>[];
+
+    for (var i = 1; i <= count; i++) {
+      final lightness = step * i;
+      colors.add(hsl.withLightness(lightness).toColor());
+    }
+
+    return colors;
+  }
+}
+
+// File and media helpers
+class MediaHelpers {
+  const MediaHelpers._();
+
+  static String getFileExtension(String path) {
+    final parts = path.split('.');
+    return parts.length > 1 ? parts.last.toLowerCase() : '';
+  }
+
+  static bool isImageFile(String path) {
+    final ext = getFileExtension(path);
+    return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].contains(ext);
+  }
+
+  static bool isVideoFile(String path) {
+    final ext = getFileExtension(path);
+    return ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'].contains(ext);
+  }
+
+  static bool isAudioFile(String path) {
+    final ext = getFileExtension(path);
+    return ['mp3', 'wav', 'ogg', 'm4a', 'aac'].contains(ext);
+  }
+
+  static bool isDocumentFile(String path) {
+    final ext = getFileExtension(path);
+    return ['pdf', 'doc', 'docx', 'txt', 'rtf'].contains(ext);
+  }
+
+  static String getMimeType(String path) {
+    final ext = getFileExtension(path);
+    switch (ext) {
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      case 'gif':
+        return 'image/gif';
+      case 'mp4':
+        return 'video/mp4';
+      case 'mp3':
+        return 'audio/mpeg';
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+}
+
+// Validation helpers
+class ValidationHelpers {
+  const ValidationHelpers._();
+
+  static bool isValidEmail(String email) {
+    final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return regex.hasMatch(email);
+  }
+
+  static bool isValidPhone(String phone) {
+    final regex = RegExp(r'^[+]?[0-9]{10,15}$');
+    return regex.hasMatch(phone.replaceAll(RegExp(r'[\s\-()]'), ''));
+  }
+
+  static bool isValidUrl(String url) {
+    final regex = RegExp(r'^(https?://)?([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$');
+    return regex.hasMatch(url);
+  }
+
+  static bool isValidCreditCard(String cardNumber) {
+    final cleaned = cardNumber.replaceAll(RegExp(r'\s+'), '');
+
+    if (!RegExp(r'^\d{13,19}$').hasMatch(cleaned)) {
+      return false;
+    }
+
+    return _isValidLuhn(cleaned);
+  }
+
+  static bool _isValidLuhn(String number) {
+    int sum = 0;
+    bool isEven = false;
+
+    for (int i = number.length - 1; i >= 0; i--) {
+      int digit = int.parse(number[i]);
+
+      if (isEven) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      isEven = !isEven;
+    }
+
+    return sum % 10 == 0;
+  }
+
+  static bool isValidDate(String date) {
+    try {
+      DateTime.parse(date);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static bool isStrongPassword(String password) {
+    if (password.length < 8) return false;
+
+    final hasUpper = RegExp(r'[A-Z]').hasMatch(password);
+    final hasLower = RegExp(r'[a-z]').hasMatch(password);
+    final hasDigit = RegExp(r'[0-9]').hasMatch(password);
+    final hasSpecial = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+
+    return hasUpper && hasLower && hasDigit && hasSpecial;
+  }
+}
+
+// UI and layout helpers
+class UIHelpers {
+  const UIHelpers._();
+
+  static double getStatusBarHeight(BuildContext context) {
+    return MediaQuery.of(context).padding.top;
+  }
+
+  static double getBottomSafeArea(BuildContext context) {
+    return MediaQuery.of(context).padding.bottom;
+  }
+
+  static double getAppBarHeight(BuildContext context) {
+    return Scaffold.of(context).appBarMaxHeight ?? kToolbarHeight;
+  }
+
+  static bool isLandscape(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.landscape;
+  }
+
+  static bool isPortrait(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait;
+  }
+
+  static double getKeyboardHeight(BuildContext context) {
+    return MediaQuery.of(context).viewInsets.bottom;
+  }
+
+  static bool isKeyboardVisible(BuildContext context) {
+    return MediaQuery.of(context).viewInsets.bottom > 0;
+  }
+
+  static void hideKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
+
+  static void showSnackBar(
+    BuildContext context, {
+    required String message,
+    Color? backgroundColor,
+    Duration duration = const Duration(seconds: 4),
+    SnackBarAction? action,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+        duration: duration,
+        action: action,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  static Future<T?> showCustomDialog<T>({
+    required BuildContext context,
+    required Widget child,
+    bool barrierDismissible = true,
+    Color? barrierColor,
+    bool useSafeArea = true,
+    EdgeInsets insetPadding = const EdgeInsets.all(20.0),
+  }) {
+    return showDialog<T>(
+      context: context,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor ?? Colors.black54,
+      useSafeArea: useSafeArea,
+      builder: (context) => Dialog(
+        insetPadding: insetPadding,
+        child: child,
+      ),
+    );
+  }
+
+  static Future<T?> showBottomSheet<T>({
+    required BuildContext context,
+    required Widget child,
+    bool isScrollControlled = false,
+    bool useSafeArea = true,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+  }) {
+    return showModalBottomSheet<T>(
+      context: context,
+      isScrollControlled: isScrollControlled,
+      useSafeArea: useSafeArea,
+      backgroundColor: backgroundColor,
+      elevation: elevation,
+      shape: shape ?? const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      clipBehavior: clipBehavior,
+      builder: (context) => child,
+    );
+  }
+}
+
+// Inventory helpers (from your original code)
+class InventoryHelpers {
+  const InventoryHelpers._();
+
+  static String getStockStatusMessage(int count) {
+    if (count == 0) {
+      return 'Out of Stock';
+    } else if (count < 3) {
+      return 'Low Stock';
+    } else if (count < 10) {
+      return 'In Stock';
+    } else {
+      return 'Well Stocked';
+    }
+  }
+
+  static String getStockEmoji(int count) {
+    if (count == 0) {
+      return '🔴';
+    } else if (count < 3) {
+      return '🟡';
+    } else {
+      return '🟢';
+    }
+  }
+
+  static bool shouldShowLowStockAlert(List<dynamic> items) {
+    return items.any((item) {
+      if (item is Map) {
+        return (item['count'] as int) < 3;
+      } else if (item.hasProperty('count')) {
+        return item.count < 3;
+      }
+      return false;
+    });
+  }
+
+  static String formatLowStockAlert(List<dynamic> lowStockItems) {
+    if (lowStockItems.isEmpty) return '';
+
+    final itemNames = lowStockItems.map((item) {
+      if (item is Map) return item['name'] as String;
+      return item.name as String;
+    }).join(', ');
+
+    return 'Low stock alert: $itemNames';
+  }
+}
+
+// Service calculation helpers (from your original code)
+class ServiceCalculator {
+  const ServiceCalculator._();
+
+  static double calculateTotalPrice(Map<String, dynamic> service) {
+    final price = service['price'] is String
+        ? double.tryParse(service['price'].replaceAll(RegExp(r'[^\d.]'), '')) ?? 0
+        : (service['price'] as num).toDouble();
+
+    return price;
+  }
+
+  static Duration calculateTotalDuration(Map<String, dynamic> service) {
+    final durationStr = service['duration'] as String? ?? '0 min';
+    final minutes = int.tryParse(durationStr.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+    return Duration(minutes: minutes);
+  }
+
+  static String formatServiceTime(DateTime date, TimeOfDay time) {
+    final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    return DateFormat('EEE, MMM d • h:mm a').format(dateTime);
+  }
+}
+
+// Extension for checking object properties
+extension ObjectExtensions on Object {
+  bool get hasProperty => this != null;
+
+  bool hasMethod(String methodName) {
+    try {
+      final dynamic obj = this;
+      return obj[methodName] != null;
+    } catch (e) {
+      return false;
+    }
+  }
+}
+// class AppConstants {
+//   // API Configuration
+//   static const String baseUrl = 'https://your-api-domain.com/api/v1';
+//
+//   // App Information
+//   static const String appName = 'Na3eeman';
+//   static const String appVersion = '1.0.0';
+//
+//   // API Endpoints
+//   static const String loginEndpoint = 'auth/login';
+//   static const String registerEndpoint = 'auth/register';
+//   static const String forgotPasswordEndpoint = 'auth/forgot-password';
+//   static const String resetPasswordEndpoint = 'auth/reset-password';
+//   static const String changePasswordEndpoint = 'auth/change-password';
+//   static const String shopsEndpoint = 'shops';
+//   static const String appointmentsEndpoint = 'appointments';
+//   static const String usersEndpoint = 'users';
+//
+//   // Timeouts
+//   static const int connectTimeout = 30000; // 30 seconds
+//   static const int receiveTimeout = 30000; // 30 seconds
+//
+//   // Pagination
+//   static const int defaultPageSize = 20;
+//
+//   // Cache durations
+//   static const int shortCacheDuration = 300; // 5 minutes
+//   static const int mediumCacheDuration = 3600; // 1 hour
+//   static const int longCacheDuration = 86400; // 24 hours
+//
+//   // Local Storage Keys
+//   static const String authTokenKey = 'auth_token';
+//   static const String refreshTokenKey = 'refresh_token';
+//   static const String userDataKey = 'user_data';
+//   static const String appSettingsKey = 'app_settings';
+//   static const String languageKey = 'language';
+//   static const String themeKey = 'theme';
+// }
+// // Remove any AppConstants reference from logger.dart
+// Keep only the Logger class
+
+class AppLogger {
+  static const bool _isDebug = true;
+
+  static void debug(String message) {
+    if (_isDebug) {
+      print('🐛 DEBUG: $message');
+    }
+  }
+
+  static void info(String message) {
+    if (_isDebug) {
+      print('💡 INFO: $message');
+    }
+  }
+
+  static void warning(String message) {
+    if (_isDebug) {
+      print('⚠️ WARNING: $message');
+    }
+  }
+
+  static void error(String message, [dynamic error, StackTrace? stackTrace]) {
+    if (_isDebug) {
+      print('❌ ERROR: $message');
+      if (error != null) {
+        print('Error: $error');
+      }
+      if (stackTrace != null) {
+        print('Stack Trace: $stackTrace');
+      }
+    }
+  }
+
+  static void network(String message) {
+    if (_isDebug) {
+      print('🌐 NETWORK: $message');
+    }
+  }
+
+  static void database(String message) {
+    if (_isDebug) {
+      print('💾 DATABASE: $message');
+    }
+  }
+}
+import 'package:flutter/material.dart';
+
+import '../../../../Services/core/user_service.dart';
+
+class ProfileHelperFunctions {
+  static void initializeControllers({
+    required UserProfile? userProfile,
+    required Map<String, TextEditingController> controllers,
+  }) {
+    if (userProfile == null) return;
+
+    controllers['firstName']!.text = userProfile.firstName ?? '';
+    controllers['lastName']!.text = userProfile.lastName ?? '';
+    controllers['username']!.text = userProfile.username ?? '';
+    controllers['email']!.text = userProfile.email ?? '';
+    controllers['phone']!.text = userProfile.phone ?? '';
+    controllers['bio']!.text = userProfile.bio ?? '';
+    controllers['location']!.text = userProfile.location ?? '';
+    controllers['specialties']!.text = userProfile.specialties?.join(', ') ?? '';
+  }
+
+  static UserProfile updateProfileFromControllers({
+    required UserProfile userProfile,
+    required Map<String, TextEditingController> controllers,
+  }) {
+    return userProfile.copyWith(
+      firstName: controllers['firstName']!.text.isEmpty ? null : controllers['firstName']!.text,
+      lastName: controllers['lastName']!.text.isEmpty ? null : controllers['lastName']!.text,
+      username: controllers['username']!.text.isEmpty ? null : controllers['username']!.text,
+      email: controllers['email']!.text.isEmpty ? null : controllers['email']!.text,
+      phone: controllers['phone']!.text.isEmpty ? null : controllers['phone']!.text,
+      bio: controllers['bio']!.text.isEmpty ? null : controllers['bio']!.text,
+      location: controllers['location']!.text.isEmpty ? null : controllers['location']!.text,
+      specialties: controllers['specialties']!.text.isEmpty
+          ? null
+          : controllers['specialties']!.text.split(',').map((e) => e.trim()).toList(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
+  static Future<void> saveToBackend({
+    required UserProfile profile,
+    required BuildContext context,
+    required VoidCallback onError,
+  }) async {
+    try {
+      // Implement your actual API call here
+      print('Saving profile to API: $profile');
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Replace with your actual API call:
+      // await ApiService.updateProfile(profile);
+
+      print('Profile saved successfully');
+    } catch (e) {
+      print('Error saving profile: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save profile: $e')),
+      );
+      onError();
+    }
+  }
+
+  static void showDeleteConfirmationDialog({
+    required BuildContext context,
+    required VoidCallback onConfirm,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Profile'),
+        content: const Text('Are you sure you want to delete your profile? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Future<void> performDelete({
+    required BuildContext context,
+    required VoidCallback onSuccess,
+  }) async {
+    try {
+      // Implement your delete API call here
+      print('Deleting profile...');
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Replace with your actual API call:
+      // await ApiService.deleteProfile();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile deleted')),
+      );
+
+      onSuccess();
+    } catch (e) {
+      print('Error deleting profile: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete profile: $e')),
+      );
+    }
+  }
+
+  static String getAccountType(UserProfile? userProfile) {
+    if (userProfile == null) return 'User';
+    if (userProfile.isOwner == true) return 'Owner';
+    if (userProfile.isWorker == true) return 'Worker';
+    return 'User';
+  }
+
+  static void showImagePickerDialog({required BuildContext context}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change Profile Picture'),
+        content: const Text('Choose an option'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _pickImageFromGallery();
+            },
+            child: const Text('Gallery'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _takePhoto();
+            },
+            child: const Text('Camera'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void _pickImageFromGallery() {
+    // Implement gallery image picker
+  }
+
+  static void _takePhoto() {
+    // Implement camera functionality
+  }
+}
+
+
+import '../Models/shop/shop_service_model.dart';
+
+
+class ServiceCalculator {
+  static int parseDuration(String duration) {
+    // Parse "30 min", "1h 30min", "45 min", etc.
+    final regex = RegExp(r'(\d+)\s*h?\.?\s*(\d*)\s*min?');
+    final match = regex.firstMatch(duration);
+    if (match != null) {
+      final hours = int.tryParse(match.group(1) ?? '0') ?? 0;
+      final minutes = int.tryParse(match.group(2) ?? '0') ?? 0;
+      return hours * 60 + minutes;
+    }
+    return 30; // Default fallback
+  }
+
+  static double parsePrice(String price) {
+    // Parse "$25", "$15.50", etc.
+    final regex = RegExp(r'\$(\d+(?:\.\d+)?)');
+    final match = regex.firstMatch(price);
+    if (match != null) {
+      return double.tryParse(match.group(1) ?? '0') ?? 0.0;
+    }
+    return 0.0;
+  }
+
+  static String formatTotalDuration(List<ShopService> services) {
+    if (services.isEmpty) return '0 min';
+
+    int totalMinutes = 0;
+    for (var service in services) {
+      totalMinutes += parseDuration(service.duration);
+    }
+
+    // Convert back to hours and minutes format
+    if (totalMinutes >= 60) {
+      final hours = totalMinutes ~/ 60;
+      final minutes = totalMinutes % 60;
+      return minutes > 0 ? '${hours}h ${minutes}min' : '${hours}h';
+    } else {
+      return '${totalMinutes} min';
+    }
+  }
+
+  static String formatTotalPrice(List<ShopService> services) {
+    if (services.isEmpty) return '\$0';
+
+    double total = 0;
+    for (var service in services) {
+      total += parsePrice(service.price);
+    }
+
+    return '\$${total.toStringAsFixed(0)}'; // Remove decimals for whole dollar amounts
+  }
+
+  static int getTotalDurationInMinutes(List<ShopService> services) {
+    int totalMinutes = 0;
+    for (var service in services) {
+      totalMinutes += parseDuration(service.duration);
+    }
+    return totalMinutes;
+  }
+}
+
+enum TextFieldType {
+  text,           // Plain text
+  email,          // Email format
+  password,       // Password with obscuring
+  numeric,        // Numeric input
+  phone,          // Phone number
+  date,           // Date input
+  currency,       // Currency format
+  decimal,        // Decimal numbers
+  custom          // Custom formatter
+}
+
