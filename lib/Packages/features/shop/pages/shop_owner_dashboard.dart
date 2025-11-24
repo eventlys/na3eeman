@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../../../Models/branch_model.dart';
-import '../../../../Models/olds/inventory_item.dart';
-import '../../../../Models/olds/offer.dart';
-import '../../../../Models/profit_data.dart';
+import '../../../../Models/commerce/offer.dart';
+import '../../../../Models/inventory/inventory_item.dart';
+import '../../../../Models/reports/profit_data.dart';
+import '../../../../Models/shop/branch_model.dart';
 import '../../../../Models/subscriptions/subscription.dart';
 import '../../../../Services/api/api_service.dart';
-import '../../../../Utils/constants.dart';
-import '../../../Widgets/subscription_card.dart';
-import '../../../Widgets/inventory_alert_card.dart';
-import '../../../Widgets/profit_graph.dart';
-import '../../../Widgets/offers_card.dart';
-import '../../../Widgets/branch_card.dart';
-import '../../../Navigations/shop_details.dart';
-import '../../../Navigations/branch_management.dart';
-
+import '../../../Core/constants/app_strings.dart';
+import '../../../Core/widgets/common/subscription_card.dart';
+import '../widgets/branch_card.dart';
+import '../widgets/branch_management.dart';
+import '../widgets/inventory_alert_card.dart';
+import '../widgets/offers_card.dart';
+import '../widgets/profit_graph.dart';
+import 'shop_details.dart';
 class ShopOwnerDashboard extends StatefulWidget {
   const ShopOwnerDashboard({super.key});
 

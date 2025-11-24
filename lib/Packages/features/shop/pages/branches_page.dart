@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../Models/branch_model.dart';
-import '../../../Services/api/api_service.dart';
-import '../../../Utils/constants.dart';
-import '../../Widgets/custom_app_bar.dart';
-import '../../../components/common/loading_indicator.dart';
-import '../../Widgets/branch_card_2.dart';
+import '../../../../Services/api/api_service.dart';
+import '../../../Core/themes/loading_indicator.dart';
+import '../widgets/branch_card_2.dart';
+
 
 class BranchesPage extends StatefulWidget {
   const BranchesPage({super.key});

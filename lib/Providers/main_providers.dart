@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import '../Helpers/barber_list_helper.dart';
 import '../Helpers/customized/points_tracker_helpers.dart';
 import '../Helpers/logger.dart';
 import '../Models/subscriptions/subscription.dart';
 import '../Services/api/api_service.dart';
 import '../Services/api/auth_service.dart';
+import '../Services/barber_service.dart';
+import '../Services/core/user_service.dart' hide User;
 import '../Services/enums/gender.dart';
 import '../Services/enums/staff_role.dart';
 import '../Services/repositories/auth_repository.dart';
@@ -28,7 +31,7 @@ import '../Helpers/cache_helper.dart';
 import '../Helpers/connectivity_helper.dart';
 
 abstract class BaseProvider extends ChangeNotifier {
-  final UnifiedStorageService  _secureStorage = UnifiedStorageService ();
+  final UnifiedStorageService _secureStorage = UnifiedStorageService();
 
   bool _isLoading = false;
   String? _error;
@@ -67,10 +70,11 @@ class AppStateProvider extends BaseProvider {
   factory AppStateProvider() => _instance;
   AppStateProvider._internal();
 
-    // Add the missing properties/methods from UserProviderService
+  // Add the missing properties/methods from UserProviderService
   bool get isLoggedIn => _isAuthenticated;
   bool get isBarber => _barberProfile != null;
   bool get isOwner => _ownerProfile != null;
+  bool get isCustomer => !isBarber && !isOwner && _isAuthenticated; // Add this line
 
   // Initialize app state
   Future<void> initialize() async {
@@ -85,10 +89,10 @@ class AppStateProvider extends BaseProvider {
       final userData = await _secureStorage.getUserProfile();
 
       if (userData != null) {
-      _user = userData;
-      _isAuthenticated = true;
-      await _loadUserProfiles();
-    }
+        _user = userData;
+        _isAuthenticated = true;
+        await _loadUserProfiles();
+      }
       setLoading(false);
     } catch (e) {
       setError('Failed to initialize user: $e');
@@ -112,7 +116,7 @@ class AppStateProvider extends BaseProvider {
       // Update local user object
       _user = _user!.copyWith(
         firstName: updates['firstName'] ?? _user!.firstName,
-        lastName: updates['lastName'] ?? _user!.lastName,
+        lastName: updates['lastName'] ?? _user!.firstName,
         phone: updates['phone'] ?? _user!.phone,
         location: updates['location'] ?? _user!.location,
         lat: updates['lat'] ?? _user!.lat,
@@ -163,7 +167,6 @@ class AppStateProvider extends BaseProvider {
   String? get currentRoute => _currentRoute;
   Locale get currentLocale => _currentLocale;
 
-
   // User management
   void setUser({
     required UserRole role,
@@ -171,7 +174,8 @@ class AppStateProvider extends BaseProvider {
     required String userId,
     required String email,
     bool shouldCache = true,
-  }) {
+  })
+  {
     _userRole = role;
     _userGender = gender;
     _userId = userId;
@@ -631,11 +635,6 @@ class AuthProvider extends BaseProvider {
     return false; // Mock implementation
   }
 
-  Future<void> updateProfile(User updatedUser) async {
-    _user = updatedUser;
-    notifyListeners();
-  }
-
   bool hasAccessTo(String feature) {
     switch (feature) {
       case 'shop_management':
@@ -652,6 +651,7 @@ class AuthProvider extends BaseProvider {
   // Additional helper methods
   Future<bool> refreshUserData() async {
     try {
+      final userService = UserService();
       final user = await _authService.getCurrentUser();
       _user = user;
       notifyListeners();
@@ -659,6 +659,22 @@ class AuthProvider extends BaseProvider {
     } catch (e) {
       AppLogger.error('Refresh user data failed: $e');
       return false;
+    }
+  }
+
+  /// Update user profile locally and optionally sync with backend
+  Future<void> updateProfile(User updatedUser) async {
+    try {
+      _user = updatedUser;
+
+      // Save to local storage
+      await _secureStorage.saveUserData(updatedUser.toJson());
+
+      notifyListeners();
+
+    } catch (e) {
+      print('Error updating profile in provider: $e');
+      rethrow;
     }
   }
 }
@@ -823,6 +839,22 @@ class ShopProvider extends BaseProvider {
       ]);
     }
   }
+}
+
+class ServiceProvider with ChangeNotifier {
+  final ApiService _apiService = ApiService();
+  late BarberService _barberService;
+
+  ServiceProvider() {
+    _initializeServices();
+  }
+
+  void _initializeServices() {
+    _barberService = BarberService();
+  }
+
+  BarberService get barberService => _barberService;
+  ApiService get apiService => _apiService;
 }
 
 class AppointmentProvider extends BaseProvider {
@@ -1020,7 +1052,6 @@ class AppointmentProvider extends BaseProvider {
   }
 }
 
-
 class PointsProvider with ChangeNotifier {
   final ApiService _loyaltyService;
   int _currentBalance = 0;
@@ -1139,6 +1170,60 @@ class PointsProvider with ChangeNotifier {
       case PointsType.other:
         return 'other';
     }
+  }
+}
+
+class PerformanceProvider with ChangeNotifier {
+  final BarberService _barberService;
+  final PerformanceHelper _performanceHelper;
+
+  List<BarberPerformanceData> _performanceData = [];
+  bool _isLoading = false;
+  String? _error;
+
+  PerformanceProvider({
+    required BarberService barberService,
+    required PerformanceHelper performanceHelper,
+  }) : _barberService = barberService,
+       _performanceHelper = performanceHelper;
+
+  List<BarberPerformanceData> get performanceData => _performanceData;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> loadPerformanceData() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final barbers = await _barberService.getBarbers();
+      _performanceData = _performanceHelper.calculatePerformanceMetrics(barbers);
+    } catch (e) {
+      _error = 'Failed to load performance data: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void sortByRating() {
+    _performanceData = _performanceHelper.sortByRating(_performanceData);
+    notifyListeners();
+  }
+
+  void sortByEarnings() {
+    _performanceData = _performanceHelper.sortByEarnings(_performanceData);
+    notifyListeners();
+  }
+
+  void sortByEfficiency() {
+    _performanceData = _performanceHelper.sortByEfficiency(_performanceData);
+    notifyListeners();
+  }
+
+  void refresh() {
+    loadPerformanceData();
   }
 }
 
@@ -1509,6 +1594,198 @@ class StaffProvider extends BaseProvider {
   }
 }
 
+class BarberProvider with ChangeNotifier {
+  final BarberService _barberService = BarberService();
+
+  List<BarberDto> _barbers = [];
+  BarberDto? _selectedBarber;
+  bool _isLoading = false;
+  String? _error;
+  int _currentPage = 1;
+  bool _hasMore = true;
+
+  // Getters
+  List<BarberDto> get barbers => _barbers;
+  BarberDto? get selectedBarber => _selectedBarber;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get hasMore => _hasMore;
+
+  // Methods
+  Future<void> loadBarbers({
+    bool refresh = false,
+    String? search,
+    int? shopId,
+    bool? isActive,
+  })
+  async {
+    try {
+      if (refresh) {
+        _currentPage = 1;
+        _hasMore = true;
+        _barbers.clear();
+      }
+
+      if (!_hasMore && !refresh) return;
+
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final List<BarberDto> newBarbers = await _barberService.getBarbers(
+        page: _currentPage,
+        limit: 20,
+        search: search,
+        shopId: shopId,
+        isActive: isActive,
+      );
+
+      if (refresh) {
+        _barbers = newBarbers;
+      } else {
+        _barbers.addAll(newBarbers);
+      }
+
+      _hasMore = newBarbers.length == 20; // If we got less than limit, no more data
+      _currentPage++;
+
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshBarbers({
+    String? search,
+    int? shopId,
+    bool? isActive,
+  })
+  async {
+    return loadBarbers(
+      refresh: true,
+      search: search,
+      shopId: shopId,
+      isActive: isActive,
+    );
+  }
+
+  Future<BarberDto> getBarberById(String barberId) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final BarberDto barber = await _barberService.getBarberById(barberId);
+      _selectedBarber = barber;
+
+      notifyListeners();
+      return barber;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BarberDto> createBarber(Map<String, dynamic> barberData) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final BarberDto newBarber = await _barberService.createBarber(barberData);
+      _barbers.insert(0, newBarber);
+
+      notifyListeners();
+      return newBarber;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BarberDto> updateBarber(String barberId, Map<String, dynamic> barberData) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final BarberDto updatedBarber = await _barberService.updateBarber(barberId, barberData);
+
+      final int index = _barbers.indexWhere((barber) => barber.id == barberId);
+      if (index != -1) {
+        _barbers[index] = updatedBarber;
+      }
+
+      if (_selectedBarber?.id == barberId) {
+        _selectedBarber = updatedBarber;
+      }
+
+      notifyListeners();
+      return updatedBarber;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteBarber(String barberId) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _barberService.deleteBarber(barberId);
+
+      _barbers.removeWhere((barber) => barber.id == barberId);
+
+      if (_selectedBarber?.id == barberId) {
+        _selectedBarber = null;
+      }
+
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void selectBarber(BarberDto? barber) {
+    _selectedBarber = barber;
+    notifyListeners();
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
+  }
+
+  void clearSelection() {
+    _selectedBarber = null;
+    notifyListeners();
+  }
+}
+
 class SubscriptionProvider extends BaseProvider {
   List<SubscriptionPlan> _plans = [];
   Subscription? _currentSubscription;
@@ -1654,3 +1931,4 @@ class SettingsProvider extends BaseProvider {
     await updateSettings(newSettings);
   }
 }
+

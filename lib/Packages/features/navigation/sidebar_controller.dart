@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../Services/ui/overlay_service.dart';
-import '../../Services/ui/sidebar_navigation_service.dart';
-import '../../services/auth/auth_service.dart';
+import '../../../Services/api/auth_service.dart';
+import '../../../Services/ui/overlay_service.dart';
+import '../../../Services/ui/sidebar_navigation_service.dart';
 
 
 class SidebarController with ChangeNotifier {
   late AnimationController _animationController;
   late Animation<double> animation;
+  late final AuthService _authService;
 
   bool get isOpen => _animationController.isCompleted;
 
@@ -96,7 +97,7 @@ class SidebarController with ChangeNotifier {
     closeSidebar();
     OverlayService.showLogoutConfirmation(
       onConfirm: () {
-        AuthService.logout();
+        _authService.logout();
         SideNavigationService.navigateToLogin();
       },
     );

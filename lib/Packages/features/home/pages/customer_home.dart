@@ -227,7 +227,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> with SingleTickerPr
     }
   }
 
-
   Future<void> _handleRedeemPoints() async {
     try {
       if (_authProvider.user?.id != null) {

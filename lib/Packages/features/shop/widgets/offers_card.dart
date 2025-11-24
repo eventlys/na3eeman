@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Models/olds/offer.dart';
-import '../../Utils/constants.dart';
-import '../../Utils/formatters.dart';
+
+import '../../../Core/utils/formatters.dart';
 
 class OffersCard extends StatelessWidget {
   final List<Offer> offers;

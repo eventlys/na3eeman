@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'rating_with_points_widget.dart';
-import '../../data/models/payment/points_balance_model.dart';
-import '../../Providers/services/points_provider.dart';
+
+import '../../../../Providers/main_providers.dart';
+import '../../profile/widgets/rating_with_points_widget.dart';
 
 class ReviewsSection extends StatefulWidget {
   final Map<String, dynamic> shopData;

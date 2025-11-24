@@ -178,4 +178,17 @@ class Formatters {
 
     return '${'⭐' * fullStars}${hasHalfStar ? '½' : ''}${'☆' * emptyStars}';
   }
+
+  // static String formatCurrency(double amount) {
+  //   return '\$${amount.toStringAsFixed(2)}';
+  // }
+
+  // static String formatDate(DateTime date) {
+  //   return '${date.month}/${date.day}/${date.year}';
+  // }
+  //
+  // static String formatTime(String time) {
+  //   // Simple time formatting - you can enhance this as needed
+  //   return time;
+  // }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/user/profile_model.dart';
-import '../../../Models/olds/user_model.dart';
-import '../../../Theme/glass_appbar.dart';
-import '../../Backgrounds/bd_faded.dart';
+import 'package:provider/provider.dart';
+import '../../../../Helpers/profile_helper_functions.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/backgrounds/bd_faded.dart';
+import '../../../Core/themes/glass_appbar.dart';
+import '../../navigation/widgets/custom_navigation_bar.dart';
 import '../widgets/profile_widgets.dart';
-import '../../../Core/utils/helpers/profile_helper_functions.dart';
-import '../../Widgets/custom_navigation_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,8 +15,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  UserProfile? _userProfile;
-  UserProfile? _originalProfile;
+  Map<String, dynamic>? _userData;
+  Map<String, dynamic>? _originalData;
   bool _isEditing = false;
   bool _isLoading = true;
   final _formKey = GlobalKey<FormState>();
@@ -35,45 +35,56 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _fetchUserProfile();
+    _fetchUserData();
   }
 
-  Future<void> _fetchUserProfile() async {
+
+  Future<void> _fetchUserData() async {
     try {
-      // Simulate API call - replace with your actual API call
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Mock data - replace with actual API response
-      final mockProfile = UserProfile(
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        username: 'johndoe',
-        phone: '+1234567890',
-        role: 'Customer',
-        gender: 'Male',
-        profilePic: 'assets/mojies/image65.png',
-        location: 'New York, USA',
-        bio: 'Professional barber with 5 years of experience',
-        specialties: ['Haircut', 'Beard Trim', 'Shaving'],
-        vrfidEmail: true,
-        vrfidPhone: true,
-        isSubscribed: true,
-        isOwner: false,
-        isWorker: false,
-        createdAt: DateTime.now().subtract(const Duration(days: 365)),
-        updatedAt: DateTime.now(),
-      );
-
       setState(() {
-        _userProfile = mockProfile;
-        _originalProfile = mockProfile;
-        _isLoading = false;
+        _isLoading = true;
       });
 
-      _initializeControllers();
+      // Get user data from AuthProvider
+      final authProvider = context.read<AuthProvider>();
+      
+      if (authProvider.user != null) {
+        // Convert user object to map for the profile page
+        final user = authProvider.user!;
+        final mockData = {
+          'firstName': user.firstName,
+          'lastName': user.lastName,
+          'email': user.email,
+          'username': user.username,
+          'phone': user.phone,
+          'role': user.role.toString().split('.').last,
+          'gender': user.gender.toString().split('.').last,
+          'profilePic': 'assets/mojies/image65.png',
+          'location': user.location,
+          'bio': 'Professional barber with 5 years of experience',
+          'specialties': ['Haircut', 'Beard Trim', 'Shaving'],
+          'vrfidEmail': true,
+          'vrfidPhone': true,
+          'isSubscribed': true,
+          'isOwner': authProvider.isOwner,
+          'isWorker': authProvider.isBarber,
+          'createdAt': user.createdAt,
+          'updatedAt': user.updatedAt,
+        };
+
+        setState(() {
+          _userData = mockData;
+          _originalData = Map<String, dynamic>.from(mockData);
+          _isLoading = false;
+        });
+
+        _initializeControllers();
+      } else {
+        // Fallback mock data if no user in provider
+        _loadMockData();
+      }
     } catch (e) {
-      print('Error fetching profile: $e');
+      print('Error fetching user data: $e');
       setState(() {
         _isLoading = false;
       });
@@ -87,9 +98,40 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _loadMockData() {
+    final mockData = {
+      'firstName': 'John',
+      'lastName': 'Doe',
+      'email': 'john.doe@example.com',
+      'username': 'johndoe',
+      'phone': '+1234567890',
+      'role': 'customer',
+      'gender': 'male',
+      'profilePic': 'assets/mojies/image65.png',
+      'location': 'New York, USA',
+      'bio': 'Professional barber with 5 years of experience',
+      'specialties': ['Haircut', 'Beard Trim', 'Shaving'],
+      'vrfidEmail': true,
+      'vrfidPhone': true,
+      'isSubscribed': true,
+      'isOwner': false,
+      'isWorker': false,
+      'createdAt': DateTime.now().subtract(const Duration(days: 365)),
+      'updatedAt': DateTime.now(),
+    };
+
+    setState(() {
+      _userData = mockData;
+      _originalData = Map<String, dynamic>.from(mockData);
+      _isLoading = false;
+    });
+
+    _initializeControllers();
+  }
+
   void _initializeControllers() {
     ProfileHelperFunctions.initializeControllers(
-      userProfile: _userProfile,
+      userData: _userData,
       controllers: {
         'firstName': _firstNameController,
         'lastName': _lastNameController,
@@ -121,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       if (_isEditing) {
         // Cancel editing - revert changes
-        _userProfile = _originalProfile;
+        _userData = _originalData;
         _initializeControllers();
       }
       _isEditing = !_isEditing;
@@ -129,9 +171,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _saveChanges() {
-    if (_formKey.currentState!.validate() && _userProfile != null) {
-      final updatedProfile = ProfileHelperFunctions.updateProfileFromControllers(
-        userProfile: _userProfile!,
+    if (_formKey.currentState!.validate() && _userData != null) {
+      final updatedData = ProfileHelperFunctions.updateUserFromControllers(
+        userData: _userData!,
         controllers: {
           'firstName': _firstNameController,
           'lastName': _lastNameController,
@@ -145,25 +187,22 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
       setState(() {
-        _userProfile = updatedProfile;
-        _originalProfile = updatedProfile;
+        _userData = updatedData;
+        _originalData = Map<String, dynamic>.from(updatedData);
         _isEditing = false;
       });
 
-      _saveToBackend(updatedProfile);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
-      );
+      _saveToBackend(updatedData);
     }
   }
 
-  Future<void> _saveToBackend(UserProfile profile) async {
+  Future<void> _saveToBackend(Map<String, dynamic> data) async {
     await ProfileHelperFunctions.saveToBackend(
-      profile: profile,
+      profile: data,
       context: context,
       onError: () {
         setState(() {
-          _userProfile = _originalProfile;
+          _userData = _originalData;
           _initializeControllers();
         });
       },
@@ -191,17 +230,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String _getAccountType() {
-    return ProfileHelperFunctions.getAccountType(_userProfile);
+    return ProfileHelperFunctions.getAccountType(_userData);
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = User(
-      id: 1,
-      email: 'customer@example.com',
-      role: 'customer',
-      name: 'John Doe',
-    );
     return Stack(
       children: [
         Positioned.fill(
@@ -212,65 +245,61 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-
           bottomNavigationBar: CustomNavigationBar(
-            user: user,
             currentRoute: ModalRoute.of(context)?.settings.name ?? '/',
           ),
-
           body: _isLoading
               ? ProfileWidgets.buildLoadingState()
               : CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              GlassSliverAppBar(
-                title: 'My Profile',
-                showBackButton: true,
-                textColor: Colors.white,
-                pinned: true,
-                actions: [
-                  IconButton(
-                    icon: Icon(_isEditing ? Icons.close : Icons.edit, color: Colors.white),
-                    onPressed: _toggleEdit,
-                    tooltip: _isEditing ? 'Cancel' : 'Edit',
-                  ),
-                  if (_isEditing)
-                    IconButton(
-                      icon: const Icon(Icons.check, color: Colors.white),
-                      onPressed: _saveChanges,
-                      tooltip: 'Check',
+                  controller: _scrollController,
+                  slivers: [
+                    GlassSliverAppBar(
+                      title: 'My Profile',
+                      showBackButton: true,
+                      textColor: Colors.white,
+                      pinned: true,
+                      actions: [
+                        IconButton(
+                          icon: Icon(_isEditing ? Icons.close : Icons.edit, color: Colors.white),
+                          onPressed: _toggleEdit,
+                          tooltip: _isEditing ? 'Cancel' : 'Edit',
+                        ),
+                        if (_isEditing)
+                          IconButton(
+                            icon: const Icon(Icons.check, color: Colors.white),
+                            onPressed: _saveChanges,
+                            tooltip: 'Check',
+                          ),
+                      ],
                     ),
-                ],
-              ),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ProfileWidgets.buildProfileContent(
-                    formKey: _formKey,
-                    userProfile: _userProfile!,
-                    isEditing: _isEditing,
-                    controllers: {
-                      'firstName': _firstNameController,
-                      'lastName': _lastNameController,
-                      'username': _usernameController,
-                      'email': _emailController,
-                      'phone': _phoneController,
-                      'bio': _bioController,
-                      'location': _locationController,
-                      'specialties': _specialtiesController,
-                    },
-                    getAccountType: _getAccountType,
-                    onDeleteProfile: _deleteProfile,
-                    onChangeProfilePicture: _changeProfilePicture,
-                  ),
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ProfileWidgets.buildProfileContent(
+                          formKey: _formKey,
+                          userData: _userData!,
+                          isEditing: _isEditing,
+                          controllers: {
+                            'firstName': _firstNameController,
+                            'lastName': _lastNameController,
+                            'username': _usernameController,
+                            'email': _emailController,
+                            'phone': _phoneController,
+                            'bio': _bioController,
+                            'location': _locationController,
+                            'specialties': _specialtiesController,
+                          },
+                          getAccountType: _getAccountType,
+                          onDeleteProfile: _deleteProfile,
+                          onChangeProfilePicture: _changeProfilePicture,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ],
     );
   }
 }
-

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Theme/sphere_neomorphic.dart';
+import '../../../Core/themes/custome_neomorphics.dart';
 
 // Alternative version with more customization
 class CustomNeomorphicNavBar extends StatelessWidget {

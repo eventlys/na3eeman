@@ -13,7 +13,8 @@ class AppointmentUseCases {
     String? status,
     int? shopId,
     int? customerId,
-  }) async {
+  })
+  async {
     if (page < 1) throw AppError('Page must be greater than 0');
     if (limit < 1 || limit > 100) throw AppError('Limit must be between 1 and 100');
 
@@ -38,7 +39,8 @@ class AppointmentUseCases {
     String? recurrence,
     DateTime? recurrenceEndDate,
     bool isGroup = false,
-  }) async {
+  })
+  async {
     if (customerId <= 0) throw AppError('Invalid customer ID');
     if (shopId <= 0) throw AppError('Invalid shop ID');
     if (startTime.isBefore(DateTime.now())) {
@@ -91,7 +93,8 @@ class AppointmentUseCases {
     String appointmentId,
     DateTime newStartTime,
     DateTime newEndTime,
-  ) async {
+  )
+  async {
     if (appointmentId.isEmpty) throw AppError('Appointment ID is required');
     if (newStartTime.isBefore(DateTime.now())) {
       throw AppError('New appointment time must be in the future');

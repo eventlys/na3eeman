@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../Models/staff/barber.dart';
 import '../../Helpers/config.dart';
 import '../../Helpers/error_handler.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/loyalty/points_balance_model.dart';
 import '../storage_service.dart';
-import '../security_service.dart'; // Add this import
+import '../security_service.dart';
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -374,8 +375,6 @@ class ApiService {
     return LoyaltyBalance.fromJson(response);
   }
 
-
-
   Future<LoyaltyBalance> redeemFreeHaircut(int customerId) async {
     final response = await post('/loyalty/redeem-free-haircut', data: {
       'customer': customerId,
@@ -532,16 +531,12 @@ class ApiService {
     return response['data'] ?? [];
   }
 
-  // Barber-specific methods
-  Future<Map<String, dynamic>> getBarberStats() async {
-    return await get('/barber/stats');
-  }
-
   Future<List<dynamic>> getBarberAppointments({
     int page = 1,
     int limit = 20,
     String? status,
-  }) async {
+  })
+  async {
     final queryParams = <String, dynamic>{
       'page': page.toString(),
       'limit': limit.toString(),
@@ -556,7 +551,8 @@ class ApiService {
   Future<Map<String, dynamic>> getBarberEarnings({
     DateTime? startDate,
     DateTime? endDate,
-  }) async {
+  })
+  async {
     final queryParams = <String, dynamic>{};
 
     if (startDate != null) queryParams['start_date'] = startDate.toIso8601String();
@@ -585,7 +581,8 @@ class ApiService {
   Future<Map<String, dynamic>> getFavoriteShops({
     int page = 1,
     int limit = 20,
-  }) async {
+  })
+  async {
     final queryParams = <String, dynamic>{
       'page': page.toString(),
       'limit': limit.toString(),
@@ -593,4 +590,113 @@ class ApiService {
 
     return await get('/favorites/shops', queryParams: queryParams);
   }
+
+
+  Future<List<Barber>> getBarbers({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    int? shopId,
+    bool? isActive,
+  })
+  async {
+    try {
+      AppLogger.debug('Fetching barbers - page: $page, limit: $limit, shopId: $shopId');
+
+      final queryParams = <String, dynamic>{
+        'page': page.toString(),
+        'limit': limit.toString(),
+      };
+
+      if (search != null && search.isNotEmpty) {
+        queryParams['search'] = search;
+      }
+      if (shopId != null) {
+        queryParams['shop'] = shopId.toString();
+      }
+      if (isActive != null) {
+        queryParams['is_active'] = isActive.toString();
+      }
+
+      final response = await _instance.get('/staff', queryParams: queryParams);
+
+      final List<dynamic> data = response['data'] ?? [];
+      return data.map((barberData) => Barber.fromJson(barberData)).toList();
+    } catch (error) {
+      AppLogger.error('Failed to fetch barbers', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<Barber> getBarberById(String barberId) async {
+    try {
+      AppLogger.debug('Fetching barber details: $barberId');
+
+      final response = await _instance.get('/staff/$barberId');
+      return Barber.fromJson(response['data'] ?? response);
+    } catch (error) {
+      AppLogger.error('Failed to fetch barber: $barberId', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<Barber> createBarber(Map<String, dynamic> barberData) async {
+    try {
+      AppLogger.debug('Creating new barber');
+
+      final response = await _instance.post('/staff', data: barberData);
+      return Barber.fromJson(response['data'] ?? response);
+    } catch (error) {
+      AppLogger.error('Failed to create barber', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<Barber> updateBarber(String barberId, Map<String, dynamic> barberData) async {
+    try {
+      AppLogger.debug('Updating barber: $barberId');
+
+      final response = await _instance.put('/staff/$barberId', data: barberData);
+      return Barber.fromJson(response['data'] ?? response);
+    } catch (error) {
+      AppLogger.error('Failed to update barber: $barberId', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<void> deleteBarber(String barberId) async {
+    try {
+      AppLogger.debug('Deleting barber: $barberId');
+
+      await _instance.delete('/staff/$barberId');
+    } catch (error) {
+      AppLogger.error('Failed to delete barber: $barberId', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<List<Barber>> getShopBarbers(int shopId) async {
+    try {
+      AppLogger.debug('Fetching barbers for shop: $shopId');
+
+      final response = await _instance.get('/shops/$shopId/staff');
+      final List<dynamic> data = response['data'] ?? [];
+      return data.map((barberData) => Barber.fromJson(barberData)).toList();
+    } catch (error) {
+      AppLogger.error('Failed to fetch shop barbers: $shopId', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<Map<String, dynamic>> getBarberStats(String barberId) async {
+    try {
+      AppLogger.debug('Fetching stats for barber: $barberId');
+
+      return await _instance.get('/barber/$barberId/stats');
+    } catch (error) {
+      AppLogger.error('Failed to fetch barber stats: $barberId', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
 }

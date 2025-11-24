@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/features/sidebar/widgets/sidebar_item.dart';
-// import '../../../Models/ui/menu_item_model.dart';
+
+import '../../../../Helpers/customized/animations.dart';
+import 'sidebar_item.dart';
 
 class AnimatedSidebarItem extends StatelessWidget {
-  final MenuItem item;
+  final dynamic item;
   final Animation<double> animation;
   final int delay;
   final Color backgroundColor;

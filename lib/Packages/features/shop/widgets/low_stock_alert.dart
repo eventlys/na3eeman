@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../Helpers/inventory_helpers.dart';
-import '../../data/models/shop/inventory_item.dart';
+import '../../../../Helpers/inventory_helpers.dart';
 
 class LowStockAlert extends StatelessWidget {
   final List<InventoryItem> items;

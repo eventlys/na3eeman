@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Packages/Navigations/reports_page.dart';
-
-import '../../../Utils/constants.dart';
-import '../../Widgets/custom_app_bar.dart';
+import '../../../Core/constants/app_strings.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
+import '../../Navigations/reports_list_page.dart';
 import '../../profile/pages/barber_performance_page.dart';
 import '../../Navigations/barbers_list_page.dart';
-import 'branches_page.dart';
+import '../pages/branches_page.dart';
 
 class StaffManagementPage extends StatelessWidget {
   const StaffManagementPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: CustomAppBar(title: AppStrings.staffManagement),
+      backgroundColor: isDarkTheme ? AppColor.darkBackground : AppColor.lightBackground,
+      appBar: AppBar(
+        title: Text(AppStrings.staffManagement),
+        backgroundColor: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
+        foregroundColor: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+        elevation: 2,
+      ),
       body: GridView.count(
         padding: const EdgeInsets.all(16),
         crossAxisCount: 2,
@@ -24,43 +31,43 @@ class StaffManagementPage extends StatelessWidget {
           _buildFeatureCard(
             context,
             'Barbers',
-            Icons.content_cut,
-            AppColors.primaryColor,
+            isDarkTheme ? AppImages.scissor_view : AppImages.scissor,
+            isDarkTheme ? AppColor.darkBarber : AppColor.lightBarber,
             () => _navigateToPage(context, const BarbersListPage()),
           ),
           _buildFeatureCard(
             context,
             'Performance',
-            Icons.assessment,
-            AppColors.secondaryColor,
+            isDarkTheme ? AppImages.file_star_view : AppImages.file_star,
+            isDarkTheme ? AppColor.darkInfo : AppColor.lightInfo,
             () => _navigateToPage(context, const BarberPerformancePage()),
           ),
           _buildFeatureCard(
             context,
             'Reports',
-            Icons.description,
-            AppColors.accentColor,
+            isDarkTheme ? AppImages.description_view : AppImages.description,
+            isDarkTheme ? AppColor.darkAccent : AppColor.lightAccent,
             () => _navigateToPage(context, const ReportsPage()),
           ),
           _buildFeatureCard(
             context,
             'Branches',
-            Icons.store,
-            AppColors.warningColor,
+            isDarkTheme ? AppImages.store_view : AppImages.store,
+            isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess,
             () => _navigateToPage(context, const BranchesPage()),
           ),
           _buildFeatureCard(
             context,
             'Schedule',
-            Icons.calendar_today,
-            Colors.blue,
+            isDarkTheme ? AppImages.calender_view : AppImages.calender,
+            isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
             () => _showComingSoon(context),
           ),
           _buildFeatureCard(
             context,
             'Payroll',
-            Icons.payment,
-            Colors.green,
+            isDarkTheme ? AppImages.money_view : AppImages.money,
+            isDarkTheme ? AppColor.darkSecondary : AppColor.lightSecondary,
             () => _showComingSoon(context),
           ),
         ],
@@ -71,12 +78,18 @@ class StaffManagementPage extends StatelessWidget {
   Widget _buildFeatureCard(
     BuildContext context,
     String title,
-    IconData icon,
+    String iconAsset,
     Color color,
     VoidCallback onTap,
   ) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return Card(
       elevation: 4,
+      color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -88,17 +101,23 @@ class StaffManagementPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: color.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: color, size: 30),
+                child: Image.asset(
+                  iconAsset,
+                  width: 30,
+                  height: 30,
+                  color: color,
+                ),
               ),
               const SizedBox(height: 12),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -114,9 +133,22 @@ class StaffManagementPage extends StatelessWidget {
   }
 
   void _showComingSoon(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Feature coming soon!')),
+      SnackBar(
+        content: Text(
+          'Feature coming soon!',
+          style: TextStyle(
+            color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+          ),
+        ),
+        backgroundColor: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
     );
   }
 }
-

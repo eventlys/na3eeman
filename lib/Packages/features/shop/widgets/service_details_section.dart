@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Models/shop/service_selection_model.dart';
-import '../../Models/shop_service_model.dart';
-import '../../Utils/service_calculator.dart';
+
+import '../../../Core/utils/helpers/service_calculator.dart';
 
 class ServiceDetailsSection extends StatelessWidget {
   final ServiceSelection serviceSelection;

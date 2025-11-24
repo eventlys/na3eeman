@@ -1,17 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import '../../Models/olds/user_model.dart';
-import '../Navigations/navigation_config.dart';
-import 'neomorphic_sphere.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/themes/custome_neomorphics.dart';
+import '../../Navigations/navigation_config.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  final User user;
   final String currentRoute;
 
   const CustomNavigationBar({
     super.key,
-    required this.user,
     required this.currentRoute,
   });
 
@@ -53,7 +53,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    final navItems = NavigationConfig.getNavItems(widget.user, widget.currentRoute);
+    final appStateProvider = Provider.of<AppStateProvider>(context);
+
+    final navItems = NavigationConfig.getNavItems(appStateProvider, widget.currentRoute);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
@@ -72,7 +74,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: navItems.map((item) {
-              final isActive = NavigationConfig.isItemActive(item, widget.currentRoute, widget.user);
+              final isActive = NavigationConfig.isItemActive(item, widget.currentRoute, appStateProvider);
               final shouldAnimateForThisItem = _shouldAnimate && _lastTappedId == item.id;
 
               return NeomorphicSphere(
@@ -90,4 +92,3 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     );
   }
 }
-

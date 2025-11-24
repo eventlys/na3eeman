@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/models/payment/points_balance_model.dart';
-import '../../Providers/services/points_provider.dart';
-import '../../Services/business/points_service.dart';
-import '../Overlays/points_tracker_dialogs.dart';
-import '../../Helpers/customized/points_tracker_helpers.dart';
+
+import '../../../../Providers/main_providers.dart';
 
 class PointsTrackerWidget extends StatelessWidget {
   const PointsTrackerWidget({super.key});
@@ -13,10 +10,6 @@ class PointsTrackerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PointsProvider>(
       builder: (context, pointsProvider, child) {
-        final availableActions = PointsType.values
-            .where((type) => pointsProvider.canEarnPoints(type))
-            .toList();
-
         return Container(
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(20),
@@ -30,13 +23,6 @@ class PointsTrackerWidget extends StatelessWidget {
               ],
             ),
             borderRadius: BorderRadius.circular(20),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: Colors.black.withValues(alpha:0.15),
-            //     blurRadius: 12,
-            //     offset: const Offset(0, 4),
-            //   ),
-            // ],
             border: Border.all(
               color: Color(0x80ffffff),
               width: 1,
@@ -45,15 +31,9 @@ class PointsTrackerWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with points and progress
+              // Header with points
               _buildHeader(context, pointsProvider),
               const SizedBox(height: 16),
-
-              // Available actions
-              if (availableActions.isNotEmpty) ...[
-                _buildAvailableActions(context, pointsProvider, availableActions),
-                const SizedBox(height: 16),
-              ],
 
               // Quick actions
               _buildQuickActions(context, pointsProvider),
@@ -97,13 +77,6 @@ class PointsTrackerWidget extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(color: Color(0x80ffffff)),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: Color(0x80806C99),
-            //     blurRadius: 8,
-            //     offset: const Offset(0, 2),
-            //   ),
-            // ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -115,7 +88,7 @@ class PointsTrackerWidget extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                '${pointsProvider.points.totalPoints} pts',
+                '${pointsProvider.currentBalance} pts',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -129,37 +102,42 @@ class PointsTrackerWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAvailableActions(BuildContext context, PointsProvider pointsProvider, List<PointsType> availableActions) {
+  Widget _buildQuickActions(BuildContext context, PointsProvider pointsProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              'Available Rewards',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
-                  ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => _showAvailableActionsPopup(context, pointsProvider, availableActions),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '${availableActions.length} available',
-                  style: TextStyle(
-                    color: Colors.green.shade800,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+        Text(
+          'Quick Actions',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade800,
               ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _buildQuickActionChip(
+              context,
+              'Rate App',
+              Icons.star_rate_rounded,
+              Colors.orange,
+              () => _showRateAppDialog(context, pointsProvider),
+            ),
+            _buildQuickActionChip(
+              context,
+              'Feedback',
+              Icons.feedback_rounded,
+              Colors.purple,
+              () => _showAppFeedbackDialog(context, pointsProvider),
+            ),
+            _buildQuickActionChip(
+              context,
+              'Invite Friend',
+              Icons.person_add_alt_1_rounded,
+              Colors.green,
+              () => _inviteFriend(context, pointsProvider),
             ),
           ],
         ),
@@ -167,205 +145,228 @@ class PointsTrackerWidget extends StatelessWidget {
     );
   }
 
-  void _showAvailableActionsPopup(BuildContext context, PointsProvider pointsProvider, List<PointsType> availableActions) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
+  Widget _buildQuickActionChip(
+    BuildContext context,
+    String text,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Available Rewards',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade900,
-                        ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.close, color: Colors.grey.shade600),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    iconSize: 20,
-                  ),
-                ],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 6),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Complete these actions to earn points:',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ...availableActions.map((type) => _buildPopupActionCard(context, pointsProvider, type)),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade600,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Got it!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPopupActionCard(BuildContext context, PointsProvider pointsProvider, PointsType type) {
-    final pointsValue = PointsService.getPointsValue(type);
-    final description = PointsService.pointsDescriptions[type]!;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.grey.shade200,
-          width: 1,
+  void _showRateAppDialog(BuildContext context, PointsProvider pointsProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Rate App'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('How would you rate our app?'),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [1, 2, 3, 4, 5].map((rating) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onPressed: () async {
+                    try {
+                      // You'll need to get the customer ID from somewhere
+                      // For now, using a placeholder
+                      final customerId = 1; // Replace with actual customer ID
+                      await pointsProvider.rateApp(
+                        customerId: customerId,
+                        rating: rating,
+                      );
+                      Navigator.pop(context);
+                      _showSuccessMessage(context, 'Thanks for your rating! Points added.');
+                    } catch (e) {
+                      Navigator.pop(context);
+                      _showErrorMessage(context, 'Failed to submit rating');
+                    }
+                  },
+                );
+              }).toList(),
+            ),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: PointsTrackerHelpers.getActionColor(type).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              PointsTrackerHelpers.getActionIcon(type),
-              color: PointsTrackerHelpers.getActionColor(type),
-              size: 22,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  PointsTrackerHelpers.getActionSubtitle(type),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  PointsTrackerHelpers.getActionColor(type),
-                  PointsTrackerHelpers.getActionColor(type).withOpacity(0.8),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Text(
-              '+$pointsValue',
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, PointsProvider pointsProvider) {
-    final hasQuickActions = pointsProvider.canEarnPoints(PointsType.rateApp) ||
-                           pointsProvider.canEarnPoints(PointsType.appFeedback);
-    if (!hasQuickActions) return const SizedBox();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+  void _showAppFeedbackDialog(BuildContext context, PointsProvider pointsProvider) {
+    final TextEditingController feedbackController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('App Feedback'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (pointsProvider.canEarnPoints(PointsType.rateApp))
-              PointsTrackerHelpers.buildQuickActionChip(
-                context,
-                'Rate App',
-                Icons.star_rate_rounded,
-                Colors.orange,
-                () => PointsTrackerDialogs.showRateAppDialog(context, pointsProvider),
+            Text('We\'d love to hear your feedback!'),
+            SizedBox(height: 16),
+            TextField(
+              controller: feedbackController,
+              decoration: InputDecoration(
+                hintText: 'Enter your feedback here...',
+                border: OutlineInputBorder(),
               ),
-            if (pointsProvider.canEarnPoints(PointsType.appFeedback))
-              PointsTrackerHelpers.buildQuickActionChip(
-                context,
-                'Feedback',
-                Icons.feedback_rounded,
-                Colors.purple,
-                () => PointsTrackerDialogs.showAppFeedbackDialog(context, pointsProvider),
-              ),
-            if (pointsProvider.canEarnPoints(PointsType.appFeedback))
-              PointsTrackerHelpers.buildQuickActionChip(
-                context,
-                'Invite a friend',
-                Icons.feedback_rounded,
-                Colors.green,
-                () => PointsTrackerDialogs.inviteFriend(context, pointsProvider),
-              ),
+              maxLines: 4,
+            ),
           ],
         ),
-      ],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (feedbackController.text.trim().isNotEmpty) {
+                try {
+                  // You'll need to get the customer ID from somewhere
+                  // For now, using a placeholder
+                  final customerId = 1; // Replace with actual customer ID
+                  await pointsProvider.submitAppFeedback(
+                    customerId: customerId,
+                    feedback: feedbackController.text.trim(),
+                  );
+                  Navigator.pop(context);
+                  _showSuccessMessage(context, 'Thanks for your feedback! Points added.');
+                } catch (e) {
+                  Navigator.pop(context);
+                  _showErrorMessage(context, 'Failed to submit feedback');
+                }
+              }
+            },
+            child: Text('Submit'),
+          ),
+        ],
+      ),
     );
   }
 
-}
+  void _inviteFriend(BuildContext context, PointsProvider pointsProvider) {
+    final TextEditingController friendNameController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Invite a Friend'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Invite a friend to join and earn points!'),
+            SizedBox(height: 16),
+            TextField(
+              controller: friendNameController,
+              decoration: InputDecoration(
+                hintText: 'Friend\'s name (optional)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                // You'll need to get the customer ID from somewhere
+                // For now, using a placeholder
+                final customerId = 1; // Replace with actual customer ID
+                await pointsProvider.inviteFriend(
+                  customerId: customerId,
+                  friendName: friendNameController.text.trim().isNotEmpty 
+                      ? friendNameController.text.trim() 
+                      : null,
+                );
+                Navigator.pop(context);
+                _showSuccessMessage(context, 'Friend invited! Points added.');
+              } catch (e) {
+                Navigator.pop(context);
+                _showErrorMessage(context, 'Failed to invite friend');
+              }
+            },
+            child: Text('Invite'),
+          ),
+        ],
+      ),
+    );
+  }
 
+  void _showSuccessMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _showErrorMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white),
+            SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+}

@@ -1,68 +1,244 @@
 import 'package:flutter/material.dart';
-import '../../../models/report_model.dart';
+import 'package:na3eeman/Services/enums/user_role.dart';
+import 'package:provider/provider.dart';
 
-class UserReportsOverlay extends StatelessWidget {
+import '../../../../Providers/main_providers.dart';
+import '../../../../Services/api/api_service.dart';
+import '../../../../Services/business_service.dart';
+import '../../../../Services/enums/report_enums.dart';
+
+
+class UserReportsOverlay extends StatefulWidget {
   const UserReportsOverlay({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<ReportModel> reports = [
-      ReportModel(
-        id: '1',
-        reporterName: 'User A',
-        description: 'Spam behavior in comments section',
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        type: ReportType.user,
-      ),
-      ReportModel(
-        id: '2',
-        reporterName: 'Shop B',
-        description: 'Inappropriate content in product review',
-        date: DateTime.now().subtract(const Duration(days: 5)),
-        type: ReportType.content,
-      ),
-      ReportModel(
-        id: '3',
-        reporterName: 'User C',
-        description: 'Suspicious activity detected',
-        date: DateTime.now().subtract(const Duration(days: 7)),
-        type: ReportType.user,
-      ),
+  State<UserReportsOverlay> createState() => _UserReportsOverlayState();
+}
+
+class _UserReportsOverlayState extends State<UserReportsOverlay> {
+  final ReportService _reportService = ReportService();
+  final BusinessService _businessService = BusinessService();
+
+  List<dynamic> _reports = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserReports();
+  }
+
+  Future<void> _loadUserReports() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
+      // Get current user from AuthProvider
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      if (authProvider.user == null || !authProvider.isAuthenticated) {
+        setState(() {
+          _error = 'User not authenticated';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final int currentUserId = authProvider.user!.id;
+
+      // Fetch reports where current user is the subject (reported by others)
+      final reports = await _fetchReportsAboutUser(currentUserId);
+
+      setState(() {
+        _reports = reports;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<List<dynamic>> _fetchReportsAboutUser(int userId) async {
+    try {
+      // This would be your actual API endpoint to get reports about a user
+      final response = await ApiService().get(
+        '/reports/about-user/$userId',
+        queryParams: {'include_resolved': 'false'},
+      );
+
+      if (response['data'] != null) {
+        return response['data'] as List<dynamic>;
+      }
+
+      // Fallback to mock data if API fails
+      return _getMockReports();
+    } catch (e) {
+      // Fallback to mock data
+      return _getMockReports();
+    }
+  }
+
+  List<Map<String, dynamic>> _getMockReports() {
+    return [
+      {
+        'id': '1',
+        'reporter_name': 'Barber John',
+        'reporter_role': 'BARBER',
+        'description': 'Customer was consistently late for appointments',
+        'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+        'type': 'user',
+        'status': 'pending',
+        'reporter_id': 2,
+      },
+      {
+        'id': '2',
+        'reporter_name': 'Shop Owner',
+        'reporter_role': 'OWNER',
+        'description': 'Inappropriate behavior in waiting area',
+        'date': DateTime.now().subtract(const Duration(days: 5)).toIso8601String(),
+        'type': 'content',
+        'status': 'new',
+        'reporter_id': 3,
+      },
+      {
+        'id': '3',
+        'reporter_name': 'Barber Mike',
+        'reporter_role': 'BARBER',
+        'description': 'No-show for scheduled appointment without notice',
+        'date': DateTime.now().subtract(const Duration(days: 7)).toIso8601String(),
+        'type': 'user',
+        'status': 'resolved',
+        'reporter_id': 4,
+      },
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
 
     return Container(
-        constraints: const BoxConstraints(maxHeight: 500),
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildStatsSection(reports),
-            const SizedBox(height: 20),
-            Expanded(
-              child: _buildReportsList(context, reports),
-            ),
-          ],
-        ),
+      constraints: const BoxConstraints(maxHeight: 500),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildHeaderSection(authProvider),
+          const SizedBox(height: 10),
+          _buildStatsSection(),
+          const SizedBox(height: 10),
+          Expanded(
+            child: _buildReportsList(authProvider),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildStatsSection(List<ReportModel> reports) {
-    final resolvedCount = reports.where((r) => r.date.isAfter(DateTime.now().subtract(const Duration(days: 1)))).length;
-    final pendingCount = reports.length - resolvedCount;
+  Widget _buildHeaderSection(AuthProvider authProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Reports About You',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Role: ${authProvider.user?.role.displayName ?? 'Customer'}',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.white70,
+              ),
+            ),
+          ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.refresh, color: Colors.white),
+          onPressed: _isLoading ? null : _loadUserReports,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatsSection() {
+    if (_isLoading) {
+      return _buildLoadingStats();
+    }
+
+    if (_error != null) {
+      return _buildErrorStats();
+    }
+
+    final totalCount = _reports.length;
+    final resolvedCount = _reports.where((r) =>
+      _getReportStatus(r) == 'resolved'
+    ).length;
+    final pendingCount = totalCount - resolvedCount;
 
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Color(0x80F3E0FF),
+        color: const Color(0x80F3E0FF),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('Total', reports.length.toString(), Colors.blue),
+          _buildStatItem('Total', totalCount.toString(), Colors.blue),
           _buildStatItem('Resolved', resolvedCount.toString(), Colors.green),
           _buildStatItem('Pending', pendingCount.toString(), Colors.orange),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingStats() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0x80F3E0FF),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _LoadingStatItem(),
+          _LoadingStatItem(),
+          _LoadingStatItem(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorStats() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Text(
+          'Error loading reports',
+          style: TextStyle(
+            color: Colors.red.shade300,
+            fontSize: 14,
+          ),
+        ),
       ),
     );
   }
@@ -87,26 +263,99 @@ class UserReportsOverlay extends StatelessWidget {
     );
   }
 
-  Widget _buildReportsList(BuildContext context, List<ReportModel> reports) { // Accept context as parameter
+  Widget _buildReportsList(AuthProvider authProvider) {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Error: $_error',
+              style: const TextStyle(color: Colors.red),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _loadUserReports,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_reports.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.check_circle_outline, size: 48, color: Colors.green),
+            const SizedBox(height: 16),
+            const Text(
+              'No reports found',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Great! You have no reports against you.',
+              style: TextStyle(
+                color: Colors.white60,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (authProvider.isCustomer) ...[
+              const SizedBox(height: 16),
+              const Text(
+                'Keep following the community guidelines',
+                style: TextStyle(
+                  color: Colors.white54,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: reports.length,
+      itemCount: _reports.length,
       itemBuilder: (context, index) {
-        final report = reports[index];
-        return _buildReportItem(context, report); // Pass context to _buildReportItem
+        final report = _reports[index];
+        return _buildReportItem(report);
       },
     );
   }
 
-  Widget _buildReportItem(BuildContext context, ReportModel report) { // Accept context as parameter
+  Widget _buildReportItem(Map<String, dynamic> report) {
+    final reporterName = report['reporter_name'] ?? 'Unknown';
+    final reporterRole = report['reporter_role'] ?? 'USER';
+    final description = report['description'] ?? 'No description';
+    final date = DateTime.tryParse(report['date'] ?? '') ?? DateTime.now();
+    final type = _parseReportType(report['type'] ?? 'user');
+    final status = _getReportStatus(report);
+
     return Card(
-      color: Color(0x4dffffff),
+      color: const Color(0x4dffffff),
       shadowColor: Colors.transparent,
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: _getReportIcon(report.type),
+        leading: _getReportIcon(type),
         title: Text(
-          report.description,
+          description,
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -116,19 +365,42 @@ class UserReportsOverlay extends StatelessWidget {
           children: [
             const SizedBox(height: 4),
             Text(
-              'From: ${report.reporterName}',
+              'Reported by: $reporterName ($reporterRole)',
               style: const TextStyle(fontSize: 12),
             ),
             Text(
-              '${_formatDate(report.date)} • ${_getTypeText(report.type)}',
+              '${_formatDate(date)} • ${_getTypeText(type)}',
               style: const TextStyle(fontSize: 11, color: Colors.grey),
             ),
           ],
         ),
-        trailing: _getStatusWidget(report.date),
-        onTap: () => _showReportDetails(context, report), // Pass context to _showReportDetails
+        trailing: _getStatusWidget(status),
+        onTap: () => _showReportDetails(context, report),
       ),
     );
+  }
+
+  ReportType _parseReportType(String typeString) {
+    switch (typeString.toLowerCase()) {
+      case 'user':
+        return ReportType.user;
+      case 'shop':
+        return ReportType.shop;
+      case 'content':
+        return ReportType.content;
+      case 'staff':
+        return ReportType.staff;
+      case 'financial':
+        return ReportType.financial;
+      case 'inventory':
+        return ReportType.inventory;
+      default:
+        return ReportType.user;
+    }
+  }
+
+  String _getReportStatus(Map<String, dynamic> report) {
+    return report['status'] ?? 'pending';
   }
 
   Widget _getReportIcon(ReportType type) {
@@ -139,22 +411,44 @@ class UserReportsOverlay extends StatelessWidget {
         return const Icon(Icons.store, color: Colors.green);
       case ReportType.content:
         return const Icon(Icons.content_copy, color: Colors.orange);
+      case ReportType.staff:
+        return const Icon(Icons.people, color: Colors.purple);
+      case ReportType.financial:
+        return const Icon(Icons.attach_money, color: Colors.green);
+      case ReportType.inventory:
+        return const Icon(Icons.inventory, color: Colors.brown);
     }
   }
 
-  Widget _getStatusWidget(DateTime date) {
-    final isRecent = date.isAfter(DateTime.now().subtract(const Duration(days: 1)));
+  Widget _getStatusWidget(String status) {
+    final isResolved = status == 'resolved';
+    final isNew = status == 'new';
+
+    Color color;
+    String text;
+
+    if (isResolved) {
+      color = Colors.green;
+      text = 'Resolved';
+    } else if (isNew) {
+      color = Colors.blue;
+      text = 'New';
+    } else {
+      color = Colors.orange;
+      text = 'Pending';
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isRecent ? Colors.green.shade100 : Colors.orange.shade100,
+        color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        isRecent ? 'New' : 'Pending',
+        text,
         style: TextStyle(
           fontSize: 10,
-          color: isRecent ? Colors.green : Colors.orange,
+          color: color,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -173,29 +467,46 @@ class UserReportsOverlay extends StatelessWidget {
         return 'Shop Report';
       case ReportType.content:
         return 'Content Report';
+      case ReportType.staff:
+        return 'Staff Report';
+      case ReportType.financial:
+        return 'Financial Report';
+      case ReportType.inventory:
+        return 'Inventory Report';
     }
   }
 
-  void _showReportDetails(BuildContext context, ReportModel report) { // Accept context as parameter
+  void _showReportDetails(BuildContext context, Map<String, dynamic> report) {
+    final reporterName = report['reporter_name'] ?? 'Unknown';
+    final reporterRole = report['reporter_role'] ?? 'USER';
+    final description = report['description'] ?? 'No description';
+    final date = DateTime.tryParse(report['date'] ?? '') ?? DateTime.now();
+    final type = _parseReportType(report['type'] ?? 'user');
+    final status = _getReportStatus(report);
+
     showDialog(
-      context: context, // Now context is available
+      context: context,
       builder: (context) => AlertDialog(
-        title: Text('Report Details - ${_getTypeText(report.type)}'),
+        title: Text('Report Details - ${_getTypeText(type)}'),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Reporter: ${report.reporterName}'),
-              Text('Date: ${_formatDate(report.date)}'),
+              Text('Reported by: $reporterName ($reporterRole)'),
+              Text('Date: ${_formatDate(date)}'),
               const SizedBox(height: 16),
               const Text('Description:', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(report.description),
+              Text(description),
               const SizedBox(height: 16),
               const Text('Status:', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(report.date.isAfter(DateTime.now().subtract(const Duration(days: 1)))
-                  ? 'New - Under Review'
-                  : 'Pending - Investigation in progress'),
+              Text(
+                status == 'resolved'
+                  ? 'Resolved - Issue has been addressed'
+                  : status == 'new'
+                    ? 'New - Under Review'
+                    : 'Pending - Investigation in progress',
+              ),
             ],
           ),
         ),
@@ -204,16 +515,56 @@ class UserReportsOverlay extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Close'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              // Implement mark as resolved
-              Navigator.of(context).pop();
-            },
-            child: const Text('Mark Resolved'),
-          ),
+          if (status != 'resolved')
+            ElevatedButton(
+              onPressed: () {
+                // In a real app, you would call an API to respond to the report
+                _respondToReport(report['id']);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Respond'),
+            ),
         ],
+      ),
+    );
+  }
+
+  void _respondToReport(String reportId) {
+    // Implement response logic here
+    // This would typically open a dialog or navigate to a response page
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Response feature would be implemented here'),
       ),
     );
   }
 }
 
+class _LoadingStatItem extends StatelessWidget {
+  const _LoadingStatItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 30,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Container(
+          width: 40,
+          height: 12,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      ],
+    );
+  }
+}

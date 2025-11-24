@@ -4,6 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 // Models
+import '../Helpers/customized/reports_helper.dart';
 import '../Models/appointments/booking_group_model.dart';
 import '../Models/appointments/shop_appointments_model.dart';
 import '../Models/appointments/soonest_appointment_model.dart';
@@ -95,6 +96,71 @@ class StaffReportRequest {
       'file_name': fileName,
       'report_type': reportType.toString().split('.').last,
     };
+  }
+}
+
+class ReportService {
+  final ApiService _apiService = ApiService();
+  final BusinessService _businessService = BusinessService();
+
+  Future<ReportResult> generateReport({
+    required ReportType reportType,
+    required ReportTime timePeriod,
+    required DateTime startDate,
+    required DateTime endDate,
+    String? fileName,
+    String? branchId,
+    ReportFormat format = ReportFormat.pdf,
+  })
+  async {
+    try {
+      final request = ReportRequest(
+        time: timePeriod,
+        startDate: startDate,
+        endDate: endDate,
+        branchId: branchId,
+        format: format,
+        fileName: fileName ?? 'report_${DateTime.now().millisecondsSinceEpoch}',
+        reportType: reportType,
+      );
+
+      final response = await _apiService.post(
+        '/reports/generate',
+        data: request.toJson(),
+      );
+
+      return ReportResult(
+        success: true,
+        downloadUrl: response['download_url'],
+        fileName: response['file_name'],
+      );
+    } catch (e) {
+      return ReportResult(
+        success: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<ReportResult> generateStaffReport(StaffReportRequest request) async {
+    try {
+      // Use the BusinessService method for staff reports
+      await _businessService.generateStaffReport(
+        request,
+        shopId: 1, // You'll need to get this from context/auth
+      );
+
+      return ReportResult(
+        success: true,
+        downloadUrl: 'generated_staff_report_${DateTime.now().millisecondsSinceEpoch}.pdf',
+        fileName: request.fileName,
+      );
+    } catch (e) {
+      return ReportResult(
+        success: false,
+        errorMessage: e.toString(),
+      );
+    }
   }
 }
 

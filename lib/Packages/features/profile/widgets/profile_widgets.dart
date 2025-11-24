@@ -1,5 +1,5 @@
+// lib/Packages/features/profile/widgets/profile_widgets.dart
 import 'package:flutter/material.dart';
-import '../../../../data/models/user/profile_model.dart';
 
 class ProfileWidgets {
   static Widget buildLoadingState() {
@@ -17,7 +17,7 @@ class ProfileWidgets {
 
   static Widget buildProfileContent({
     required GlobalKey<FormState> formKey,
-    required UserProfile userProfile,
+    required Map<String, dynamic> userData,
     required bool isEditing,
     required Map<String, TextEditingController> controllers,
     required String Function() getAccountType,
@@ -30,13 +30,13 @@ class ProfileWidgets {
         children: [
           // Profile Picture
           _buildProfilePicture(
-            userProfile: userProfile,
+            userData: userData,
             isEditing: isEditing,
             onChangeProfilePicture: onChangeProfilePicture,
           ),
           const SizedBox(height: 20),
           _buildProfileFieldsContainer(
-            userProfile: userProfile,
+            userData: userData,
             isEditing: isEditing,
             controllers: controllers,
             getAccountType: getAccountType,
@@ -48,7 +48,7 @@ class ProfileWidgets {
   }
 
   static Widget _buildProfilePicture({
-    required UserProfile userProfile,
+    required Map<String, dynamic> userData,
     required bool isEditing,
     required VoidCallback onChangeProfilePicture,
   }) {
@@ -57,8 +57,8 @@ class ProfileWidgets {
         children: [
           CircleAvatar(
             radius: 70,
-            backgroundImage: userProfile.profilePic != null
-                ? NetworkImage(userProfile.profilePic!)
+            backgroundImage: userData['profilePic'] != null
+                ? NetworkImage(userData['profilePic']!)
                 : const AssetImage('assets/mojies/image11.png') as ImageProvider,
           ),
           if (isEditing)
@@ -82,7 +82,7 @@ class ProfileWidgets {
   }
 
   static Widget _buildProfileFieldsContainer({
-    required UserProfile userProfile,
+    required Map<String, dynamic> userData,
     required bool isEditing,
     required Map<String, TextEditingController> controllers,
     required String Function() getAccountType,
@@ -100,26 +100,26 @@ class ProfileWidgets {
           // Editable Fields
           _buildEditableField(
             label: 'First Name',
-            value: userProfile.firstName ?? '',
+            value: userData['firstName'] ?? '',
             controller: controllers['firstName']!,
             isEditing: isEditing,
           ),
           _buildEditableField(
             label: 'Last Name',
-            value: userProfile.lastName ?? '',
+            value: userData['lastName'] ?? '',
             controller: controllers['lastName']!,
             isEditing: isEditing,
           ),
           _buildEditableField(
             label: 'Username',
-            value: userProfile.username ?? '',
+            value: userData['username'] ?? '',
             controller: controllers['username']!,
             isEditing: isEditing,
             isRequired: true,
           ),
           _buildEditableField(
             label: 'Email',
-            value: userProfile.email ?? '',
+            value: userData['email'] ?? '',
             controller: controllers['email']!,
             isEditing: isEditing,
             keyboardType: TextInputType.emailAddress,
@@ -127,38 +127,43 @@ class ProfileWidgets {
           ),
           _buildEditableField(
             label: 'Phone',
-            value: userProfile.phone ?? '',
+            value: userData['phone'] ?? '',
             controller: controllers['phone']!,
             isEditing: isEditing,
             keyboardType: TextInputType.phone,
           ),
           _buildEditableField(
             label: 'Bio',
-            value: userProfile.bio ?? '',
+            value: userData['bio'] ?? '',
             controller: controllers['bio']!,
             isEditing: isEditing,
           ),
           _buildEditableField(
             label: 'Location',
-            value: userProfile.location ?? '',
+            value: userData['location'] ?? '',
             controller: controllers['location']!,
             isEditing: isEditing,
           ),
           _buildEditableField(
             label: 'Specialties',
-            value: userProfile.specialties?.join(', ') ?? '',
+            value: (userData['specialties'] as List<dynamic>?)?.join(', ') ?? '',
             controller: controllers['specialties']!,
             isEditing: isEditing,
           ),
 
           // Read-only Fields
-          _buildReadOnlyField('Role', userProfile.role),
-          _buildReadOnlyField('Gender', userProfile.gender),
-          _buildReadOnlyField('Email Verified', userProfile.vrfidEmail == true ? 'Yes' : 'No'),
-          _buildReadOnlyField('Phone Verified', userProfile.vrfidPhone == true ? 'Yes' : 'No'),
+          _buildReadOnlyField('Role', userData['role']),
+          _buildReadOnlyField('Gender', userData['gender']),
+          _buildReadOnlyField('Email Verified', userData['vrfidEmail'] == true ? 'Yes' : 'No'),
+          _buildReadOnlyField('Phone Verified', userData['vrfidPhone'] == true ? 'Yes' : 'No'),
           _buildReadOnlyField('Account Type', getAccountType()),
-          _buildReadOnlyField('Subscription', userProfile.isSubscribed == true ? 'Active' : 'Inactive'),
-          _buildReadOnlyField('Member Since', userProfile.createdAt?.toLocal().toString().split(' ')[0]),
+          _buildReadOnlyField('Subscription', userData['isSubscribed'] == true ? 'Active' : 'Inactive'),
+          _buildReadOnlyField(
+            'Member Since', 
+            userData['createdAt'] != null 
+                ? _formatDate(userData['createdAt'])
+                : 'Not available'
+          ),
 
           const SizedBox(height: 20),
 
@@ -261,7 +266,19 @@ class ProfileWidgets {
       ),
     );
   }
+
+  // Helper method to format dates
+  static String _formatDate(dynamic date) {
+    if (date is DateTime) {
+      return date.toLocal().toString().split(' ')[0];
+    } else if (date is String) {
+      try {
+        final parsedDate = DateTime.parse(date);
+        return parsedDate.toLocal().toString().split(' ')[0];
+      } catch (e) {
+        return date;
+      }
+    }
+    return date?.toString() ?? 'Not set';
+  }
 }
-
-
-

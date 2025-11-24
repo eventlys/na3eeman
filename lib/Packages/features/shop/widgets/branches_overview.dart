@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../Models/branch_model.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/utils/formatters.dart';
 
 class BranchesOverview extends StatelessWidget {
-  final List<Branch> branches;
+  final VoidCallback? onViewAllBranches;
 
-  const BranchesOverview({super.key, required this.branches});
+  const BranchesOverview({super.key, this.onViewAllBranches});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final shopProvider = Provider.of<ShopProvider>(context);
+    final branches = shopProvider.branches;
+
+    // If no branches, show empty state
+    if (branches.isEmpty) {
+      return _buildEmptyState(context, isDarkTheme);
+    }
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -26,15 +38,101 @@ class BranchesOverview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Shop Branches',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Shop Branches',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                ),
+              ),
+              if (onViewAllBranches != null)
+                TextButton(
+                  onPressed: onViewAllBranches,
+                  child: Text(
+                    'View All',
+                    style: TextStyle(
+                      color: AppColor.lightPrimary,
+                    ),
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 12),
-          ...branches.map((branch) => _BranchCard(branch: branch)),
+          ...branches.take(3).map((branch) => _BranchCard(branch: branch)),
+          if (branches.length > 3 && onViewAllBranches != null) ...[
+            const SizedBox(height: 8),
+            Center(
+              child: TextButton(
+                onPressed: onViewAllBranches,
+                child: Text(
+                  'View all ${branches.length} branches',
+                  style: TextStyle(
+                    color: AppColor.lightPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, bool isDarkTheme) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.store_mall_directory_outlined,
+            size: 48,
+            color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'No Branches Available',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add your first branch to get started',
+            style: TextStyle(
+              color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              // Navigate to add branch screen
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.lightPrimary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add First Branch'),
+          ),
         ],
       ),
     );
@@ -42,19 +140,31 @@ class BranchesOverview extends StatelessWidget {
 }
 
 class _BranchCard extends StatelessWidget {
-  final Branch branch;
+  final dynamic branch; // Using dynamic instead of Branch model
 
   const _BranchCard({required this.branch});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
+    // Extract data using helper methods to avoid direct model access
+    final branchName = _getBranchName(branch);
+    final branchAddress = _getBranchAddress(branch);
+    final branchPhone = _getBranchPhone(branch);
+    final isOpen = _getBranchStatus(branch);
+    final todayAppointments = _getTodayAppointments(branch);
+    final todayRevenue = _getTodayRevenue(branch);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: isDarkTheme ? AppColor.darkBackground : AppColor.lightBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(
+          color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+        ),
       ),
       child: Row(
         children: [
@@ -63,7 +173,9 @@ class _BranchCard extends StatelessWidget {
             height: 8,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: branch.isOpen ? Colors.green : Colors.red,
+              color: isOpen
+                ? (isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess)
+                : (isDarkTheme ? AppColor.darkError : AppColor.lightError),
             ),
           ),
           const SizedBox(width: 12),
@@ -72,25 +184,26 @@ class _BranchCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  branch.name,
-                  style: const TextStyle(
+                  branchName,
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
+                    color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  branch.address,
+                  branchAddress,
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                     fontSize: 14,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  branch.phone,
+                  branchPhone,
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                     fontSize: 14,
                   ),
                 ),
@@ -101,17 +214,18 @@ class _BranchCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${branch.todayAppointments} apps',
-                style: const TextStyle(
+                '$todayAppointments apps',
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
+                  color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
-                '\$${branch.todayRevenue.toStringAsFixed(2)}',
+                Formatters.formatCurrency(todayRevenue),
                 style: TextStyle(
-                  color: Colors.green[700],
+                  color: isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
@@ -121,5 +235,53 @@ class _BranchCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // Helper methods to extract data without model dependency
+  String _getBranchName(dynamic branch) {
+    if (branch is Map<String, dynamic>) {
+      return branch['name'] ?? branch['shop_name'] ?? 'Unknown Branch';
+    }
+    return branch?.name?.toString() ?? 'Unknown Branch';
+  }
+
+  String _getBranchAddress(dynamic branch) {
+    if (branch is Map<String, dynamic>) {
+      return branch['address'] ?? branch['location'] ?? 'No address provided';
+    }
+    return branch?.address?.toString() ?? branch?.location?.toString() ?? 'No address provided';
+  }
+
+  String _getBranchPhone(dynamic branch) {
+    if (branch is Map<String, dynamic>) {
+      return branch['phone'] ?? branch['shop_phon_num'] ?? 'No phone';
+    }
+    return branch?.phone?.toString() ?? branch?.shopPhonNum?.toString() ?? 'No phone';
+  }
+
+  bool _getBranchStatus(dynamic branch) {
+    if (branch is Map<String, dynamic>) {
+      return branch['is_open'] ?? branch['isOpen'] ?? false;
+    }
+    return branch?.isOpen?.toString() == 'true' || branch?.isOpen == true;
+  }
+
+  int _getTodayAppointments(dynamic branch) {
+    if (branch is Map<String, dynamic>) {
+      return branch['today_appointments'] ?? branch['todayAppointments'] ?? 0;
+    }
+    return branch?.todayAppointments?.toString() != null
+        ? int.tryParse(branch.todayAppointments.toString()) ?? 0
+        : 0;
+  }
+
+  double _getTodayRevenue(dynamic branch) {
+    if (branch is Map<String, dynamic>) {
+      final revenue = branch['today_revenue'] ?? branch['todayRevenue'] ?? 0;
+      return revenue is double ? revenue : double.tryParse(revenue.toString()) ?? 0.0;
+    }
+    return branch?.todayRevenue?.toString() != null
+        ? double.tryParse(branch.todayRevenue.toString()) ?? 0.0
+        : 0.0;
   }
 }

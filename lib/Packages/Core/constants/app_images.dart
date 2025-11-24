@@ -49,6 +49,8 @@ class AppImages {
   static const String location_view = 'assets/icons/location_view.png';
   static const String report = 'assets/icons/report.png';
   static const String report_view = 'assets/icons/report_view.png';
+  static const String description = 'assets/icons/report.png';
+  static const String description_view = 'assets/icons/report_view.png';
   static const String file_star = 'assets/icons/file_star.png';
   static const String file_star_view = 'assets/icons/file_star_view.png';
   static const String add_file = 'assets/icons/add_file.png';
@@ -142,6 +144,7 @@ class AppImages {
   static const String mirror = 'assets/icons/mirror.png';
   static const String admin = 'assets/icons/admin.png';
   static const String staff = 'assets/icons/staff.png';
+  static const String people = 'assets/icons/people.png';
   static const String error_view = 'assets/icons/error_view.png';
   static const String error = 'assets/icons/error.png';
   static const String refresh = 'assets/icons/refresh.png';
@@ -150,4 +153,11 @@ class AppImages {
   static const String apple = 'assets/icons/apple.png';
   static const String eye = 'assets/icons/eye.png';
   static const String eye_view = 'assets/icons/eye_view.png';
+  static const String inventory = 'assets/icons/inventory.png';
+  static const String download = 'assets/icons/download.png';
+  static const String store = 'assets/icons/shop1.png';
+  static const String store_view = 'assets/icons/shop2.png';
+  static const String warning = 'assets/icons/warning.png';
+  static const String warning_view = 'assets/icons/warning_view.png';
+  // static const String inventory = 'assets/icons/shop2.png';
 }

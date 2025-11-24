@@ -165,7 +165,7 @@ class AppScaffold extends StatelessWidget {
       elevation: 0,
       leading: showBackButton
           ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onBackground),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
               onPressed: () => Navigator.of(context).pop(),
             )
           : null,
@@ -173,7 +173,7 @@ class AppScaffold extends StatelessWidget {
           ? Text(
               title!,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             )
@@ -283,7 +283,6 @@ class AppScaffold extends StatelessWidget {
 
   Widget _buildNavigationBar(BuildContext context) {
     return CustomNavigationBar(
-      user: user,
       currentRoute: ModalRoute.of(context)?.settings.name ?? '/',
     );
   }

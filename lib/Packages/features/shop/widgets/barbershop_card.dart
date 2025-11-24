@@ -46,6 +46,7 @@ class _BarbershopCardState extends State<BarbershopCard>
   @override
   void initState() {
     super.initState();
+    _isFavorite = widget.middleRightIconPath == widget.middleRightActiveIconPath;
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),

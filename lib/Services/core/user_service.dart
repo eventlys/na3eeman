@@ -70,16 +70,65 @@ class UserService {
     }
   }
 
-  Future<void> updateUserProfile(int userId, Map<String, dynamic> profileData) async {
-    final result = await _apiInterceptor.executeApiCall(
-      endpoint: '$_baseUrl/users/$userId/profile/',
-      method: 'PUT',
-      data: profileData,
-      requireAuth: true,
-    );
+  // Future<void> updateUserProfile(int userId, Map<String, dynamic> profileData) async {
+  //   final result = await _apiInterceptor.executeApiCall(
+  //     endpoint: '$_baseUrl/users/$userId/profile/',
+  //     method: 'PUT',
+  //     data: profileData,
+  //     requireAuth: true,
+  //   );
+  //
+  //   if (result['success'] != true) {
+  //     throw Exception('Failed to update user profile: ${result['error']}');
+  //   }
+  // }
 
-    if (result['success'] != true) {
-      throw Exception('Failed to update user profile: ${result['error']}');
+  Future<void> updateUserProfile({
+    required int userId,
+    required Map<String, dynamic> profileData,
+  }) async {
+    try {
+      final result = await _apiInterceptor.executeApiCall(
+        endpoint: '$_baseUrl/users/$userId/profile/',
+        method: 'PUT',
+        data: profileData,
+        requireAuth: true,
+      );
+
+      if (result['success'] != true) {
+        throw Exception('Failed to update user profile: ${result['error']}');
+      }
+
+      // Optionally update local storage with new profile data
+      await _updateLocalProfile(profileData);
+
+    } catch (e) {
+      // Log the error and rethrow for the helper to handle
+      print('UserService update error: $e');
+      rethrow;
+    }
+  }
+
+  // Update local storage with new profile data
+  Future<void> _updateLocalProfile(Map<String, dynamic> profileData) async {
+    try {
+      // Get current user data
+      final currentUser = await _unifiedStorageService.getUserProfile();
+      if (currentUser != null) {
+        // Convert User object to map, update with new data, then convert back
+        final userMap = currentUser.toJson();
+        final updatedUserMap = <String, dynamic>{
+          ...userMap,
+          ...profileData,
+          'updatedAt': DateTime.now().toIso8601String(),
+        };
+
+        // Save back to storage - the storage service should handle the conversion
+        await _unifiedStorageService.saveUserData(updatedUserMap);
+      }
+    } catch (e) {
+      // Non-critical error - log but don't fail the entire operation
+      print('Error updating local profile: $e');
     }
   }
 

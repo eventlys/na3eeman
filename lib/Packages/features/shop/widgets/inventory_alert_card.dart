@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../Models/olds/inventory_item.dart';
-import '../../Utils/constants.dart';
-import '../../Utils/formatters.dart';
+import '../../../Core/utils/formatters.dart';
+
 
 class InventoryAlertCard extends StatelessWidget {
   final List<InventoryItem> lowStockItems;

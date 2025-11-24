@@ -1,4 +1,5 @@
-import '../../../Models/olds/user_model.dart';
+import '../../../Providers/main_providers.dart';
+import '../../../Services/enums/gender.dart';
 
 class NavItem {
   final String id;
@@ -17,21 +18,36 @@ class NavItem {
 }
 
 class NavigationConfig {
-  static String getHomeRoute(User user) {
-    if (user.isCustomer) {
+  static String getHomeRoute(AppStateProvider appStateProvider) {
+    if (appStateProvider.isCustomer) {
       return '/customer_home';
     } else {
       return '/barber_home';
     }
   }
 
-  static List<NavItem> getNavItems(User user, String currentRoute) {
+  static String getProfileAvatar(AppStateProvider appStateProvider, bool isActive) {
+    // Get gender from provider to determine avatar
+    final gender = appStateProvider.userGender;
+    
+    if (isActive) {
+      return gender == Gender.female 
+          ? 'assets/icons/avatar_female_view.png'
+          : 'assets/icons/avatar_male_view.png';
+    } else {
+      return gender == Gender.female 
+          ? 'assets/icons/avatar_female.png'
+          : 'assets/icons/avatar_male.png';
+    }
+  }
+
+  static List<NavItem> getNavItems(AppStateProvider appStateProvider, String currentRoute) {
     final allItems = [
       NavItem(
         id: 'home',
         activeIconPath: 'assets/icons/home_view.png',
         inactiveIconPath: 'assets/icons/home_front.png',
-        route: getHomeRoute(user),
+        route: getHomeRoute(appStateProvider),
         label: 'Home',
       ),
       NavItem(
@@ -64,8 +80,8 @@ class NavigationConfig {
       ),
       NavItem(
         id: 'profile',
-        activeIconPath: 'assets/icons/avatar_male_view.png',
-        inactiveIconPath: 'assets/icons/avatar_male.png',
+        activeIconPath: getProfileAvatar(appStateProvider, currentRoute == '/profile'),
+        inactiveIconPath: getProfileAvatar(appStateProvider, false),
         route: '/profile',
         label: 'Profile',
       ),
@@ -75,22 +91,21 @@ class NavigationConfig {
     return allItems.where((item) {
       switch (item.id) {
         case 'search':
-          return user.isCustomer;
+          return appStateProvider.isCustomer;
         case 'admin':
         case 'staff':
-          return user.isOwner;
+          return appStateProvider.isOwner;
         default:
           return true;
       }
     }).toList();
   }
 
-  static bool isItemActive(NavItem item, String currentRoute, User user) {
+  static bool isItemActive(NavItem item, String currentRoute, AppStateProvider appStateProvider) {
     if (item.id == 'home') {
-      final homeRoute = getHomeRoute(user);
+      final homeRoute = getHomeRoute(appStateProvider);
       return currentRoute == homeRoute || currentRoute == '/';
     }
     return currentRoute == item.route;
   }
 }
-

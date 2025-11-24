@@ -1,4 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../../../Helpers/barber_list_helper.dart';
+import '../../../Providers/main_providers.dart';
+import '../../Core/constants/app_color.dart';
+import '../../Core/constants/app_images.dart';
+import '../../Core/themes/app_scaffold.dart';
+import '../../Core/themes/loading_indicator.dart';
+import '../../Core/utils/helpers/refresh_widgets.dart';
+import '../../Core/widgets/shared/error_widget.dart';
+import '../shop/widgets/barber_card.dart';
 
 
 class BarbersListPage extends StatefulWidget {
@@ -9,170 +21,386 @@ class BarbersListPage extends StatefulWidget {
 }
 
 class _BarbersListPageState extends State<BarbersListPage> {
-  late Future<List<Barber>> _barbersFuture;
-  final ApiService _apiService = ApiService();
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
     super.initState();
-    _barbersFuture = _apiService.getBarbersTyped();
+    _loadInitialData();
+    _scrollController.addListener(_scrollListener);
   }
 
-  void _refreshData() {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  void _loadInitialData() {
+    final provider = Provider.of<BarberProvider>(context, listen: false);
+    provider.refreshBarbers();
+  }
+
+  void _scrollListener() {
+    final provider = Provider.of<BarberProvider>(context, listen: false);
+
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (!_isLoadingMore && provider.hasMore && !provider.isLoading) {
+        _loadMoreData();
+      }
+    }
+  }
+
+  void _loadMoreData() async {
     setState(() {
-      _barbersFuture = _apiService.getBarbersTyped();
+      _isLoadingMore = true;
     });
+
+    final provider = Provider.of<BarberProvider>(context, listen: false);
+    await provider.loadBarbers();
+
+    setState(() {
+      _isLoadingMore = false;
+    });
+  }
+
+  Future<void> _refreshData() async {
+    final provider = Provider.of<BarberProvider>(context, listen: false);
+    await provider.refreshBarbers();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() {
+    _loadMoreData();
+    _refreshController.loadComplete();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: CustomAppBar(
-        title: 'Barbers',
-        showBackButton: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _refreshData,
-          ),
-        ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return StandardPage(
+      title: 'Barbers',
+      showBackButton: true,
+      showAppBar: true,
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewBarber,
+        backgroundColor: AppColor.primary,
+        child: ImageIcon(
+          AssetImage(AppImages.plus),
+          color: AppColor.light,
+        ),
       ),
-      body: FutureBuilder<List<Barber>>(
-        future: _barbersFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingIndicator(message: 'Loading barbers...');
+      actions: [
+        IconButton(
+          icon: ImageIcon(
+            AssetImage(AppImages.refresh),
+            color: isDark ? AppColor.darkText : AppColor.lightText,
+          ),
+          onPressed: _refreshData,
+        ),
+      ],
+      user: null, // Add your user object here if needed
+      child: Consumer<BarberProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading && provider.barbers.isEmpty) {
+            return const Center(
+              child: LoadingIndicator(
+                message: 'Loading barbers...',
+                size: 50,
+              ),
+            );
           }
 
-          if (snapshot.hasError) {
+          if (provider.error != null && provider.barbers.isEmpty) {
+            return AppErrorWidget(
+              message: 'Failed to load barbers: ${provider.error}',
+              onRetry: _refreshData,
+              showRetryButton: true,
+            );
+          }
+
+          final List<BarberDto> barbers = provider.barbers;
+
+          if (barbers.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error, size: 64, color: AppColors.errorColor),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Failed to load barbers',
-                    style: TextStyle(fontSize: 16),
+                  ImageIcon(
+                    AssetImage(AppImages.avatar_male),
+                    size: 64,
+                    color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _refreshData,
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          final barbers = snapshot.data!;
-
-          if (barbers.isEmpty) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.people, size: 64, color: AppColors.textSecondary),
-                  SizedBox(height: 16),
                   Text(
                     'No barbers found',
-                    style: TextStyle(fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                    ),
                   ),
                 ],
               ),
             );
           }
 
-          return RefreshIndicator(
-            onRefresh: () async => _refreshData(),
+          return RefreshIndicatorWrapper(
+            onRefresh: _refreshData,
             child: ListView.builder(
-              itemCount: barbers.length,
-              itemBuilder: (context, index) {
-                final barber = barbers[index];
-                return BarberCard(
-                  barber: barber,
-                  onTap: () => _showBarberDetails(barber),
-                  onEdit: () => _editBarber(barber),
-                  onDelete: () => _deleteBarber(barber),
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16),
+              itemCount: barbers.length + (_isLoadingMore ? 1 : 0),
+              itemBuilder: (context, int index) {
+                if (index == barbers.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: LoadingIndicator(
+                        size: 30,
+                        color: AppColor.primary,
+                      ),
+                    ),
+                  );
+                }
+
+                final BarberDto barber = barbers[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: BarberCard(
+                    barber: barber,
+                    onTap: () => _showBarberDetails(barber),
+                    onEdit: () => _editBarber(barber),
+                    onDelete: () => _deleteBarber(barber),
+                  ),
                 );
               },
             ),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNewBarber,
-        backgroundColor: AppColors.primaryColor,
-        child: const Icon(Icons.add, color: Colors.white),
+    );
+  }
+
+  void _showBarberDetails(BarberDto barber) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) => DialogScaffold(
+        backgroundColor: isDark ? AppColor.darkCard : AppColor.lightCard,
+        borderRadius: 16,
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (barber.profileImage != null) ...[
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(barber.profileImage!),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+                Expanded(
+                  child: Text(
+                    barber.name,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? AppColor.darkText : AppColor.lightText,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _buildDetailRow(AppImages.mail, 'Email', barber.email, isDark),
+            const SizedBox(height: 12),
+            _buildDetailRow(AppImages.phone, 'Phone', barber.phone, isDark),
+            const SizedBox(height: 12),
+            _buildDetailRow(AppImages.star, 'Rating', barber.rating.toStringAsFixed(1), isDark),
+            const SizedBox(height: 12),
+            _buildDetailRow(AppImages.calender, 'Total Appointments', barber.totalAppointments.toString(), isDark),
+            const SizedBox(height: 12),
+            _buildDetailRow(AppImages.scissors, 'Specialties', barber.specialties.join(', '), isDark),
+            if (barber.hourlyRate != null) ...[
+              const SizedBox(height: 12),
+              _buildDetailRow(AppImages.money, 'Hourly Rate', '\$${barber.hourlyRate!.toStringAsFixed(2)}', isDark),
+            ],
+            if (barber.lastActive != null) ...[
+              const SizedBox(height: 12),
+              _buildDetailRow(AppImages.clock, 'Last Active', _formatDate(barber.lastActive!), isDark),
+            ],
+            const SizedBox(height: 24),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Close',
+                  style: TextStyle(
+                    color: AppColor.primary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _showBarberDetails(Barber barber) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(barber.name),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Email: ${barber.email}'),
-            Text('Phone: ${barber.phone}'),
-            Text('Rating: ${barber.rating}'),
-            Text('Total Appointments: ${barber.totalAppointments}'),
-            Text('Specialties: ${barber.specialties.join(', ')}'),
-          ],
+  Widget _buildDetailRow(String iconPath, String label, String value, bool isDark) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ImageIcon(
+          AssetImage(iconPath),
+          size: 20,
+          color: AppColor.primary,
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: isDark ? AppColor.darkText : AppColor.lightText,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
 
   void _addNewBarber() {
     // Implement add new barber functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Add new barber functionality')),
+      SnackBar(
+        content: Text(
+          'Add new barber functionality',
+          style: TextStyle(color: AppColor.light),
+        ),
+        backgroundColor: AppColor.primary,
+      ),
     );
   }
 
-  void _editBarber(Barber barber) {
+  void _editBarber(BarberDto barber) {
     // Implement edit barber functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit ${barber.name}')),
+      SnackBar(
+        content: Text(
+          'Edit ${barber.name}',
+          style: TextStyle(color: AppColor.light),
+        ),
+        backgroundColor: AppColor.primary,
+      ),
     );
   }
 
-  void _deleteBarber(Barber barber) {
+  void _deleteBarber(BarberDto barber) {
+    final provider = Provider.of<BarberProvider>(context, listen: false);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Barber'),
-        content: Text('Are you sure you want to delete ${barber.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Implement delete functionality
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Deleted ${barber.name}')),
-              );
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
+      builder: (context) => DialogScaffold(
+        backgroundColor: isDark ? AppColor.darkCard : AppColor.lightCard,
+        borderRadius: 16,
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Delete Barber',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: isDark ? AppColor.darkText : AppColor.lightText,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Are you sure you want to delete ${barber.name}?',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.8),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    try {
+                      await provider.deleteBarber(barber.id);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Successfully deleted ${barber.name}',
+                            style: TextStyle(color: AppColor.light),
+                          ),
+                          backgroundColor: AppColor.primary,
+                        ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Failed to delete ${barber.name}: $e',
+                            style: TextStyle(color: AppColor.light),
+                          ),
+                          backgroundColor: AppColor.secondary,
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: AppColor.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-

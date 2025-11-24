@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../Helpers/customized/animations.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../../Services/enums/gender.dart';
+import '../../../../Services/enums/user_role.dart';
 import '../sidebar_controller.dart';
-import '../../../Models/olds/user_model.dart';
-import '../../../Helpers/old/animations.dart';
+
 
 class UserProfileSection extends StatelessWidget {
   final SidebarController controller;
@@ -10,7 +14,17 @@ class UserProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = User.getCurrentUser();
+    final authProvider = Provider.of<AuthProvider>(context);
+    final appStateProvider = Provider.of<AppStateProvider>(context);
+
+    // Get user data directly from providers without using User model
+    final isAuthenticated = authProvider.isAuthenticated;
+    final userEmail = appStateProvider.userEmail ?? 'Not logged in';
+    final userRole = appStateProvider.userRole;
+    final userGender = appStateProvider.userGender;
+
+    // Extract name from email or use provider data
+    final displayName = _getDisplayName(authProvider, appStateProvider, userEmail);
 
     return AnimatedBuilder(
       animation: controller.animation,
@@ -32,34 +46,140 @@ class UserProfileSection extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Profile Picture
-              CircleAvatar(
-                radius: 40,
-                backgroundImage: NetworkImage(user.profilePicture),
-                backgroundColor: Colors.grey[300],
-              ),
+              // Profile Picture - Using default based on role/gender
+              _buildProfilePicture(userGender, userRole),
               const SizedBox(height: 16),
               // User Name
               Text(
-                user.name,
+                displayName,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
+              // User Email
               Text(
-                user.email,
+                userEmail,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
+              const SizedBox(height: 4),
+              // User Role Badge
+              if (isAuthenticated)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _getRoleColor(userRole),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _getRoleDisplayName(userRole),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              // Authentication Status
+              if (!isAuthenticated)
+                Text(
+                  'Please log in',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.orange[700],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // Build profile picture widget - using default icons only
+  Widget _buildProfilePicture(Gender gender, UserRole role) {
+    return CircleAvatar(
+      radius: 40,
+      backgroundColor: _getRoleColor(role).withValues(alpha: 0.2),
+      child: Icon(
+        _getProfileIcon(gender, role),
+        size: 40,
+        color: _getRoleColor(role),
+      ),
+    );
+  }
+
+  // Get appropriate icon based on role and gender
+  IconData _getProfileIcon(Gender gender, UserRole role) {
+    switch (role) {
+      case UserRole.barber:
+        return Icons.content_cut; // Scissors icon for barber
+      case UserRole.owner:
+        return Icons.business; // Business icon for owner
+      case UserRole.customer:
+        return gender == Gender.female ? Icons.face_3 : Icons.face; // Male/female face icons
+    }
+  }
+
+  // Helper methods
+  String _getDisplayName(AuthProvider authProvider, AppStateProvider appStateProvider, String userEmail) {
+    if (!authProvider.isAuthenticated) {
+      return 'Guest User';
+    }
+
+    // Try to get name from userEmail first
+    final emailName = userEmail.split('@').first;
+    if (emailName.isNotEmpty && emailName != 'Not logged in') {
+      // Capitalize first letter of each word
+      final nameParts = emailName.split('.');
+      if (nameParts.length > 1) {
+        return nameParts.map((part) => part[0].toUpperCase() + part.substring(1)).join(' ');
+      }
+      return emailName[0].toUpperCase() + emailName.substring(1);
+    }
+
+    // Final fallback based on role
+    switch (appStateProvider.userRole) {
+      case UserRole.customer:
+        return 'Customer';
+      case UserRole.barber:
+        return 'Barber';
+      case UserRole.owner:
+        return 'Shop Owner';
+    }
+  }
+
+  Color _getRoleColor(UserRole role) {
+    switch (role) {
+      case UserRole.customer:
+        return Colors.blue;
+      case UserRole.barber:
+        return Colors.green;
+      case UserRole.owner:
+        return Colors.purple;
+    }
+  }
+
+  String _getRoleDisplayName(UserRole role) {
+    switch (role) {
+      case UserRole.customer:
+        return 'Customer';
+      case UserRole.barber:
+        return 'Barber';
+      case UserRole.owner:
+        return 'Shop Owner';
+    }
   }
 }
 

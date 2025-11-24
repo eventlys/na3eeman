@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Theme/profile_avatar_style.dart';
+
+import 'profile_avatar_style.dart';
 
 
 class MyProfileAvatar extends StatelessWidget {

@@ -1,17 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../Models/olds/user_model.dart';
-// import '../../Theme/sphere_neomorphic.dart';
-import '../../../components/horizontal_barber_list.dart';
-import '../../../components/shop_gallary.dart';
-import '../../Backgrounds/bd_faded.dart';
-import '../../../Theme/glass_appbar.dart';
-import '../../Widgets/custom_navigation_bar.dart';
-import '../../Widgets/inventory_manager.dart';
-import '../../Widgets/products_sections.dart';
-import '../../Widgets/reviews_section.dart';
-import '../../Widgets/shop_info_section.dart';
-import '../../Widgets/shop_services_section.dart';
-import '../../Widgets/subscription_list_widget.dart';
 
 class ShopDetailsPage extends StatefulWidget {
   final Map<String, dynamic> shopData;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../Theme/animated_cart_button.dart';
+import '../../../Core/themes/animated_cart_button.dart';
 
 class ProductSection extends StatelessWidget {
   final Map<String, dynamic> shopData;

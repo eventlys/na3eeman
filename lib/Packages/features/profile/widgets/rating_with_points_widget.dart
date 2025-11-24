@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Add this import
-import '../../Providers/services/points_provider.dart'; // Make sure this path is correct
-import '../../data/models/payment/points_balance_model.dart'; // Make sure this path is correct
+import 'package:provider/provider.dart';
+import '../../../../Providers/main_providers.dart';
 
 class RatingWithPointsWidget extends StatefulWidget {
   final Map<String, dynamic> shopData;
@@ -29,7 +28,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
     _userRating = widget.initialRating;
   }
 
-  void _handleRatingTap(int rating) {
+  void _handleRatingTap(int rating) async {
     setState(() {
       _userRating = rating.toDouble();
     });
@@ -41,18 +40,34 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
     if (!_hasAwardedPoints && rating > 0) {
       final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
 
-      if (pointsProvider.canEarnPoints(PointsType.rateShop)) {
-        pointsProvider.addPoints(
-          PointsType.rateShop,
-          shopName: widget.shopData['title'] as String? ?? 'Shop'
+      try {
+        // You'll need to get the customer ID from somewhere
+        // For now, using a placeholder
+        final customerId = 1; // Replace with actual customer ID
+
+        await pointsProvider.rateApp(
+          customerId: customerId,
+          rating: rating,
         );
-        _hasAwardedPoints = true;
+
+        setState(() {
+          _hasAwardedPoints = true;
+        });
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Thanks for rating ${widget.shopData['title']}! +15 points'),
+            content: Text('Thanks for rating ${widget.shopData['title']}! +25 points'),
             backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        // Show error message if points awarding fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to award points for rating'),
+            backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
         );
@@ -62,79 +77,72 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PointsProvider>(
-      builder: (context, pointsProvider, child) {
-        final canEarnPoints = pointsProvider.canEarnPoints(PointsType.rateShop) && !_hasAwardedPoints;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Text(
-                  'Rating: ',
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 14,
-                  ),
-                ),
-                SizedBox(width: 8),
-                ...List.generate(5, (index) {
-                  return GestureDetector(
-                    onTap: () => _handleRatingTap(index + 1),
-                    child: Icon(
-                      index < _userRating ? Icons.star : Icons.star_border,
-                      color: Color(0xFFFFD700),
-                      size: 24,
-                    ),
-                  );
-                }),
-                SizedBox(width: 8),
-                Text(
-                  _userRating.toStringAsFixed(1),
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 14,
-                  ),
-                ),
-                if (canEarnPoints) ...[
-                  SizedBox(width: 8),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.green),
-                    ),
-                    child: Text(
-                      '+15 pts',
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
+            Text(
+              'Rating: ',
+              style: TextStyle(
+                color: Color(0xFFFFFFFF),
+                fontSize: 14,
+              ),
             ),
-
-            // Optional: Show message if points were already earned
-            if (_hasAwardedPoints) ...[
-              SizedBox(height: 4),
-              Text(
-                'Points earned for rating this shop!',
-                style: TextStyle(
-                  color: Colors.green,
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
+            SizedBox(width: 8),
+            ...List.generate(5, (index) {
+              return GestureDetector(
+                onTap: () => _handleRatingTap(index + 1),
+                child: Icon(
+                  index < _userRating ? Icons.star : Icons.star_border,
+                  color: Color(0xFFFFD700),
+                  size: 24,
+                ),
+              );
+            }),
+            SizedBox(width: 8),
+            Text(
+              _userRating.toStringAsFixed(1),
+              style: TextStyle(
+                color: Color(0xFFFFFFFF),
+                fontSize: 14,
+              ),
+            ),
+            if (!_hasAwardedPoints && _userRating > 0) ...[
+              SizedBox(width: 8),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.green),
+                ),
+                child: Text(
+                  '+25 pts',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
           ],
-        );
-      },
+        ),
+
+        // Optional: Show message if points were already earned
+        if (_hasAwardedPoints) ...[
+          SizedBox(height: 4),
+          Text(
+            'Points earned for rating this shop!',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
-

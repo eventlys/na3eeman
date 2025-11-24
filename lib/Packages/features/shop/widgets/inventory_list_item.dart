@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../Helpers/inventory_helpers.dart';
-import '../../data/models/shop/inventory_item.dart';
+import '../../../../Helpers/inventory_helpers.dart';
+
 
 class InventoryListItem extends StatelessWidget {
   final InventoryItem item;

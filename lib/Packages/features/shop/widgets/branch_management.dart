@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import '../../../../Utils/constants.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
 
 class BranchManagementPage extends StatelessWidget {
   const BranchManagementPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Branch Management'),
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: Colors.white,
+        backgroundColor: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+        foregroundColor: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+        elevation: 2,
       ),
       body: Center(
         child: Padding(
@@ -18,10 +22,11 @@ class BranchManagementPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.store_mall_directory,
-                size: 80,
-                color: AppColors.primaryColor.withValues(alpha: 0.5),
+              Image.asset(
+                isDarkTheme ? AppImages.store_view : AppImages.store,
+                width: 80,
+                height: 80,
+                color: (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary).withOpacity(0.5),
               ),
               SizedBox(height: 20),
               Text(
@@ -29,7 +34,7 @@ class BranchManagementPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textColor,
+                  color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
               ),
               SizedBox(height: 10),
@@ -37,7 +42,7 @@ class BranchManagementPage extends StatelessWidget {
                 'Manage all your branches, view performance metrics, and handle branch-specific settings from this page.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.textColor.withValues(alpha: 0.7),
+                  color: (isDarkTheme ? AppColor.darkText : AppColor.lightText).withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -47,4 +52,3 @@ class BranchManagementPage extends StatelessWidget {
     );
   }
 }
-

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/features/sidebar/widgets/animated_sidebar_item.dart';
 import '../../../Models/ui/menu_item_model.dart';
-import '../../../features/sidebar/sidebar_controller.dart';
-import '../../../features/sidebar/widgets/sidebar_background.dart';
-import '../../../features/sidebar/widgets/user_profile_section.dart';
+import 'sidebar_controller.dart';
+import 'widgets/animated_sidebar_item.dart';
+import 'widgets/sidebar_background.dart';
+import 'widgets/user_profile_section.dart';
 
 class Sidebar extends StatelessWidget {
   final SidebarController controller;

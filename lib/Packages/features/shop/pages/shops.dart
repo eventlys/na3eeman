@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../Models/shops_model.dart';
-import '../../../Widgets/barbershop_card.dart';
-import '../../../../features/Backgrounds/bd_faded.dart';
-import '../../../../Theme/glass_appbar.dart';
-import '../../../Navigations/shop_details.dart';
 
 class ShopListPage extends StatefulWidget {
   const ShopListPage({super.key});

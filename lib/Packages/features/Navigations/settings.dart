@@ -1,4 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../Helpers/customized/dialog_helper.dart';
+import '../../../Services/ui/language_service.dart';
+import '../../../Services/ui/overlay_service.dart';
+import '../../../Services/ui/sidebar_navigation_service.dart';
+import '../../../Services/ui/theme_service.dart';
+import '../../../Services/utils/location_service.dart';
+import '../../Core/backgrounds/bd_faded.dart';
+import '../../Core/themes/glass_appbar.dart';
+import '../../Core/widgets/common/custom_switch_tile.dart';
+import '../../Core/widgets/common/section_divider.dart';
+import '../../Core/widgets/common/setting_tile.dart';
+import '../auth/overlays/change_password_overlay.dart';
+import '../profile/widgets/user_info_header.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -50,13 +63,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   // App Preferences
                   _buildSectionHeader('App Preferences'),
-                  ValueListenableBuilder<String>(
-                    valueListenable: _languageService.languageNotifier,
-                    builder: (context, language, child) {
+                  ListenableBuilder(
+                    listenable: _languageService,
+                    builder: (context, child) {
                       return SettingTile(
                         icon: Icons.language,
                         title: 'Change Language',
-                        subtitle: language,
+                        subtitle: _languageService.currentLanguage,
                         onTap: () => _changeLanguage(),
                       );
                     },

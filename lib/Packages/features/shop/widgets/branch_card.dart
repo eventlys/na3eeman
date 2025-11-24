@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-
-import '../../Models/branch_model.dart';
-import '../../Utils/constants.dart';
-import '../../Utils/formatters.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
 
 class BranchCard extends StatelessWidget {
-  final List<Branch> branches;
   final VoidCallback onViewAll;
 
   const BranchCard({
     super.key,
-    required this.branches,
     required this.onViewAll,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final shopProvider = Provider.of<ShopProvider>(context);
+    final branches = shopProvider.branches;
+
     return Card(
       elevation: 4,
-      color: AppColors.cardColor,
+      color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -32,63 +34,91 @@ class BranchCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
+                    color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                   ),
                 ),
                 Chip(
-                  label: Text('${branches.length} Branches'),
-                  backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
-                  labelStyle: TextStyle(color: AppColors.primaryColor),
+                  label: Text(
+                    '${branches.length} Branches',
+                    style: TextStyle(
+                      color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+                    ),
+                  ),
+                  backgroundColor: (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary)
+                      .withValues(alpha: 0.1),
                 ),
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             ...branches.take(2).map((branch) => ListTile(
               leading: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: branch.isOpen 
-                    ? AppColors.successColor.withValues(alpha: 0.2)
-                    : AppColors.errorColor.withValues(alpha: 0.2),
+                  color: branch.isOpen
+                    ? (isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess).withValues(alpha: 0.2)
+                    : (isDarkTheme ? AppColor.darkError : AppColor.lightError).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Icon(
-                  Icons.store,
-                  color: branch.isOpen 
-                    ? AppColors.successColor
-                    : AppColors.errorColor,
+                child: Image.asset(
+                  isDarkTheme ? AppImages.store_view : AppImages.store,
+                  width: 20,
+                  height: 20,
+                  color: branch.isOpen
+                    ? isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess
+                    : isDarkTheme ? AppColor.darkError : AppColor.lightError,
                 ),
               ),
-              title: Text(branch.name),
+              title: Text(
+                branch.name,
+                style: TextStyle(
+                  color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                ),
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(branch.address),
-                  SizedBox(height: 4),
+                  Text(
+                    branch.address,
+                    style: TextStyle(
+                      color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
                       Icon(
                         Icons.circle,
                         size: 8,
-                        color: branch.isOpen 
-                          ? AppColors.successColor
-                          : AppColors.errorColor,
+                        color: branch.isOpen
+                          ? isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess
+                          : isDarkTheme ? AppColor.darkError : AppColor.lightError,
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         branch.isOpen ? 'Open' : 'Closed',
                         style: TextStyle(
-                          color: branch.isOpen 
-                            ? AppColors.successColor
-                            : AppColors.errorColor,
+                          color: branch.isOpen
+                            ? isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess
+                            : isDarkTheme ? AppColor.darkError : AppColor.lightError,
                         ),
                       ),
                       if (branch.hasLowStockAlerts) ...[
-                        SizedBox(width: 8),
-                        Icon(Icons.warning, size: 14, color: AppColors.warningColor),
-                        SizedBox(width: 4),
-                        Text('${branch.lowStockItems} low stock'),
+                        const SizedBox(width: 8),
+                        Image.asset(
+                          isDarkTheme ? AppImages.warning_view : AppImages.warning,
+                          width: 14,
+                          height: 14,
+                          color: isDarkTheme ? AppColor.darkWarning : AppColor.lightWarning,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${branch.lowStockItems} low stock',
+                          style: TextStyle(
+                            color: isDarkTheme ? AppColor.darkWarning : AppColor.lightWarning,
+                            fontSize: 12,
+                          ),
+                        ),
                       ],
                     ],
                   ),
@@ -98,28 +128,40 @@ class BranchCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    Formatters.formatCurrency(branch.getMonthlyRevenue),
+                    _formatCurrency(branch.getMonthlyRevenue),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.successColor,
+                      color: isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess,
                     ),
                   ),
                   Text(
                     '${branch.getTotalSales} sales',
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    ),
                   ),
                 ],
               ),
-            )),
+            )).toList(),
             if (branches.length > 2)
               TextButton(
                 onPressed: onViewAll,
-                child: Text('View all ${branches.length} branches'),
+                child: Text(
+                  'View all ${branches.length} branches',
+                  style: TextStyle(
+                    color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+                  ),
+                ),
               ),
           ],
         ),
       ),
     );
   }
-}
 
+  String _formatCurrency(double amount) {
+    // Simple currency formatter - you can replace this with your Formatters.formatCurrency
+    return '\$${amount.toStringAsFixed(2)}';
+  }
+}

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../data/models/shop/inventory_item.dart';
-import '../../Models/olds/user_model.dart';
-import '../../Services/business/inventory_service.dart';
 import 'inventory_list_item.dart';
 import 'low_stock_alert.dart';
-import 'add_item_dialog.dart';
 
 class InventoryManager extends StatefulWidget {
   final User currentUser;

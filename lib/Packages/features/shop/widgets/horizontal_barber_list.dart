@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../Packages/Widgets/custom_profile_avatar.dart';
-import '../Theme/profile_avatar_style.dart';
-
+import '../../../Core/constants/app_color.dart';
+import '../../profile/widgets/custom_profile_avatar.dart';
+import '../../profile/widgets/profile_avatar_style.dart';
 
 class BarberData {
   final String image;
@@ -30,11 +30,13 @@ class HorizontalBarberScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
       decoration: BoxDecoration(
-        color: const Color(0x1AFFFFFF),
+        color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -45,10 +47,10 @@ class HorizontalBarberScroll extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 15.0),
             child: Text(
               'Our Barbers',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFFFFFFF),
+                color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
               ),
             ),
           ),
@@ -62,9 +64,10 @@ class HorizontalBarberScroll extends StatelessWidget {
 
                 return Padding(
                   padding: EdgeInsets.only(
-                    right: index < barbers.length - 1 ? spacing : 0,
+                    left: index == 0 ? 15.0 : 0,
+                    right: index < barbers.length - 1 ? spacing : 15.0,
                   ),
-                  child: _buildProfileItem(profile),
+                  child: _buildProfileItem(profile, isDarkTheme),
                 );
               }).toList(),
             ),
@@ -74,7 +77,7 @@ class HorizontalBarberScroll extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileItem(BarberData barber) {
+  Widget _buildProfileItem(BarberData barber, bool isDarkTheme) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -85,7 +88,9 @@ class HorizontalBarberScroll extends StatelessWidget {
               size: avatarSize,
               style: MyProfileAvatarStyle(
                 border: Border.all(
-                  color: barber.available ? Colors.green : Colors.grey,
+                  color: barber.available
+                    ? (isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess)
+                    : (isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
                   width: 2,
                 ),
               ),
@@ -95,8 +100,8 @@ class HorizontalBarberScroll extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           barber.name,
-          style: const TextStyle(
-            color: Color(0xffffffff),
+          style: TextStyle(
+            color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
             fontSize: 20,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.normal,
@@ -108,5 +113,3 @@ class HorizontalBarberScroll extends StatelessWidget {
     );
   }
 }
-
-

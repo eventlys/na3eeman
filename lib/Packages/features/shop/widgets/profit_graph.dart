@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-
-import '../../Models/profit_data.dart';
-import '../../Utils/constants.dart';
-import '../../Utils/formatters.dart';
+import '../../../Core/utils/formatters.dart';
 
 
 class ProfitGraph extends StatefulWidget {

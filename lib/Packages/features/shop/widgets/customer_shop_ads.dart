@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -10,9 +11,11 @@ class FigmaToCodeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return MaterialApp(
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
+        scaffoldBackgroundColor: isDarkTheme ? AppColor.darkBackground : AppColor.lightBackground,
       ),
       home: Scaffold(
         body: ListView(children: [
@@ -45,33 +48,33 @@ class Shop {
 class HorizontalShopScroll extends StatelessWidget {
   final List<Shop> shops = [
     Shop(
-      avatar: 'assets/mojies/image5.png',
+      avatar: AppImages.shop1,
       title: 'Your hair',
       description: 'deserves the best. Enjoy & relax in a luxury Barber shop environment',
       date: DateTime(2024, 1, 15),
-      backgroundImage: 'assets/images/shop1.jpg',
+      backgroundImage: AppImages.shop1,
     ),
     Shop(
-      avatar: 'assets/mojies/image1.png',
+      avatar: AppImages.shop2,
       title: 'Premium Cuts',
       description: 'Experience the finest barber services in town',
       date: DateTime(2024, 1, 20),
-      backgroundImage: 'assets/images/shop2.jpg',
+      backgroundImage: AppImages.shop2,
       isSvg: true,
     ),
     Shop(
-      avatar: 'assets/mojies/image10.png',
+      avatar: AppImages.shop3,
       title: 'Style Masters',
       description: 'Where style meets perfection and comfort',
       date: DateTime(2024, 1, 10),
-      backgroundImage: 'assets/images/shop3.jpg',
+      backgroundImage: AppImages.shop3,
     ),
     Shop(
-      avatar: 'assets/mojies/image2.png',
+      avatar: AppImages.shop4,
       title: 'Gentleman\'s Choice',
       description: 'Luxury grooming for the modern man',
       date: DateTime(2024, 1, 25),
-      backgroundImage: 'assets/images/shop4.jpg',
+      backgroundImage: AppImages.shop4,
       isSvg: true,
     ),
   ];
@@ -83,8 +86,10 @@ class HorizontalShopScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return ClipRect(
-      clipper: null, // This disables clipping
+      clipper: null,
       child: SizedBox(
         height: 180,
         child: ListView.builder(
@@ -108,6 +113,8 @@ class ShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: 330,
       margin: const EdgeInsets.only(right: 16),
@@ -115,12 +122,12 @@ class ShopCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(35),
         ),
-        shadows: const [ // Add this shadows property
+        shadows: [
           BoxShadow(
-            color: Color(0x40000000), // Black with 25% opacity (0x40 = 64/255 ≈ 25%)
-            offset: Offset(7, 7),   // x: 10, y: 10
-            blurRadius: 15,           // blur: 20
-            spreadRadius: -5,         // spread: -5
+            color: isDarkTheme ? AppColor.darkWithOpacity : Colors.black.withValues(alpha: 0.25),
+            offset: const Offset(7, 7),
+            blurRadius: 15,
+            spreadRadius: -5,
           ),
         ],
       ),
@@ -137,11 +144,11 @@ class ShopCard extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(35),
               ),
-              shadows: const [
+              shadows: [
                 BoxShadow(
-                  color: Color(0x3F000000),
+                  color: isDarkTheme ? AppColor.darkWithOpacity : Colors.black.withValues(alpha: 0.25),
                   blurRadius: 10,
-                  offset: Offset(5, 6),
+                  offset: const Offset(5, 6),
                   spreadRadius: -3,
                 )
               ],
@@ -167,7 +174,7 @@ class ShopCard extends StatelessWidget {
               height: 138,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
-                color: Colors.grey[800],
+                color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(35),
@@ -187,12 +194,16 @@ class ShopCard extends StatelessWidget {
                         topRight: Radius.circular(35),
                         bottomRight: Radius.circular(35),
                       ),
-                      color: Colors.red[400],
+                      color: isDarkTheme ? AppColor.darkError : AppColor.lightError,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error, color: Colors.white, size: 30),
+                        Icon(
+                          Icons.error,
+                          color: Colors.white,
+                          size: 30
+                        ),
                         const SizedBox(height: 5),
                         Text(
                           'Failed to load\n${shop.avatar.split('/').last}',
@@ -221,8 +232,8 @@ class ShopCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: '${shop.title}\n',
-                      style: const TextStyle(
-                        color: Color(0xFFEFDF79),
+                      style: TextStyle(
+                        color: isDarkTheme ? AppColor.darkAccent : AppColor.lightAccent,
                         fontSize: 24,
                         fontFamily: 'Montserrat Alternates',
                         fontWeight: FontWeight.w400,
@@ -231,7 +242,7 @@ class ShopCard extends StatelessWidget {
                     ),
                     TextSpan(
                       text: _getMainDescription(shop.description),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontFamily: 'Montserrat Alternates',
@@ -255,4 +266,3 @@ class ShopCard extends StatelessWidget {
     return lines.isNotEmpty ? lines[0] : '';
   }
 }
-

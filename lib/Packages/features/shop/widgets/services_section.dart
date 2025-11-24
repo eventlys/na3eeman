@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Models/shop_service_model.dart';
-import '../Navigations/shop_schedule_page.dart';
+
+import '../pages/shop_schedule_page.dart';
 
 class ServicesSection extends StatelessWidget {
   final List<ShopService> services;
