@@ -1,7 +1,7 @@
 class AppImages {
   // Main Images
   static const String logo = 'assets/images/Layer.png';
-  static const String appLogo = 'assets/images/app_logo.png';
+  static const String appLogo = 'assets/images/logo.png';
   static const String placeholderImage = 'assets/images/placeholder.jpg';
   static const String defaultProfile = 'assets/images/default_profile.png';
   static const String defaultShop = 'assets/images/default_shop.jpg';
@@ -66,6 +66,7 @@ class AppImages {
   static const String exit = 'assets/icons/exit.png';
   static const String exit_gray = 'assets/icons/exit_gray.png';
   static const String check = 'assets/icons/check.png';
+  static const String uncheck = 'assets/icons/uncheck.png';
   static const String moon_view = 'assets/icons/moon_view.png';
   static const String moon = 'assets/icons/moon.png';
   static const String sun_view = 'assets/icons/sun_view.png';
@@ -159,5 +160,6 @@ class AppImages {
   static const String store_view = 'assets/icons/shop2.png';
   static const String warning = 'assets/icons/warning.png';
   static const String warning_view = 'assets/icons/warning_view.png';
-  // static const String inventory = 'assets/icons/shop2.png';
+  static const String workspace_premium = 'assets/icons/premium.png';
+
 }

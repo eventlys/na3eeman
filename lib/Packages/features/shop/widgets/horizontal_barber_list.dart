@@ -15,7 +15,6 @@ class BarberData {
   });
 }
 
-// Horizontal profile list widget
 class HorizontalBarberScroll extends StatelessWidget {
   final List<BarberData> barbers;
   final double avatarSize;

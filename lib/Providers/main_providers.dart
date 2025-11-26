@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import '../Helpers/barber_list_helper.dart';
-import '../Helpers/customized/points_tracker_helpers.dart';
+import '../Helpers/inventory_helpers.dart';
 import '../Helpers/logger.dart';
+import '../Helpers/profit_helper.dart';
+import '../Helpers/service_models_helper.dart';
 import '../Models/subscriptions/subscription.dart';
 import '../Services/api/api_service.dart';
 import '../Services/api/auth_service.dart';
 import '../Services/barber_service.dart';
+import '../Services/business_service.dart';
 import '../Services/core/user_service.dart' hide User;
 import '../Services/enums/gender.dart';
+import '../Services/enums/points_types.dart';
 import '../Services/enums/staff_role.dart';
 import '../Services/repositories/auth_repository.dart';
 import '../Services/storage_service.dart';
@@ -842,6 +846,13 @@ class ShopProvider extends BaseProvider {
 }
 
 class ServiceProvider with ChangeNotifier {
+  Map<String, dynamic>? _currentServiceSelection;
+  List<Map<String, dynamic>> _availableAdditionalServices = [];
+
+  Map<String, dynamic>? get currentServiceSelection => _currentServiceSelection;
+  List<Map<String, dynamic>> get availableAdditionalServices => _availableAdditionalServices;
+
+
   final ApiService _apiService = ApiService();
   late BarberService _barberService;
 
@@ -855,6 +866,70 @@ class ServiceProvider with ChangeNotifier {
 
   BarberService get barberService => _barberService;
   ApiService get apiService => _apiService;
+
+  // Initialize with main service
+  void initializeServiceSelection(Map<String, dynamic> mainService) {
+    _currentServiceSelection = ServiceSelectionHelper.createServiceSelection(
+      mainService: mainService,
+    );
+    notifyListeners();
+  }
+
+  void toggleAdditionalService(Map<String, dynamic> service) {
+    if (_currentServiceSelection == null) return;
+
+    _currentServiceSelection = ServiceSelectionHelper.toggleAdditionalService(
+      _currentServiceSelection!,
+      service,
+    );
+    notifyListeners();
+  }
+
+
+  // Set available additional services
+  void setAvailableAdditionalServices(List<Map<String, dynamic>> services) {
+    _availableAdditionalServices = services;
+    notifyListeners();
+  }
+
+  // Clear service selection
+  void clearServiceSelection() {
+    _currentServiceSelection = null;
+    _availableAdditionalServices = [];
+    notifyListeners();
+  }
+
+  // Get all selected services
+  List<Map<String, dynamic>> get allSelectedServices {
+    if (_currentServiceSelection == null) return [];
+    return ServiceSelectionHelper.getAllServices(_currentServiceSelection!);
+  }
+
+  // Check if service is selected
+  bool isServiceSelected(Map<String, dynamic> service) {
+    if (_currentServiceSelection == null) return false;
+    return ServiceSelectionHelper.containsService(_currentServiceSelection!, service);
+  }
+
+  // Get main service
+  Map<String, dynamic>? get mainService {
+    if (_currentServiceSelection == null) return null;
+    return ServiceSelectionHelper.getMainService(_currentServiceSelection!);
+  }
+
+  // Get additional services
+  List<Map<String, dynamic>> get additionalServices {
+    if (_currentServiceSelection == null) return [];
+    return ServiceSelectionHelper.getAdditionalServices(_currentServiceSelection!);
+  }
+
+  // Check if any service is selected
+  bool get hasServiceSelected => _currentServiceSelection != null;
+
+  // Convert API response to service data format
+  List<Map<String, dynamic>> convertApiResponseToServices(List<dynamic> apiResponse) {
+    return ServiceDataHelper.convertToDisplayFormat(apiResponse);
+  }
 }
 
 class AppointmentProvider extends BaseProvider {
@@ -1102,6 +1177,41 @@ class PointsProvider with ChangeNotifier {
     }
   }
 
+  Future<void> addAppointmentPoints() async {
+    try {
+      // Get customer ID from storage or user profile
+      final userProfile = await UnifiedStorageService().getUserProfile();
+      if (userProfile != null && userProfile.id != null) {
+        await addPoints(
+          customerId: userProfile.id!,
+          type: PointsType.makeAppointment,
+        );
+      }
+    } catch (error) {
+      debugPrint('Error adding appointment points: $error');
+      // Don't rethrow here to avoid breaking the appointment flow
+    }
+  }
+
+  Future<void> submitShopFeedback({
+    required int customerId,
+    required String shopName,
+    String? review,
+    double? rating,
+  }) async {
+    final metadata = {
+      'shop_name': shopName,
+      if (review != null) 'review': review,
+      if (rating != null) 'rating': rating,
+    };
+
+    await addPoints(
+      customerId: customerId,
+      type: PointsType.shopFeedback,
+      metadata: metadata,
+    );
+  }
+
   Future<void> inviteFriend({
     required int customerId,
     String? friendName,
@@ -1141,15 +1251,22 @@ class PointsProvider with ChangeNotifier {
     );
   }
 
-  // Helper methods to map PointsType to values
   int _getPointsValue(PointsType type) {
     switch (type) {
-      case PointsType.appointmentComplete:
-        return 50;
-      case PointsType.reviewWrite:
-        return 25;
+      case PointsType.inviteFriend:
       case PointsType.referral:
         return 100;
+      case PointsType.appointmentComplete:
+        return 50;
+      case PointsType.rateShop:
+      case PointsType.reviewWrite:
+      case PointsType.shopFeedback:
+        return 25;
+      case PointsType.arriveOnTime:
+      case PointsType.rateApp:
+      case PointsType.appFeedback:
+      case PointsType.makeAppointment:
+        return 10;
       case PointsType.rewardRedeem:
         return 0; // Redeeming costs points, doesn't add
       case PointsType.other:
@@ -1159,6 +1276,20 @@ class PointsProvider with ChangeNotifier {
 
   String _getSourceString(PointsType type) {
     switch (type) {
+      case PointsType.inviteFriend:
+        return 'invite_friend';
+      case PointsType.rateShop:
+        return 'rate_shop';
+      case PointsType.arriveOnTime:
+        return 'arrive_on_time';
+      case PointsType.shopFeedback:
+        return 'shop_feedback';
+      case PointsType.rateApp:
+        return 'rate_app';
+      case PointsType.appFeedback:
+        return 'app_feedback';
+      case PointsType.makeAppointment:
+        return 'make_appointment';
       case PointsType.appointmentComplete:
         return 'appointment_complete';
       case PointsType.reviewWrite:
@@ -1795,6 +1926,9 @@ class SubscriptionProvider extends BaseProvider {
   List<SubscriptionPlan> get plans => _plans;
   Subscription? get currentSubscription => _currentSubscription;
   bool get hasActiveSubscription => _currentSubscription?.isActive == true;
+  final SubscriptionService _subscriptionService;
+  SubscriptionProvider({required SubscriptionService subscriptionService})
+      : _subscriptionService = subscriptionService;
 
   // Methods
   void updateAuth(AuthProvider authProvider) {
@@ -1805,21 +1939,18 @@ class SubscriptionProvider extends BaseProvider {
   }
 
   Future<void> loadSubscriptionData() async {
+    _isLoading = true;
+    notifyListeners();
+
     try {
-      setLoading(true);
-      clearError();
-
-      await Future.wait([
-        loadPlans(),
-        loadCurrentSubscription(),
-      ]);
-
-      notifyListeners();
+      await _subscriptionService.getSubscriptionDetails();
+      _currentSubscription = _subscriptionService.currentSubscription;
+      _error = _subscriptionService.error;
     } catch (e) {
-      setError(e.toString());
-      rethrow;
+      _error = e.toString();
     } finally {
-      setLoading(false);
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -1876,6 +2007,16 @@ class SubscriptionProvider extends BaseProvider {
       );
     }
   }
+
+  Future<void> upgradeToEnterprise() async {
+    await _subscriptionService.upgradeSubscription('enterprise');
+    await loadSubscriptionData();
+  }
+
+  Future<void> upgradeToPremium() async {
+    await _subscriptionService.upgradeSubscription('premium');
+    await loadSubscriptionData();
+  }
 }
 
 class SettingsProvider extends BaseProvider {
@@ -1929,6 +2070,244 @@ class SettingsProvider extends BaseProvider {
   Future<void> toggleDarkMode() async {
     final newSettings = _settings.copyWith(isDarkMode: !_settings.isDarkMode);
     await updateSettings(newSettings);
+  }
+}
+
+class InventoryProvider with ChangeNotifier {
+  final InventoryService _inventoryService;
+  final InventoryHelpers _inventoryHelpers;
+
+  List<dynamic> _lowStockItems = [];
+  bool _isLoading = false;
+  String? _error;
+
+  InventoryProvider({
+    required InventoryService inventoryService,
+    required InventoryHelpers inventoryHelpers,
+  })  : _inventoryService = inventoryService,
+        _inventoryHelpers = inventoryHelpers;
+
+  List<dynamic> get lowStockItems => _lowStockItems;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  int get lowStockCount => _lowStockItems.length;
+
+  List<dynamic> _inventoryItems = [];
+
+  List<dynamic> get inventoryItems => _inventoryItems;
+
+  Future<void> loadInventoryItems({
+    int? shopId,
+    bool? lowStockOnly,
+    String? category,
+  })
+  async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _inventoryItems = await _inventoryService.getInventoryItems(
+        shopId: shopId,
+        lowStockOnly: lowStockOnly,
+        category: category,
+      );
+    } catch (e) {
+      _error = 'Failed to load inventory items: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeItem(String itemId) async {
+    _inventoryItems.removeWhere((item) {
+      final id = item['id']?.toString() ?? item['_id']?.toString();
+      return id == itemId;
+    });
+    notifyListeners();
+  }
+
+  Future<void> loadLowStockItems({int? shopId}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
+    } catch (e) {
+      _error = 'Failed to load low stock items: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<Map<String, dynamic>> getInventoryAlerts({int? shopId}) async {
+    return await _inventoryHelpers.getInventoryAlertsSummary(shopId: shopId);
+  }
+
+  Future<void> refreshInventoryData({int? shopId}) async {
+    await loadLowStockItems(shopId: shopId);
+  }
+}
+
+class OffersProvider with ChangeNotifier {
+  final OffersService _offersService = OffersService();
+
+  List<Map<String, dynamic>> _offers = [];
+  bool _isLoading = false;
+  String? _error;
+
+  List<Map<String, dynamic>> get offers => _offers;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> loadOffers() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _offersService.getBarberOffers();
+      _offers = List<Map<String, dynamic>>.from(response['offers'] ?? []);
+    } catch (e) {
+      _error = 'Failed to load offers: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createOffer(Map<String, dynamic> offerData) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _offersService.createOffer(offerData);
+      // Reload offers after creation
+      await loadOffers();
+    } catch (e) {
+      _error = 'Failed to create offer: $e';
+      notifyListeners();
+    }
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
+  }
+}
+
+class ProfitProvider with ChangeNotifier {
+  final ProfitService _reportService;
+
+  List<Map<String, dynamic>> _monthlyData = [];
+  List<Map<String, dynamic>> _yearlyData = [];
+  bool _isLoading = false;
+  String? _error;
+  bool _isMonthlyView = true;
+
+  ProfitProvider({required ProfitService reportService}) : _reportService = reportService;
+
+  // Getters
+  List<Map<String, dynamic>> get currentData => _isMonthlyView ? _monthlyData : _yearlyData;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get isMonthlyView => _isMonthlyView;
+
+  double get totalRevenue {
+    final data = _isMonthlyView ? _monthlyData : _yearlyData;
+    return data.fold(0.0, (sum, item) => sum + (item['revenue'] as num).toDouble());
+  }
+
+  double get totalProfit {
+    final data = _isMonthlyView ? _monthlyData : _yearlyData;
+    return data.fold(0.0, (sum, item) => sum + (item['profit'] as num).toDouble());
+  }
+
+  double get totalExpenses {
+    final data = _isMonthlyView ? _monthlyData : _yearlyData;
+    return data.fold(0.0, (sum, item) => sum + (item['expenses'] as num).toDouble());
+  }
+
+  // Methods
+  Future<void> loadProfitData({
+    required DateTime startDate,
+    required DateTime endDate,
+    String? branchId,
+    String? authToken,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final rawData = await _reportService.getProfitData(
+        startDate: startDate,
+        endDate: endDate,
+        branchId: branchId,
+        authToken: authToken,
+      );
+
+      // Generate monthly and yearly data
+      _monthlyData = ProfitHelper.generateMonthlyProfitData(rawData, startDate, endDate);
+      _yearlyData = ProfitHelper.generateYearlyProfitData(rawData, startDate, endDate);
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to load profit data: $e';
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void toggleView() {
+    _isMonthlyView = !_isMonthlyView;
+    notifyListeners();
+  }
+
+  void setMonthlyView(bool isMonthly) {
+    _isMonthlyView = isMonthly;
+    notifyListeners();
+  }
+
+  Future<void> downloadReport({
+    required String format,
+    required String fileName,
+    required DateTime startDate,
+    required DateTime endDate,
+    String? branchId,
+    String? authToken,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _reportService.generateReport(
+        reportType: 'profit',
+        format: format,
+        fileName: fileName,
+        startDate: startDate,
+        endDate: endDate,
+        branchId: branchId,
+        authToken: authToken,
+      );
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = 'Download failed: $e';
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
 }
 

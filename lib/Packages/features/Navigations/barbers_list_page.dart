@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../../Helpers/barber_list_helper.dart';
 import '../../../Providers/main_providers.dart';
 import '../../Core/constants/app_color.dart';
 import '../../Core/constants/app_images.dart';
@@ -11,7 +10,6 @@ import '../../Core/themes/loading_indicator.dart';
 import '../../Core/utils/helpers/refresh_widgets.dart';
 import '../../Core/widgets/shared/error_widget.dart';
 import '../shop/widgets/barber_card.dart';
-
 
 class BarbersListPage extends StatefulWidget {
   const BarbersListPage({super.key});
@@ -124,7 +122,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
             );
           }
 
-          final List<BarberDto> barbers = provider.barbers;
+          final List<dynamic> barbers = provider.barbers;
 
           if (barbers.isEmpty) {
             return Center(
@@ -167,11 +165,11 @@ class _BarbersListPageState extends State<BarbersListPage> {
                   );
                 }
 
-                final BarberDto barber = barbers[index];
+                final dynamic barber = barbers[index];
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   child: BarberCard(
-                    barber: barber,
+                    barberId: barber['id'] ?? barber['_id'] ?? '',
                     onTap: () => _showBarberDetails(barber),
                     onEdit: () => _editBarber(barber),
                     onDelete: () => _deleteBarber(barber),
@@ -185,8 +183,17 @@ class _BarbersListPageState extends State<BarbersListPage> {
     );
   }
 
-  void _showBarberDetails(BarberDto barber) {
+  void _showBarberDetails(dynamic barber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final barberName = barber['name'] ?? 'Unknown Barber';
+    final email = barber['email'] ?? 'No email';
+    final phone = barber['phone'] ?? 'No phone';
+    final rating = (barber['rating'] ?? 0.0).toDouble();
+    final totalAppointments = barber['totalAppointments'] ?? 0;
+    final specialties = barber['specialties'] is List ? List<String>.from(barber['specialties'] ?? []) : ['General'];
+    final hourlyRate = barber['hourlyRate']?.toDouble();
+    final lastActive = barber['lastActive'] != null ? DateTime.parse(barber['lastActive']) : null;
+    final profileImage = barber['profileImage'];
 
     showDialog(
       context: context,
@@ -200,16 +207,16 @@ class _BarbersListPageState extends State<BarbersListPage> {
           children: [
             Row(
               children: [
-                if (barber.profileImage != null) ...[
+                if (profileImage != null) ...[
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage(barber.profileImage!),
+                    backgroundImage: NetworkImage(profileImage),
                   ),
                   const SizedBox(width: 16),
                 ],
                 Expanded(
                   child: Text(
-                    barber.name,
+                    barberName,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -219,22 +226,22 @@ class _BarbersListPageState extends State<BarbersListPage> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildDetailRow(AppImages.mail, 'Email', barber.email, isDark),
+            _buildDetailRow(AppImages.mail, 'Email', email, isDark),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.phone, 'Phone', barber.phone, isDark),
+            _buildDetailRow(AppImages.phone, 'Phone', phone, isDark),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.star, 'Rating', barber.rating.toStringAsFixed(1), isDark),
+            _buildDetailRow(AppImages.star, 'Rating', rating.toStringAsFixed(1), isDark),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.calender, 'Total Appointments', barber.totalAppointments.toString(), isDark),
+            _buildDetailRow(AppImages.calender, 'Total Appointments', totalAppointments.toString(), isDark),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.scissors, 'Specialties', barber.specialties.join(', '), isDark),
-            if (barber.hourlyRate != null) ...[
+            _buildDetailRow(AppImages.scissors, 'Specialties', specialties.join(', '), isDark),
+            if (hourlyRate != null) ...[
               const SizedBox(height: 12),
-              _buildDetailRow(AppImages.money, 'Hourly Rate', '\$${barber.hourlyRate!.toStringAsFixed(2)}', isDark),
+              _buildDetailRow(AppImages.money, 'Hourly Rate', '\$${hourlyRate.toStringAsFixed(2)}', isDark),
             ],
-            if (barber.lastActive != null) ...[
+            if (lastActive != null) ...[
               const SizedBox(height: 12),
-              _buildDetailRow(AppImages.clock, 'Last Active', _formatDate(barber.lastActive!), isDark),
+              _buildDetailRow(AppImages.clock, 'Last Active', _formatDate(lastActive), isDark),
             ],
             const SizedBox(height: 24),
             Align(
@@ -307,12 +314,13 @@ class _BarbersListPageState extends State<BarbersListPage> {
     );
   }
 
-  void _editBarber(BarberDto barber) {
+  void _editBarber(dynamic barber) {
+    final barberName = barber['name'] ?? 'Unknown Barber';
     // Implement edit barber functionality
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Edit ${barber.name}',
+          'Edit $barberName',
           style: TextStyle(color: AppColor.light),
         ),
         backgroundColor: AppColor.primary,
@@ -320,9 +328,11 @@ class _BarbersListPageState extends State<BarbersListPage> {
     );
   }
 
-  void _deleteBarber(BarberDto barber) {
+  void _deleteBarber(dynamic barber) {
     final provider = Provider.of<BarberProvider>(context, listen: false);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final barberName = barber['name'] ?? 'Unknown Barber';
+    final barberId = barber['id'] ?? barber['_id'] ?? '';
 
     showDialog(
       context: context,
@@ -343,7 +353,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Are you sure you want to delete ${barber.name}?',
+              'Are you sure you want to delete $barberName?',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.8),
               ),
@@ -366,11 +376,11 @@ class _BarbersListPageState extends State<BarbersListPage> {
                   onPressed: () async {
                     Navigator.of(context).pop();
                     try {
-                      await provider.deleteBarber(barber.id);
+                      await provider.deleteBarber(barberId);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            'Successfully deleted ${barber.name}',
+                            'Successfully deleted $barberName',
                             style: TextStyle(color: AppColor.light),
                           ),
                           backgroundColor: AppColor.primary,
@@ -380,7 +390,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            'Failed to delete ${barber.name}: $e',
+                            'Failed to delete $barberName: $e',
                             style: TextStyle(color: AppColor.light),
                           ),
                           backgroundColor: AppColor.secondary,

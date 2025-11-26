@@ -1,41 +1,139 @@
+// widgets/profit_graph.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
 import '../../../Core/utils/formatters.dart';
 
-
 class ProfitGraph extends StatefulWidget {
-  final ProfitReport profitReport;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String? branchId;
 
-  const ProfitGraph({super.key, required this.profitReport});
+  const ProfitGraph({
+    super.key,
+    required this.startDate,
+    required this.endDate,
+    this.branchId,
+  });
 
   @override
   ProfitGraphState createState() => ProfitGraphState();
 }
 
 class ProfitGraphState extends State<ProfitGraph> {
-  bool _isMonthly = true;
-  late List<ProfitData> _currentData;
-
   @override
   void initState() {
     super.initState();
-    _currentData = widget.profitReport.monthlyData;
+    _loadData();
   }
 
-  void _togglePeriod() {
-    setState(() {
-      _isMonthly = !_isMonthly;
-      _currentData = _isMonthly
-          ? widget.profitReport.monthlyData
-          : widget.profitReport.yearlyData;
-    });
+  void _loadData() {
+    final profitProvider = Provider.of<ProfitProvider>(context, listen: false);
+    // You'll need to get authToken from your AuthProvider
+    final authToken = ''; // Get from AuthProvider
+    
+    profitProvider.loadProfitData(
+      startDate: widget.startDate,
+      endDate: widget.endDate,
+      branchId: widget.branchId,
+      authToken: authToken,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<ProfitProvider>(
+      builder: (context, profitProvider, child) {
+        if (profitProvider.isLoading && profitProvider.currentData.isEmpty) {
+          return _buildLoadingState();
+        }
+
+        if (profitProvider.error != null) {
+          return _buildErrorState(profitProvider.error!);
+        }
+
+        return _buildProfitGraph(profitProvider);
+      },
+    );
+  }
+
+  Widget _buildLoadingState() {
     return Card(
       elevation: 4,
-      color: AppColors.cardColor,
+      color: AppColor.lightCard,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: AppColor.lightPrimary),
+            SizedBox(height: 16),
+            Text(
+              'Loading profit data...',
+              style: TextStyle(
+                color: AppColor.lightText,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState(String error) {
+    return Card(
+      elevation: 4,
+      color: AppColor.lightCard,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: AppColor.lightError, size: 48),
+            SizedBox(height: 16),
+            Text(
+              'Failed to load profit data',
+              style: TextStyle(
+                color: AppColor.lightText,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              error,
+              style: TextStyle(
+                color: AppColor.lightTextSecondary,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadData,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColor.lightPrimary,
+              ),
+              child: Text(
+                'Retry',
+                style: TextStyle(color: AppColor.light),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfitGraph(ProfitProvider profitProvider) {
+    final currentData = profitProvider.currentData;
+
+    return Card(
+      elevation: 4,
+      color: AppColor.lightCard,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -49,28 +147,45 @@ class ProfitGraphState extends State<ProfitGraph> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
+                    color: AppColor.lightText,
                   ),
                 ),
                 Row(
                   children: [
                     TextButton(
-                      onPressed: _togglePeriod,
+                      onPressed: () => profitProvider.toggleView(),
                       child: Text(
-                        _isMonthly ? 'Monthly' : 'Yearly',
+                        profitProvider.isMonthlyView ? 'Monthly' : 'Yearly',
                         style: TextStyle(
-                          color: AppColors.primaryColor,
+                          color: AppColor.lightPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     PopupMenuButton<String>(
-                      onSelected: (value) => _showDownloadDialog(context, value),
+                      onSelected: (value) => _showDownloadDialog(context, value, profitProvider),
                       itemBuilder: (context) => [
-                        PopupMenuItem(value: 'pdf', child: Text('Download PDF')),
-                        PopupMenuItem(value: 'csv', child: Text('Download CSV')),
+                        PopupMenuItem(
+                          value: 'pdf', 
+                          child: Text(
+                            'Download PDF',
+                            style: TextStyle(color: AppColor.lightText),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'csv', 
+                          child: Text(
+                            'Download CSV',
+                            style: TextStyle(color: AppColor.lightText),
+                          ),
+                        ),
                       ],
-                      icon: Icon(Icons.download, color: AppColors.primaryColor),
+                      icon: Image.asset(
+                        AppImages.download,
+                        width: 24,
+                        height: 24,
+                        color: AppColor.lightPrimary,
+                      ),
                     ),
                   ],
                 ),
@@ -86,18 +201,18 @@ class ProfitGraphState extends State<ProfitGraph> {
                   borderData: FlBorderData(show: false),
                   lineBarsData: [
                     LineChartBarData(
-                      spots: _currentData.asMap().entries.map((e) {
+                      spots: currentData.asMap().entries.map((e) {
                         return FlSpot(
                           e.key.toDouble(),
-                          e.value.profit,
+                          (e.value['profit'] as num).toDouble(),
                         );
                       }).toList(),
                       isCurved: true,
-                      color: AppColors.primaryColor,
+                      color: AppColor.lightPrimary,
                       barWidth: 3,
                       belowBarData: BarAreaData(
                         show: true,
-                        color: AppColors.primaryColor.withValues(alpha: 0.1),
+                        color: AppColor.lightPrimary.withOpacity(0.1),
                       ),
                     ),
                   ],
@@ -108,9 +223,9 @@ class ProfitGraphState extends State<ProfitGraph> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatItem('Total Revenue', widget.profitReport.totalRevenue),
-                _buildStatItem('Total Profit', widget.profitReport.totalProfit),
-                _buildStatItem('Total Expenses', widget.profitReport.totalExpenses),
+                _buildStatItem('Total Revenue', profitProvider.totalRevenue),
+                _buildStatItem('Total Profit', profitProvider.totalProfit),
+                _buildStatItem('Total Expenses', profitProvider.totalExpenses),
               ],
             ),
           ],
@@ -127,21 +242,21 @@ class ProfitGraphState extends State<ProfitGraph> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppColors.primaryColor,
+            color: AppColor.lightPrimary,
           ),
         ),
         Text(
           label,
           style: TextStyle(
             fontSize: 12,
-            color: AppColors.textColor.withValues(alpha: 0.6),
+            color: AppColor.lightTextSecondary,
           ),
         ),
       ],
     );
   }
 
-  void _showDownloadDialog(BuildContext context, String format) {
+  void _showDownloadDialog(BuildContext context, String format, ProfitProvider profitProvider) {
     TextEditingController fileNameController = TextEditingController(
       text: 'profit_report_${DateTime.now().millisecondsSinceEpoch}',
     );
@@ -149,33 +264,67 @@ class ProfitGraphState extends State<ProfitGraph> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Download Report'),
+        title: Text(
+          'Download Report',
+          style: TextStyle(color: AppColor.lightText),
+        ),
+        backgroundColor: AppColor.lightCard,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Choose file name:'),
+            Text(
+              'Choose file name:',
+              style: TextStyle(color: AppColor.lightTextSecondary),
+            ),
             SizedBox(height: 12),
             TextField(
               controller: fileNameController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColor.borderLight),
+                ),
                 labelText: 'File Name',
+                labelStyle: TextStyle(color: AppColor.lightTextHint),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColor.lightPrimary),
+                ),
               ),
+              style: TextStyle(color: AppColor.lightText),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: AppColor.lightTextSecondary),
+            ),
           ),
           ElevatedButton(
-            onPressed: () {
-              // Implement download logic
-              Navigator.pop(context);
-              _showDownloadSuccess(context);
+            onPressed: () async {
+              try {
+                Navigator.pop(context);
+                await profitProvider.downloadReport(
+                  format: format,
+                  fileName: fileNameController.text,
+                  startDate: widget.startDate,
+                  endDate: widget.endDate,
+                  branchId: widget.branchId,
+                  authToken: '', // Get from AuthProvider
+                );
+                _showDownloadSuccess(context);
+              } catch (e) {
+                _showDownloadError(context, e.toString());
+              }
             },
-            child: Text('Download $format'.toUpperCase()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.lightPrimary,
+            ),
+            child: Text(
+              'Download $format'.toUpperCase(),
+              style: TextStyle(color: AppColor.light),
+            ),
           ),
         ],
       ),
@@ -185,10 +334,37 @@ class ProfitGraphState extends State<ProfitGraph> {
   void _showDownloadSuccess(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Report downloaded successfully!'),
-        backgroundColor: AppColors.successColor,
+        content: Row(
+          children: [
+            Image.asset(
+              AppImages.check,
+              width: 20,
+              height: 20,
+              color: AppColor.light,
+            ),
+            SizedBox(width: 8),
+            Text('Report downloaded successfully!'),
+          ],
+        ),
+        backgroundColor: AppColor.lightSuccess,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showDownloadError(BuildContext context, String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error_outline, color: AppColor.light),
+            SizedBox(width: 8),
+            Text('Download failed: $error'),
+          ],
+        ),
+        backgroundColor: AppColor.lightError,
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
 }
-

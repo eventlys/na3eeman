@@ -6,9 +6,14 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/utils/formatters.dart';
 
 class BranchesOverview extends StatelessWidget {
+  final List<dynamic> branches;
   final VoidCallback? onViewAllBranches;
 
-  const BranchesOverview({super.key, this.onViewAllBranches});
+  const BranchesOverview({
+    super.key,
+    required this.branches,
+    this.onViewAllBranches,
+  });
 
   @override
   Widget build(BuildContext context) {

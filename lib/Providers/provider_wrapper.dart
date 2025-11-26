@@ -1,8 +1,9 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:get_it/get_it.dart';
-import '../services/api/api_service.dart';
-import '../services/ui/navigation_service.dart';
+import '../Services/business_service.dart';
+import '../Services/api/api_service.dart';
+import '../Services/ui/navigation_service.dart';
 import 'main_providers.dart';
 
 // Service Locator
@@ -50,7 +51,11 @@ List<SingleChildWidget> providers = [
   ),
 
   ChangeNotifierProxyProvider<AuthProvider, SubscriptionProvider>(
-    create: (_) => SubscriptionProvider(),
+    create: (_) => SubscriptionProvider(
+      subscriptionService: SubscriptionService(
+        apiService: ApiService(), // Add this
+      ),
+    ),
     update: (_, authProvider, subscriptionProvider) => subscriptionProvider!..updateAuth(authProvider),
-  ),
+  )
 ];

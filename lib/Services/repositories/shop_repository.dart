@@ -19,7 +19,8 @@ class ShopRepository {
     double? minRating,
     String? location,
     bool? openNow,
-  }) async {
+  })
+  async {
     try {
       final response = await _apiService.getShops(
         page: page,
@@ -76,7 +77,8 @@ class ShopRepository {
     required int shopId,
     int page = 1,
     int limit = 20,
-  }) async {
+  })
+  async {
     try {
       final response = await _apiService.get(
         '/shops/$shopId/reviews',
@@ -111,7 +113,8 @@ class ShopRepository {
     required String comment,
     int? appointmentId,
     List<String>? photos,
-  }) async {
+  })
+  async {
     try {
       final response = await _apiService.post('/reviews', data: {
         'shop': shopId,

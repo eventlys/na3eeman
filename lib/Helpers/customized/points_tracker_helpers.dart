@@ -1,25 +1,26 @@
 // helpers/points_tracker_helpers.dart
 import 'package:flutter/material.dart';
 import '../../Packages/Core/constants/app_color.dart';
-
-enum PointsType {
-  appointmentComplete,
-  reviewWrite,
-  referral,
-  rewardRedeem,
-  other,
-}
+import '../../Services/enums/points_types.dart';
 
 class PointsTrackerHelpers {
   // Action styling helpers
   static Color getActionColor(PointsType type) {
     switch (type) {
-      case PointsType.appointmentComplete:
-        return AppColor.lightSuccess;
-      case PointsType.reviewWrite:
-        return AppColor.lightInfo;
+      case PointsType.inviteFriend:
       case PointsType.referral:
         return AppColor.lightAccent;
+      case PointsType.rateShop:
+      case PointsType.shopFeedback:
+      case PointsType.reviewWrite:
+        return AppColor.lightInfo;
+      case PointsType.arriveOnTime:
+      case PointsType.appointmentComplete:
+      case PointsType.makeAppointment:
+        return AppColor.lightSuccess;
+      case PointsType.rateApp:
+      case PointsType.appFeedback:
+        return AppColor.lightWarning;
       case PointsType.rewardRedeem:
         return AppColor.primary;
       case PointsType.other:
@@ -29,12 +30,20 @@ class PointsTrackerHelpers {
 
   static Color getActionColorDark(PointsType type) {
     switch (type) {
-      case PointsType.appointmentComplete:
-        return AppColor.darkSuccess;
-      case PointsType.reviewWrite:
-        return AppColor.darkInfo;
+      case PointsType.inviteFriend:
       case PointsType.referral:
         return AppColor.darkAccent;
+      case PointsType.rateShop:
+      case PointsType.shopFeedback:
+      case PointsType.reviewWrite:
+        return AppColor.darkInfo;
+      case PointsType.arriveOnTime:
+      case PointsType.appointmentComplete:
+      case PointsType.makeAppointment:
+        return AppColor.darkSuccess;
+      case PointsType.rateApp:
+      case PointsType.appFeedback:
+        return AppColor.darkWarning;
       case PointsType.rewardRedeem:
         return AppColor.primary;
       case PointsType.other:
@@ -44,12 +53,22 @@ class PointsTrackerHelpers {
 
   static IconData getActionIcon(PointsType type) {
     switch (type) {
-      case PointsType.appointmentComplete:
-        return Icons.calendar_today_rounded;
-      case PointsType.reviewWrite:
-        return Icons.star_rate_rounded;
+      case PointsType.inviteFriend:
       case PointsType.referral:
         return Icons.person_add_alt_1_rounded;
+      case PointsType.rateShop:
+      case PointsType.reviewWrite:
+        return Icons.star_rate_rounded;
+      case PointsType.arriveOnTime:
+        return Icons.access_time_rounded;
+      case PointsType.shopFeedback:
+      case PointsType.appFeedback:
+        return Icons.feedback_rounded;
+      case PointsType.rateApp:
+        return Icons.thumb_up_rounded;
+      case PointsType.makeAppointment:
+      case PointsType.appointmentComplete:
+        return Icons.calendar_today_rounded;
       case PointsType.rewardRedeem:
         return Icons.card_giftcard_rounded;
       case PointsType.other:
@@ -59,14 +78,28 @@ class PointsTrackerHelpers {
 
   static String getActionSubtitle(PointsType type) {
     switch (type) {
+      case PointsType.inviteFriend:
+        return 'Invite friends to join the app';
+      case PointsType.rateShop:
+        return 'Rate your experience at shops';
+      case PointsType.arriveOnTime:
+        return 'Be punctual for appointments';
+      case PointsType.shopFeedback:
+        return 'Provide feedback for shops';
+      case PointsType.rateApp:
+        return 'Rate our application';
+      case PointsType.appFeedback:
+        return 'Share feedback about the app';
+      case PointsType.makeAppointment:
+        return 'Book new appointments';
       case PointsType.appointmentComplete:
         return 'Complete your appointments';
       case PointsType.reviewWrite:
-        return 'Share your experience';
+        return 'Write detailed reviews';
       case PointsType.referral:
-        return 'Invite friends to join';
+        return 'Refer friends to join';
       case PointsType.rewardRedeem:
-        return 'Redeem your points';
+        return 'Redeem your points for rewards';
       case PointsType.other:
         return 'Various activities';
     }
@@ -74,12 +107,26 @@ class PointsTrackerHelpers {
 
   static String getActionTitle(PointsType type) {
     switch (type) {
+      case PointsType.inviteFriend:
+        return 'Invite Friend';
+      case PointsType.rateShop:
+        return 'Rate Shop';
+      case PointsType.arriveOnTime:
+        return 'Arrive On Time';
+      case PointsType.shopFeedback:
+        return 'Shop Feedback';
+      case PointsType.rateApp:
+        return 'Rate App';
+      case PointsType.appFeedback:
+        return 'App Feedback';
+      case PointsType.makeAppointment:
+        return 'Make Appointment';
       case PointsType.appointmentComplete:
         return 'Complete Appointment';
       case PointsType.reviewWrite:
-        return 'Write a Review';
+        return 'Write Review';
       case PointsType.referral:
-        return 'Refer a Friend';
+        return 'Refer Friend';
       case PointsType.rewardRedeem:
         return 'Redeem Reward';
       case PointsType.other:
@@ -90,16 +137,48 @@ class PointsTrackerHelpers {
   // Get points value for display
   static String getPointsValue(PointsType type) {
     switch (type) {
-      case PointsType.appointmentComplete:
-        return '+50';
-      case PointsType.reviewWrite:
-        return '+25';
+      case PointsType.inviteFriend:
       case PointsType.referral:
         return '+100';
+      case PointsType.appointmentComplete:
+        return '+50';
+      case PointsType.rateShop:
+      case PointsType.reviewWrite:
+      case PointsType.shopFeedback:
+        return '+25';
+      case PointsType.arriveOnTime:
+      case PointsType.rateApp:
+      case PointsType.appFeedback:
+      case PointsType.makeAppointment:
+        return '+10';
       case PointsType.rewardRedeem:
         return 'Redeem';
       case PointsType.other:
         return '+10';
+    }
+  }
+
+  // Get actual points value as integer
+  static int getPointsAmount(PointsType type) {
+    switch (type) {
+      case PointsType.inviteFriend:
+      case PointsType.referral:
+        return 100;
+      case PointsType.appointmentComplete:
+        return 50;
+      case PointsType.rateShop:
+      case PointsType.reviewWrite:
+      case PointsType.shopFeedback:
+        return 25;
+      case PointsType.arriveOnTime:
+      case PointsType.rateApp:
+      case PointsType.appFeedback:
+      case PointsType.makeAppointment:
+        return 10;
+      case PointsType.rewardRedeem:
+        return 0; // Redeeming costs points
+      case PointsType.other:
+        return 10;
     }
   }
 
@@ -254,6 +333,36 @@ class PointsTrackerHelpers {
     );
   }
 
+  // Get description for points history
+  static String getPointsDescription(PointsType type) {
+    switch (type) {
+      case PointsType.inviteFriend:
+        return 'Invited a friend to join';
+      case PointsType.rateShop:
+        return 'Rated a shop experience';
+      case PointsType.arriveOnTime:
+        return 'Arrived on time for appointment';
+      case PointsType.shopFeedback:
+        return 'Provided shop feedback';
+      case PointsType.rateApp:
+        return 'Rated the application';
+      case PointsType.appFeedback:
+        return 'Provided app feedback';
+      case PointsType.makeAppointment:
+        return 'Made a new appointment';
+      case PointsType.appointmentComplete:
+        return 'Completed appointment';
+      case PointsType.reviewWrite:
+        return 'Wrote a review';
+      case PointsType.referral:
+        return 'Referred a friend';
+      case PointsType.rewardRedeem:
+        return 'Redeemed reward';
+      case PointsType.other:
+        return 'Other activity';
+    }
+  }
+
   // Success message helper
   static void showSuccessMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -288,5 +397,29 @@ class PointsTrackerHelpers {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
+  }
+
+  // Get category for grouping points activities
+  static String getPointsCategory(PointsType type) {
+    switch (type) {
+      case PointsType.inviteFriend:
+      case PointsType.referral:
+        return 'Referral';
+      case PointsType.rateShop:
+      case PointsType.reviewWrite:
+      case PointsType.shopFeedback:
+        return 'Reviews & Feedback';
+      case PointsType.arriveOnTime:
+      case PointsType.makeAppointment:
+      case PointsType.appointmentComplete:
+        return 'Appointments';
+      case PointsType.rateApp:
+      case PointsType.appFeedback:
+        return 'App Engagement';
+      case PointsType.rewardRedeem:
+        return 'Rewards';
+      case PointsType.other:
+        return 'Other';
+    }
   }
 }

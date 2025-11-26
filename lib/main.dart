@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'Helpers/customized/error_reporter.dart';
+import 'Providers/main_providers.dart';
+import 'Providers/provider_wrapper.dart';
 import 'Routes/routes.dart';
+import 'Services/api/api_service.dart';
+import 'Services/core/performance_service.dart';
+import 'Services/general_service.dart';
+import 'Services/storage_service.dart';
 import 'Services/ui/sidebar_navigation_service.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize services in order
-  await LocalStorage.init();
+  await UnifiedStorageService().initialize();
   await OfflineService().initialize();
   await CrashReportingService().initialize();
   await NotificationService().initialize();
@@ -29,7 +36,7 @@ void main() async{
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => PointsProvider()),
+        ChangeNotifierProvider(create: (_) => PointsProvider(ApiService())),
       ],
       child: const MyApp(),
     ),

@@ -1,32 +1,47 @@
-import '../Models/inventory/inventory_item.dart';
 import '../Services/business_service.dart';
 
 class InventoryHelpers {
-  static final BusinessService _inventoryService = BusinessService();
+  final InventoryService _inventoryService;
 
-  static String getStockStatusMessage(int count) {
-    if (count == 0) {
+  InventoryHelpers(this._inventoryService);
+
+  static String getStockStatusMessage(int currentStock, int? minStockLevel) {
+    final minStock = minStockLevel ?? 3;
+    
+    if (currentStock == 0) {
       return 'Out of Stock';
-    } else if (count < 3) {
+    } else if (currentStock <= minStock) {
       return 'Low Stock';
-    } else if (count < 10) {
+    } else if (currentStock < 10) {
       return 'In Stock';
     } else {
       return 'Well Stocked';
     }
   }
 
-  static String getStockEmoji(int count) {
-    if (count == 0) {
+  static String getStockEmoji(int currentStock, int? minStockLevel) {
+    final minStock = minStockLevel ?? 3;
+    
+    if (currentStock == 0) {
       return '🔴';
-    } else if (count < 3) {
+    } else if (currentStock <= minStock) {
       return '🟡';
     } else {
       return '🟢';
     }
   }
 
-  static Future<bool> shouldShowLowStockAlert({int? shopId}) async {
+  static bool isCriticalStock(int currentStock, int? minStockLevel) {
+    final minStock = minStockLevel ?? 3;
+    return currentStock <= minStock;
+  }
+
+  static bool isLowStock(int currentStock, int? minStockLevel) {
+    final minStock = minStockLevel ?? 3;
+    return currentStock > 0 && currentStock <= minStock;
+  }
+
+  Future<bool> shouldShowLowStockAlert({int? shopId}) async {
     try {
       final lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
       return lowStockItems.isNotEmpty;
@@ -36,13 +51,13 @@ class InventoryHelpers {
     }
   }
 
-  static Future<String> formatLowStockAlert({int? shopId}) async {
+  Future<String> formatLowStockAlert({int? shopId}) async {
     try {
       final lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
 
       if (lowStockItems.isEmpty) return '';
 
-      final itemNames = lowStockItems.map((item) => item.productName ?? 'Unknown Product').join(', ');
+      final itemNames = lowStockItems.map((item) => item['name'] ?? item['product_name'] ?? 'Unknown Product').join(', ');
       return 'Low stock alert: $itemNames';
     } catch (e) {
       print('Error formatting low stock alert: $e');
@@ -50,7 +65,7 @@ class InventoryHelpers {
     }
   }
 
-  static Future<Map<String, dynamic>> getInventoryAlertsSummary({int? shopId}) async {
+  Future<Map<String, dynamic>> getInventoryAlertsSummary({int? shopId}) async {
     try {
       return await _inventoryService.getInventoryAlerts(shopId: shopId);
     } catch (e) {
@@ -63,7 +78,7 @@ class InventoryHelpers {
     }
   }
 
-  static Future<List<InventoryItem>> getCriticalStockItems({int? shopId}) async {
+  Future<List<dynamic>> getCriticalStockItems({int? shopId}) async {
     try {
       final allItems = await _inventoryService.getInventoryItems(shopId: shopId);
       return _inventoryService.getCriticalStockItemsFromList(allItems);
@@ -73,7 +88,7 @@ class InventoryHelpers {
     }
   }
 
-  static Future<int> getLowStockCount({int? shopId}) async {
+  Future<int> getLowStockCount({int? shopId}) async {
     try {
       final lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
       return lowStockItems.length;
@@ -83,74 +98,57 @@ class InventoryHelpers {
     }
   }
 
-  static Future<int> getOutOfStockCount({int? shopId}) async {
+  Future<int> getOutOfStockCount({int? shopId}) async {
     try {
       final allItems = await _inventoryService.getInventoryItems(shopId: shopId);
-      return allItems.where((item) => item.quantityInStock == 0).length;
+      return allItems.where((item) {
+        final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 1;
+        return stock == 0;
+      }).length;
     } catch (e) {
       print('Error getting out of stock count: $e');
       return 0;
     }
   }
 
-  static Future<List<InventoryItem>> getItemsByStockLevel({
+  Future<List<dynamic>> getItemsByStockLevel({
     int? shopId,
     required StockLevel level,
-  }) async {
+  })
+  async {
     try {
       final allItems = await _inventoryService.getInventoryItems(shopId: shopId);
 
       switch (level) {
         case StockLevel.critical:
-          return allItems.where((item) => item.quantityInStock <= 2).toList();
+          return allItems.where((item) {
+            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            return stock <= 2;
+          }).toList();
         case StockLevel.low:
-          return allItems.where((item) => item.quantityInStock > 2 && item.quantityInStock < 5).toList();
+          return allItems.where((item) {
+            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            return stock > 2 && stock < 5;
+          }).toList();
         case StockLevel.normal:
-          return allItems.where((item) => item.quantityInStock >= 5 && item.quantityInStock < 10).toList();
+          return allItems.where((item) {
+            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            return stock >= 5 && stock < 10;
+          }).toList();
         case StockLevel.wellStocked:
-          return allItems.where((item) => item.quantityInStock >= 10).toList();
+          return allItems.where((item) {
+            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            return stock >= 10;
+          }).toList();
         case StockLevel.outOfStock:
-          return allItems.where((item) => item.quantityInStock == 0).toList();
+          return allItems.where((item) {
+            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 1;
+            return stock == 0;
+          }).toList();
       }
     } catch (e) {
       print('Error getting items by stock level: $e');
       return [];
-    }
-  }
-
-  static Future<void> updateItemStock({
-    required String itemId,
-    required int newQuantity,
-    String? reason,
-  }) async {
-    try {
-      await _inventoryService.updateItemQuantity(
-        itemId: itemId,
-        newQuantity: newQuantity,
-        reason: reason,
-      );
-    } catch (e) {
-      print('Error updating item stock: $e');
-      rethrow;
-    }
-  }
-
-  static Future<InventoryItem> addNewInventoryItem({
-    required int productId,
-    required int shopId,
-    required int initialQuantity,
-    String? notes,
-  }) async {
-    try {
-      return await _inventoryService.addInventoryItem(
-        productId: productId,
-        shopId: shopId,
-        initialQuantity: initialQuantity,
-        notes: notes,
-      );
-    } catch (e) {
-      print('Error adding new inventory item: $e');
-      rethrow;
     }
   }
 }

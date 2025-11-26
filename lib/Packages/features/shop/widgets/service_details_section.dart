@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-
+import '../../../../Helpers/service_models_helper.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
 import '../../../Core/utils/helpers/service_calculator.dart';
 
 class ServiceDetailsSection extends StatelessWidget {
-  final ServiceSelection serviceSelection;
-  final Function(ShopService) onServiceToggled;
-  final List<ShopService> availableAdditionalServices;
+  final ServiceProvider serviceProvider;
+  final Function(Map<String, dynamic>) onServiceToggled;
+  final List<Map<String, dynamic>> availableAdditionalServices;
 
   const ServiceDetailsSection({
     super.key,
-    required this.serviceSelection,
+    required this.serviceProvider,
     required this.onServiceToggled,
     this.availableAdditionalServices = const [],
   });
@@ -22,10 +25,10 @@ class ServiceDetailsSection extends StatelessWidget {
           backgroundColor: Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xffffffff),
+              color: AppColor.lightCard,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: const Color(0xFFC25858),
+                color: AppColor.lightSecondary,
                 width: 1.0,
               ),
             ),
@@ -35,23 +38,21 @@ class ServiceDetailsSection extends StatelessWidget {
                 // Header
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    // color: const Color(0xffffffff),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
-                  ),
                   child: Row(
                     children: [
-                      Icon(Icons.add_circle, color: Color(0xffc25858)),
+                      Image.asset(
+                        AppImages.plus,
+                        width: 24,
+                        height: 24,
+                        color: AppColor.lightSecondary,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Add Additional Services',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xffc25858),
+                          color: AppColor.lightSecondary,
                         ),
                       ),
                     ],
@@ -60,37 +61,38 @@ class ServiceDetailsSection extends StatelessWidget {
 
                 // Services List
                 Container(
-                  // color: Color(0x80806c99),
                   constraints: BoxConstraints(maxHeight: 400),
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: availableAdditionalServices.length,
                     itemBuilder: (context, index) {
                       final service = availableAdditionalServices[index];
-                      final isSelected = serviceSelection.containsService(service);
+                      final isSelected = serviceProvider.isServiceSelected(service);
 
                       return ListTile(
-                        leading: Icon(
-                          isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-                          color: isSelected ? Color(0xffc25858) : Colors.grey,
+                        leading: Image.asset(
+                          isSelected ? AppImages.check : AppImages.uncheck,
+                          width: 24,
+                          height: 24,
+                          color: isSelected ? AppColor.lightSecondary : AppColor.lightTextHint,
                         ),
                         title: Text(
-                          service.name,
+                          ServiceDataHelper.getServiceName(service),
                           style: TextStyle(
-                            color: Color(0xff040000),
+                            color: AppColor.lightText,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         subtitle: Text(
-                          '${service.duration} • ${service.price}',
+                          '${ServiceDataHelper.getServiceDuration(service)} • ${ServiceDataHelper.getServicePrice(service)}',
                           style: TextStyle(
-                            color: Color(0xff040000).withValues(alpha: 0.7),
+                            color: AppColor.lightTextSecondary,
                           ),
                         ),
                         trailing: Text(
-                          service.price,
+                          ServiceDataHelper.getServicePrice(service),
                           style: TextStyle(
-                            color: Color(0xffc25858),
+                            color: AppColor.lightSecondary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -110,7 +112,7 @@ class ServiceDetailsSection extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Color(0xffc25858), // Same color as the text
+                        color: AppColor.lightSecondary,
                         width: 1.0,
                       ),
                       borderRadius: BorderRadius.circular(50),
@@ -120,7 +122,7 @@ class ServiceDetailsSection extends StatelessWidget {
                       child: Text(
                         'Close',
                         style: TextStyle(
-                          color: Color(0xffc25858),
+                          color: AppColor.lightSecondary,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -138,14 +140,22 @@ class ServiceDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allServices = serviceSelection.allServices;
+    final serviceSelection = serviceProvider.currentServiceSelection;
+
+    if (serviceSelection == null) {
+      return _buildEmptyState();
+    }
+
+    final allServices = serviceProvider.allSelectedServices;
+    final mainService = serviceProvider.mainService;
+    final additionalServices = serviceProvider.additionalServices;
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0x4dffffff),
+        color: AppColor.buttonBackgroundLight,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFFFFFFFF),
+          color: AppColor.borderLight,
           width: 1.0,
         ),
       ),
@@ -159,7 +169,7 @@ class ServiceDetailsSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xff040000),
+                color: AppColor.lightText,
               ),
             ),
             const SizedBox(height: 16),
@@ -168,13 +178,18 @@ class ServiceDetailsSection extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Color(0x26c25858),
+                color: AppColor.lightSecondary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Color(0xffc25858)),
+                border: Border.all(color: AppColor.lightSecondary),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.celebration, color: Color(0xffc25858), size: 20),
+                  Image.asset(
+                    AppImages.scissors,
+                    width: 20,
+                    height: 20,
+                    color: AppColor.lightSecondary,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -184,14 +199,14 @@ class ServiceDetailsSection extends StatelessWidget {
                           'Main Service',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xffc25858),
+                            color: AppColor.lightSecondary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          '${serviceSelection.mainService.name} - ${serviceSelection.mainService.price}',
+                          '${ServiceDataHelper.getServiceName(mainService!)} - ${ServiceDataHelper.getServicePrice(mainService)}',
                           style: TextStyle(
-                            color: Color(0xff040000),
+                            color: AppColor.lightText,
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -205,7 +220,7 @@ class ServiceDetailsSection extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Selected additional services list
-            if (serviceSelection.additionalServices.isNotEmpty) ...[
+            if (additionalServices.isNotEmpty) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -214,33 +229,43 @@ class ServiceDetailsSection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xff040000),
+                      color: AppColor.lightText,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...serviceSelection.additionalServices.map((service) => Padding(
+                  ...additionalServices.map((service) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Color(0x1Ac25858),
+                        color: AppColor.lightSecondary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Color(0xffc25858), size: 20),
+                          Image.asset(
+                            AppImages.check,
+                            width: 20,
+                            height: 20,
+                            color: AppColor.lightSecondary,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              '${service.name} - ${service.price}',
+                              '${ServiceDataHelper.getServiceName(service)} - ${ServiceDataHelper.getServicePrice(service)}',
                               style: TextStyle(
-                                color: Color(0xff040000),
+                                color: AppColor.lightText,
                                 fontSize: 14,
                               ),
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.remove_circle, color: Color(0xffc25858), size: 20),
+                            icon: Image.asset(
+                              AppImages.minus,
+                              width: 20,
+                              height: 20,
+                              color: AppColor.lightSecondary,
+                            ),
                             onPressed: () => onServiceToggled(service),
                           ),
                         ],
@@ -248,7 +273,7 @@ class ServiceDetailsSection extends StatelessWidget {
                     ),
                   )),
                   const SizedBox(height: 12),
-                  Divider(color: Color(0xffffffff)),
+                  Divider(color: AppColor.borderLight),
                   const SizedBox(height: 12),
                 ],
               ),
@@ -258,7 +283,7 @@ class ServiceDetailsSection extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Color(0x33C25858),
+                color: AppColor.lightSecondary.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -270,13 +295,13 @@ class ServiceDetailsSection extends StatelessWidget {
                         'Total Duration:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xff040000),
+                          color: AppColor.lightText,
                         ),
                       ),
                       Text(
                         ServiceCalculator.formatTotalDuration(allServices),
                         style: TextStyle(
-                          color: Color(0xff040000),
+                          color: AppColor.lightText,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -290,13 +315,13 @@ class ServiceDetailsSection extends StatelessWidget {
                         'Total Price:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xff040000),
+                          color: AppColor.lightText,
                         ),
                       ),
                       Text(
                         ServiceCalculator.formatTotalPrice(allServices),
                         style: TextStyle(
-                          color: Color(0xff040000),
+                          color: AppColor.lightText,
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
@@ -314,15 +339,21 @@ class ServiceDetailsSection extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => _showAddServiceDialog(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0x4dffffff),
-                    foregroundColor: Color(0xffc25858),
+                    backgroundColor: AppColor.buttonBackgroundLight,
+                    foregroundColor: AppColor.lightSecondary,
                     shadowColor: Colors.transparent,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
+                      side: BorderSide(color: AppColor.lightSecondary),
                     ),
                   ),
-                  icon: Icon(Icons.add, size: 20),
+                  icon: Image.asset(
+                    AppImages.plus,
+                    width: 20,
+                    height: 20,
+                    color: AppColor.lightSecondary,
+                  ),
                   label: Text(
                     'Add More Services',
                     style: TextStyle(
@@ -338,5 +369,47 @@ class ServiceDetailsSection extends StatelessWidget {
       ),
     );
   }
-}
 
+  Widget _buildEmptyState() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColor.buttonBackgroundLight,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColor.borderLight,
+          width: 1.0,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Image.asset(
+              AppImages.scissors,
+              width: 48,
+              height: 48,
+              color: AppColor.lightSecondary,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'No Service Selected',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColor.lightText,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Please select a main service to continue',
+              style: TextStyle(
+                color: AppColor.lightTextSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

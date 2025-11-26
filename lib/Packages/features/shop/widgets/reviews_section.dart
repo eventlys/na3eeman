@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
+import '../../../../Services/enums/points_types.dart';
 import '../../profile/widgets/rating_with_points_widget.dart';
 
 class ReviewsSection extends StatefulWidget {
@@ -40,20 +41,46 @@ class ReviewsSectionState extends State<ReviewsSection> {
 
     setState(() {
       reviews.insert(0, {
-        'name': 'You', // You can replace this with actual user name
+        'name': 'You',
         'rating': _userRating,
         'comment': _reviewController.text.trim(),
       });
     });
-      Provider.of<PointsProvider>(context, listen: false)
-        .addPoints(PointsType.shopFeedback, shopName: 'Barber Shop Name');
+
+    // Get the customer ID from somewhere (you'll need to implement this)
+    final customerId = _getCustomerId(); // You need to implement this method
+
+    // Fixed points addition call
+    Provider.of<PointsProvider>(context, listen: false).addPoints(
+      customerId: customerId,
+      type: PointsType.shopFeedback,
+      metadata: {
+        'shop_name': widget.shopData['name'] ?? 'Unknown Shop',
+        'review': _reviewController.text.trim(),
+        'rating': _userRating,
+      },
+    );
 
     _reviewController.clear();
     _userRating = 5.0;
-
-    // Optional: Hide keyboard after submission
     FocusScope.of(context).unfocus();
   }
+
+  int _getCustomerId() {
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.isAuthenticated && authProvider.user != null) {
+        return authProvider.user!.id;
+      }
+
+      throw Exception('User not authenticated');
+    } catch (e) {
+      debugPrint('Error getting customer ID: $e');
+      throw Exception('Unable to retrieve customer ID. Please login again.');
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../../../../Helpers/offer_helper.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
 import '../../../Core/utils/formatters.dart';
 
 class OffersCard extends StatelessWidget {
-  final List<Offer> offers;
   final VoidCallback onCreateOffer;
 
   const OffersCard({
     super.key,
-    required this.offers,
     required this.onCreateOffer,
   });
 
   @override
   Widget build(BuildContext context) {
+    final offersProvider = Provider.of<OffersProvider>(context);
+    final offers = offersProvider.offers;
+
     return Card(
       elevation: 4,
-      color: AppColors.cardColor,
+      color: AppColor.lightCard,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -30,30 +35,84 @@ class OffersCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
+                    color: AppColor.lightText,
                   ),
                 ),
                 ElevatedButton.icon(
                   onPressed: onCreateOffer,
-                  icon: Icon(Icons.add),
-                  label: Text('Create'),
+                  icon: Image.asset(
+                    AppImages.plus,
+                    width: 20,
+                    height: 20,
+                    color: AppColor.light,
+                  ),
+                  label: Text(
+                    'Create',
+                    style: TextStyle(color: AppColor.light),
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.secondaryColor,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColor.lightSecondary,
+                    foregroundColor: AppColor.light,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 12),
-            if (offers.isEmpty)
+            const SizedBox(height: 12),
+
+            if (offersProvider.isLoading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColor.loadingPrimaryLight),
+                  ),
+                ),
+              )
+            else if (offersProvider.error != null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Center(
-                  child: Text(
-                    'No active offers',
-                    style: TextStyle(
-                      color: AppColors.textColor.withValues(alpha: 0.5),
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AppImages.error,
+                        width: 20,
+                        height: 20,
+                        color: AppColor.lightError,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Error: ${offersProvider.error}',
+                        style: TextStyle(
+                          color: AppColor.lightError,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (offers.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AppImages.info,
+                        width: 20,
+                        height: 20,
+                        color: AppColor.lightTextHint,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'No active offers',
+                        style: TextStyle(
+                          color: AppColor.lightTextHint,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               )
@@ -63,27 +122,52 @@ class OffersCard extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: AppColors.secondaryColor.withValues(alpha: 0.1),
+                    color: AppColor.lightSecondary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(25),
                   ),
-                  child: Icon(
-                    Icons.local_offer,
-                    color: AppColors.secondaryColor,
+                  child: Image.asset(
+                    AppImages.megaphone,
+                    width: 24,
+                    height: 24,
+                    color: AppColor.lightSecondary,
                   ),
                 ),
-                title: Text(offer.title),
+                title: Text(
+                  offer['title'] ?? 'No Title',
+                  style: TextStyle(
+                    color: AppColor.lightText,
+                  ),
+                ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(offer.description),
-                    SizedBox(height: 4),
                     Text(
-                      '${offer.daysRemaining} days remaining',
+                      offer['description'] ?? 'No Description',
                       style: TextStyle(
-                        color: offer.daysRemaining < 3
-                          ? AppColors.errorColor
-                          : AppColors.successColor,
+                        color: AppColor.lightTextSecondary,
                       ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Image.asset(
+                          AppImages.calender,
+                          width: 16,
+                          height: 16,
+                          color: OfferHelpers.calculateDaysRemaining(offer['endDate']) < 3
+                            ? AppColor.lightError
+                            : AppColor.lightSuccess,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${OfferHelpers.calculateDaysRemaining(offer['endDate'])} days remaining',
+                          style: TextStyle(
+                            color: OfferHelpers.calculateDaysRemaining(offer['endDate']) < 3
+                              ? AppColor.lightError
+                              : AppColor.lightSuccess,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -91,11 +175,11 @@ class OffersCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      Formatters.formatPercent(offer.discountPercentage / 100),
+                      Formatters.formatPercentage((offer['discountPercentage'] ?? 0) / 100),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.secondaryColor,
+                        color: AppColor.lightSecondary,
                       ),
                     ),
                   ],

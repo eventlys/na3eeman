@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../Helpers/inventory_helpers.dart';
 import '../../../../Services/business_service.dart';
 import '../../constants/app_color.dart';
@@ -9,7 +10,6 @@ import '../base/error_boundary.dart';
 class SuggestedProductWidget extends StatefulWidget {
   final Map<String, dynamic> productData;
   final VoidCallback onAddToCart;
-  final BusinessService? businessService;
   final bool isDarkMode;
   final UserGender? userGender;
 
@@ -17,7 +17,6 @@ class SuggestedProductWidget extends StatefulWidget {
     super.key,
     required this.productData,
     required this.onAddToCart,
-    this.businessService,
     this.isDarkMode = false,
     this.userGender,
   });
@@ -36,6 +35,7 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     final String productDescription = widget.productData['productDescription'] ?? 'No description available';
     final double productPrice = (widget.productData['productPrice'] ?? 0.0).toDouble();
     final int quantityInStock = (widget.productData['quantityInStock'] ?? 0).toInt();
+    final int minStockLevel = (widget.productData['minStockLevel'] ?? 3).toInt();
     final String itemId = widget.productData['id'] ?? '';
 
     final colors = _getThemeColors();
@@ -146,26 +146,26 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        InventoryHelpers.getStockEmoji(quantityInStock),
+                        InventoryHelpers.getStockEmoji(quantityInStock, minStockLevel),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 4),
-                  
+
                   // Stock status message
                   Text(
-                    InventoryHelpers.getStockStatusMessage(quantityInStock),
+                    InventoryHelpers.getStockStatusMessage(quantityInStock, minStockLevel),
                     style: TextStyle(
                       fontSize: 10,
-                      color: _getStockStatusColor(colors, quantityInStock),
+                      color: _getStockStatusColor(colors, quantityInStock, minStockLevel),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 4),
-                  
+
                   // Product description
                   Text(
                     productDescription,
@@ -173,9 +173,9 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Price and actions row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -184,7 +184,7 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
                         _formatPrice(productPrice),
                         style: textStyles['price'],
                       ),
-                      
+
                       // Action buttons based on stock status
                       if (_isLoading)
                         SizedBox(
@@ -211,10 +211,11 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
   }
 
   Widget _buildActionButtons(String itemId, int currentQuantity, Map<String, Color> colors) {
+    final minStockLevel = (widget.productData['minStockLevel'] ?? 3).toInt();
     return Row(
       children: [
         // Quick restock button for low stock
-        if (currentQuantity < 3)
+        if (InventoryHelpers.isLowStock(currentQuantity, minStockLevel))
           IconButton(
             onPressed: () => _quickRestock(itemId, currentQuantity),
             icon: Icon(Icons.inventory_2, size: 18, color: colors['warning']),
@@ -222,7 +223,7 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
             constraints: const BoxConstraints(),
             tooltip: 'Quick Restock',
           ),
-        
+
         // Add to cart button
         IconButton(
           onPressed: widget.onAddToCart,
@@ -251,9 +252,10 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     });
 
     try {
+      final inventoryService = Provider.of<InventoryService>(context, listen: false);
       final newQuantity = currentQuantity + 5; // Add 5 units for quick restock
-      
-      await InventoryHelpers.updateItemStock(
+
+      await inventoryService.updateItemQuantity(
         itemId: itemId,
         newQuantity: newQuantity,
         reason: 'Quick restock from suggested products',
@@ -292,7 +294,9 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     });
 
     try {
-      await InventoryHelpers.updateItemStock(
+      final inventoryService = Provider.of<InventoryService>(context, listen: false);
+
+      await inventoryService.updateItemQuantity(
         itemId: itemId,
         newQuantity: 10, // Default restock quantity
         reason: 'Restocked from suggested products',
@@ -337,10 +341,10 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     return '\$${price.toStringAsFixed(2)}';
   }
 
-  Color _getStockStatusColor(Map<String, Color> colors, int quantity) {
+  Color _getStockStatusColor(Map<String, Color> colors, int quantity, int minStockLevel) {
     if (quantity == 0) {
       return colors['error']!;
-    } else if (quantity < 3) {
+    } else if (InventoryHelpers.isCriticalStock(quantity, minStockLevel)) {
       return colors['warning']!;
     } else if (quantity < 10) {
       return colors['info']!;

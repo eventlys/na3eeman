@@ -31,6 +31,20 @@ enum ErrorType {
 }
 
 class ErrorHandler {
+  static String handleError(dynamic error) {
+    if (error is AppError) {
+      return error.message;
+    } else if (error is FormatException) {
+      return 'Data format error: ${error.message}';
+    } else if (error is TypeError) {
+      return 'Type error: ${error.toString()}';
+    } else if (error is Exception) {
+      return 'Exception: ${error.toString()}';
+    } else {
+      return 'An unexpected error occurred: ${error.toString()}';
+    }
+  }
+
   static AppError handleException(dynamic error, [StackTrace? stackTrace]) {
     if (error is AppError) {
       return error;

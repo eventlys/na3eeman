@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
+import '../../../../Helpers/service_models_helper.dart';
 import '../pages/shop_schedule_page.dart';
 
 class ServicesSection extends StatelessWidget {
-  final List<ShopService> services;
+  final List<Map<String, dynamic>> services;
 
   const ServicesSection({
     super.key,
@@ -43,14 +43,14 @@ class ServicesSection extends StatelessWidget {
 
   Widget _buildServiceItem({
     required BuildContext context,
-    required ShopService service,
+    required Map<String, dynamic> service,
   }) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ShopSchedulePage(shopService: service),
+            builder: (context) => ShopSchedulePage(serviceData: service),
           ),
         );
       },
@@ -68,7 +68,7 @@ class ServicesSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  service.name,
+                  ServiceDataHelper.getServiceName(service),
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontSize: 16,
@@ -77,7 +77,7 @@ class ServicesSection extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  service.duration,
+                  ServiceDataHelper.getServiceDuration(service),
                   style: TextStyle(
                     color: Color(0xFFCCCCCC),
                     fontSize: 14,
@@ -86,7 +86,7 @@ class ServicesSection extends StatelessWidget {
               ],
             ),
             Text(
-              service.price,
+              ServiceDataHelper.getServicePrice(service),
               style: TextStyle(
                 color: Color(0xFFFFFFFF),
                 fontSize: 18,

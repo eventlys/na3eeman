@@ -14,7 +14,8 @@ class GetShopsUseCase {
     double? minRating,
     String? location,
     bool? openNow,
-  }) async {
+  })
+  async {
     if (page < 1) throw AppError('Page must be greater than 0');
     if (limit < 1 || limit > 100) throw AppError('Limit must be between 1 and 100');
 

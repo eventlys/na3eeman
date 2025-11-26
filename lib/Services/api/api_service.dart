@@ -698,5 +698,4 @@ class ApiService {
       throw ErrorHandler.handleException(error);
     }
   }
-
 }

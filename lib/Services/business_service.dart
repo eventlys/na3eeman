@@ -1,10 +1,15 @@
 import 'dart:convert';
+// import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 // Models
 import '../Helpers/customized/reports_helper.dart';
+import '../Helpers/error_handler.dart';
+import '../Helpers/gallery_helper.dart';
 import '../Models/appointments/booking_group_model.dart';
 import '../Models/appointments/shop_appointments_model.dart';
 import '../Models/appointments/soonest_appointment_model.dart';
@@ -33,7 +38,6 @@ import 'api/api_interceptor_service.dart';
 import 'enums/report_enums.dart';
 import 'enums/staff_role.dart';
 import 'security_service.dart';
-
 
 class ReportRequest {
   final ReportTime time;
@@ -450,7 +454,8 @@ class BusinessService {
     int page = 1,
     int limit = 20,
     int? organizerId,
-  }) async {
+  })
+  async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -476,7 +481,8 @@ class BusinessService {
     required int organizerId,
     required bool isRecurring,
     int? shopId,
-  }) async {
+  })
+  async {
     try {
       _logger.logRequest('POST', '$_baseUrl/booking-groups/', {
         'organizer': organizerId,
@@ -509,136 +515,6 @@ class BusinessService {
     }
   }
 
-  // ============ INVENTORY SERVICES ============
-
-  Future<List<InventoryItem>> getInventoryItems({
-    int? shopId,
-    bool? lowStockOnly,
-    String? category,
-    int page = 1,
-    int limit = 20,
-  })
-  async {
-    try {
-      final Map<String, dynamic> queryParams = {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      };
-
-      if (shopId != null) queryParams['shop'] = shopId.toString();
-      if (lowStockOnly != null) queryParams['low_stock_only'] = lowStockOnly.toString();
-      if (category != null) queryParams['category'] = category;
-
-      final response = await _apiService.get(
-        '/inventory',
-        queryParams: queryParams,
-      );
-
-      final List<dynamic> data = response['data'] ?? [];
-      return data.map((item) => InventoryItem.fromJson(item)).toList();
-    } catch (e) {
-      AppLogger.error('Error fetching inventory items: $e');
-      return _getMockInventoryItems();
-    }
-  }
-
-  Future<List<InventoryItem>> getLowStockItems({int? shopId}) async {
-    try {
-      final Map<String, dynamic> queryParams = {};
-      if (shopId != null) queryParams['shop'] = shopId.toString();
-
-      final response = await _apiService.get(
-        '/inventory/low-stock',
-        queryParams: queryParams,
-      );
-
-      final List<dynamic> data = response['data'] ?? [];
-      return data.map((item) => InventoryItem.fromJson(item)).toList();
-    } catch (e) {
-      AppLogger.error('Error fetching low stock items: $e');
-      return _getMockInventoryItems().where((item) => item.isLowStock).toList();
-    }
-  }
-
-  Future<InventoryItem> updateItemQuantity({
-    required String itemId,
-    required int newQuantity,
-    String? reason,
-  })
-  async {
-    try {
-      final response = await _apiService.patch(
-        '/inventory/$itemId/quantity',
-        data: {
-          'quantity': newQuantity,
-          'reason': reason,
-        },
-      );
-      return InventoryItem.fromJson(response['data']);
-    } catch (e) {
-      AppLogger.error('Error updating item quantity: $e');
-      rethrow;
-    }
-  }
-
-  Future<InventoryItem> addInventoryItem({
-    required int productId,
-    required int shopId,
-    required int initialQuantity,
-    String? notes,
-  })
-  async {
-    try {
-      final response = await _apiService.post(
-        '/inventory',
-        data: {
-          'product': productId,
-          'shop': shopId,
-          'quantity_in_stock': initialQuantity,
-          'notes': notes,
-        },
-      );
-      return InventoryItem.fromJson(response['data']);
-    } catch (e) {
-      AppLogger.error('Error adding inventory item: $e');
-      rethrow;
-    }
-  }
-
-  Future<Map<String, dynamic>> getInventoryAlerts({int? shopId}) async {
-    try {
-      final Map<String, dynamic> queryParams = {};
-      if (shopId != null) queryParams['shop'] = shopId.toString();
-
-      final response = await _apiService.get(
-        '/inventory/alerts',
-        queryParams: queryParams,
-      );
-
-      return response['data'] ?? {
-        'low_stock_count': 0,
-        'out_of_stock_count': 0,
-        'critical_items': [],
-      };
-    } catch (e) {
-      AppLogger.error('Error fetching inventory alerts: $e');
-      return {
-        'low_stock_count': 0,
-        'out_of_stock_count': 0,
-        'critical_items': [],
-      };
-    }
-  }
-
-  List<InventoryItem> getCriticalStockItemsFromList(List<InventoryItem> items) {
-    try {
-      return items.where((item) => item.isCriticalStock).toList();
-    } catch (e) {
-      AppLogger.error('Error filtering critical stock items: $e');
-      return [];
-    }
-  }
-
   // ============ PAYMENT SERVICES ============
 
   Future<PaymentIntent> processPayment({
@@ -649,7 +525,8 @@ class BusinessService {
     String currency = 'USD',
     int? userId,
     Map<String, dynamic>? metadata,
-  }) async {
+  })
+  async {
     try {
       String endpoint = '/payments/process/$paymentMethod';
       Map<String, dynamic> data = {
@@ -679,7 +556,8 @@ class BusinessService {
     required String paymentMethod,
     String currency = 'USD',
     Map<String, dynamic>? metadata,
-  }) async {
+  })
+  async {
     try {
       final response = await _apiService.post(
         '/payments/create-intent',
@@ -780,7 +658,8 @@ class BusinessService {
     List<InventoryItem> items,
     String reportType,
     String fileName,
-  ) async {
+  )
+  async {
     final pdf = pw.Document();
     pdf.addPage(_buildInventoryReportPage(items, reportType));
     await _savePdf(pdf, fileName);
@@ -790,7 +669,8 @@ class BusinessService {
     List<ShopAppointment> appointments,
     String period,
     String fileName,
-  ) async {
+  )
+  async {
     final pdf = pw.Document();
     pdf.addPage(_buildAppointmentReportPage(appointments, period));
     await _savePdf(pdf, fileName);
@@ -815,7 +695,8 @@ class BusinessService {
     required PointsType action,
     String description = '',
     Map<String, dynamic>? metadata,
-  }) async {
+  })
+  async {
     try {
       final points = getPointsForAction(action);
       AppLogger.debug('Awarding $points points to user $userId for $action');
@@ -865,7 +746,8 @@ class BusinessService {
     required String comment,
     int? appointmentId,
     List<String>? photos,
-  }) async {
+  })
+  async {
     try {
       _logger.logRequest('POST', '$_baseUrl/reviews/', {
         'customer': customerId,
@@ -928,7 +810,8 @@ class BusinessService {
     double? lat,
     double? lng,
     double? radius,
-  }) async {
+  })
+  async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -996,7 +879,8 @@ class BusinessService {
     bool? isActive,
     int page = 1,
     int limit = 20,
-  }) async {
+  })
+  async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -1025,7 +909,8 @@ class BusinessService {
     String? branchId,
     int? shopId,
     bool? includePerformance,
-  }) async {
+  })
+  async {
     try {
       final Map<String, dynamic> queryParams = {};
 
@@ -1667,5 +1552,424 @@ class BusinessService {
         ],
       ),
     );
+  }
+}
+
+class InventoryService {
+  final ApiService _apiService;
+
+  InventoryService(this._apiService);
+
+  Future<List<dynamic>> getLowStockItems({int? shopId}) async {
+    try {
+      final Map<String, dynamic> queryParams = {};
+      if (shopId != null) queryParams['shop'] = shopId.toString();
+
+      final response = await _apiService.get(
+        '/inventory/low-stock',
+        queryParams: queryParams,
+      );
+
+      final List<dynamic> data = response['data'] ?? [];
+      return data;
+    } catch (e) {
+      AppLogger.error('Error fetching low stock items: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<List<dynamic>> getInventoryItems({
+    int? shopId,
+    bool? lowStockOnly,
+    String? category,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final Map<String, dynamic> queryParams = {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      };
+
+      if (shopId != null) queryParams['shop'] = shopId.toString();
+      if (lowStockOnly != null) queryParams['low_stock_only'] = lowStockOnly.toString();
+      if (category != null) queryParams['category'] = category;
+
+      final response = await _apiService.get(
+        '/inventory',
+        queryParams: queryParams,
+      );
+
+      final List<dynamic> data = response['data'] ?? [];
+      return data;
+    } catch (e) {
+      AppLogger.error('Error fetching inventory items: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<dynamic> updateItemQuantity({
+    required String itemId,
+    required int newQuantity,
+    String? reason,
+  }) async {
+    try {
+      final response = await _apiService.patch(
+        '/inventory/$itemId/quantity',
+        data: {
+          'quantity': newQuantity,
+          'reason': reason,
+        },
+      );
+      return response['data'];
+    } catch (e) {
+      AppLogger.error('Error updating item quantity: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<dynamic> addInventoryItem({
+    required int productId,
+    required int shopId,
+    required int initialQuantity,
+    String? notes,
+  }) async {
+    try {
+      final response = await _apiService.post(
+        '/inventory',
+        data: {
+          'product': productId,
+          'shop': shopId,
+          'quantity_in_stock': initialQuantity,
+          'notes': notes,
+        },
+      );
+      return response['data'];
+    } catch (e) {
+      AppLogger.error('Error adding inventory item: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<void> deleteInventoryItem(String itemId) async {
+    try {
+      await _apiService.delete('/inventory/$itemId');
+    } catch (e) {
+      AppLogger.error('Error deleting inventory item: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<Map<String, dynamic>> getInventoryAlerts({int? shopId}) async {
+    try {
+      final Map<String, dynamic> queryParams = {};
+      if (shopId != null) queryParams['shop'] = shopId.toString();
+
+      final response = await _apiService.get(
+        '/inventory/alerts',
+        queryParams: queryParams,
+      );
+
+      return response['data'] ?? {
+        'low_stock_count': 0,
+        'out_of_stock_count': 0,
+        'critical_items': [],
+      };
+    } catch (e) {
+      AppLogger.error('Error fetching inventory alerts: $e');
+      return {
+        'low_stock_count': 0,
+        'out_of_stock_count': 0,
+        'critical_items': [],
+      };
+    }
+  }
+
+  List<dynamic> getCriticalStockItemsFromList(List<dynamic> items) {
+    try {
+      return items.where((item) {
+        final currentStock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+        final minStock = item['min_stock_level'] ?? 3;
+        return currentStock <= minStock;
+      }).toList();
+    } catch (e) {
+      AppLogger.error('Error filtering critical stock items: $e');
+      return [];
+    }
+  }
+
+  // Additional methods that might be needed
+  Future<dynamic> getInventoryItem(String itemId) async {
+    try {
+      final response = await _apiService.get('/inventory/$itemId');
+      return response['data'];
+    } catch (e) {
+      AppLogger.error('Error fetching inventory item: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<dynamic> updateInventoryItem({
+    required String itemId,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final response = await _apiService.patch(
+        '/inventory/$itemId',
+        data: data,
+      );
+      return response['data'];
+    } catch (e) {
+      AppLogger.error('Error updating inventory item: $e');
+      throw ErrorHandler.handleException(e);
+    }
+  }
+
+  Future<Map<String, dynamic>> getInventoryStats({int? shopId}) async {
+    try {
+      final Map<String, dynamic> queryParams = {};
+      if (shopId != null) queryParams['shop'] = shopId.toString();
+
+      final response = await _apiService.get(
+        '/inventory/stats',
+        queryParams: queryParams,
+      );
+
+      return response['data'] ?? {
+        'total_items': 0,
+        'low_stock_count': 0,
+        'out_of_stock_count': 0,
+        'total_value': 0,
+      };
+    } catch (e) {
+      AppLogger.error('Error fetching inventory stats: $e');
+      return {
+        'total_items': 0,
+        'low_stock_count': 0,
+        'out_of_stock_count': 0,
+        'total_value': 0,
+      };
+    }
+  }
+}
+
+class OffersService {
+  Future<Map<String, dynamic>> getBarberOffers() async {
+    // This would typically make an API call to get offers
+    // For now, we'll return an empty list since we don't have the endpoint
+    return {'offers': []};
+  }
+
+  Future<Map<String, dynamic>> createOffer(Map<String, dynamic> offerData) async {
+    // This would create a new offer via API
+    return {'success': true, 'offer': offerData};
+  }
+}
+
+class ProfitService {
+  final String baseUrl;
+
+  ProfitService({required this.baseUrl});
+
+  Future<Map<String, dynamic>> generateReport({
+    required String reportType,
+    required String format,
+    required String fileName,
+    required DateTime startDate,
+    required DateTime endDate,
+    String? branchId,
+    String? authToken,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/reports/generate'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: json.encode({
+          'report_type': reportType,
+          'format': format,
+          'file_name': fileName,
+          'start_date': startDate.toIso8601String(),
+          'end_date': endDate.toIso8601String(),
+          'branch_id': branchId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to generate report: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Report generation failed: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getProfitData({
+    required DateTime startDate,
+    required DateTime endDate,
+    String? branchId,
+    String? authToken,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/reports/profit-data?'
+            'start_date=${startDate.toIso8601String()}'
+            '&end_date=${endDate.toIso8601String()}'
+            '${branchId != null ? '&branch_id=$branchId' : ''}'),
+        headers: {
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['data'] ?? []);
+      } else {
+        throw Exception('Failed to fetch profit data: ${response.statusCode}');
+      }
+    } catch (e) {
+      // For demo purposes, return mock data
+      return _getMockProfitData(startDate, endDate);
+    }
+  }
+
+  List<Map<String, dynamic>> _getMockProfitData(DateTime startDate, DateTime endDate) {
+    final data = <Map<String, dynamic>>[];
+    var current = DateTime(startDate.year, startDate.month);
+    final end = DateTime(endDate.year, endDate.month);
+    var baseRevenue = 5000.0;
+
+    while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
+      final revenue = baseRevenue + (DateTime.now().month % 12 * 500);
+      final expenses = revenue * 0.3;
+      final profit = revenue - expenses;
+
+      data.add({
+        'date': current.toIso8601String(),
+        'revenue': revenue,
+        'expenses': expenses,
+        'profit': profit,
+        'profitMargin': (profit / revenue) * 100,
+      });
+
+      baseRevenue += 200;
+      current = DateTime(current.year, current.month + 1);
+    }
+
+    return data;
+  }
+}
+
+class ShopGalleryService {
+  // In a real app, this would fetch from your API
+  Future<List<String>> getShopGalleryImages(String shopId, {int limit = 4}) async {
+    try {
+      // Simulate API call delay
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      // For demo purposes, return placeholder images
+      // In production, this would fetch from your backend
+      return ImageHelper.getShopGalleryImages(shopId, count: limit);
+    } catch (e) {
+      throw AppError('Failed to load gallery images: ${ErrorHandler.handleError(e)}');
+    }
+  }
+
+  Future<List<String>> getShopGalleryImagesFromUrls(List<String> imageUrls, {int limit = 4}) async {
+    try {
+      if (imageUrls.isEmpty) {
+        return [];
+      }
+
+      final effectiveLimit = limit > imageUrls.length ? imageUrls.length : limit;
+      return imageUrls.sublist(0, effectiveLimit);
+    } catch (e) {
+      throw AppError('Failed to process gallery images: ${ErrorHandler.handleError(e)}');
+    }
+  }
+
+  Future<bool> validateImageUrl(String imageUrl) async {
+    try {
+      // In a real app, you might want to make a HEAD request to check if the image exists
+      return imageUrl.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+}
+
+class SubscriptionService with ChangeNotifier {
+  final ApiService _apiService;
+  bool _isLoading = false;
+  String? _error;
+  dynamic _currentSubscription;
+
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  dynamic get currentSubscription => _currentSubscription;
+
+  SubscriptionService({required ApiService apiService}) : _apiService = apiService;
+
+  Future<void> getSubscriptionDetails() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.get('/subscriptions/current');
+      _currentSubscription = response['data'];
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> upgradeSubscription(String plan) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _apiService.post('/subscriptions/upgrade', data: {'plan': plan});
+      await getSubscriptionDetails(); // Refresh data
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
+
+class BranchService with ChangeNotifier {
+  final ApiService _apiService;
+  bool _isLoading = false;
+  String? _error;
+  List<dynamic> _branches = [];
+
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  List<dynamic> get branches => _branches;
+
+  BranchService({required ApiService apiService}) : _apiService = apiService;
+
+  Future<void> getBranches() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.get('/branches');
+      _branches = response['data'] ?? [];
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

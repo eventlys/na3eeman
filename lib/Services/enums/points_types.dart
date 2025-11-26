@@ -6,4 +6,9 @@ enum PointsType {
   rateApp,
   appFeedback,
   makeAppointment,
+  appointmentComplete,
+  reviewWrite,
+  referral,
+  rewardRedeem,
+  other,
 }

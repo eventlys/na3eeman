@@ -1,4 +1,4 @@
-import 'dart:nativewrappers/_internal/vm/lib/mirrors_patch.dart';
+// import 'dart:nativewrappers/_internal/vm/lib/mirrors_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -199,99 +199,12 @@ class UserInfoHeader extends StatelessWidget {
   }
 
   Map<String, dynamic> _getUserDataFromAuthProvider(AuthProvider authProvider) {
-    // Extract user data from AuthProvider in a format we can use
     final user = authProvider.user;
 
-    // Convert the user object to a map for consistent access
-    // This handles both the actual User object and any map-like structure
-    final userMap = <String, dynamic>{};
+    if (user == null) return {};
 
-    if (user != null) {
-      // If user is a Map, use it directly
-      if (user is Map) {
-        userMap.addAll(user as Map<String, dynamic>);
-      }
-      // If user has a toJson method, use it
-      else if (_hasToJsonMethod(user)) {
-        try {
-          final jsonData = user.toJson();
-          if (jsonData is Map) {
-            userMap.addAll(jsonData as Map<String, dynamic>);
-          }
-        } catch (e) {
-          // Fallback to reflection or manual extraction
-          _extractUserDataManually(user, userMap);
-        }
-      }
-      // Otherwise extract data manually
-      else {
-        _extractUserDataManually(user, userMap);
-      }
-    }
-
-    return userMap;
-  }
-
-  bool _hasToJsonMethod(dynamic object) {
-    try {
-      return object.toJson != null;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void _extractUserDataManually(dynamic user, Map<String, dynamic> userMap) {
-    // Try to extract common user properties using reflection-like approach
-    try {
-      // Name fields
-      if (_hasProperty(user, 'name')) userMap['name'] = user.name;
-      if (_hasProperty(user, 'firstName')) userMap['firstName'] = user.firstName;
-      if (_hasProperty(user, 'first_name')) userMap['first_name'] = user.first_name;
-      if (_hasProperty(user, 'lastName')) userMap['lastName'] = user.lastName;
-      if (_hasProperty(user, 'last_name')) userMap['last_name'] = user.last_name;
-      if (_hasProperty(user, 'username')) userMap['username'] = user.username;
-
-      // Contact fields
-      if (_hasProperty(user, 'email')) userMap['email'] = user.email;
-      if (_hasProperty(user, 'phone')) userMap['phone'] = user.phone;
-
-      // Profile picture fields
-      if (_hasProperty(user, 'avatar')) userMap['avatar'] = user.avatar;
-      if (_hasProperty(user, 'profilePicture')) userMap['profilePicture'] = user.profilePicture;
-      if (_hasProperty(user, 'profile_picture')) userMap['profile_picture'] = user.profile_picture;
-      if (_hasProperty(user, 'image')) userMap['image'] = user.image;
-
-    } catch (e) {
-      // If manual extraction fails, provide default values
-      userMap['name'] = 'User';
-      userMap['email'] = 'user@example.com';
-    }
-  }
-
-  bool _hasProperty(dynamic object, String propertyName) {
-    try {
-      final value = _getProperty(object, propertyName);
-      return value != null;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  dynamic _getProperty(dynamic object, String propertyName) {
-    try {
-      // Try different ways to access the property
-      if (object is Map) {
-        return object[propertyName];
-      }
-
-      // Use reflection-like approach for objects
-      final mirror = reflect(object);
-      final symbol = Symbol(propertyName);
-      final instanceMirror = mirror.getField(symbol);
-      return instanceMirror.reflectee;
-    } catch (e) {
-      return null;
-    }
+    // Simply convert the User object to JSON
+    return user.toJson();
   }
 
   Widget _buildLoadingState() {

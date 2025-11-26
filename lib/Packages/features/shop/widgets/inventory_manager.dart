@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../../Services/business_service.dart';
+import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_images.dart';
+import '../overlays/Inventory_add_item_dialog.dart';
 import 'inventory_list_item.dart';
+import 'inventory_low_stock_alert.dart';
 import 'low_stock_alert.dart';
 
 class InventoryManager extends StatefulWidget {
-  final User currentUser;
+  final Map<String, dynamic> currentUser;
 
   const InventoryManager({super.key, required this.currentUser});
 
@@ -12,214 +19,204 @@ class InventoryManager extends StatefulWidget {
 }
 
 class InventoryManagerState extends State<InventoryManager> {
-  final InventoryService _inventoryService = InventoryService();
-  late Future<List<InventoryItem>> _inventoryFuture;
-  List<InventoryItem> _inventoryItems = [];
-
   @override
   void initState() {
     super.initState();
-    _loadInventory();
-  }
-
-  void _loadInventory() {
-    setState(() {
-      _inventoryFuture = _inventoryService.getInventoryItems();
+    // Load inventory when widget initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+      inventoryProvider.loadInventoryItems();
     });
   }
 
-  Future<void> _increaseItemCount(InventoryItem item) async {
+  Future<void> _increaseItemCount(Map<String, dynamic> item, BuildContext context) async {
+    final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+    final inventoryService = Provider.of<InventoryService>(context, listen: false);
+
     try {
-      final updatedItem = await _inventoryService.updateItemCount(
-        item.id,
-        item.count + 1
+      final currentCount = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+      final itemId = item['id']?.toString() ?? item['_id']?.toString();
+
+      if (itemId == null) {
+        throw Exception('Item ID not found');
+      }
+
+      await inventoryService.updateItemQuantity(
+        itemId: itemId,
+        newQuantity: currentCount + 1,
+        reason: 'Manual count increase',
       );
 
-      setState(() {
-        final index = _inventoryItems.indexWhere((i) => i.id == item.id);
-        if (index != -1) {
-          _inventoryItems[index] = updatedItem;
-        }
-      });
+      // Refresh the inventory
+      await inventoryProvider.loadInventoryItems();
 
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Increased ${item.name} count to ${updatedItem.count}'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Increased ${item['name']} count to ${currentCount + 1}'),
+            backgroundColor: AppColor.lightSuccess,
+          ),
+        );
+      }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update ${item.name}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update ${item['name']}: ${e.toString()}'),
+            backgroundColor: AppColor.lightError,
+          ),
+        );
+      }
     }
   }
 
-  Future<void> _addNewItem() async {
+  Future<void> _addNewItem(BuildContext context) async {
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (context) => const AddItemDialog(),
     );
 
     if (result != null) {
+      final inventoryService = Provider.of<InventoryService>(context, listen: false);
+      final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+
       try {
-        final newItem = await _inventoryService.addItem(
-          result['name']!,
-          initialCount: result['count'],
-          description: result['description'],
+        await inventoryService.addInventoryItem(
+          productId: result['productId'] ?? 0,
+          shopId: result['shopId'] ?? 1, // Default shop ID
+          initialQuantity: result['count'] ?? 1,
+          notes: result['description'],
         );
 
-        setState(() {
-          _inventoryItems.add(newItem);
-        });
+        // Refresh inventory
+        await inventoryProvider.loadInventoryItems();
 
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Added ${newItem.name} to inventory'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Added ${result['name']} to inventory'),
+              backgroundColor: AppColor.lightSuccess,
+            ),
+          );
+        }
       } catch (e) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to add item: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to add item: ${e.toString()}'),
+              backgroundColor: AppColor.lightError,
+            ),
+          );
+        }
       }
     }
   }
 
-  Future<void> _deleteItem(InventoryItem item) async {
+  Future<void> _deleteItem(Map<String, dynamic> item, BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Item'),
-        content: Text('Are you sure you want to delete ${item.name}?'),
+        title: Text(
+          'Delete Item',
+          style: TextStyle(color: AppColor.lightText),
+        ),
+        backgroundColor: AppColor.lightCard,
+        content: Text(
+          'Are you sure you want to delete ${item['name']}?',
+          style: TextStyle(color: AppColor.lightTextSecondary),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: AppColor.lightTextSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'Delete',
+              style: TextStyle(color: AppColor.lightError)
+            ),
           ),
         ],
       ),
     );
 
     if (confirmed == true) {
-      try {
-        await _inventoryService.deleteItem(item.id);
-        setState(() {
-          _inventoryItems.removeWhere((i) => i.id == item.id);
-        });
+      final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
 
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Deleted ${item.name} from inventory'),
-            backgroundColor: Colors.green,
-          ),
-        );
+      try {
+        final itemId = item['id']?.toString() ?? item['_id']?.toString();
+
+        if (itemId != null) {
+          await inventoryProvider.removeItem(itemId);
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Deleted ${item['name']} from inventory'),
+                backgroundColor: AppColor.lightSuccess,
+              ),
+            );
+          }
+        }
       } catch (e) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to delete ${item.name}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to delete ${item['name']}: ${e.toString()}'),
+              backgroundColor: AppColor.lightError,
+            ),
+          );
+        }
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.currentUser.isCustomer) {
-      return const Center(
+    final currentUser = widget.currentUser;
+    final isCustomer = currentUser['role'] == 'customer' || currentUser['isCustomer'] == true;
+
+    if (isCustomer) {
+      return Center(
         child: Text(
           'Inventory management is only available for owners',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: TextStyle(
+            fontSize: 16,
+            color: AppColor.lightTextSecondary
+          ),
         ),
       );
     }
 
+    return Consumer<InventoryProvider>(
+      builder: (context, inventoryProvider, child) {
+        final inventoryItems = inventoryProvider.inventoryItems;
 
-    return Stack(
-      children: [
-        Center(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.90,
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            decoration: BoxDecoration(
-              color: const Color(0x4dffffff),
-              border: Border.all(color: const Color(0x80ffffff)),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: FutureBuilder<List<InventoryItem>>(
-              future: _inventoryFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
-                    height: 200, // Fixed height for loading state
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return SizedBox(
-                    height: 300, // Fixed height for error state
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/icons/error_icon.png', width: 64, height: 64),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Failed to load inventory',
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              snapshot.error.toString(),
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey,
-                                  ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _loadInventory,
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-
-                _inventoryItems = snapshot.data ?? [];
-
-                return Column(
+        return Stack(
+          children: [
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.90,
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                decoration: BoxDecoration(
+                  color: AppColor.buttonBackgroundLight,
+                  border: Border.all(color: AppColor.borderLight),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Header with title and refresh
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: const Color(0x80ffffff))),
+                        border: Border(
+                          bottom: BorderSide(color: AppColor.borderLight)
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -228,92 +225,160 @@ class InventoryManagerState extends State<InventoryManager> {
                             'Inventory Management',
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
+                                  color: AppColor.lightText,
                                 ),
                           ),
                           IconButton(
-                            icon: Image.asset('assets/icons/moon.png', width: 24, height: 24),
-                            onPressed: _loadInventory,
+                            icon: Image.asset(
+                              AppImages.refresh,
+                              width: 24,
+                              height: 24,
+                              color: AppColor.lightPrimary,
+                            ),
+                            onPressed: () => inventoryProvider.loadInventoryItems(),
                             tooltip: 'Refresh Inventory',
                           ),
                         ],
                       ),
                     ),
 
-                    LowStockAlert(items: _inventoryItems),
-
-                    // Use Flexible instead of ConstrainedBox for better layout control
-                    if (_inventoryItems.isNotEmpty)
-                      Flexible(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: _inventoryItems.length,
-                          itemBuilder: (context, index) {
-                            final item = _inventoryItems[index];
-                            return InventoryListItem(
-                              item: item,
-                              onIncreaseCount: () => _increaseItemCount(item),
-                              onDelete: () => _deleteItem(item),
-                            );
-                          },
+                    if (inventoryProvider.isLoading)
+                      const SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColor.loadingPrimaryLight),
+                          ),
                         ),
                       )
-                    else
+                    else if (inventoryProvider.error != null)
                       SizedBox(
-                        height: 200, // Fixed height for empty state
+                        height: 300,
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset('assets/icons/inventory_icon.png', width: 64, height: 64),
+                              Image.asset(
+                                AppImages.error,
+                                width: 64,
+                                height: 64,
+                                color: AppColor.lightError,
+                              ),
                               const SizedBox(height: 16),
                               Text(
-                                'No items in inventory',
-                                style: TextStyle(fontSize: 18, color: Colors.grey),
+                                'Failed to load inventory',
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: AppColor.lightText,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  inventoryProvider.error!,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: AppColor.lightTextSecondary,
+                                      ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => inventoryProvider.loadInventoryItems(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.lightPrimary,
+                                ),
+                                child: Text(
+                                  'Retry',
+                                  style: TextStyle(color: AppColor.light),
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ),
+                      )
+                    else ...[
+                      LowStockSimpleAlert(items: inventoryItems),
+
+                      // Inventory List
+                      if (inventoryItems.isNotEmpty)
+                        Flexible(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: inventoryItems.length,
+                            itemBuilder: (context, index) {
+                              final item = inventoryItems[index];
+                              return InventoryListItem(
+                                item: item,
+                                onIncreaseCount: () => _increaseItemCount(item, context),
+                                onDelete: () => _deleteItem(item, context),
+                              );
+                            },
+                          ),
+                        )
+                      else
+                        SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  AppImages.inventory,
+                                  width: 64,
+                                  height: 64,
+                                  color: AppColor.lightTextSecondary,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No items in inventory',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: AppColor.lightTextSecondary
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                   ],
-                );
-              },
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 20,
-          right: MediaQuery.of(context).size.width * 0.10, // Adjust based on your container width
-          child: Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF806C99), Color(0x80DFA8A4)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomCenter,
-              ),
-              shape: BoxShape.circle,
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Color(0x80000000),
-              //     blurRadius: 4,
-              //     offset: const Offset(0, 2),
-              //   ),
-              // ],
-            ),
-            child: IconButton(
-              onPressed: _addNewItem,
-              icon: Image.asset('assets/icons/plus.png', width: 40, height: 40),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                foregroundColor: Colors.white,
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+            Positioned(
+              bottom: 20,
+              right: MediaQuery.of(context).size.width * 0.10,
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColor.gradientStartLight, AppColor.gradientSecondaryLight],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomCenter,
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: () => _addNewItem(context),
+                  icon: Image.asset(
+                    AppImages.plus,
+                    width: 40,
+                    height: 40,
+                    color: AppColor.light,
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: AppColor.light,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
-
