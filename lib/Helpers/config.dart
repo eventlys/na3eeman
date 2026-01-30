@@ -1,39 +1,64 @@
+import 'package:na3eeman/config/environment.dart';
+
+/// Application Configuration
+/// 
+/// Unified configuration that uses the Environment system for dynamic values
+/// and defines constants for static configuration.
 class AppConfig {
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://your-api-url.com/api',
-  );
+  // API Configuration - powered by Environment
+  static String get baseUrl => Environment.config.apiBaseUrl;
+  static Duration get apiTimeout => Environment.config.apiTimeout;
+  static int get maxRetries => Environment.config.maxRetries;
 
-  static const String appName = 'Na3eeman';
+  // App Information
+  static String get appName => Environment.config.appName;
+  static bool get showDebugBanner => Environment.config.showDebugBanner;
+  static bool get enableLogging => Environment.config.enableLogging;
+  
   static const String appVersion = '1.0.0';
-  static const String environment = String.fromEnvironment(
-    'APP_ENVIRONMENT',
-    defaultValue: 'development',
-  );
+  static bool get isProduction => Environment.isProduction;
+  static bool get isDevelopment => Environment.isDevelopment;
 
-  // API Configuration
-  static const int apiTimeoutSeconds = 30;
-  static const int apiMaxRetries = 3;
+  // Feature Flags - dynamic based on environment
+  static bool get enableBiometricAuth => Environment.config.enableBiometricAuth;
+  static bool get enableSocialLogin => Environment.config.enableSocialLogin;
+  static bool get enableCrashReporting => Environment.config.enableCrashReporting;
+  static bool get enableAnalytics => Environment.config.enableAnalytics;
 
-  // App Configuration
-  static const bool isDebug = bool.fromEnvironment('DEBUG', defaultValue: false);
-  static const bool enableLogging = bool.fromEnvironment('ENABLE_LOGGING', defaultValue: true);
-
-  // Feature Flags
-  static const bool enableAnalytics = true;
-  static const bool enableCrashReporting = true;
+  // Legacy flags (can be removed after migration)
   static const bool enableBackgroundSync = true;
-  static const bool enableOfflineMode = true;
+
+  // OAuth/Social Auth
+  static String? get googleClientId => Environment.config.googleClientId;
+  static String? get appleClientId => Environment.config.appleClientId;
+
+  // Payment
+  static String? get stripePublishableKey => Environment.config.stripePublishableKey;
 
   // Cache Configuration
-  static const int cacheDurationMinutes = 10;
-  static const int maxCacheSize = 100;
+  static const Duration cacheShortDuration = Duration(minutes: 5);
+  static const Duration cacheMediumDuration = Duration(hours: 1);
+  static const Duration cacheLongDuration = Duration(hours: 24);
+  static const int maxCacheSize = 50 * 1024 * 1024; // 50 MB
 
-  // Security Configuration
-  static const bool enableCertificatePinning = bool.fromEnvironment('ENABLE_CERT_PINNING', defaultValue: false);
-  static const bool enableBiometricAuth = true;
+  // Pagination
+  static const int defaultPageSize = 20;
+  static const int maxPageSize = 100;
 
-  // Payment Configuration
-  static const String defaultCurrency = 'USD';
-  static const bool enableTestPayments = bool.fromEnvironment('ENABLE_TEST_PAYMENTS', defaultValue: true);
+  // Security
+  static const bool enableCertificatePinning = false; // Enable in production
+  static const List<String> pinnedCertificates = [];
+
+  // UI Configuration
+  static const String defaultCurrency = 'SAR';
+  static const String defaultLanguage = 'en';
+  static const List<String> supportedLanguages = ['en', 'ar'];
+
+  // Media Upload
+  static const int maxImageSizeBytes = 5 * 1024 * 1024; // 5 MB
+  static const List<String> allowedImageTypes = ['jpg', 'jpeg', 'png', 'heic'];
+
+  // Loyalty Configuration
+  static const int haircutsForFree = 10;
+  static const int pointsPerHaircut = 100;
 }

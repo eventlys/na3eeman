@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'config/environment.dart';
+import 'Helpers/config.dart';
 import 'Helpers/customized/error_reporter.dart';
+import 'Helpers/logger.dart';
 import 'Providers/main_providers.dart';
 import 'Providers/provider_wrapper.dart';
 import 'Routes/routes.dart';
@@ -10,13 +14,29 @@ import 'Services/general_service.dart';
 import 'Services/storage_service.dart';
 import 'Services/ui/sidebar_navigation_service.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize environment first (defaults to dev if not specified)
+  await Environment.init(flavor: AppFlavor.dev);
+
+  // Log environment info
+  if (AppConfig.enableLogging) {
+    AppLogger.info('=== ${AppConfig.appName} Starting ===');
+    AppLogger.info('Environment: ${Environment.flavor.name}');
+    AppLogger.info('API URL: ${AppConfig.baseUrl}');
+    AppLogger.info('Debug Mode: ${AppConfig.showDebugBanner}');
+  }
 
   // Initialize services in order
   await UnifiedStorageService().initialize();
   await OfflineService().initialize();
-  await CrashReportingService().initialize();
+  
+  // Only initialize crash reporting if enabled for this environment
+  if (AppConfig.enableCrashReporting) {
+    await CrashReportingService().initialize();
+  }
+  
   await NotificationService().initialize();
   await BackgroundService().initialize();
 
@@ -31,7 +51,6 @@ void main() async{
 
   // Register background tasks
   BackgroundService().registerPeriodicTasks();
-
 
   runApp(
     MultiProvider(
@@ -49,11 +68,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Na3eeman',
+      title: AppConfig.appName,
       navigatorKey: SideNavigationService.navigatorKey,
       initialRoute: '/login',
       routes: AppRoutes.routes,
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: AppConfig.showDebugBanner,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
     );
   }
 }

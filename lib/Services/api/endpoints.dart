@@ -1,161 +1,231 @@
-// lib/Services/api/endpoints.dart
-class ApiEndpoints {
-  // Auth endpoints
-  static const String login = '/auth/login';
-  static const String register = '/auth/register';
-  static const String logout = '/auth/logout';
-  static const String refresh = '/auth/refresh';
-  static const String forgotPassword = '/auth/forgot-password';
-  static const String resetPassword = '/auth/reset-password';
-  static const String validateResetToken = '/auth/validate-reset-token';
-  static const String sendResetOtp = '/auth/send-reset-otp';
-  static const String verifyResetOtp = '/auth/verify-reset-otp';
-  static const String changePassword = '/auth/change-password';
-  static const String socialLogin = '/auth/social-login';
-  static const String profile = '/auth/profile';
-  static const String currentUser = '/auth/me';
+import 'package:na3eeman/Helpers/config.dart';
 
-  // Analytics endpoints
-  static const String analyticsEvents = '/analytics/events';
+/// API Endpoints
+/// 
+/// All endpoints are aligned with the new backend /api/v1/ structure.
+/// Base URL from AppConfig already includes /api/v1
+class Endpoints {
+  // Base URL
+  static String get baseUrl => AppConfig.baseUrl;
 
-  // Shop endpoints
-  static const String shops = '/shops';
-  static const String shopSearch = '/shops/search';
-  static const String shopDetails = '/shops/{id}';
-  static const String shopServices = '/shops/{id}/services';
-  static const String shopReviews = '/shops/{id}/reviews';
-  static const String shopSchedule = '/shops/{id}/schedule';
-  static const String favoriteShops = '/shops/favorites';
-  static const String nearbyShops = '/shops/nearby';
+  // ==================== AUTHENTICATION ====================
+  static const String login = '/auth/login/';
+  static const String register = '/auth/register/';
+  static const String logout = '/auth/logout/';
+  static const String socialLogin = '/auth/social-login/';
+  
+  // JWT Tokens
+  static const String tokenRefresh = '/auth/token/refresh/';
+  static const String tokenVerify = '/auth/token/verify/';
 
-  // Appointment endpoints
-  static const String appointments = '/appointments';
-  static const String appointmentBook = '/appointments/book';
-  static const String appointmentDetails = '/appointments/{id}';
-  static const String appointmentCancel = '/appointments/{id}/cancel';
-  static const String appointmentReschedule = '/appointments/{id}/reschedule';
-  static const String appointmentConfirmCash = '/appointments/{id}/confirm-cash-payment';
-  static const String userAppointments = '/appointments/user';
-  static const String soonestAppointment = '/appointments/soonest';
-  static const String freeAppointment = '/appointments/free';
+  // Password Management
+  static const String passwordReset = '/auth/password/reset/';
+  static const String passwordResetConfirm = '/auth/password/reset/confirm/';
+  static const String passwordChange = '/auth/password/change/';
+  static const String firstLoginPasswordChange = '/auth/password/first-login-change/';
 
-  // Booking group endpoints
-  static const String bookingGroups = '/booking-groups';
-  static const String bookingGroupDetails = '/booking-groups/{id}';
+  // ==================== USER PROFILE ====================
+  static const String currentUser = '/auth/me/';  // Current user profile (was /auth/profile)
+  static const String profile = '/auth/me/';  // Alias for backward compatibility
+  static const String profileBarber = '/auth/profile/barber/';
+  static const String profileOwner = '/auth/profile/owner/';
+  static const String profilePicture = '/auth/profile/picture/';
+  static const String profileLocation = '/auth/profile/location/';
+  static const String profileDeactivate = '/auth/profile/deactivate/';
 
-  // Staff endpoints
-  static const String staff = '/staff';
-  static const String staffDetails = '/staff/{id}';
-  static const String staffPerformance = '/staff/{id}/performance';
-  static const String staffWorkingHours = '/staff/working-hours';
-  static const String startWorkingHours = '/staff/working-hours/start';
-  static const String endWorkingHours = '/staff/working-hours/end';
-  static const String staffAttendance = '/staff/attendance';
-  static const String staffPayroll = '/staff/payroll';
-  static const String assignManager = '/branches/{id}/manager';
+  // ==================== SOCIAL AUTH ====================
+  static const String socialLink = '/auth/social/link/';
+  static const String socialUnlink = '/auth/social/unlink/';
+  static const String socialAccounts = '/auth/social/accounts/';
 
-  // Loyalty endpoints
-  static const String loyaltyBalance = '/loyalty/balance';
-  static const String loyaltyProgram = '/loyalty/program';
-  static const String awardPoints = '/loyalty/award-points';
-  static const String incrementCounter = '/loyalty/increment-counter';
-  static const String redeemFreeHaircut = '/loyalty/redeem-free-haircut';
-  static const String awardFreeHaircut = '/loyalty/award-free-haircut';
-  static const String checkAndAward = '/loyalty/check-and-award';
-  static const String pointTransactions = '/loyalty/transactions';
+  // ==================== VERIFICATION ====================
+  static const String sendEmailVerification = '/auth/verify/email/send/';
+  static const String verifyEmail = '/auth/verify/email/confirm/';
+  static const String sendPhoneVerification = '/auth/verify/phone/send/';
+  static const String verifyPhone = '/auth/verify/phone/confirm/';
 
-  // Payment endpoints
-  static const String paymentMethods = '/payment/methods';
-  static const String processPayment = '/payment/process';
-  static const String paymentHistory = '/payment/history';
-  static const String confirmCashPayment = '/payments/confirm-cash';
-  static const String createPaymentIntent = '/payments/create-intent';
-  static const String refundPayment = '/payments/{id}/refund';
+  // ==================== AVAILABILITY CHECKS ====================
+  static const String checkUsername = '/auth/check/username/';
+  static const String checkEmail = '/auth/check/email/';
 
-  // Inventory endpoints
-  static const String inventory = '/inventory';
-  static const String inventoryItem = '/inventory/{id}';
-  static const String lowStock = '/inventory/low-stock';
-  static const String inventoryAlerts = '/inventory/alerts';
-  static const String updateQuantity = '/inventory/{id}/quantity';
+  // ==================== USER LISTS ====================
+  static const String usersBarbers = '/auth/users/barbers/';
+  static const String usersOwners = '/auth/users/owners/';
+  static const String usersCustomers = '/auth/users/customers/';
+  static const String usersStaff = '/auth/users/staff/';
 
-  // Product endpoints
-  static const String products = '/products';
-  static const String productDetails = '/products/{id}';
+  // ==================== ADMIN ENDPOINTS ====================
+  static const String adminCreateStaff = '/auth/admin/create-staff/';
+  static String adminResetStaffPassword(int userId) => '/auth/admin/reset-staff-password/$userId/';
+  static String adminChangeUserRole(int userId) => '/auth/admin/change-role/$userId/';
+  static const String adminUsers = '/auth/admin/users/';
+  static String adminUserDetail(int userId) => '/auth/admin/users/$userId/';
+  static const String adminUserStats = '/auth/admin/stats/'; 
 
-  // Option endpoints (services)
-  static const String options = '/options';
-  static const String optionDetails = '/options/{id}';
+  // ==================== INVITATIONS ====================
+  static const String invitationsSend = '/auth/invitations/send/';
+  static const String invitationsRegister = '/auth/invitations/register/';
 
-  // Package endpoints
-  static const String packages = '/packages';
-  static const String packageDetails = '/packages/{id}';
+  // ==================== 2FA ====================
+  static const String twoFASetup = '/auth/security/2fa/setup/';
+  static const String twoFAVerify = '/auth/security/2fa/verify/';
 
-  // Subscription endpoints
-  static const String subscription = '/subscription';
-  static const String subscriptionPlans = '/subscription/plans';
-  static const String subscriptionTiers = '/subscription/tiers';
-  static const String subscribe = '/subscription/subscribe';
-  static const String cancelSubscription = '/subscription/cancel';
-  static const String updateSubscription = '/subscription/update';
-  static const String reactivateSubscription = '/subscription/reactivate';
-  static const String subscriptionInvoices = '/subscription/invoices';
-  static const String applyCoupon = '/subscription/apply-coupon';
-  static const String subscriptionUsage = '/subscription/usage';
+  // ==================== SHOPS ====================
+  static const String shops = '/shops/shops/';
+  static String shopDetails(int id) => '/shops/shops/$id/';
+  static const String shopSearch = '/shops/shops/';  // Use query params  
+  static const String nearbyShops = '/shops/shops/';  // Use query params with lat/lng
+  static const String favoriteShops = '/shops/shops/';  // Filter by favorites
+  
+  // Shop nested resources
+  static String shopOptions(int shopId) => '/shops/shops/$shopId/options/';
+  static String shopPackages(int shopId) => '/shops/shops/$shopId/packages/';
+  static String shopProducts(int shopId) => '/shops/shops/$shopId/products/';
+  static String shopInventory(int shopId) => '/shops/shops/$shopId/inventory/';
+  static String shopBarbers(int shopId) => '/shops/shops/$shopId/barbers/';
+  static String shopReviews(int shopId) => '/shops/shops/$shopId/reviews/';
+  static String shopSchedule(int shopId) => '/shops/shops/$shopId/schedule/';  // If exists
+  static String shopServices(int shopId) => '/shops/shops/$shopId/options/';  // Same as options
 
-  // Review endpoints
-  static const String reviews = '/reviews';
-  static const String reviewDetails = '/reviews/{id}';
-  static const String shopReviewStats = '/shops/{id}/review-stats';
+  // ==================== APPOINTMENTS ====================
+  static const String appointments = '/shops/appointments/';
+  static String appointmentDetails(int id) => '/shops/appointments/$id/';
+  static const String appointmentBook = '/shops/appointments/';  // POST to list endpoint
+  static String appointmentCancel(int id) => '/shops/appointments/$id/cancel/';
+  static String appointmentReschedule(int id) => '/shops/appointments/$id/reschedule/';
+  static String appointmentComplete(int id) => '/shops/appointments/$id/complete/';
+  static String appointmentConfirmCashPayment(int id) => '/shops/appointments/$id/confirm-cash/';
+  
+  // User appointments
+  static const String userAppointments = '/shops/appointments/';  // Filter by user
+  static const String soonestAppointment = '/shops/appointments/';  // Sort by date, limit 1
+  static const String freeAppointment = '/shops/appointments/free/';  // If endpoint exists
 
-  // User endpoints
-  static const String userProfile = '/users/profile';
-  static const String userPreferences = '/users/preferences';
-  static const String userLoyalty = '/users/loyalty';
-  static const String userTransactions = '/users/transactions';
+  // ==================== REVIEWS ====================
+  static const String reviews = '/shops/reviews/';
+  static String reviewDetails(int id) => '/shops/reviews/$id/';
 
-  // File upload endpoints
-  static const String uploadImage = '/upload/image';
-  static const String uploadDocument = '/upload/document';
+  // ==================== SUBSCRIPTIONS ====================
+  static const String subscriptions = '/shops/subscriptions/';
+  static String subscriptionDetails(int id) => '/shops/subscriptions/$id/';
 
-  // Report endpoints
-  static const String reportsProfit = '/reports/profit';
-  static const String reportsEarnings = '/reports/earnings';
-  static const String reportsStaff = '/reports/staff';
-  static const String reportsAppointments = '/reports/appointments';
-  static const String reportsInventory = '/reports/inventory';
+  // ==================== HAIRCUT STYLES ====================
+  static const String haircutStyles = '/shops/haircut-styles/';
+  static String haircutStyleDetails(int id) => '/shops/haircut-styles/$id/';
 
-  // Build URL with parameters
-  static String buildUrl(String endpoint, {Map<String, String>? params}) {
-    String url = endpoint;
+  // ==================== LOYALTY ====================
+  static const String loyaltyBalance = '/loyalty/balance/';
+  static const String loyaltyTransactions = '/loyalty/transactions/';  // If exists
+  static const String loyaltyRedeemFreeCut = '/loyalty/redeem-free-cut/';
+  static const String loyaltyAdminAdjustPoints = '/loyalty/admin/adjust-points/';
 
-    if (params != null) {
-      params.forEach((key, value) {
-        url = url.replaceAll('{$key}', value);
-      });
+  // ==================== PAYMENTS ====================
+  // Note: These endpoints may not exist yet in backend
+  static const String payments = '/payments/';
+  static const String paymentIntent = '/payments/intent/';
+  static const String paymentConfirm = '/payments/confirm/';
+
+  // ==================== ANALYTICS ====================
+  // Note: May not exist in backend yet
+  static const String analyticsEvents = '/analytics/events/';
+
+  // ==================== UTILITY ====================
+  static const String health = '/health/';
+
+  // ==================== HELPER METHODS ====================
+  
+  /// Build URL with query parameters
+  static String buildUrl(String endpoint, Map<String, dynamic>? params) {
+    if (params == null || params.isEmpty) {
+      return endpoint;
     }
 
-    return url;
+    final cleanParams = Map<String, dynamic>.from(params)
+      ..removeWhere((key, value) => value == null || value == '');
+
+    if (cleanParams.isEmpty) return endpoint;
+
+    final queryString = cleanParams.entries
+        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}')
+        .join('&');
+
+    final separator = endpoint.contains('?') ? '&' : '?';
+    return '$endpoint$separator$queryString';
   }
 
-  // Helper methods for common endpoints
-  static String getShopDetailsUrl(int shopId) {
-    return buildUrl(shopDetails, params: {'id': shopId.toString()});
+  /// Build full URL with base
+  static String fullUrl(String endpoint) {
+    // Remove leading slash if base URL already has it
+    final cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+    final cleanBase = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+    return '$cleanBase/$cleanEndpoint';
   }
 
-  static String getAppointmentDetailsUrl(String appointmentId) {
-    return buildUrl(appointmentDetails, params: {'id': appointmentId});
+  /// Get paginated URL
+  static String withPagination(String endpoint, {int page = 1, int? pageSize}) {
+    return buildUrl(endpoint, {
+      'page': page,
+      if (pageSize != null) 'page_size': pageSize,
+    });
   }
 
-  static String getStaffPerformanceUrl(String staffId) {
-    return buildUrl(staffPerformance, params: {'id': staffId});
+  /// Get search URL
+  static String withSearch(String endpoint, String query) {
+    return buildUrl(endpoint, {'search': query});
   }
 
-  static String getShopReviewsUrl(int shopId) {
-    return buildUrl(shopReviews, params: {'id': shopId.toString()});
+  /// Get filtered URL
+  static String withFilters(String endpoint, Map<String, dynamic> filters) {
+    return buildUrl(endpoint, filters);
   }
 
-  static String getShopReviewStatsUrl(int shopId) {
-    return buildUrl(shopReviewStats, params: {'id': shopId.toString()});
+  /// Get nearby shops URL
+  static String getNearbyShopsUrl({
+    required double latitude,
+    required double longitude,
+    double? radiusKm,
+  }) {
+    return buildUrl(shops, {
+      'lat': latitude,
+      'lng': longitude,
+      if (radiusKm != null) 'radius': radiusKm,
+    });
   }
+
+  /// Replace path parameters (e.g., /shops/{id} -> /shops/123)
+  static String replacePathParams(String endpoint, Map<String, dynamic> params) {
+    String result = endpoint;
+    params.forEach((key, value) {
+      result = result.replaceAll('{$key}', value.toString());
+    });
+    return result;
+  }
+}
+
+/// Legacy endpoint mappings for backward compatibility
+/// TODO: Remove after full migration
+class ApiEndpoints {
+  static const String login = '/auth/login/';
+  static const String register = '/auth/register/';
+  static const String logout = '/auth/logout/';
+  static const String refresh = '/auth/token/refresh/';
+  static const String currentUser = '/auth/me/';
+  static const String profile = '/auth/me/';
+  
+  // Map old endpoint names to new ones
+  static String get forgotPassword => Endpoints.passwordReset;
+  static String get resetPassword => Endpoints.passwordResetConfirm;
+  static String get changePassword => Endpoints.passwordChange;
+  static String get socialLogin => Endpoints.socialLogin;
+  
+  static String get shops => Endpoints.shops;
+  static String get shopSearch => Endpoints.shopSearch;
+  static String get nearbyShops => Endpoints.nearbyShops;
+  
+  static String get appointments => Endpoints.appointments;
+  static String get appointmentBook => Endpoints.appointmentBook;
+  
+  // Helper to replace {id} placeholder
+  static String shopDetails(int id) => Endpoints.shopDetails(id);
+  static String appointmentDetails(int id) => Endpoints.appointmentDetails(id);
 }
