@@ -1,4 +1,14 @@
 {
     "User Name":"اسم المستخدم",
-    "Password":"كلمة السر"
+    "Password":"كلمة المرور",
+    "our_services": "خدماتنا",
+    "special_offers": "العروض المميزة",
+    "service_hair": "عناية بالشعر",
+    "service_beauty": "تجميل",
+    "service_brides": "عرايس",
+    "service_nails": "أظافر",
+    "service_spa": "سبا",
+    "service_laser": "ليزر",
+    "service_skin_care": "عناية بالبشرة",
+    "service_grooming": "عناية للرجال"
 }

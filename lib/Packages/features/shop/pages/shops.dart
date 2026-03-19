@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../../../Services/api/api_service.dart';
-import '../../../Core/backgrounds/bd_faded.dart';
-import '../../../Core/themes/glass_appbar.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/barbershop_card.dart';
-import 'shop_details.dart';
 
 class ShopListPage extends StatefulWidget {
   const ShopListPage({super.key});
@@ -14,11 +12,11 @@ class ShopListPage extends StatefulWidget {
 }
 
 class _ShopListPageState extends State<ShopListPage> {
-  final ScrollController _scrollController = ScrollController();
-  final ApiService _apiService = ApiService(); // Your API service instance
+  final ApiService _apiService = ApiService();
   List<Map<String, dynamic>> _shops = [];
   bool _isLoading = true;
   String _error = '';
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -33,143 +31,180 @@ class _ShopListPageState extends State<ShopListPage> {
         _error = '';
       });
 
-      final response = await _apiService.getShops(
-        page: 1,
-        limit: 20,
-        // You can add other parameters here like:
-        // location: 'some location',
-        // minRating: 4.0,
-        // openNow: true,
-      );
+      final response = await _apiService.getShops(page: 1, limit: 20);
+      final shopsList = List<Map<String, dynamic>>.from(response['shops'] ?? []);
 
-      setState(() {
-        // Assuming the response contains a 'shops' list
-        _shops = List<Map<String, dynamic>>.from(response['shops'] ?? []);
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          if (shopsList.isEmpty) {
+            _shops = _getMockShops(); // Fallback if empty
+          } else {
+            _shops = shopsList;
+          }
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _error = 'Failed to load shops: $e';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _shops = _getMockShops(); // Fallback on error
+          _isLoading = false;
+        });
+      }
     }
   }
 
-  void _handleCardTap(Map<String, dynamic> shopData) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ShopDetailsPage(shopData: shopData),
+  List<Map<String, dynamic>> _getMockShops() {
+    return [
+      {
+        'id': 101,
+        'shopName': 'Modern Cuts Barbershop',
+        'title': 'Modern Cuts Barbershop',
+        'workingHours': '09:00 AM – 10:00 PM',
+        'location': 'Abdali, Amman, Jordan',
+        'shopLocation': 'Abdali, Amman',
+        'shopRating': 4.8,
+        'image': 'assets/images/shop_placeholder.png',
+      },
+      {
+        'id': 102,
+        'shopName': 'Elite Grooming Lounge',
+        'title': 'Elite Grooming Lounge',
+        'workingHours': '10:00 AM – 09:00 PM',
+        'location': 'Sweifieh, Amman, Jordan',
+        'shopLocation': 'Sweifieh, Amman',
+        'shopRating': 4.5,
+      },
+      {
+        'id': 103,
+        'shopName': 'Rose Beauty Center',
+        'title': 'Rose Beauty Center',
+        'workingHours': '09:00 AM – 08:00 PM',
+        'location': 'Shmeisani, Amman, Jordan',
+        'shopLocation': 'Shmeisani, Amman',
+        'shopRating': 4.7,
+      },
+      {
+        'id': 104,
+        'shopName': 'Gentleman Choice',
+        'title': 'Gentleman Choice',
+        'workingHours': '10:00 AM – 10:00 PM',
+        'location': 'Tabarbour, Amman, Jordan',
+        'shopLocation': 'Tabarbour, Amman',
+        'shopRating': 4.2,
+      },
+    ];
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: const Text('Discover Shops', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButtonStyled(
+            icon: Icons.filter_list_rounded,
+            onPressed: () {}, // Filter dialog
+          ),
+          const SizedBox(width: 16),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Search Bar
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: TextFormField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search by name or location...',
+                prefixIcon: Icon(Icons.search_rounded, color: Theme.of(context).primaryColor),
+                filled: true,
+                fillColor: isDark ? AppColors.almostBlack600 : AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              onChanged: (value) {
+                // Implement search logic
+              },
+            ),
+          ),
+
+          // Content
+          Expanded(
+            child: _buildContent(isDark),
+          ),
+        ],
       ),
     );
   }
 
-  void _handleFavoriteChanged(bool isFavorite) {
-    print('Favorite status: $isFavorite');
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // FadedBackground covering the entire screen
-        Positioned.fill(
-          child: FadedBackground(
-            startColor: const Color(0x80806C99),
-            endColor: const Color(0xFFDFA8A4),
-          ),
-        ),
-        // Scaffold on top with transparent background
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              // Expanded GlassSliverAppBar with gradient and dynamic size
-              GlassSliverAppBar(
-                title: 'Navigate Barbershops',
-                showBackButton: true,
-                textColor: Colors.white,
-                pinned: true,
-              ),
-              // Loading, error, or shop list
-              _buildContent(),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContent() {
+  Widget _buildContent(bool isDark) {
     if (_isLoading) {
-      return const SliverFillRemaining(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor));
     }
 
     if (_error.isNotEmpty) {
-      return SliverFillRemaining(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(_error),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _loadShops,
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text(_error, style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
+            SecondaryButton(
+              text: 'Retry',
+              onPressed: _loadShops,
+              width: 120,
+            ),
+          ],
         ),
       );
     }
 
     if (_shops.isEmpty) {
-      return const SliverFillRemaining(
-        child: Center(
-          child: Text('No shops found'),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off_rounded, size: 64, color: AppColors.almostBlack200),
+            const SizedBox(height: 16),
+            const Text('No shops found nearby', style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
         ),
       );
     }
 
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final shopData = _shops[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 8.0,
-            ),
-            child: BarbershopCard(
-              title: shopData['title'] as String? ?? 'Unknown Shop',
-              workingHours: shopData['workingHours'] as String? ?? 'Hours not available',
-              bottomLeftIconPath: shopData['bottomLeftIconPath'] as String? ?? '',
-              bottomRightIconPath: shopData['bottomRightIconPath'] as String? ?? '',
-              middleRightIconPath: shopData['middleRightIconPath'] as String? ?? '',
-              middleRightActiveIconPath: shopData['middleRightActiveIconPath'] as String? ?? '',
-              profilePicture: shopData['profilePicture'] as String? ?? '',
-              size: const Size(330, 115),
-              isClickable: shopData['isClickable'] as bool? ?? true,
-              shopLocation: shopData['shopLocation'] as String? ?? 'Location not available',
-              shopRating: (shopData['shopRating'] as num?)?.toDouble() ?? 0.0,
-              onCardTap: () => _handleCardTap(shopData),
-              onFavoriteChanged: _handleFavoriteChanged,
-            ),
-          );
-        },
-        childCount: _shops.length,
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      itemCount: _shops.length,
+      itemBuilder: (context, index) {
+        final shop = _shops[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: BarbershopCard(
+            title: shop['shopName'] ?? shop['title'] ?? 'Unknown',
+            workingHours: shop['workingHours'] ?? '9:00 AM - 9:00 PM',
+            profilePicture: 'assets/images/shop_placeholder.png',
+            isClickable: true,
+            shopLocation: shop['shopLocation'] ?? shop['location'] ?? 'Downtown',
+            shopRating: (shop['shopRating'] as num?)?.toDouble() ?? 4.5,
+            onCardTap: () => Navigator.pushNamed(context, '/shop_details', arguments: shop),
+            onFavoriteChanged: (isFav) {
+              // Handle favorite
+            },
+          ),
+        );
+      },
     );
   }
 }

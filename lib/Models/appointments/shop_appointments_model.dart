@@ -44,8 +44,8 @@ class ShopAppointment {
   factory ShopAppointment.fromJson(Map<String, dynamic> json) {
     return ShopAppointment(
       id: json['id']?.toString() ?? '',
-      customerId: json['customer'] as int,
-      shopId: json['shop'] as int,
+      customerId: json['customer'] as int? ?? 0,
+      shopId: json['shop'] as int? ?? 0,
       barberId: json['barber'] as int?,
       startTime: DateTime.parse(json['start_time'] as String),
       endTime: DateTime.parse(json['end_time'] as String),

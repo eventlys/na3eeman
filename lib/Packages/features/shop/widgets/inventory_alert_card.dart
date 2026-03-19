@@ -1,195 +1,105 @@
-// lib/Widgets/Inventory/inventory_alert_card.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../../../Helpers/inventory_helpers.dart';
-import '../../../../Providers/main_providers.dart';
-import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
-import '../../../Core/utils/formatters.dart';
-
+import '../../../../core/theme/colors.dart';
 
 class InventoryAlertCard extends StatelessWidget {
-  final VoidCallback onViewAll;
-  final int? shopId;
-
-  const InventoryAlertCard({
-    super.key,
-    required this.onViewAll,
-    this.shopId,
-  });
+  const InventoryAlertCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<InventoryProvider>(
-      builder: (context, inventoryProvider, child) {
-        final lowStockItems = inventoryProvider.lowStockItems;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-        return Card(
-          elevation: 4,
-          color: AppColor.lightCard,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Inventory Alerts',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.lightText,
-                      ),
-                    ),
-                    Badge(
-                      backgroundColor: AppColor.lightError,
-                      label: Text(lowStockItems.length.toString()),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (inventoryProvider.isLoading)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColor.loadingPrimaryLight),
-                      ),
-                    ),
-                  )
-                else if (inventoryProvider.error != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          AppImages.error,
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Error loading inventory data',
-                          style: TextStyle(
-                            color: AppColor.lightError,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else if (lowStockItems.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          AppImages.check,
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'No low stock items',
-                          style: TextStyle(
-                            color: AppColor.lightTextHint,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  ...lowStockItems.take(3).map((item) => _buildInventoryItem(item)),
-                if (lowStockItems.length > 3)
-                  TextButton(
-                    onPressed: onViewAll,
-                    child: Text(
-                      'View all ${lowStockItems.length} items',
-                      style: TextStyle(
-                        color: AppColor.lightPrimary,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+    final items = [
+      {'name': 'Aftershave Gel', 'stock': 2, 'min': 10},
+      {'name': 'Shaving Cream', 'stock': 5, 'min': 20},
+      {'name': 'Disposable Razors', 'stock': 12, 'min': 50},
+    ];
 
-  Widget _buildInventoryItem(Map<String, dynamic> item) {
-    final name = item['name'] ?? item['product_name'] ?? 'Unknown Item';
-    final currentStock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
-    final minStockLevel = item['min_stock_level'] ?? 3;
-    final category = item['category'];
-    final price = item['price'];
-
-    final isCritical = InventoryHelpers.isCriticalStock(currentStock, minStockLevel);
-
-    return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColor.lightPrimary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Image.asset(
-          AppImages.inventory,
-          width: 20,
-          height: 20,
-          color: AppColor.lightPrimary,
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
         ),
       ),
-      title: Text(
-        name,
-        style: TextStyle(
-          color: AppColor.lightText,
-        ),
-      ),
-      subtitle: Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                isCritical ? AppImages.warning : AppImages.warning_view,
-                width: 16,
-                height: 16,
-                color: isCritical ? AppColor.lightError : AppColor.lightWarning,
+              const Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: AppColors.error),
+                  SizedBox(width: 8),
+                  Text(
+                    'Low Stock Alerts',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
-              const SizedBox(width: 4),
-              Text(
-                'Stock: $currentStock (Min: $minStockLevel)',
-                style: TextStyle(
-                  color: isCritical
-                    ? AppColor.lightError
-                    : AppColor.lightWarning,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${items.length}',
+                  style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
-          if (category != null)
-            Text(
-              'Category: $category',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColor.lightTextSecondary,
-              ),
+          const SizedBox(height: 20),
+          ...items.map((item) => _buildItemRow(item, isDark, context)),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () {},
+              child: Text('Manage Inventory', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
             ),
+          ),
         ],
       ),
-      trailing: price != null ? Text(
-        Formatters.formatCurrency(price),
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: AppColor.lightPrimary,
-        ),
-      ) : null,
+    );
+  }
+
+  Widget _buildItemRow(Map<String, dynamic> item, bool isDark, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.inventory_2_rounded, color: Theme.of(context).primaryColor, size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['name'] as String,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Stock: ${item['stock']} (Min: ${item['min']})',
+                  style: const TextStyle(color: AppColors.error, fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right_rounded, color: AppColors.almostBlack200),
+        ],
+      ),
     );
   }
 }
-

@@ -1,7 +1,7 @@
 // lib/services/api/api_interceptor_service.dart
 import '../storage_service.dart';
 import 'api_service.dart';
-import '../../helpers/logger.dart';
+import '../../Helpers/logger.dart';
 
 class ApiInterceptorService {
   final ApiService _apiService;
@@ -37,7 +37,9 @@ class ApiInterceptorService {
 
   // ========== AUTH INTERCEPTION ==========
 
-  Future<Map<String, String>> interceptHeaders(Map<String, String> headers) async {
+  Future<Map<String, String>> interceptHeaders(
+    Map<String, String> headers,
+  ) async {
     // Add auth token
     final token = await _secureStorage.getAuthToken();
     if (token != null) {
@@ -144,7 +146,8 @@ class ApiInterceptorService {
   Duration getWaitTime(String endpoint) {
     final generalWait = _generalLimiter.getTimeUntilNextRequest('general');
     final endpointLimiter = _endpointLimiters[endpoint];
-    final endpointWait = endpointLimiter?.getTimeUntilNextRequest(endpoint) ?? Duration.zero;
+    final endpointWait =
+        endpointLimiter?.getTimeUntilNextRequest(endpoint) ?? Duration.zero;
 
     return generalWait > endpointWait ? generalWait : endpointWait;
   }
@@ -184,13 +187,16 @@ class ApiInterceptorService {
     dynamic responseData,
     String? error,
   }) {
-    AppLogger.info('API Call: $method $endpoint', extra: {
-      'status_code': statusCode,
-      'duration_ms': durationMs,
-      'request_data': requestData,
-      'response_data': responseData,
-      'error': error,
-    });
+    AppLogger.info(
+      'API Call: $method $endpoint',
+      extra: {
+        'status_code': statusCode,
+        'duration_ms': durationMs,
+        'request_data': requestData,
+        'response_data': responseData,
+        'error': error,
+      },
+    );
   }
 
   // Domain-specific logging methods
@@ -200,11 +206,14 @@ class ApiInterceptorService {
     required int statusCode,
     dynamic additionalData,
   }) {
-    AppLogger.debug('Appointment API: $action', extra: {
-      'appointment_id': appointmentId,
-      'status_code': statusCode,
-      'additional_data': additionalData,
-    });
+    AppLogger.debug(
+      'Appointment API: $action',
+      extra: {
+        'appointment_id': appointmentId,
+        'status_code': statusCode,
+        'additional_data': additionalData,
+      },
+    );
   }
 
   void logPaymentApiCall({
@@ -214,12 +223,15 @@ class ApiInterceptorService {
     required double amount,
     String? method,
   }) {
-    AppLogger.debug('Payment API: $action', extra: {
-      'payment_id': paymentId,
-      'status_code': statusCode,
-      'amount': amount,
-      'method': method,
-    });
+    AppLogger.debug(
+      'Payment API: $action',
+      extra: {
+        'payment_id': paymentId,
+        'status_code': statusCode,
+        'amount': amount,
+        'method': method,
+      },
+    );
   }
 
   void logLoyaltyApiCall({
@@ -228,11 +240,10 @@ class ApiInterceptorService {
     required int points,
     required String source,
   }) {
-    AppLogger.debug('Loyalty API: $action', extra: {
-      'customer_id': customerId,
-      'points': points,
-      'source': source,
-    });
+    AppLogger.debug(
+      'Loyalty API: $action',
+      extra: {'customer_id': customerId, 'points': points, 'source': source},
+    );
   }
 
   // ========== COMPOSED METHODS ==========
@@ -245,15 +256,16 @@ class ApiInterceptorService {
     Map<String, String>? headers,
     bool requireAuth = true,
     bool checkRateLimit = true,
-  })
-  async {
+  }) async {
     final stopwatch = Stopwatch()..start();
 
     try {
       // Check rate limiting
       if (checkRateLimit && !canCallEndpoint(endpoint)) {
         final waitTime = getWaitTime(endpoint);
-        throw Exception('Rate limit exceeded. Try again in ${waitTime.inSeconds} seconds');
+        throw Exception(
+          'Rate limit exceeded. Try again in ${waitTime.inSeconds} seconds',
+        );
       }
 
       // Prepare headers
@@ -269,16 +281,16 @@ class ApiInterceptorService {
       dynamic response;
       switch (method.toLowerCase()) {
         case 'get':
-          response = await _apiService.get(endpoint, headers: finalHeaders);
+          response = await _apiService.get(endpoint);
           break;
         case 'post':
-          response = await _apiService.post(endpoint, data: data, headers: finalHeaders);
+          response = await _apiService.post(endpoint, data: data);
           break;
         case 'put':
-          response = await _apiService.put(endpoint, data: data, headers: finalHeaders);
+          response = await _apiService.put(endpoint, data: data);
           break;
         case 'delete':
-          response = await _apiService.delete(endpoint, headers: finalHeaders);
+          response = await _apiService.delete(endpoint);
           break;
         default:
           throw Exception('Unsupported HTTP method: $method');
@@ -296,7 +308,6 @@ class ApiInterceptorService {
       );
 
       return {'success': true, 'data': response};
-
     } catch (error) {
       final durationMs = stopwatch.elapsedMilliseconds;
 
@@ -343,8 +354,8 @@ class ApiInterceptorService {
 
   bool _isUnauthorizedError(dynamic error) {
     return error.toString().contains('401') ||
-           error.toString().contains('unauthorized') ||
-           error.toString().contains('Invalid token');
+        error.toString().contains('unauthorized') ||
+        error.toString().contains('Invalid token');
   }
 }
 
@@ -354,11 +365,9 @@ class RateLimiter {
   final Duration _timeWindow;
   final int _maxRequests;
 
-  RateLimiter({
-    required Duration timeWindow,
-    required int maxRequests,
-  })  : _timeWindow = timeWindow,
-        _maxRequests = maxRequests;
+  RateLimiter({required Duration timeWindow, required int maxRequests})
+    : _timeWindow = timeWindow,
+      _maxRequests = maxRequests;
 
   bool canMakeRequest(String endpoint) {
     _cleanOldRequests(endpoint);
@@ -388,7 +397,9 @@ class RateLimiter {
     final nextAvailableTime = oldestRequest.add(_timeWindow);
     final now = DateTime.now();
 
-    return nextAvailableTime.isAfter(now) ? nextAvailableTime.difference(now) : Duration.zero;
+    return nextAvailableTime.isAfter(now)
+        ? nextAvailableTime.difference(now)
+        : Duration.zero;
   }
 
   void _cleanOldRequests(String endpoint) {

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
 import '../constants/app_color.dart';
 
 enum ButtonVariant { filled, outlined, text }
 
-class PrimaryButton extends StatelessWidget {
+class PrimaryButton extends StatefulWidget {
   final String text;
-  final VoidCallback? onPressed; // Make it nullable
+  final VoidCallback? onPressed;
   final Future<void> Function()? onPressedAsync;
   final bool showLeftIcon;
   final bool showRightIcon;
@@ -16,117 +15,176 @@ class PrimaryButton extends StatelessWidget {
   final Color textColor;
   final ButtonVariant variant;
   final bool isLoading;
+  final double? width;
+  final double height;
 
   const PrimaryButton({
     super.key,
     required this.text,
-    this.onPressed, // Remove required and make nullable
+    this.onPressed,
     this.onPressedAsync,
     this.showLeftIcon = false,
     this.showRightIcon = false,
     this.leftIcon,
     this.rightIcon,
-    this.buttonColor = AppColor.primary,
-    this.textColor = AppColor.light,
+    this.buttonColor = AppColor.primaryOrange,
+    this.textColor = AppColor.white,
     this.variant = ButtonVariant.filled,
     this.isLoading = false,
+    this.width,
+    this.height = 52,
   }) : assert(onPressed != null || onPressedAsync != null,
           'Either onPressed or onPressedAsync must be provided');
 
+  @override
+  State<PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<PrimaryButton>
+    with SingleTickerProviderStateMixin {
+  bool _isPressed = false;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Future<void> _handlePress() async {
-    if (onPressedAsync != null) {
-      await onPressedAsync!();
-    } else if (onPressed != null) {
-      onPressed!();
+    if (widget.isLoading) return;
+
+    if (widget.onPressedAsync != null) {
+      await widget.onPressedAsync!();
+    } else if (widget.onPressed != null) {
+      widget.onPressed!();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isLoading ? null : (onPressedAsync != null ? _handlePress : onPressed),
-      style: _getButtonStyle(context),
-      child: isLoading
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(AppColor.light),
-              ),
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (showLeftIcon && leftIcon != null)
-                  Icon(leftIcon, size: 20, color: _getIconColor()),
-                if (showLeftIcon && leftIcon != null)
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Colors based on variant
+    Color bgColor;
+    Color contentColor;
+    Color borderColor;
+
+    switch (widget.variant) {
+      case ButtonVariant.filled:
+        bgColor = widget.buttonColor;
+        contentColor = widget.textColor;
+        borderColor = Colors.transparent;
+        break;
+      case ButtonVariant.outlined:
+        bgColor = Colors.transparent;
+        contentColor = widget.buttonColor;
+        borderColor = widget.buttonColor;
+        break;
+      case ButtonVariant.text:
+        bgColor = Colors.transparent;
+        contentColor = widget.buttonColor;
+        borderColor = Colors.transparent;
+        break;
+    }
+
+    return GestureDetector(
+      onTapDown: (_) {
+        if (!widget.isLoading) {
+          setState(() => _isPressed = true);
+          _controller.forward();
+        }
+      },
+      onTapUp: (_) {
+        if (!widget.isLoading) {
+          setState(() => _isPressed = false);
+          _controller.reverse();
+          _handlePress();
+        }
+      },
+      onTapCancel: () {
+        if (!widget.isLoading) {
+          setState(() => _isPressed = false);
+          _controller.reverse();
+        }
+      },
+      child: AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) => Transform.scale(
+          scale: _scaleAnimation.value,
+          child: child,
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          width: widget.width,
+          height: widget.height,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(26),
+            border: borderColor != Colors.transparent
+                ? Border.all(color: borderColor, width: 1.5)
+                : null,
+            boxShadow: widget.variant == ButtonVariant.filled && !_isPressed
+                ? [
+                    BoxShadow(
+                      color: widget.buttonColor.withOpacity(0.3),
+                      offset: const Offset(0, 4),
+                      blurRadius: 12,
+                    ),
+                  ]
+                : [],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.isLoading)
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    valueColor: AlwaysStoppedAnimation<Color>(contentColor),
+                  ),
+                )
+              else ...[
+                if (widget.showLeftIcon && widget.leftIcon != null) ...[
+                  Icon(widget.leftIcon, size: 20, color: contentColor),
                   const SizedBox(width: 8),
+                ],
                 Text(
-                  text,
+                  widget.text,
                   style: TextStyle(
-                    color: _getTextColor(),
+                    color: contentColor,
                     fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    letterSpacing: 0.3,
                   ),
                 ),
-                if (showRightIcon && rightIcon != null)
+                if (widget.showRightIcon && widget.rightIcon != null) ...[
                   const SizedBox(width: 8),
-                if (showRightIcon && rightIcon != null)
-                  Icon(rightIcon, size: 20, color: _getIconColor()),
+                  Icon(widget.rightIcon, size: 20, color: contentColor),
+                ],
               ],
-            ),
+            ],
+          ),
+        ),
+      ),
     );
-  }
-
-  ButtonStyle _getButtonStyle(BuildContext context) {
-    switch (variant) {
-      case ButtonVariant.filled:
-        return ElevatedButton.styleFrom(
-          backgroundColor: buttonColor,
-          foregroundColor: textColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      case ButtonVariant.outlined:
-        return ElevatedButton.styleFrom(
-          backgroundColor: AppColor.trans,
-          foregroundColor: buttonColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: buttonColor, width: 2),
-          ),
-        );
-      case ButtonVariant.text:
-        return ElevatedButton.styleFrom(
-          backgroundColor: AppColor.trans,
-          foregroundColor: buttonColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          elevation: 0,
-        );
-    }
-  }
-
-  Color _getTextColor() {
-    switch (variant) {
-      case ButtonVariant.filled:
-        return textColor;
-      case ButtonVariant.outlined:
-      case ButtonVariant.text:
-        return buttonColor;
-    }
-  }
-
-  Color _getIconColor() {
-    switch (variant) {
-      case ButtonVariant.filled:
-        return textColor;
-      case ButtonVariant.outlined:
-      case ButtonVariant.text:
-        return buttonColor;
-    }
   }
 }
 
@@ -147,8 +205,8 @@ class ButtonStyles {
       showRightIcon: showRightIcon,
       leftIcon: leftIcon,
       rightIcon: rightIcon,
-      buttonColor: AppColor.primary,
-      textColor: AppColor.light,
+      buttonColor: AppColor.primaryOrange,
+      textColor: AppColor.white,
       variant: ButtonVariant.filled,
       isLoading: isLoading,
     );
@@ -170,8 +228,8 @@ class ButtonStyles {
       showRightIcon: showRightIcon,
       leftIcon: leftIcon,
       rightIcon: rightIcon,
-      buttonColor: AppColor.primary,
-      textColor: AppColor.primary,
+      buttonColor: AppColor.primaryOrange,
+      textColor: AppColor.primaryOrange,
       variant: ButtonVariant.outlined,
       isLoading: isLoading,
     );
@@ -185,8 +243,8 @@ class ButtonStyles {
     return PrimaryButton(
       text: text,
       onPressed: onPressed,
-      buttonColor: AppColor.lightSuccess,
-      textColor: AppColor.light,
+      buttonColor: AppColor.success,
+      textColor: AppColor.white,
       variant: ButtonVariant.filled,
       isLoading: isLoading,
     );
@@ -200,8 +258,8 @@ class ButtonStyles {
     return PrimaryButton(
       text: text,
       onPressed: onPressed,
-      buttonColor: AppColor.lightError,
-      textColor: AppColor.light,
+      buttonColor: AppColor.error,
+      textColor: AppColor.white,
       variant: ButtonVariant.filled,
       isLoading: isLoading,
     );

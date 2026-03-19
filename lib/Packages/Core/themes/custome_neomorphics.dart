@@ -17,24 +17,19 @@ class CustomNeumorphicIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      width: size + 8,
-      height: size + 8,
+      width: size + 12,
+      height: size + 12,
       decoration: BoxDecoration(
-        color: AppColor.lightCard.withValues(alpha: 0.70),
+        color: isDark ? AppColor.darkCard : AppColor.paleGray,
         shape: BoxShape.circle,
         boxShadow: [
-          // Dark shadow
           BoxShadow(
-            color: AppColor.dark.withValues(alpha: 0.2),
-            blurRadius: depth * 2,
-            offset: Offset(depth, depth),
-          ),
-          // Light shadow
-          BoxShadow(
-            color: AppColor.light.withValues(alpha: 0.8),
-            blurRadius: depth * 2,
-            offset: Offset(-depth, -depth),
+            color: Colors.black.withOpacity(isDark ? 0.15 : 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -67,18 +62,23 @@ class CustomNeumorphicContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        color: AppColor.lightCard.withValues(alpha: 0.70),
+        color: isDark ? AppColor.darkCard : AppColor.white,
+        border: Border.all(
+          color: isDark ? AppColor.ninjaDivider : AppColor.lightGray,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColor.primary.withValues(alpha: 0.4), // Approximating 0x6699806C which is #806C99 with 40% opacity
-            blurRadius: depth * 2,
-            offset: Offset(depth, depth),
-            spreadRadius: 0,
+            color: Colors.black.withOpacity(isDark ? 0.15 : 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -138,37 +138,21 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   late Animation<Offset> _slideAnimation;
   late Animation<double> _opacityAnimation;
 
-  // Helper method to get current theme brightness
   Brightness _getBrightness(BuildContext context) {
     return widget.brightness ?? Theme.of(context).brightness;
   }
 
-  // Get sphere color based on theme
   Color _getSphereColor(BuildContext context) {
     if (widget.sphereColor != null) return widget.sphereColor!;
-    
-    final brightness = _getBrightness(context);
-    return brightness == Brightness.dark 
-        ? AppColor.darkPrimary 
-        : AppColor.lightPrimary;
+    return AppColor.primaryOrange;
   }
 
-  // Get shadow color based on theme
   Color _getShadowColor(BuildContext context) {
     if (widget.shadowColor != null) return widget.shadowColor!;
-    
     final brightness = _getBrightness(context);
-    return brightness == Brightness.dark 
-        ? AppColor.dark.withValues(alpha: 0.4)
-        : AppColor.dark.withValues(alpha: 0.2);
-  }
-
-  // Get pressed shadow color based on theme
-  Color _getPressedShadowColor(BuildContext context) {
-    final brightness = _getBrightness(context);
-    return brightness == Brightness.dark 
-        ? AppColor.dark.withValues(alpha: 0.1)
-        : AppColor.dark.withValues(alpha: 0.05);
+    return brightness == Brightness.dark
+        ? Colors.black.withOpacity(0.3)
+        : AppColor.primaryOrange.withOpacity(0.25);
   }
 
   @override
@@ -180,7 +164,6 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
       vsync: this,
     );
 
-    // Setup animations based on type
     _setupAnimations();
 
     if (widget.isActive) {
@@ -225,7 +208,6 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
         _animationController.reverse();
       }
     } else {
-      // Instant state change without animation
       if (widget.isActive) {
         _animationController.value = 1.0;
       } else {
@@ -241,7 +223,6 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   }
 
   void _handleTap(BuildContext context) {
-    // Handle press feedback
     setState(() => _isPressed = true);
     Future.delayed(const Duration(milliseconds: 150), () {
       if (mounted) {
@@ -249,15 +230,12 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
       }
     });
 
-    // Execute custom onTap callback if provided
     widget.onTap?.call();
 
-    // Handle navigation if route provided
     if (widget.navigationRoute != null) {
       _handleNavigation(context);
     }
 
-    // Notify parent about active state change if callback provided
     if (!widget.isActive && widget.onActiveChanged != null) {
       widget.onActiveChanged!(true);
     }
@@ -265,14 +243,12 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
 
   void _handleNavigation(BuildContext context) {
     if (widget.isActive) {
-      // If already active, refresh/replace current route
       Navigator.pushReplacementNamed(
         context,
         widget.navigationRoute!,
         arguments: widget.navigationArguments,
       );
     } else {
-      // If not active, navigate to new route
       if (widget.navigationArguments != null) {
         Navigator.pushNamed(
           context,
@@ -288,7 +264,6 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   Widget _buildAnimatedSphere(BuildContext context) {
     final sphereColor = _getSphereColor(context);
     final shadowColor = _getShadowColor(context);
-    final pressedShadowColor = _getPressedShadowColor(context);
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -313,26 +288,17 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
       child: Container(
         width: widget.size,
         height: widget.size,
-        decoration: ShapeDecoration(
+        decoration: BoxDecoration(
           color: sphereColor,
-          shape: const OvalBorder(),
-          shadows: _isPressed
-              ? [
-                  BoxShadow(
-                    color: pressedShadowColor,
-                    blurRadius: 5,
-                    offset: const Offset(2, 2),
-                    spreadRadius: -2,
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: shadowColor,
-                    blurRadius: 15,
-                    offset: const Offset(4, 4),
-                    spreadRadius: 1,
-                  ),
-                ],
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: shadowColor,
+              blurRadius: _isPressed ? 4 : 12,
+              offset: const Offset(0, 4),
+              spreadRadius: _isPressed ? -2 : 0,
+            ),
+          ],
         ),
       ),
     );
@@ -341,7 +307,8 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   @override
   Widget build(BuildContext context) {
     final isActive = widget.isActive;
-    final currentIconPath = isActive ? widget.activeIconPath : widget.inactiveIconPath;
+    final currentIconPath =
+        isActive ? widget.activeIconPath : widget.inactiveIconPath;
     final currentIconSize = isActive ? widget.iconSize + 10 : widget.iconSize;
 
     return GestureDetector(
@@ -352,10 +319,7 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Neomorphic Sphere (only visible when active)
           if (isActive) _buildAnimatedSphere(context),
-
-          // Icon (always visible)
           Image.asset(
             currentIconPath,
             width: currentIconSize,
@@ -367,4 +331,3 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
     );
   }
 }
-

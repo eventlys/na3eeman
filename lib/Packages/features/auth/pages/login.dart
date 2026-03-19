@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../../helpers/login_helper.dart';
+import '../../../../Helpers/login_helper.dart';
 import '../../../../Services/ui/navigation_service.dart';
-import '../../../Core/backgrounds/floating_bg.dart';
-import '../../../Core/backgrounds/bg_icon.dart';
-import '../../../Core/themes/button_theme.dart';
-import '../../../Core/widgets/common/text_links.dart';
-import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/enums/app_enums.dart';
+import '../../../../Providers/app_providers.dart';
+import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,7 +16,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final LoginHelper _loginHelper = LoginHelper();
@@ -26,27 +26,47 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   String _errorMessage = '';
   bool _obscurePassword = true;
+  bool _rememberMe = false;
+  int _selectedTab = 0; // 0 = Sign In, 1 = Sign Up
+
+  // Testing: selected gender for quick access
+  String _selectedGender = 'male';
+
+  late AnimationController _animController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
     _emailController.addListener(_clearError);
     _passwordController.addListener(_clearError);
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animController,
+      curve: Curves.easeOut,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animController,
+      curve: Curves.easeOutCubic,
+    ));
+    _animController.forward();
   }
 
   void _clearError() {
     if (_errorMessage.isNotEmpty) {
-      setState(() {
-        _errorMessage = '';
-      });
+      setState(() => _errorMessage = '');
     }
   }
 
-  Future<void> _handleLogin(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -55,592 +75,521 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final success = await authProvider.login(
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
       if (success && mounted) {
-        final userRole = authProvider.userType?.name.toLowerCase() ?? 'customer';
+        final userRole =
+            authProvider.userType?.name.toLowerCase() ?? 'customer';
+            
+        // ── Connect user gender to the Theme engine dynamically ──
+        final genderStr = authProvider.userGender?.name.toLowerCase() ?? 'male';
+        final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+        themeProvider.setGender(genderStr == 'female' ? UserGender.female : UserGender.male);
+        
         NavigationService.navigateToHomeBasedOnRole(context, userRole);
       } else if (mounted) {
-        setState(() {
-          _errorMessage = authProvider.error ?? 'Login failed. Please try again.';
-        });
+        setState(() => _errorMessage =
+            authProvider.error ?? 'Login failed. Please try again.');
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _errorMessage = _loginHelper.handleLoginError(e);
-        });
+        setState(() => _errorMessage = _loginHelper.handleLoginError(e));
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  Future<void> _handleSocialLogin(String provider, BuildContext context) async {
-    _loginHelper.getSocialLoginConfig(provider);
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = '';
-    });
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: SingleChildScrollView(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 20),
 
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-      final socialData = {
-        'email': 'social_$provider@example.com',
-        'name': '$provider User',
-        'social_id': '${provider}_123456',
-      };
-
-      final success = await authProvider.login(
-        socialProvider: provider,
-        socialData: socialData,
-      );
-
-      if (success && mounted) {
-        final userRole = authProvider.userType?.name.toLowerCase() ?? 'customer';
-        NavigationService.navigateToHomeBasedOnRole(context, userRole);
-      } else if (mounted) {
-        setState(() {
-          _errorMessage = 'Social login failed. Please try again.';
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = _loginHelper.handleLoginError(e);
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _handleTestLogin(BuildContext context, String role) {
-    _loginHelper.getRoleConfig(role);
-    NavigationService.navigateToHomeBasedOnRole(context, role);
-  }
-
-  Widget _buildRoleSelector() {
-    final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColor.borderLight.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: 'customer',
-          isExpanded: true,
-          items: _loginHelper.getAvailableRoles().map((String role) {
-            final config = _loginHelper.getRoleConfig(role);
-            return DropdownMenuItem<String>(
-              value: role,
-              child: Row(
-                children: [
-                  Icon(config['icon'], color: AppColor.lightTextHint),
-                  const SizedBox(width: 8),
-                  Text(
-                    config['name'],
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColor.lightText,
+                    // Logo / Scissors Icon
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.almostBlack600 : AppColors.cream200,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Image.asset(
+                            'assets/images/main_logo.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 32),
+
+                    // Welcome Title
+                    Text(
+                      'NA3EEMAN',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Professional Grooming Services',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: isDark ? AppColors.cream600 : AppColors.almostBlack400,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+
+                    // Tab Switcher (Sign in / Sign up) simplified
+                    Row(
+                      children: [
+                        _buildTab('SIGN IN', 0, isDark),
+                        _buildTab('SIGN UP', 1, isDark),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Email field
+                    Text(
+                      'Email Address',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your email',
+                        prefixIcon: Icon(Icons.email_outlined),
+                      ),
+                      validator: (v) => v!.isEmpty ? 'Enter email' : null,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Password field
+                    Text(
+                      'Password',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                          ),
+                          onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword),
+                        ),
+                      ),
+                      validator: (v) => v!.isEmpty ? 'Enter password' : null,
+                    ),
+
+                    // Error message
+                    if (_errorMessage.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.error.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.error),
+                        ),
+                        child: Text(
+                          _errorMessage,
+                          style: const TextStyle(
+                            color: AppColors.error,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 12),
+
+                    // Forgot Password & Remember me
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: Checkbox(
+                                value: _rememberMe,
+                                onChanged: (v) =>
+                                    setState(() => _rememberMe = v ?? false),
+                                activeColor: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Remember me'),
+                          ],
+                        ),
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/forgot-password'),
+                          child: const Text('Forgot password?'),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Sign In Button
+                    PrimaryButton(
+                      text: 'Sign In',
+                      onPressed: _handleLogin,
+                      isLoading: _isLoading,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // OR divider
+                    const Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text('OR'),
+                        ),
+                        Expanded(child: Divider()),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Social Login Mock
+                    SecondaryButton(
+                      text: 'Continue with Phone',
+                      icon: Icons.phone_android_rounded,
+                      onPressed: () {}, // Planned feature
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Sign up prompt
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account? "),
+                        GestureDetector(
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/signup'),
+                          child: const Text(
+                            'Sign up',
+                            style: TextStyle(
+                              color: AppColors.pink,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+                    _buildTestingSection(isDark),
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            // Role selection for testing
-          },
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTestButtons(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _buildTab(String text, int index, bool isDark) {
+    final isSelected = _selectedTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() => _selectedTab = index);
+          if (index == 1) {
+            Navigator.pushNamed(context, '/signup');
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+                width: 3,
+              ),
+            ),
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isSelected ? Theme.of(context).primaryColor : AppColors.almostBlack300,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // TESTING QUICK ACCESS SECTION (Real Login)
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildTestingSection(bool isDark) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 20),
+        // Divider with label
+        Row(
+          children: [
+            Expanded(
+              child: Divider(
+                color: isDark ? AppColors.almostBlack600 : AppColors.cream600,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                'Quick Access (Fast Login)',
+                style: TextStyle(
+                  color: AppColors.almostBlack400,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Divider(
+                color: isDark ? AppColors.almostBlack600 : AppColors.cream600,
+              ),
+            ),
+          ],
+        ),
+        // User Gender Toggle
+        Center(
+          child: ToggleButtons(
+            borderRadius: BorderRadius.circular(8),
+            isSelected: [_selectedGender == 'male', _selectedGender == 'female'],
+            onPressed: (index) {
+              setState(() {
+                _selectedGender = index == 0 ? 'male' : 'female';
+              });
+            },
+            children: const [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text('Male'),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text('Female'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // User Type buttons
         Text(
-          'Quick Test:',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+          'Fast Login as',
+          style: TextStyle(
+            color: isDark ? AppColors.cream200 : AppColors.almostBlack600,
+            fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: _loginHelper.getAvailableRoles().map((role) {
-            final config = _loginHelper.getRoleConfig(role);
-            final roleColor = _getRoleColor(role, isDark);
-            return OutlinedButton(
-              onPressed: () => _handleTestLogin(context, role),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: roleColor,
-                side: BorderSide(color: roleColor),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(config['icon'], size: 16),
-                  const SizedBox(width: 4),
-                  Text(role.toUpperCase()),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
 
-  Color _getRoleColor(String role, bool isDark) {
-    switch (role) {
-      case 'barber':
-        return isDark ? AppColor.darkBarber : AppColor.lightBarber;
-      case 'manager':
-        return isDark ? AppColor.darkManager : AppColor.lightManager;
-      case 'assistant':
-        return isDark ? AppColor.darkAssistant : AppColor.lightAssistant;
-      case 'receptionist':
-        return isDark ? AppColor.darkReceptionist : AppColor.lightReceptionist;
-      default:
-        return isDark ? AppColor.darkPrimary : AppColor.primary;
-    }
-  }
-
-  Widget _buildSocialButton(String provider) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final config = _getSocialConfig(provider, isDark);
-    return _SocialButton(
-      onTap: () => _handleSocialLogin(provider, context),
-      icon: config['icon'],
-      color: config['color'],
-      iconColor: config['iconColor'],
-      borderColor: config['borderColor'],
-    );
-  }
-
-  Map<String, dynamic> _getSocialConfig(String provider, bool isDark) {
-    switch (provider) {
-      case 'Google':
-        return {
-          'icon': Icons.g_mobiledata,
-          'color': isDark ? AppColor.darkCard : AppColor.light,
-          'iconColor': isDark ? AppColor.darkText : AppColor.lightError,
-          'borderColor': isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-        };
-      case 'Facebook':
-        return {
-          'icon': Icons.facebook,
-          'color': isDark ? AppColor.darkInfo : AppColor.lightInfo,
-          'iconColor': AppColor.light,
-          'borderColor': Colors.transparent,
-        };
-      case 'Apple':
-        return {
-          'icon': Icons.apple,
-          'color': isDark ? AppColor.darkText : AppColor.lightText,
-          'iconColor': isDark ? AppColor.darkBackground : AppColor.lightBackground,
-          'borderColor': isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-        };
-      default:
-        return {
-          'icon': Icons.login,
-          'color': isDark ? AppColor.darkCard : AppColor.lightCard,
-          'iconColor': isDark ? AppColor.darkText : AppColor.lightText,
-          'borderColor': isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-        };
-    }
-  }
-
-  Widget _buildFloatingIcons() {
-    return Stack(
-      children: [
-        // Top left icon - Scissors
-        BgIcon(
-          iconPath: AppImages.scissors1,
-          blurLevel: 2.0,
-          size: 80,
-          rotationDegree: 15,
-          animationDuration: const Duration(seconds: 8),
-          startPosition: const Offset(-20, -20),
-          endPosition: const Offset(-10, -10),
-        ),
-        // Top right icon - Comb
-        BgIcon(
-          iconPath: AppImages.comb,
-          blurLevel: 1.5,
-          size: 60,
-          rotationDegree: -10,
-          animationDuration: const Duration(seconds: 6),
-          startPosition: const Offset(20, -30),
-          endPosition: const Offset(15, -20),
-        ),
-        // Bottom left icon - Razor
-        BgIcon(
-          iconPath: AppImages.razor,
-          blurLevel: 2.5,
-          size: 70,
-          rotationDegree: 8,
-          animationDuration: const Duration(seconds: 10),
-          startPosition: const Offset(-30, 30),
-          endPosition: const Offset(-25, 25),
-        ),
-        // Bottom right icon - Mirror
-        BgIcon(
-          iconPath: AppImages.mirror,
-          blurLevel: 1.8,
-          size: 90,
-          rotationDegree: -12,
-          animationDuration: const Duration(seconds: 7),
-          startPosition: const Offset(25, 25),
-          endPosition: const Offset(20, 20),
-        ),
-        // Center icon - Chair
-        BgIcon(
-          iconPath: AppImages.chair,
-          blurLevel: 3.0,
-          size: 50,
-          rotationDegree: 20,
-          animationDuration: const Duration(seconds: 9),
-          startPosition: const Offset(0, 0),
-          endPosition: const Offset(5, 5),
-        ),
-      ],
-    );
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    Size size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background with floating objects
-          FloatingBackground(
-            objectCount: 8,
-            objectType: 'circles',
-            colors: [
-              AppColor.primary.withValues(alpha: 0.2),
-              AppColor.secondary.withValues(alpha: 0.15),
-            ],
-            minSize: 40.0,
-            maxSize: 120.0,
-            child: Container(),
-          ),
-          
-          // Floating icons layer
-          _buildFloatingIcons(),
-
-          // Main content
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // App Logo
-                  Image.asset(
-                    AppImages.logo,
-                    height: 80,
-                    width: 80,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Email Field
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email Address',
-                      labelStyle: TextStyle(
-                        color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColor.borderLight),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColor.primary),
-                      ),
-                      prefixIcon: Icon(Icons.email, 
-                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-                      filled: true,
-                      fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    validator: _validateEmail,
-                    onChanged: (value) => _clearError(),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Password Field
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(
-                        color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColor.borderLight),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColor.primary),
-                      ),
-                      prefixIcon: Icon(Icons.lock, 
-                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
-                      filled: true,
-                      fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
-                    ),
-                    obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.done,
-                    validator: _validatePassword,
-                    onChanged: (value) => _clearError(),
-                    onFieldSubmitted: (value) => _handleLogin(context),
-                  ),
-
-                  // Role selector for testing
-                  if (_loginHelper.isDebugMode()) _buildRoleSelector(),
-
-                  // Error Message
-                  if (_errorMessage.isNotEmpty)
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(top: 16),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColor.darkError.withValues(alpha: 0.1) : AppColor.lightError.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDark ? AppColor.darkError.withValues(alpha: 0.3) : AppColor.lightError.withValues(alpha: 0.3)
-                        ),
-                      ),
-                      child: Text(
-                        _errorMessage,
-                        style: TextStyle(
-                          color: isDark ? AppColor.darkError : AppColor.lightError,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: 30),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextLink(
-                      link: '/forgot-password',
-                      text: 'Forgot Password?',
-                      color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // Login Button
-                  SizedBox(
-                    width: size.width * 0.8,
-                    child: PrimaryButton(
-                      text: 'Login',
-                      onPressed: _isLoading ? null : () => _handleLogin(context),
-                      showLeftIcon: true,
-                      leftIcon: Icons.login,
-                      isLoading: _isLoading,
-                      buttonColor: AppColor.primary,
-                      textColor: AppColor.light,
-                    ),
-                  ),
-
-                  // Sign up section
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Don\'t have an account? ',
-                        style: TextStyle(
-                          color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                          fontSize: 14,
-                        ),
-                      ),
-                      TextLink(
-                        link: '/signup',
-                        text: 'Signup',
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Divider
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'Or continue with',
-                          style: TextStyle(
-                            color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Social Login Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildSocialButton('Google'),
-                      const SizedBox(width: 20),
-                      _buildSocialButton('Facebook'),
-                      const SizedBox(width: 20),
-                      _buildSocialButton('Apple'),
-                    ],
-                  ),
-
-                  // Quick test buttons for different roles
-                  if (_loginHelper.isDebugMode()) _buildTestButtons(context),
-                ],
+        Row(
+          children: [
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Customer',
+                icon: Icons.person_outline_rounded,
+                role: 'customer',
+                isDark: isDark,
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _emailController.removeListener(_clearError);
-    _passwordController.removeListener(_clearError);
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-}
-
-class _SocialButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final IconData icon;
-  final Color color;
-  final Color iconColor;
-  final Color? borderColor;
-
-  const _SocialButton({
-    required this.onTap,
-    required this.icon,
-    required this.color,
-    required this.iconColor,
-    this.borderColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: borderColor != null ? Border.all(color: borderColor!) : null,
-          boxShadow: [
-            BoxShadow(
-              color: (isDark ? AppColor.dark : AppColor.lightText).withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Employee',
+                icon: Icons.content_cut_rounded,
+                role: 'employee',
+                isDark: isDark,
+              ),
             ),
           ],
         ),
-        child: Icon(
-          icon,
-          color: iconColor,
-          size: 24,
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Provider',
+                icon: Icons.storefront_rounded,
+                role: 'owner',
+                isDark: isDark,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Admin',
+                icon: Icons.admin_panel_settings_outlined,
+                role: 'admin',
+                isDark: isDark,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Intern',
+                icon: Icons.school_outlined,
+                role: 'intern',
+                isDark: isDark,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Receptionist',
+                icon: Icons.support_agent_outlined,
+                role: 'receptionist',
+                isDark: isDark,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRoleButton({
+    required String label,
+    required IconData icon,
+    required String role,
+    required bool isDark,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _quickAccessRole(role),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark ? AppColors.almostBlack500 : AppColors.cream400,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.15 : 0.04),
+                offset: const Offset(0, 2),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).primaryColor,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isDark ? AppColors.cream200 : AppColors.almostBlack600,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _quickAccessRole(String role) {
+    String prefix = _selectedGender == 'female' ? 'female_' : '';
+    String email = '${prefix}customer1@test.com';
+    switch (role.toLowerCase()) {
+      case 'admin':
+        email = 'admin@na3eeman.com';
+        break;
+      case 'owner':
+        email = '${prefix}owner1@test.com';
+        break;
+      case 'employee':
+        email = '${prefix}barber1@test.com';
+        break;
+      case 'intern':
+        email = '${prefix}intern1@test.com';
+        break;
+      case 'receptionist':
+        email = '${prefix}receptionist1@test.com';
+        break;
+    }
+    setState(() {
+      _emailController.text = email;
+      _passwordController.text = 'Password123!';
+    });
+    // Trigger standard login
+    _handleLogin();
   }
 }

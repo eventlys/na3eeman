@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../Core/constants/app_color.dart';
-import '../../../Core/themes/app_theme.dart';
-import '../../../Core/utils/helpers/themes_helpers.dart';
-import '../../../Core/widgets/base/error_boundary.dart';
-
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 
 class SoonestAppointmentCard extends StatefulWidget {
   final Function(Map<String, dynamic>)? onAppointmentDelayed;
   final Function(Map<String, dynamic>)? onAppointmentRescheduleNeeded;
-  final bool isDarkMode;
-  final UserGender? userGender;
 
   const SoonestAppointmentCard({
     super.key,
     this.onAppointmentDelayed,
     this.onAppointmentRescheduleNeeded,
-    this.isDarkMode = false,
-    this.userGender,
+    // Unused params kept for compatibility
+    bool isDarkMode = false,
+    dynamic userGender,
   });
 
   @override
@@ -39,26 +35,23 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
 
   Future<void> _loadSoonestAppointment() async {
     if (!mounted) return;
-    
+
     setState(() {
       _isLoading = true;
       _hasError = false;
     });
 
-    final businessService = _getBusinessService();
-    final authProvider = _getAuthProvider();
+    final appointmentProvider = context.read<AppointmentProvider>();
+    final authProvider = context.read<AuthProvider>();
 
-    if (authProvider?.user?['id'] == null) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    if (authProvider.user?.id == null) {
+      if (mounted) setState(() => _isLoading = false);
       return;
     }
 
     try {
-      final appointment = await businessService.getSoonestAppointment(authProvider!.user!['id']);
+      final appointment =
+          await appointmentProvider.getSoonestAppointment(authProvider.user!.id);
 
       if (mounted) {
         setState(() {
@@ -67,7 +60,6 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
         });
       }
     } catch (e) {
-      print('Error loading soonest appointment: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -82,16 +74,8 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
 
     final result = await showDialog<Duration>(
       context: context,
-      builder: (context) => Theme(
-        data: AppThemes.getGenderTheme(
-          widget.userGender ?? UserGender.male,
-          widget.isDarkMode,
-        ),
-        child: _DelayAppointmentDialog(
-          currentAppointment: _soonestAppointment!,
-          isDarkMode: widget.isDarkMode,
-          userGender: widget.userGender,
-        ),
+      builder: (context) => _DelayAppointmentDialog(
+        currentAppointment: _soonestAppointment!,
       ),
     );
 
@@ -104,452 +88,263 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
     if (_soonestAppointment == null) return;
 
     try {
-      // Use the helper to check if delay is possible
       if (SoonestAppointmentHelpers.canDelayAppointment(_soonestAppointment!, delay)) {
         final delayedAppointment = SoonestAppointmentHelpers.delayAppointment(
           _soonestAppointment!,
           delay,
         );
 
-        // Update the appointment via service
-        final businessService = _getBusinessService();
-        await businessService.rescheduleAppointment(
+        final appointmentProvider = context.read<AppointmentProvider>();
+        await appointmentProvider.rescheduleAppointment(
           delayedAppointment['id'] as String,
           DateTime.parse(delayedAppointment['dateTime'] as String),
           DateTime.parse(delayedAppointment['dateTime'] as String).add(const Duration(minutes: 30)),
         );
 
-        // Notify parent widget
         widget.onAppointmentDelayed?.call(delayedAppointment);
 
-        // Update local state
         setState(() {
           _soonestAppointment = delayedAppointment;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Appointment delayed by ${delay.inMinutes} minutes'),
-            backgroundColor: widget.isDarkMode ? AppColor.darkSuccess : AppColor.lightSuccess,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Appointment delayed by ${delay.inMinutes} minutes'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+        }
       } else {
-        // Delay not possible, need to reschedule
         widget.onAppointmentRescheduleNeeded?.call(_soonestAppointment!);
-
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Cannot delay. Please reschedule.'),
+              backgroundColor: AppColors.warning,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Cannot delay. Please reschedule your appointment.'),
-            backgroundColor: widget.isDarkMode ? AppColor.darkWarning : AppColor.lightWarning,
-            behavior: SnackBarBehavior.floating,
+          const SnackBar(
+            content: Text('Error updating appointment'),
+            backgroundColor: AppColors.error,
           ),
         );
       }
-    } catch (e) {
-      print('Error delaying appointment: $e');
+    }
+  }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error delaying appointment. Please try again.'),
-          backgroundColor: widget.isDarkMode ? AppColor.darkError : AppColor.lightError,
-          behavior: SnackBarBehavior.floating,
+  void _showAppointmentDetails(BuildContext context) {
+    if (_soonestAppointment == null) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         ),
-      );
-    }
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              _soonestAppointment!['shopName'] ?? 'Barber Shop',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            _buildDetailRow(context, Icons.access_time_filled, 'Time', SoonestAppointmentHelpers.formatAppointmentDateTime(_soonestAppointment!['dateTime'])),
+            const SizedBox(height: 12),
+            _buildDetailRow(context, Icons.person_rounded, 'Barber', _soonestAppointment!['barberName'] ?? 'Any available Specialist'),
+            const SizedBox(height: 12),
+            _buildDetailRow(context, Icons.cut_rounded, 'Service', _soonestAppointment!['serviceName'] ?? 'Haircut / Shave'),
+            const SizedBox(height: 12),
+            _buildDetailRow(context, Icons.payments_rounded, 'Price', '${_soonestAppointment!['price'] ?? '25'} JOD'),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: Colors.red),
+                    ),
+                    child: const Text('Cancel Appointment', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  void _callShop() {
-    if (_soonestAppointment != null) {
-      final phoneNumber = _soonestAppointment!['shopPhoneNumber'];
-      // You would typically use url_launcher here
-      print('Calling: $phoneNumber');
-      // Example: launchUrl(Uri.parse('tel:$phoneNumber'));
-    }
-  }
-
-  // Service and provider access methods
-  dynamic _getBusinessService() {
-    return context.read<AppointmentProvider>();
-  }
-
-  dynamic _getAuthProvider() {
-    try {
-      return context.read<dynamic>();
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Color _getCardColor() {
-    if (widget.userGender != null) {
-      switch (widget.userGender!) {
-        case UserGender.male:
-          return widget.isDarkMode ? AppColor.darkMaleBG.withValues(alpha: 0.1) : AppColor.lightMaleBG.withValues(alpha: 0.1);
-        case UserGender.female:
-          return widget.isDarkMode ? AppColor.darkFemaleBG.withValues(alpha: 0.1) : AppColor.lightFemaleBG.withValues(alpha: 0.1);
-        case UserGender.nonBinary:
-          return widget.isDarkMode ? AppColor.darkNonBinaryBG.withValues(alpha: 0.1) : AppColor.lightNonBinaryBG.withValues(alpha: 0.1);
-      }
-    }
-    return widget.isDarkMode ? AppColor.darkCard : AppColor.lightCard;
-  }
-
-  Color _getPrimaryColor() {
-    if (widget.userGender != null) {
-      switch (widget.userGender!) {
-        case UserGender.male:
-          return AppColor.maleAccent;
-        case UserGender.female:
-          return AppColor.femaleAccent;
-        case UserGender.nonBinary:
-          return AppColor.nonBinaryAccent;
-      }
-    }
-    return widget.isDarkMode ? AppColor.darkPrimary : AppColor.primary;
-  }
-
-  Color _getTextColor() {
-    return widget.isDarkMode ? AppColor.darkText : AppColor.lightText;
-  }
-
-  Color _getSecondaryTextColor() {
-    return widget.isDarkMode ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
-  }
-
-  Color _getBorderColor() {
-    return widget.isDarkMode ? AppColor.borderDark : AppColor.borderLight;
-  }
-
-  Color _getButtonBackgroundColor() {
-    return widget.isDarkMode ? AppColor.buttonBackgroundDark : AppColor.buttonBackgroundLight;
+  Widget _buildDetailRow(BuildContext context, IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            Text(value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          ],
+        )
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ErrorBoundary(
-      isDarkMode: widget.isDarkMode,
-      userGender: widget.userGender,
-      onRetry: _loadSoonestAppointment,
-      child: _buildCardContent(),
-    );
-  }
+    if (_isLoading) return const SizedBox.shrink();
+    if (_hasError || _soonestAppointment == null) return const SizedBox.shrink();
 
-  Widget _buildCardContent() {
-    if (_hasError) {
-      return _buildErrorCard();
-    }
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    if (_isLoading) {
-      return _buildLoadingCard();
-    }
-
-    if (_soonestAppointment == null) {
-      return _buildNoAppointmentCard();
-    }
-
-    return _buildAppointmentCard(_soonestAppointment!);
-  }
-
-  Widget _buildErrorCard() {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      elevation: 4,
-      color: _getCardColor(),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: _getBorderColor(),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? AppColors.white.withOpacity(0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+            offset: const Offset(0, 8),
+            blurRadius: 24,
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 48,
-              color: _getPrimaryColor(),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Failed to Load Appointment',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: _getTextColor(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Please try again',
-              style: TextStyle(
-                color: _getSecondaryTextColor(),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadSoonestAppointment,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _getPrimaryColor(),
-                foregroundColor: widget.isDarkMode ? AppColor.dark : AppColor.light,
-              ),
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingCard() {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      elevation: 4,
-      color: _getCardColor(),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: _getBorderColor(),
-          width: 1,
-        ),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 16),
-            Text('Loading appointment...'),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNoAppointmentCard() {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      elevation: 4,
-      color: _getCardColor(),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: _getBorderColor(),
-          width: 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Icon(
-              Icons.calendar_today,
-              size: 48,
-              color: _getSecondaryTextColor(),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'No Upcoming Appointments',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: _getSecondaryTextColor(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Book an appointment to see it here',
-              style: TextStyle(
-                color: _getSecondaryTextColor(),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAppointmentCard(Map<String, dynamic> appointment) {
-    final services = appointment['services'] as List<dynamic>? ?? [];
-    final primaryColor = _getPrimaryColor();
-
-    return Card(
-      color: _getCardColor(),
-      shadowColor: Colors.transparent,
-      margin: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: _getBorderColor(),
-          width: 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Next Appointment',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: _getTextColor(),
-                  ),
-                ),
-                Icon(
-                  Icons.access_time,
-                  color: primaryColor,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            // Appointment Details
-            _buildDetailRow(
-              Icons.calendar_today,
-              SoonestAppointmentHelpers.formatAppointmentDateTime(appointment['dateTime']),
-            ),
-            const SizedBox(height: 12),
-            _buildDetailRow(
-              Icons.attach_money,
-              'Total: ${SoonestAppointmentHelpers.formatPrice((appointment['totalPrice'] as num?)?.toDouble() ?? 0.0)}',
-            ),
-            const SizedBox(height: 12),
-            _buildDetailRow(
-              Icons.store,
-              appointment['shopName'] ?? 'Unknown Shop',
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: _callShop,
-              child: _buildDetailRow(
-                Icons.phone,
-                appointment['shopPhoneNumber'] ?? 'No phone number',
-                isClickable: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Services
-            if (services.isNotEmpty) ...[
-              Text(
-                'Services:',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: _getTextColor(),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 8,
-                runSpacing: 6,
-                children: services
-                    .map((service) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: _getButtonBackgroundColor(),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: primaryColor.withValues(alpha: 0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: Text(
-                            service.toString(),
-                            style: TextStyle(
-                              color: _getTextColor(),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ))
-                    .toList(),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Delay Button
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: ElevatedButton.icon(
-                  onPressed: _handleDelayAppointment,
-                  icon: Icon(Icons.schedule, size: 18, color: primaryColor),
-                  label: Text(
-                    'Delay Appointment',
-                    style: TextStyle(color: primaryColor),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shadowColor: Colors.transparent,
-                    backgroundColor: _getButtonBackgroundColor(),
-                    foregroundColor: primaryColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: primaryColor.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                    ),
+                child: const Text(
+                  'NEXT APPOINTMENT',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String text, {bool isClickable = false}) {
-    final primaryColor = _getPrimaryColor();
-    
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: primaryColor,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 15,
-              color: isClickable ? primaryColor : _getTextColor(),
-              fontWeight: isClickable ? FontWeight.w600 : FontWeight.normal,
-              decoration: isClickable ? TextDecoration.underline : TextDecoration.none,
+              Icon(Icons.calendar_month, color: Theme.of(context).primaryColor, size: 20),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _soonestAppointment!['shopName'] ?? 'Barber Shop',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(Icons.access_time_filled, size: 16, color: Theme.of(context).primaryColor),
+              const SizedBox(width: 8),
+              Text(
+                SoonestAppointmentHelpers.formatAppointmentDateTime(_soonestAppointment!['dateTime']),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _handleDelayAppointment,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text(
+                    'Delay',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => _showAppointmentDetails(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: AppColors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Details',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _DelayAppointmentDialog extends StatefulWidget {
   final Map<String, dynamic> currentAppointment;
-  final bool isDarkMode;
-  final UserGender? userGender;
 
-  const _DelayAppointmentDialog({
-    required this.currentAppointment,
-    required this.isDarkMode,
-    this.userGender,
-  });
+  const _DelayAppointmentDialog({required this.currentAppointment});
 
   @override
   State<_DelayAppointmentDialog> createState() => _DelayAppointmentDialogState();
@@ -558,137 +353,61 @@ class _DelayAppointmentDialog extends StatefulWidget {
 class _DelayAppointmentDialogState extends State<_DelayAppointmentDialog> {
   int _selectedMinutes = 5;
 
-  Color _getPrimaryColor() {
-    if (widget.userGender != null) {
-      switch (widget.userGender!) {
-        case UserGender.male:
-          return AppColor.maleAccent;
-        case UserGender.female:
-          return AppColor.femaleAccent;
-        case UserGender.nonBinary:
-          return AppColor.nonBinaryAccent;
-      }
-    }
-    return widget.isDarkMode ? AppColor.darkPrimary : AppColor.primary;
-  }
-
-  Color _getTextColor() {
-    return widget.isDarkMode ? AppColor.darkText : AppColor.lightText;
-  }
-
-  Color _getBackgroundColor() {
-    return widget.isDarkMode ? AppColor.darkCard : AppColor.lightCard;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final primaryColor = _getPrimaryColor();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Dialog(
-      backgroundColor: _getBackgroundColor(),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      backgroundColor: isDark ? AppColors.almostBlack600 : AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               'Delay Appointment',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _getTextColor(),
-              ),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Current time: ${SoonestAppointmentHelpers.formatAppointmentDateTime(widget.currentAppointment['dateTime'])}',
-              style: TextStyle(
-                color: _getTextColor(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Select delay duration:',
-              style: TextStyle(
-                color: _getTextColor(),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              decoration: BoxDecoration(
-                color: widget.isDarkMode ? AppColor.darkCard : AppColor.lightCard,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: primaryColor.withValues(alpha: 0.3),
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<int>(
-                  value: _selectedMinutes,
-                  isExpanded: true,
-                  dropdownColor: _getBackgroundColor(),
-                  items: [5, 10, 15]
-                      .map((minutes) => DropdownMenuItem(
-                            value: minutes,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(
-                                '$minutes minutes',
-                                style: TextStyle(
-                                  color: _getTextColor(),
-                                ),
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedMinutes = value!;
-                    });
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (_selectedMinutes == 15)
-              Text(
-                'Note: Delays longer than 15 minutes require rescheduling',
-                style: TextStyle(
-                  color: widget.isDarkMode ? AppColor.darkWarning : AppColor.lightWarning,
-                  fontSize: 12,
-                ),
-              ),
+            const Text('How many minutes would you like to delay your appointment by?'),
             const SizedBox(height: 24),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: _getTextColor(),
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [5, 10, 15].map((mins) {
+                final isSelected = _selectedMinutes == mins;
+                return GestureDetector(
+                  onTap: () => setState(() => _selectedMinutes = mins),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack400 : Theme.of(context).primaryColor.withValues(alpha: 0.05)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '$mins min',
+                      style: TextStyle(
+                        color: isSelected ? AppColors.white : (isDark ? AppColors.white : Theme.of(context).primaryColor),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context, Duration(minutes: _selectedMinutes)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: widget.isDarkMode ? AppColor.dark : AppColor.light,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: const Text('Delay Appointment'),
-                ),
-              ],
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 32),
+            PrimaryButton(
+              text: 'Confirm Delay',
+              onPressed: () => Navigator.pop(context, Duration(minutes: _selectedMinutes)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: isDark ? AppColors.cream400 : AppColors.almostBlack400),
+              ),
             ),
           ],
         ),

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../Helpers/profile_helper_functions.dart';
+// import '../../../../Helpers/profile_helper_functions.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../Core/backgrounds/bd_faded.dart';
-import '../../../Core/themes/glass_appbar.dart';
-import '../../navigation/widgets/custom_navigation_bar.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/profile_widgets.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -20,9 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isEditing = false;
   bool _isLoading = true;
   final _formKey = GlobalKey<FormState>();
-  final ScrollController _scrollController = ScrollController();
 
-  // Controllers for editable fields
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -38,20 +35,14 @@ class _ProfilePageState extends State<ProfilePage> {
     _fetchUserData();
   }
 
-
   Future<void> _fetchUserData() async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Get user data from AuthProvider
+      setState(() => _isLoading = true);
       final authProvider = context.read<AuthProvider>();
       
       if (authProvider.user != null) {
-        // Convert user object to map for the profile page
         final user = authProvider.user!;
-        final mockData = {
+        final data = {
           'firstName': user.firstName,
           'lastName': user.lastName,
           'email': user.email,
@@ -59,90 +50,36 @@ class _ProfilePageState extends State<ProfilePage> {
           'phone': user.phone,
           'role': user.role.toString().split('.').last,
           'gender': user.gender.toString().split('.').last,
-          'profilePic': 'assets/mojies/image65.png',
+          'profilePic': 'assets/mojies/image65.png', // Temporary local asset
           'location': user.location,
-          'bio': 'Professional barber with 5 years of experience',
-          'specialties': ['Haircut', 'Beard Trim', 'Shaving'],
-          'vrfidEmail': true,
-          'vrfidPhone': true,
+          'bio': 'Barber enthusiast',
           'isSubscribed': true,
-          'isOwner': authProvider.isOwner,
-          'isWorker': authProvider.isBarber,
-          'createdAt': user.createdAt,
-          'updatedAt': user.updatedAt,
         };
 
         setState(() {
-          _userData = mockData;
-          _originalData = Map<String, dynamic>.from(mockData);
+          _userData = data;
+          _originalData = Map<String, dynamic>.from(data);
           _isLoading = false;
         });
 
         _initializeControllers();
-      } else {
-        // Fallback mock data if no user in provider
-        _loadMockData();
       }
     } catch (e) {
-      print('Error fetching user data: $e');
-      setState(() {
-        _isLoading = false;
-      });
-
-      // Show error message
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load profile: $e')),
-        );
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
 
-  void _loadMockData() {
-    final mockData = {
-      'firstName': 'John',
-      'lastName': 'Doe',
-      'email': 'john.doe@example.com',
-      'username': 'johndoe',
-      'phone': '+1234567890',
-      'role': 'customer',
-      'gender': 'male',
-      'profilePic': 'assets/mojies/image65.png',
-      'location': 'New York, USA',
-      'bio': 'Professional barber with 5 years of experience',
-      'specialties': ['Haircut', 'Beard Trim', 'Shaving'],
-      'vrfidEmail': true,
-      'vrfidPhone': true,
-      'isSubscribed': true,
-      'isOwner': false,
-      'isWorker': false,
-      'createdAt': DateTime.now().subtract(const Duration(days: 365)),
-      'updatedAt': DateTime.now(),
-    };
-
-    setState(() {
-      _userData = mockData;
-      _originalData = Map<String, dynamic>.from(mockData);
-      _isLoading = false;
-    });
-
-    _initializeControllers();
-  }
-
   void _initializeControllers() {
-    ProfileHelperFunctions.initializeControllers(
-      userData: _userData,
-      controllers: {
-        'firstName': _firstNameController,
-        'lastName': _lastNameController,
-        'username': _usernameController,
-        'email': _emailController,
-        'phone': _phoneController,
-        'bio': _bioController,
-        'location': _locationController,
-        'specialties': _specialtiesController,
-      },
-    );
+    _firstNameController.text = _userData?['firstName'] ?? '';
+    _lastNameController.text = _userData?['lastName'] ?? '';
+    _usernameController.text = _userData?['username'] ?? '';
+    _emailController.text = _userData?['email'] ?? '';
+    _phoneController.text = _userData?['phone'] ?? '';
+    _bioController.text = _userData?['bio'] ?? '';
+    _locationController.text = _userData?['location'] ?? '';
   }
 
   @override
@@ -154,152 +91,95 @@ class _ProfilePageState extends State<ProfilePage> {
     _phoneController.dispose();
     _bioController.dispose();
     _locationController.dispose();
-    _specialtiesController.dispose();
-    _scrollController.dispose();
     super.dispose();
   }
 
   void _toggleEdit() {
     setState(() {
       if (_isEditing) {
-        // Cancel editing - revert changes
-        _userData = _originalData;
+        _userData = Map<String, dynamic>.from(_originalData!);
         _initializeControllers();
       }
       _isEditing = !_isEditing;
     });
   }
 
-  void _saveChanges() {
-    if (_formKey.currentState!.validate() && _userData != null) {
-      final updatedData = ProfileHelperFunctions.updateUserFromControllers(
-        userData: _userData!,
-        controllers: {
-          'firstName': _firstNameController,
-          'lastName': _lastNameController,
-          'username': _usernameController,
-          'email': _emailController,
-          'phone': _phoneController,
-          'bio': _bioController,
-          'location': _locationController,
-          'specialties': _specialtiesController,
-        },
-      );
+  void _saveChanges() async {
+    if (_formKey.currentState!.validate()) {
+      final updated = Map<String, dynamic>.from(_userData!);
+      updated['firstName'] = _firstNameController.text;
+      updated['lastName'] = _lastNameController.text;
+      updated['email'] = _emailController.text;
+      updated['phone'] = _phoneController.text;
+      updated['bio'] = _bioController.text;
+      updated['location'] = _locationController.text;
 
       setState(() {
-        _userData = updatedData;
-        _originalData = Map<String, dynamic>.from(updatedData);
+        _userData = updated;
+        _originalData = Map<String, dynamic>.from(updated);
         _isEditing = false;
       });
 
-      _saveToBackend(updatedData);
+      // Save to provider/backend here
     }
-  }
-
-  Future<void> _saveToBackend(Map<String, dynamic> data) async {
-    await ProfileHelperFunctions.saveToBackend(
-      profile: data,
-      context: context,
-      onError: () {
-        setState(() {
-          _userData = _originalData;
-          _initializeControllers();
-        });
-      },
-    );
-  }
-
-  void _deleteProfile() {
-    ProfileHelperFunctions.showDeleteConfirmationDialog(
-      context: context,
-      onConfirm: _performDelete,
-    );
-  }
-
-  Future<void> _performDelete() async {
-    await ProfileHelperFunctions.performDelete(
-      context: context,
-      onSuccess: () {
-        Navigator.popUntil(context, (route) => route.isFirst);
-      },
-    );
-  }
-
-  void _changeProfilePicture() {
-    ProfileHelperFunctions.showImagePickerDialog(context: context);
-  }
-
-  String _getAccountType() {
-    return ProfileHelperFunctions.getAccountType(_userData);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: FadedBackground(
-            startColor: const Color(0x80806C99),
-            endColor: const Color(0xFFDFA8A4),
-          ),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          bottomNavigationBar: CustomNavigationBar(
-            currentRoute: ModalRoute.of(context)?.settings.name ?? '/',
-          ),
-          body: _isLoading
-              ? ProfileWidgets.buildLoadingState()
-              : CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    GlassSliverAppBar(
-                      title: 'My Profile',
-                      showBackButton: true,
-                      textColor: Colors.white,
-                      pinned: true,
-                      actions: [
-                        IconButton(
-                          icon: Icon(_isEditing ? Icons.close : Icons.edit, color: Colors.white),
-                          onPressed: _toggleEdit,
-                          tooltip: _isEditing ? 'Cancel' : 'Edit',
-                        ),
-                        if (_isEditing)
-                          IconButton(
-                            icon: const Icon(Icons.check, color: Colors.white),
-                            onPressed: _saveChanges,
-                            tooltip: 'Check',
-                          ),
-                      ],
-                    ),
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ProfileWidgets.buildProfileContent(
-                          formKey: _formKey,
-                          userData: _userData!,
-                          isEditing: _isEditing,
-                          controllers: {
-                            'firstName': _firstNameController,
-                            'lastName': _lastNameController,
-                            'username': _usernameController,
-                            'email': _emailController,
-                            'phone': _phoneController,
-                            'bio': _bioController,
-                            'location': _locationController,
-                            'specialties': _specialtiesController,
-                          },
-                          getAccountType: _getAccountType,
-                          onDeleteProfile: _deleteProfile,
-                          onChangeProfilePicture: _changeProfilePicture,
-                        ),
-                      ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: const Text('Profile', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          if (!_isEditing)
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => Navigator.pushNamed(context, '/settings'),
+            ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  ProfileWidgets.buildProfileContent(
+                    formKey: _formKey,
+                    userData: _userData!,
+                    isEditing: _isEditing,
+                    controllers: {
+                      'firstName': _firstNameController,
+                      'lastName': _lastNameController,
+                      'username': _usernameController,
+                      'email': _emailController,
+                      'phone': _phoneController,
+                      'bio': _bioController,
+                      'location': _locationController,
+                      'specialties': _specialtiesController,
+                    },
+                    getAccountType: () => _userData!['role'],
+                    onDeleteProfile: () {},
+                    onChangeProfilePicture: () {},
+                  ),
+                  const SizedBox(height: 32),
+                  PrimaryButton(
+                    text: _isEditing ? 'Save Changes' : 'Edit Profile',
+                    onPressed: _isEditing ? _saveChanges : _toggleEdit,
+                  ),
+                  if (_isEditing) ...[
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: _toggleEdit,
+                      child: const Text('Cancel', style: TextStyle(color: AppColors.almostBlack400)),
                     ),
                   ],
-                ),
-        ),
-      ],
+                ],
+              ),
+            ),
     );
   }
 }

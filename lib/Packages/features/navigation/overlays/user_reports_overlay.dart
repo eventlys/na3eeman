@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/enums/user_role.dart';
+import '../../../../core/enums/app_enums.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
@@ -158,7 +158,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Role: ${authProvider.user?.role.displayName ?? 'Customer'}',
+              'Role: ${authProvider.user?.role.name ?? 'Customer'}',
               style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white70,

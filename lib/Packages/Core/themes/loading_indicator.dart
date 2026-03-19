@@ -59,9 +59,23 @@ class LoadingIndicator extends StatelessWidget {
           SizedBox(
             width: size,
             height: size,
-            child: CircularProgressIndicator(
-              strokeWidth: size > 30 ? 3 : 2,
-              valueColor: AlwaysStoppedAnimation<Color>(loaderColor),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: size * 0.7,
+                  height: size * 0.7,
+                  child: Image.asset('assets/images/PRIMERY_loading.png', fit: BoxFit.contain),
+                ),
+                SizedBox(
+                  width: size,
+                  height: size,
+                  child: CircularProgressIndicator(
+                    strokeWidth: size > 30 ? 3 : 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(loaderColor),
+                  ),
+                ),
+              ],
             ),
           ),
           if (message != null) ...[
@@ -81,9 +95,23 @@ class LoadingIndicator extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CircularProgressIndicator(
-        strokeWidth: size > 30 ? 3 : 2,
-        valueColor: AlwaysStoppedAnimation<Color>(loaderColor),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            width: size * 0.7,
+            height: size * 0.7,
+            child: Image.asset('assets/images/PRIMERY_loading.png', fit: BoxFit.contain),
+          ),
+          SizedBox(
+            width: size,
+            height: size,
+            child: CircularProgressIndicator(
+              strokeWidth: size > 30 ? 3 : 2,
+              valueColor: AlwaysStoppedAnimation<Color>(loaderColor),
+            ),
+          ),
+        ],
       ),
     );
   }

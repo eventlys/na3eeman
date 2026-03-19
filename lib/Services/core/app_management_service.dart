@@ -92,7 +92,12 @@ class AppManagementService with WidgetsBindingObserver {
       iOS: iosSettings,
     );
 
-    await _notifications.initialize(settings);
+    await _notifications.initialize(
+      settings: settings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // Handle notification response if needed
+      },
+    );
   }
 
   // App Lifecycle Management
@@ -468,10 +473,10 @@ class AppManagementService with WidgetsBindingObserver {
       );
 
       await _notifications.show(
-        appointmentId.hashCode,
-        'Appointment Reminder',
-        'You have an upcoming appointment',
-        platformDetails,
+        id: appointmentId.hashCode,
+        title: 'Appointment Reminder',
+        body: 'You have an upcoming appointment',
+        notificationDetails: platformDetails,
       );
 
       AppLogger.debug('Appointment reminder sent: $appointmentId');

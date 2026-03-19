@@ -2,8 +2,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../Helpers/logger.dart';
@@ -262,7 +262,10 @@ class NotificationService {
         iOS: iosSettings,
       );
 
-      await _notifications.initialize(settings);
+      await _notifications.initialize(
+        settings: settings,
+        onDidReceiveNotificationResponse: (details) {},
+      );
       AppLogger.debug('Notification service initialized');
     } catch (e) {
       AppLogger.error('Failed to initialize notification service: $e');
@@ -290,7 +293,13 @@ class NotificationService {
         iOS: iosDetails,
       );
 
-      await _notifications.show(id, title, body, platformDetails, payload: payload);
+      await _notifications.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: platformDetails,
+        payload: payload,
+      );
       AppLogger.debug('Notification shown: $title');
     } catch (e) {
       AppLogger.error('Failed to show notification: $e');
@@ -322,11 +331,11 @@ class NotificationService {
       final tz.TZDateTime scheduledTZDate = tz.TZDateTime.from(scheduledDate, tz.local);
 
       await _notifications.zonedSchedule(
-        id,
-        title,
-        body,
-        scheduledTZDate,
-        platformDetails,
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledTZDate,
+        notificationDetails: platformDetails,
         payload: payload,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
@@ -356,7 +365,7 @@ class NotificationService {
 
   Future<void> cancelNotification(int id) async {
     try {
-      await _notifications.cancel(id);
+      await _notifications.cancel(id: id);
       AppLogger.debug('Notification cancelled: $id');
     } catch (e) {
       AppLogger.error('Failed to cancel notification: $e');

@@ -20,7 +20,7 @@ import './ui/language_service.dart';
 // Repositories
 import './repositories/auth_repository.dart';
 import './repositories/shop_repository.dart';
-import './repositories/base_repository.dart';
+// import './repositories/base_repository.dart';
 
 // Use Cases
 import './use_cases/auth_use_cases.dart';

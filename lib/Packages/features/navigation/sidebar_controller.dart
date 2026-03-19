@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../Services/api/auth_service.dart';
+import '../../../Services/api/api_service.dart';
+import '../../../Services/repositories/auth_repository.dart';
 import '../../../Services/ui/overlay_service.dart';
 import '../../../Services/ui/sidebar_navigation_service.dart';
 
@@ -12,10 +14,13 @@ class SidebarController with ChangeNotifier {
   bool get isOpen => _animationController.isCompleted;
 
   void init(TickerProvider vsync) {
+    _authService = AuthService(AuthRepository(ApiService())); // Initialize to prevent late initialization error
     _animationController = AnimationController(
+
       duration: const Duration(milliseconds: 400),
       vsync: vsync,
     );
+
 
     animation = CurvedAnimation(
       parent: _animationController,

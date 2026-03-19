@@ -1,0 +1,15 @@
+warning • The value of the local variable 'errorInfo' isn't used • lib/Helpers/customized/error_reporter.dart:35:11 • unused_local_variable
+warning • This default clause is covered by the previous cases • lib/Helpers/error_handler.dart:136:9 • unreachable_switch_default
+   info • The constant name 'error_view' isn't a lowerCamelCase identifier • lib/Packages/Core/constants/app_images.dart:149:23 • constant_identifier_names
+warning • A value of type 'List<dynamic>' can't be returned by the 'onError' handler because it must be assignable to 'FutureOr<List<Map<String, dynamic>>>' • lib/Packages/Core/widgets/common/subscription_item_widget.dart:483:14 • invalid_return_type_for_catch_error
+warning • The value of the local variable 'isDark' isn't used • lib/Packages/features/admin/pages/error_reports_page.dart:9:11 • unused_local_variable
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/Packages/features/admin/pages/error_reports_page.dart:52:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/Packages/features/admin/pages/error_reports_page.dart:54:51 • deprecated_member_use
+  error • There's no constant named 'barber' in 'UserRole' • lib/Packages/features/navigation/widgets/user_profile_section.dart:127:21 • undefined_enum_constant
+  error • There's no constant named 'barber' in 'UserRole' • lib/Packages/features/navigation/widgets/user_profile_section.dart:160:21 • undefined_enum_constant
+  error • There's no constant named 'barber' in 'UserRole' • lib/Packages/features/navigation/widgets/user_profile_section.dart:175:21 • undefined_enum_constant
+  error • There's no constant named 'barber' in 'UserRole' • lib/Packages/features/navigation/widgets/user_profile_section.dart:190:21 • undefined_enum_constant
+  error • There's no constant named 'barber' in 'UserRole' • lib/core/auth/role_permission_manager.dart:23:16 • undefined_enum_constant
+  error • There's no constant named 'barber' in 'UserRole' • lib/core/auth/role_permission_manager.dart:46:21 • undefined_enum_constant
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/error/api_error_widget.dart:30:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/error/api_error_widget.dart:30:91 • deprecated_member_use

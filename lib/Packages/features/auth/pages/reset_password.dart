@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../../helpers/password_helper.dart';
+import '../../../../Helpers/password_helper.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
@@ -357,7 +357,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             // Submit Button
             PrimaryButton(
               text: 'Reset Password',
-              onPressed: _isLoading ? null : _submitResetPassword,
+              onPressed: _submitResetPassword,
               isLoading: _isLoading,
             ),
 

@@ -1,5 +1,5 @@
 import 'package:na3eeman/Services/enums/gender.dart';
-import 'package:na3eeman/Services/enums/user_role.dart';
+import 'package:na3eeman/core/enums/app_enums.dart';
 
 import '../../Models/appointments/shop_appointments_model.dart';
 import '../../Models/auth/user_model.dart';
@@ -23,8 +23,8 @@ class DataMappers {
       'location': user.location,
       'lat': user.lat,
       'lng': user.lng,
-      'vrfid_email': user.vrfidEmail,
-      'vrfid_phone': user.vrfidPhone,
+      'is_email_verified': user.isEmailVerified,
+      'is_phone_verified': user.isPhoneVerified,
       'is_deleted': user.isDeleted,
       'deleted_at': user.deletedAt?.toIso8601String(),
       'created_at': user.createdAt.toIso8601String(),
@@ -49,8 +49,8 @@ class DataMappers {
       location: json['location']?.toString() ?? 'amman, Jordan',
       lat: (json['lat'] as num?)?.toDouble() ?? 31.963158,
       lng: (json['lng'] as num?)?.toDouble() ?? 35.930359,
-      vrfidEmail: json['vrfid_email'] as bool? ?? false,
-      vrfidPhone: json['vrfid_phone'] as bool? ?? false,
+      isEmailVerified: (json['is_email_verified'] ?? json['vrfid_email']) as bool? ?? false,
+      isPhoneVerified: (json['is_phone_verified'] ?? json['vrfid_phone']) as bool? ?? false,
       isDeleted: json['is_deleted'] as bool? ?? false,
       deletedAt: json['deleted_at'] != null
           ? DateTime.tryParse(json['deleted_at']?.toString() ?? '')

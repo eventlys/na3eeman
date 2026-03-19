@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../../helpers/otp_helper.dart';
+import '../../../../Helpers/otp_helper.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
@@ -197,9 +197,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           // Verify Button
           PrimaryButton(
             text: 'Verify OTP',
-            onPressed: (_isLoading || !_otpHelper.areAllOtpFieldsFilled(_otpControllers))
-                ? null
-                : _verifyOtp,
+            onPressed: _verifyOtp,
             isLoading: _isLoading,
           ),
 

@@ -1,18 +1,14 @@
-// lib/Packages/features/profile/widgets/profile_widgets.dart
 import 'package:flutter/material.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 
 class ProfileWidgets {
   static Widget buildLoadingState() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Loading profile...'),
-        ],
-      ),
-    );
+    return Builder(builder: (context) {
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
+      );
+    });
   }
 
   static Widget buildProfileContent({
@@ -24,261 +20,217 @@ class ProfileWidgets {
     required VoidCallback onDeleteProfile,
     required VoidCallback onChangeProfilePicture,
   }) {
+    final isDark = false; // Will be handled by Theme.of in sub-widgets
+
     return Form(
       key: formKey,
       child: Column(
         children: [
-          // Profile Picture
-          _buildProfilePicture(
-            userData: userData,
-            isEditing: isEditing,
-            onChangeProfilePicture: onChangeProfilePicture,
-          ),
-          const SizedBox(height: 20),
-          _buildProfileFieldsContainer(
-            userData: userData,
-            isEditing: isEditing,
-            controllers: controllers,
-            getAccountType: getAccountType,
-            onDeleteProfile: onDeleteProfile,
-          ),
+          _buildProfileHeader(userData, isEditing, onChangeProfilePicture),
+          const SizedBox(height: 32),
+          _buildInfoSection(userData, isEditing, controllers, getAccountType, onDeleteProfile),
         ],
       ),
     );
   }
 
-  static Widget _buildProfilePicture({
-    required Map<String, dynamic> userData,
-    required bool isEditing,
-    required VoidCallback onChangeProfilePicture,
-  }) {
-    return Center(
-      child: Stack(
+  static Widget _buildProfileHeader(
+    Map<String, dynamic> userData,
+    bool isEditing,
+    VoidCallback onChangePicture,
+  ) {
+    return Builder(builder: (context) {
+      return Column(
         children: [
-          CircleAvatar(
-            radius: 70,
-            backgroundImage: userData['profilePic'] != null
-                ? NetworkImage(userData['profilePic']!)
-                : const AssetImage('assets/mojies/image11.png') as ImageProvider,
-          ),
-          if (isEditing)
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
+          Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              Container(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  border: Border.all(color: Theme.of(context).primaryColor, width: 3),
                 ),
-                child: IconButton(
-                  icon: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
-                  onPressed: onChangeProfilePicture,
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                  backgroundImage: userData['profilePic'] != null
+                      ? AssetImage(userData['profilePic']) // Use local for now
+                      : null,
+                  child: userData['profilePic'] == null
+                      ? Icon(Icons.person, size: 60, color: Theme.of(context).primaryColor)
+                      : null,
                 ),
               ),
-            ),
+              if (isEditing)
+                IconButtonStyled(
+                  icon: Icons.camera_alt_rounded,
+                  onPressed: onChangePicture,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  color: AppColors.white,
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '${userData['firstName']} ${userData['lastName']}',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            '@${userData['username']}',
+            style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
+          ),
         ],
-      ),
+      );
+    });
+  }
+
+  static Widget _buildInfoSection(
+    Map<String, dynamic> userData,
+    bool isEditing,
+    Map<String, TextEditingController> controllers,
+    String Function() getAccountType,
+    VoidCallback onDelete,
+  ) {
+    return Column(
+      children: [
+        _buildSectionCard(
+          title: 'Personal Information',
+          icon: Icons.person_outline_rounded,
+          children: [
+            _buildField('First Name', controllers['firstName']!, isEditing),
+            _buildField('Last Name', controllers['lastName']!, isEditing),
+            _buildField('Email', controllers['email']!, isEditing, keyboardType: TextInputType.emailAddress),
+            _buildField('Phone', controllers['phone']!, isEditing, keyboardType: TextInputType.phone),
+          ],
+        ),
+        const SizedBox(height: 16),
+        _buildSectionCard(
+          title: 'Profile Details',
+          icon: Icons.info_outline_rounded,
+          children: [
+            _buildField('Bio', controllers['bio']!, isEditing, maxLines: 3),
+            _buildField('Location', controllers['location']!, isEditing),
+          ],
+        ),
+        const SizedBox(height: 16),
+        _buildSectionCard(
+          title: 'Account Status',
+          icon: Icons.verified_user_outlined,
+          children: [
+            _buildReadOnlyRow('Account Type', getAccountType()),
+            _buildReadOnlyRow('Subscription', userData['isSubscribed'] == true ? 'Premium' : 'Free'),
+            _buildReadOnlyRow('Role', userData['role'].toString().toUpperCase()),
+          ],
+        ),
+        const SizedBox(height: 32),
+        if (!isEditing)
+          DangerButton(
+            text: 'Delete Account',
+            onPressed: onDelete,
+          ),
+      ],
     );
   }
 
-  static Widget _buildProfileFieldsContainer({
-    required Map<String, dynamic> userData,
-    required bool isEditing,
-    required Map<String, TextEditingController> controllers,
-    required String Function() getAccountType,
-    required VoidCallback onDeleteProfile,
+  static Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0x1AFFFFFF),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          // Editable Fields
-          _buildEditableField(
-            label: 'First Name',
-            value: userData['firstName'] ?? '',
-            controller: controllers['firstName']!,
-            isEditing: isEditing,
+    return Builder(builder: (context) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
           ),
-          _buildEditableField(
-            label: 'Last Name',
-            value: userData['lastName'] ?? '',
-            controller: controllers['lastName']!,
-            isEditing: isEditing,
-          ),
-          _buildEditableField(
-            label: 'Username',
-            value: userData['username'] ?? '',
-            controller: controllers['username']!,
-            isEditing: isEditing,
-            isRequired: true,
-          ),
-          _buildEditableField(
-            label: 'Email',
-            value: userData['email'] ?? '',
-            controller: controllers['email']!,
-            isEditing: isEditing,
-            keyboardType: TextInputType.emailAddress,
-            isRequired: true,
-          ),
-          _buildEditableField(
-            label: 'Phone',
-            value: userData['phone'] ?? '',
-            controller: controllers['phone']!,
-            isEditing: isEditing,
-            keyboardType: TextInputType.phone,
-          ),
-          _buildEditableField(
-            label: 'Bio',
-            value: userData['bio'] ?? '',
-            controller: controllers['bio']!,
-            isEditing: isEditing,
-          ),
-          _buildEditableField(
-            label: 'Location',
-            value: userData['location'] ?? '',
-            controller: controllers['location']!,
-            isEditing: isEditing,
-          ),
-          _buildEditableField(
-            label: 'Specialties',
-            value: (userData['specialties'] as List<dynamic>?)?.join(', ') ?? '',
-            controller: controllers['specialties']!,
-            isEditing: isEditing,
-          ),
-
-          // Read-only Fields
-          _buildReadOnlyField('Role', userData['role']),
-          _buildReadOnlyField('Gender', userData['gender']),
-          _buildReadOnlyField('Email Verified', userData['vrfidEmail'] == true ? 'Yes' : 'No'),
-          _buildReadOnlyField('Phone Verified', userData['vrfidPhone'] == true ? 'Yes' : 'No'),
-          _buildReadOnlyField('Account Type', getAccountType()),
-          _buildReadOnlyField('Subscription', userData['isSubscribed'] == true ? 'Active' : 'Inactive'),
-          _buildReadOnlyField(
-            'Member Since', 
-            userData['createdAt'] != null 
-                ? _formatDate(userData['createdAt'])
-                : 'Not available'
-          ),
-
-          const SizedBox(height: 20),
-
-          // Action Buttons
-          if (!isEditing)
-            ElevatedButton(
-              onPressed: onDeleteProfile,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Delete Profile'),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 20, color: Theme.of(context).primaryColor),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ],
             ),
-        ],
-      ),
-    );
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Divider(height: 1),
+            ),
+            ...children,
+          ],
+        ),
+      );
+    });
   }
 
-  static Widget _buildEditableField({
-    required String label,
-    required String value,
-    required TextEditingController controller,
-    required bool isEditing,
-    bool isRequired = false,
+  static Widget _buildField(
+    String label,
+    TextEditingController controller,
+    bool isEditing, {
     TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Color(0xbfffffff),
-            ),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.almostBlack400),
           ),
-          const SizedBox(height: 4),
-          isEditing
-              ? TextFormField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    hintText: 'Enter $label',
-                  ),
-                  validator: (value) {
-                    if (isRequired && (value == null || value.isEmpty)) {
-                      return '$label is required';
-                    }
-                    return null;
-                  },
-                )
-              : Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0x80ffffff)),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    value.isEmpty ? 'Not set' : value,
-                    style: TextStyle(
-                      color: value.isEmpty ? Colors.grey : Colors.black,
-                    ),
-                  ),
-                ),
+          const SizedBox(height: 8),
+          if (isEditing)
+            TextFormField(
+              controller: controller,
+              keyboardType: keyboardType,
+              maxLines: maxLines,
+              decoration: InputDecoration(
+                hintText: 'Enter $label',
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+            )
+          else
+            Text(
+              controller.text.isEmpty ? 'Not set' : controller.text,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
         ],
       ),
     );
   }
 
-  static Widget _buildReadOnlyField(String label, dynamic value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0x80ffffff),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              value?.toString() ?? 'Not set',
-              style: TextStyle(
-                color: value == null ? Colors.grey : Colors.black,
+  static Widget _buildReadOnlyRow(String label, String value) {
+    return Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: const TextStyle(color: AppColors.almostBlack400)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper method to format dates
-  static String _formatDate(dynamic date) {
-    if (date is DateTime) {
-      return date.toLocal().toString().split(' ')[0];
-    } else if (date is String) {
-      try {
-        final parsedDate = DateTime.parse(date);
-        return parsedDate.toLocal().toString().split(' ')[0];
-      } catch (e) {
-        return date;
-      }
-    }
-    return date?.toString() ?? 'Not set';
+          ],
+        ),
+      );
+    });
   }
 }

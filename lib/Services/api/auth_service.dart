@@ -20,14 +20,16 @@ class AuthService {
 
       final response = await _authRepository.login(email, password);
 
-      if (response['success'] == true) {
+      if (response['access'] != null) {
         await _saveAuthData(response);
 
         // Analytics event
-        await _analyticsService.logLogin(
-          method: 'email',
-          userId: response['user']['id'],
-        );
+        if (response['user'] != null && response['user']['id'] != null) {
+          await _analyticsService.logLogin(
+            method: 'email',
+            userId: response['user']['id'],
+          );
+        }
       }
 
       return response;
@@ -55,7 +57,8 @@ class AuthService {
         'first_name': firstName,
         'last_name': lastName,
         'email': email,
-        'phone_number': phoneNumber,
+        'username': email.split('@')[0],
+        'phone': phoneNumber,
         'gender': gender,
         'password': password,
         'role': role,
@@ -63,13 +66,15 @@ class AuthService {
 
       final response = await _authRepository.register(userData);
 
-      if (response['success'] == true) {
+      if (response['access'] != null) {
         await _saveAuthData(response);
 
-        await _analyticsService.logSignUp(
-          method: 'email',
-          userId: response['user']['id'],
-        );
+        if (response['user'] != null && response['user']['id'] != null) {
+          await _analyticsService.logSignUp(
+            method: 'email',
+            userId: response['user']['id'],
+          );
+        }
       }
 
       return response;
@@ -101,13 +106,15 @@ class AuthService {
       // Register user with processed data
       final response = await _authRepository.register(userData);
 
-      if (response['success'] == true) {
+      if (response['access'] != null) {
         await _saveAuthData(response);
 
-        await _analyticsService.logSignUp(
-          method: provider,
-          userId: response['user']['id'],
-        );
+        if (response['user'] != null && response['user']['id'] != null) {
+          await _analyticsService.logSignUp(
+            method: provider,
+            userId: response['user']['id'],
+          );
+        }
 
         AppLogger.info('Social registration successful for ${userData['email']}');
       }
@@ -135,13 +142,15 @@ class AuthService {
         email: email,
       );
 
-      if (response['success'] == true) {
+      if (response['access'] != null) {
         await _saveAuthData(response);
 
-        await _analyticsService.logLogin(
-          method: provider,
-          userId: response['user']['id'],
-        );
+        if (response['user'] != null && response['user']['id'] != null) {
+          await _analyticsService.logLogin(
+            method: provider,
+            userId: response['user']['id'],
+          );
+        }
       }
 
       return response;
@@ -239,7 +248,8 @@ class AuthService {
 
   Future<void> logout() async {
     try {
-      await _authRepository.logout();
+      final refreshToken = await getRefreshToken();
+      await _authRepository.logout(refreshToken: refreshToken);
     } catch (e) {
       AppLogger.error('Logout API error: $e');
     } finally {
@@ -291,15 +301,14 @@ class AuthService {
 
   // Private methods
   Future<void> _saveAuthData(Map<String, dynamic> response) async {
-    final token = response['token'];
-    final refreshToken = response['refresh_token'];
+    // DRF backend returns: { user: {...}, access: "...", refresh: "..." }
+    // Legacy/mock paths may return: { user: {...}, token: "...", refresh_token: "..." }
+    final token = response['access'] ?? response['token'];
+    final refreshToken = response['refresh'] ?? response['refresh_token'];
     final user = response['user'];
 
     if (token != null) {
-      await _secureStorage.setAuthToken(token);
-    }
-    if (refreshToken != null) {
-      await _secureStorage.setRefreshToken(refreshToken);
+      await _secureStorage.setAuthTokens(token, refreshToken ?? '');
     }
     if (user != null) {
       await _secureStorage.saveUserData(user);

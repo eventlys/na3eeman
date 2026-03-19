@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  strings.xml
+  ===========
+  Replace the placeholder values below with your real Facebook credentials.
+  Get them from: https://developers.facebook.com/apps/ → Settings → Basic
+
+  facebook_app_id       = the numeric App ID (e.g. "123456789012345")
+  facebook_client_token = found under Settings → Advanced → Client token
+
+  NEVER commit real credentials to source control.
+  Use a secrets manager or CI/CD environment substitution instead.
+-->
+<resources>
+    <string name="app_name">na3eeman</string>
+
+    <!-- ── Facebook SDK ────────────────────────────────────────────────────── -->
+    <string name="facebook_app_id">REPLACE_WITH_YOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token">REPLACE_WITH_YOUR_FACEBOOK_CLIENT_TOKEN</string>
+</resources>

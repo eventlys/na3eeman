@@ -13,17 +13,22 @@ class NavigationService {
 
   // Get home route based on user role
   static String getHomeRouteBasedOnRole(String role) {
-    switch (role.toLowerCase()) {
-      case 'customer':
+    switch (role.toUpperCase()) {
+      case 'OWNER':
+        return '/owner_dashboard';
+      case 'EMPLOYEE':
+      case 'BARBER':
+        return '/employee_dashboard';
+      case 'RECEPTIONIST':
+        return '/receptionist_dashboard';
+      case 'INTERN':
+        return '/intern_dashboard';
+      case 'ADMIN':
+        return '/admin';
+      case 'CUSTOMER':
         return '/customer_home';
-      case 'barber':
-        return '/barber_home';
-      case 'owner':
-        return '/owner_home';
-      case 'admin':
-        return '/admin_home';
       default:
-        throw Exception('Unknown role: $role');
+        return '/customer_home';
     }
   }
 

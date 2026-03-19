@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/animations.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Services/enums/gender.dart';
-import '../../../../Services/enums/user_role.dart';
+import '../../../../core/enums/app_enums.dart';
 import '../sidebar_controller.dart';
 
 
@@ -123,11 +123,13 @@ class UserProfileSection extends StatelessWidget {
   // Get appropriate icon based on role and gender
   IconData _getProfileIcon(Gender gender, UserRole role) {
     switch (role) {
-      case UserRole.barber:
+      case UserRole.employee:
         return Icons.content_cut; // Scissors icon for barber
+      case UserRole.admin:
       case UserRole.owner:
         return Icons.business; // Business icon for owner
       case UserRole.customer:
+      default:
         return gender == Gender.female ? Icons.face_3 : Icons.face; // Male/female face icons
     }
   }
@@ -153,10 +155,13 @@ class UserProfileSection extends StatelessWidget {
     switch (appStateProvider.userRole) {
       case UserRole.customer:
         return 'Customer';
-      case UserRole.barber:
-        return 'Barber';
+      case UserRole.employee:
+        return 'Staff';
       case UserRole.owner:
+      case UserRole.admin:
         return 'Shop Owner';
+      default:
+        return 'User';
     }
   }
 
@@ -164,10 +169,13 @@ class UserProfileSection extends StatelessWidget {
     switch (role) {
       case UserRole.customer:
         return Colors.blue;
-      case UserRole.barber:
+      case UserRole.employee:
         return Colors.green;
+      case UserRole.admin:
       case UserRole.owner:
         return Colors.purple;
+      default:
+        return Colors.grey;
     }
   }
 
@@ -175,10 +183,13 @@ class UserProfileSection extends StatelessWidget {
     switch (role) {
       case UserRole.customer:
         return 'Customer';
-      case UserRole.barber:
-        return 'Barber';
+      case UserRole.employee:
+        return 'Staff';
+      case UserRole.admin:
       case UserRole.owner:
         return 'Shop Owner';
+      default:
+        return 'User';
     }
   }
 }

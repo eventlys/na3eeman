@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/theme/colors.dart';
 
 class BarbershopCard extends StatefulWidget {
   final String title;
   final String workingHours;
-  final String bottomLeftIconPath;
-  final String bottomRightIconPath;
-  final String middleRightIconPath;
-  final String middleRightActiveIconPath;
   final String profilePicture;
-  final Size size;
   final bool isClickable;
-  final String shopLocation; // For maps navigation
-  final double shopRating; // For rating display
-  final VoidCallback? onCardTap; // For navigation to shop details
-  final Function(bool)? onFavoriteChanged; // Callback for favorite state change
+  final String shopLocation;
+  final double shopRating;
+  final VoidCallback? onCardTap;
+  final Function(bool)? onFavoriteChanged;
+  final bool initialIsFavorite;
 
   const BarbershopCard({
     super.key,
     required this.title,
     required this.workingHours,
-    required this.bottomLeftIconPath,
-    required this.bottomRightIconPath,
-    required this.middleRightIconPath,
-    required this.middleRightActiveIconPath,
     required this.profilePicture,
-    required this.size,
     required this.isClickable,
     required this.shopLocation,
     required this.shopRating,
     this.onCardTap,
     this.onFavoriteChanged,
+    this.initialIsFavorite = false,
+    // Add legacy support for unused paths to prevent breakage elsewhere
+    String? bottomLeftIconPath,
+    String? bottomRightIconPath,
+    String? middleRightIconPath,
+    String? middleRightActiveIconPath,
+    Size? size,
   });
 
   @override
@@ -39,21 +38,21 @@ class BarbershopCard extends StatefulWidget {
 
 class _BarbershopCardState extends State<BarbershopCard>
     with SingleTickerProviderStateMixin {
-  bool _isFavorite = false;
+  late bool _isFavorite;
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
-    _isFavorite = widget.middleRightIconPath == widget.middleRightActiveIconPath;
+    _isFavorite = widget.initialIsFavorite;
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
     _scaleAnimation = Tween<double>(
       begin: 1.0,
-      end: 1.3,
+      end: 1.2,
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -74,72 +73,12 @@ class _BarbershopCardState extends State<BarbershopCard>
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch maps')),
-      );
-    }
-  }
-
-  void _showRatingDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        double currentRating = widget.shopRating;
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Rate this Shop'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Current Rating: ${currentRating.toStringAsFixed(1)}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return IconButton(
-                        icon: Icon(
-                          index < currentRating.floor()
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: Colors.amber,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            currentRating = index + 1.0;
-                          });
-                        },
-                      );
-                    }),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Here you would typically send the rating to your API
-                    print('Rating submitted: $currentRating');
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Rated $currentRating stars')),
-                    );
-                  },
-                  child: const Text('Submit'),
-                ),
-              ],
-            );
-          },
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not launch maps')),
         );
-      },
-    );
+      }
+    }
   }
 
   void _toggleFavorite() {
@@ -147,217 +86,158 @@ class _BarbershopCardState extends State<BarbershopCard>
       _isFavorite = !_isFavorite;
     });
 
-    // Trigger animation
     if (_isFavorite) {
       _animationController.forward().then((_) {
         _animationController.reverse();
       });
     }
 
-    // Notify parent widget about favorite state change
     widget.onFavoriteChanged?.call(_isFavorite);
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.isClickable
-          ? () {
-        if (widget.onCardTap != null) {
-          widget.onCardTap!();
-        } else {
-          print('Card tapped: ${widget.title}');
-          // Default navigation behavior can be added here
-        }
-      }
-          : null,
-      child: Opacity(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    return GestureDetector(
+      onTap: widget.isClickable ? widget.onCardTap : null,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
         opacity: widget.isClickable ? 1.0 : 0.6,
         child: Container(
-          width: widget.size.width,
-          height: widget.size.height,
-          decoration: ShapeDecoration(
-            color: Color(0x4dffffff),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(60),
-                bottomLeft: const Radius.circular(60),
-                topRight: const Radius.circular(10),
-                bottomRight: const Radius.circular(10),
-              ),
-              side:BorderSide(
-                strokeAlign: 1,
-                color: Color(0xccffffff)
-              ),
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : AppColors.white,
+            borderRadius: BorderRadius.circular(20), // 2xl rounded
+            border: Border.all(
+              color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack100,
+              width: 1,
             ),
-            // shadows: [
-            //   const BoxShadow(
-            //     color: Color(0x6699806C),
-            //     blurRadius: 10,
-            //     offset: Offset(5, 5),
-            //   ),
-            // ],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
           ),
-          child: Stack(
+          child: Row(
             children: [
-              // Profile Picture
-              Positioned(
-                left: 0,
-                top: 0,
-                child: SizedBox(
-                  width: 115,
-                  height: 115,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 115,
-                          height: 115,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: AssetImage(widget.profilePicture),
-                              fit: BoxFit.cover,
+              // Shop Profile Picture
+              Hero(
+                tag: 'shop_image_${widget.title}_${widget.shopLocation}',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    widget.profilePicture,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 90,
+                        height: 90,
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                        child: Icon(Icons.store_rounded, color: Theme.of(context).primaryColor, size: 32),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+
+              // Shop Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, size: 14, color: Theme.of(context).primaryColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.workingHours,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Location info
+                        GestureDetector(
+                          onTap: widget.isClickable ? _launchMaps : null,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                blurRadius: 10,
-                                offset: const Offset(2, 2),
-                                spreadRadius: 1,
-                              ),
-                            ],
+                            child: Row(
+                              children: [
+                                Icon(Icons.location_on, size: 14, color: Theme.of(context).primaryColor),
+                                const SizedBox(width: 2),
+                                Text(
+                                  widget.shopLocation.length > 15 
+                                    ? '${widget.shopLocation.substring(0, 12)}...' 
+                                    : widget.shopLocation,
+                                  style: const TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Title
-              Positioned(
-                left: widget.size.width - 200,
-                top: 10,
-                child: Text(
-                  widget.title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontFamily: 'Montserrat Alternates',
-                    fontWeight: FontWeight.w400,
-                    height: 1.17,
-                  ),
-                ),
-              ),
-
-              // Working Hours
-              Positioned(
-                left: widget.size.width - 200,
-                top: 38,
-                child: Text(
-                  widget.workingHours,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                    letterSpacing: 0.20,
-                  ),
-                ),
-              ),
-
-              // Middle Right Icon - Favorite with animation
-              Positioned(
-                left: widget.size.width + 10,
-                top: 45,
-                child: GestureDetector(
-                  onTap: widget.isClickable ? _toggleFavorite : null,
-                  child: ScaleTransition(
-                    scale: _scaleAnimation,
-                    child: SizedBox(
-                      width: 25,
-                      height: 25,
-                      child: Image.asset(
-                        _isFavorite
-                            ? widget.middleRightActiveIconPath
-                            : widget.middleRightIconPath,
-                        width: 25,
-                        height: 25,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Bottom Left Icon - Maps
-              Positioned(
-                left: widget.size.width - 200,
-                top: widget.size.height - 36,
-                child: GestureDetector(
-                  onTap: widget.isClickable ? _launchMaps : null,
-                  child: SizedBox(
-                    width: 25,
-                    height: 25,
-                    child: Image.asset(
-                      widget.bottomLeftIconPath,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-
-              // Bottom Right Icon - Rating with text
-              Positioned(
-                left: widget.size.width - 100,
-                top: widget.size.height - 36,
-                child: GestureDetector(
-                  onTap: widget.isClickable ? _showRatingDialog : null,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        widget.bottomRightIconPath,
-                        width: 25,
-                        height: 25,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.shopRating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                        // Rating
+                        Row(
+                          children: [
+                            const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                            Text(
+                              widget.shopRating.toStringAsFixed(1),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
 
-              // Non-clickable overlay
-              if (!widget.isClickable)
-                Positioned.fill(
+              // Favorite Action
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: widget.isClickable ? _toggleFavorite : null,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
                   child: Container(
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        bottomLeft: Radius.circular(60),
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10),
-                      ),
+                      color: _isFavorite ? AppColors.pink50 : AppColors.almostBlack50,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? AppColors.pink : AppColors.almostBlack300,
+                      size: 22,
                     ),
                   ),
                 ),
+              ),
             ],
           ),
         ),
@@ -365,4 +245,3 @@ class _BarbershopCardState extends State<BarbershopCard>
     );
   }
 }
-

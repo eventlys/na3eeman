@@ -1,65 +1,59 @@
 import 'package:flutter/material.dart';
-import '../constants/app_color.dart';
+// import '../constants/app_color.dart';
 
 class CustomShadows {
-  static const List<BoxShadow> small = [
+  static List<BoxShadow> small = [
     BoxShadow(
-      color: AppColor.dark,
+      color: Colors.black.withOpacity(0.04),
       blurRadius: 4,
-      offset: Offset(0, 1),
+      offset: const Offset(0, 1),
     ),
   ];
 
-  static const List<BoxShadow> medium = [
+  static List<BoxShadow> medium = [
     BoxShadow(
-      color: AppColor.dark,
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
-  ];
-
-  static const List<BoxShadow> large = [
-    BoxShadow(
-      color: AppColor.dark,
-      blurRadius: 16,
-      offset: Offset(0, 4),
-    ),
-  ];
-
-  static const List<BoxShadow> xl = [
-    BoxShadow(
-      color: AppColor.dark,
-      blurRadius: 24,
-      offset: Offset(0, 8),
-    ),
-  ];
-
-  // Neumorphic shadows
-  static List<BoxShadow> neumorphicLight = [
-    BoxShadow(
-      color: AppColor.light,
+      color: Colors.black.withOpacity(0.06),
       blurRadius: 10,
-      offset: const Offset(-5, -5),
-    ),
-    BoxShadow(
-      color: AppColor.dark,
-      blurRadius: 10,
-      offset: const Offset(5, 5),
+      offset: const Offset(0, 2),
     ),
   ];
 
-  static List<BoxShadow> neumorphicDark = [
+  static List<BoxShadow> large = [
     BoxShadow(
-      color: AppColor.dark,
-      blurRadius: 10,
-      offset: const Offset(-5, -5),
-    ),
-    BoxShadow(
-      color: AppColor.light,
-      blurRadius: 10,
-      offset: const Offset(5, 5),
+      color: Colors.black.withOpacity(0.08),
+      blurRadius: 20,
+      offset: const Offset(0, 4),
     ),
   ];
+
+  static List<BoxShadow> xl = [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.10),
+      blurRadius: 30,
+      offset: const Offset(0, 8),
+    ),
+  ];
+
+  // Soft shadows (replaces neumorphic)
+  static List<BoxShadow> softLight = [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.04),
+      blurRadius: 12,
+      offset: const Offset(0, 2),
+    ),
+  ];
+
+  static List<BoxShadow> softDark = [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.2),
+      blurRadius: 12,
+      offset: const Offset(0, 2),
+    ),
+  ];
+
+  // Keep old names for backward compat
+  static List<BoxShadow> get neumorphicLight => softLight;
+  static List<BoxShadow> get neumorphicDark => softDark;
 }
 
 // For more customizable inner shadows

@@ -159,7 +159,8 @@ class AnalyticsService {
         'app_version': '1.0.0',
       };
 
-      await _apiService.post('/analytics/events', data: eventData);
+      // Disable API call temporarily as backend does not have analytics app
+      // await _apiService.post('/analytics/events', data: eventData);
 
       // Also log locally for debugging
       print('Analytics Event: $name, Parameters: $parameters');

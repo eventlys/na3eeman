@@ -22,8 +22,8 @@ class BarberProfile {
 
   factory BarberProfile.fromJson(Map<String, dynamic> json) {
     return BarberProfile(
-      id: json['id'] as int,
-      barberId: json['barber'] as int, // Changed from User object to ID
+      id: (json['id'] as int?) ?? 0,
+      barberId: (json['barber'] ?? json['id'] as int?) ?? 0, // Changed from User object to ID
       bio: json['bio'] as String?,
       specialties: json['specialties'] as String?,
       contactPhone: json['contact_phone'] as String?,

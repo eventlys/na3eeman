@@ -65,7 +65,7 @@ class NotificationHelper {
       );
 
       await _notifications.initialize(
-        settings,
+        settings: settings,
         onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
       );
 
@@ -117,7 +117,13 @@ class NotificationHelper {
 
       final details = _getNotificationDetails(type);
 
-      await _notifications.show(id, title, body, details, payload: payload);
+      await _notifications.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: details,
+        payload: payload,
+      );
 
       AppLogger.debug('Notification shown: $title', extra: {
         'id': id,
@@ -147,11 +153,11 @@ class NotificationHelper {
       final tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
 
       await _notifications.zonedSchedule(
-        id,
-        title,
-        body,
-        tzScheduledTime,
-        details,
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: tzScheduledTime,
+        notificationDetails: details,
         payload: payload,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
@@ -238,7 +244,7 @@ class NotificationHelper {
   // Cancel specific notification
   Future<void> cancelNotification(int id) async {
     try {
-      await _notifications.cancel(id);
+      await _notifications.cancel(id: id);
       AppLogger.debug('Notification cancelled: $id');
     } catch (e) {
       AppLogger.error('Failed to cancel notification: $id', error: e);

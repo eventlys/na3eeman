@@ -245,276 +245,200 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: 16),
 
           // First Name
-          TextField(
+          TextFormField(
             controller: _firstNameController,
             focusNode: _firstNameFocus,
-            decoration: InputDecoration(
-              labelText: 'Full Name',
-              labelStyle: TextStyle(color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
-              ),
-              prefixIcon: ImageIcon(
-                AssetImage(AppImages.avatar_male),
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-              ),
+            decoration: const InputDecoration(
+              hintText: 'Full Name',
+              prefixIcon: Icon(Icons.person_outline),
             ),
-            style: TextStyle(color: isDark ? AppColor.darkText : AppColor.lightText),
-            onChanged: (value) {
-              _logger.d('Full Name: $value');
-            },
+            validator: (v) => v!.isEmpty ? 'Enter full name' : null,
           ),
 
           const SizedBox(height: 16),
 
           // Email
-          TextField(
+          TextFormField(
             controller: _emailController,
             focusNode: _emailFocus,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              labelText: 'Email Address',
-              labelStyle: TextStyle(color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
-              ),
-              prefixIcon: ImageIcon(
-                AssetImage(AppImages.mail),
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-              ),
+            decoration: const InputDecoration(
+              hintText: 'Email Address',
+              prefixIcon: Icon(Icons.email_outlined),
             ),
-            style: TextStyle(color: isDark ? AppColor.darkText : AppColor.lightText),
-            onChanged: (value) {
-              _logger.d('Email: $value');
-            },
+            validator: (v) => v!.isEmpty ? 'Enter email' : null,
           ),
 
           const SizedBox(height: 16),
 
           // Phone Number
-          TextField(
+          TextFormField(
             controller: _phoneController,
             focusNode: _phoneFocus,
             keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: 'Phone Number',
-              labelStyle: TextStyle(color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
-              ),
-              prefixIcon: ImageIcon(
-                AssetImage(AppImages.phone),
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-              ),
+            decoration: const InputDecoration(
+              hintText: 'Phone Number',
+              prefixIcon: Icon(Icons.phone_outlined),
             ),
-            style: TextStyle(color: isDark ? AppColor.darkText : AppColor.lightText),
-            onChanged: (value) {
-              _logger.d('Phone: $value');
-            },
+            validator: (v) => v!.isEmpty ? 'Enter phone number' : null,
           ),
 
           const SizedBox(height: 16),
 
-          // Gender Dropdown
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              color: isDark ? AppColor.darkCard : AppColor.lightCard,
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedGender,
-                hint: Text(
-                  'Select Gender',
-                  style: TextStyle(
-                    color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-                    fontSize: 16,
+          Row(
+            children: [
+              // Gender Dropdown
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: isDark ? AppColor.borderDark : AppColor.borderLight),
+                    color: isDark ? AppColor.darkCard : AppColor.lightCard,
                   ),
-                ),
-                isExpanded: true,
-                dropdownColor: isDark ? AppColor.darkCard : AppColor.lightCard,
-                icon: ImageIcon(
-                  AssetImage(AppImages.arrow_red),
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                ),
-                items: ['Male', 'Female', 'Other']
-                    .map((gender) => DropdownMenuItem(
-                  value: gender,
-                  child: Row(
-                    children: [
-                      ImageIcon(
-                        AssetImage(gender == 'Male'
-                          ? AppImages.avatar_male
-                          : gender == 'Female'
-                            ? AppImages.avatar_female
-                            : AppImages.admin),
-                        color: isDark ? AppColor.darkText : AppColor.lightText,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        gender,
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedGender,
+                      hint: Text(
+                        'Gender',
                         style: TextStyle(
+                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
                           fontSize: 16,
-                          color: isDark ? AppColor.darkText : AppColor.lightText,
                         ),
                       ),
-                    ],
-                  ),
-                ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedGender = value;
-                  });
-                  _logger.d('Gender: $value');
-                },
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Role Dropdown
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              color: isDark ? AppColor.darkCard : AppColor.lightCard,
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedRole,
-                hint: Text(
-                  'Select Role',
-                  style: TextStyle(
-                    color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-                    fontSize: 16,
-                  ),
-                ),
-                isExpanded: true,
-                dropdownColor: isDark ? AppColor.darkCard : AppColor.lightCard,
-                icon: ImageIcon(
-                  AssetImage(AppImages.arrow_red),
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                ),
-                items: ['customer', 'barber', 'owner']
-                    .map((role) => DropdownMenuItem(
-                  value: role,
-                  child: Row(
-                    children: [
-                      ImageIcon(
-                        AssetImage(role == 'barber'
-                          ? AppImages.scissors
-                          : role == 'owner'
-                            ? AppImages.admin
-                            : AppImages.staff),
-                        color: isDark ? AppColor.darkText : AppColor.lightText,
-                        size: 20,
+                      isExpanded: true,
+                      dropdownColor: isDark ? AppColor.darkCard : AppColor.lightCard,
+                      icon: ImageIcon(
+                        AssetImage(AppImages.arrow_red),
+                        color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        role.toUpperCase(),
+                      items: ['Male', 'Female', 'Other']
+                          .map((gender) => DropdownMenuItem(
+                        value: gender,
+                        child: Row(
+                          children: [
+                            ImageIcon(
+                              AssetImage(gender == 'Male'
+                                ? AppImages.avatar_male
+                                : gender == 'Female'
+                                  ? AppImages.avatar_female
+                                  : AppImages.admin),
+                              color: isDark ? AppColor.darkText : AppColor.lightText,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              gender,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: isDark ? AppColor.darkText : AppColor.lightText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGender = value;
+                        });
+                        _logger.d('Gender: $value');
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Role Dropdown
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: isDark ? AppColor.borderDark : AppColor.borderLight),
+                    color: isDark ? AppColor.darkCard : AppColor.lightCard,
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedRole,
+                      hint: Text(
+                        'Role',
                         style: TextStyle(
+                          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
                           fontSize: 16,
-                          color: isDark ? AppColor.darkText : AppColor.lightText,
                         ),
                       ),
-                    ],
+                      isExpanded: true,
+                      dropdownColor: isDark ? AppColor.darkCard : AppColor.lightCard,
+                      icon: ImageIcon(
+                        AssetImage(AppImages.arrow_red),
+                        color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                      ),
+                      items: ['customer', 'barber', 'owner']
+                          .map((role) => DropdownMenuItem(
+                        value: role,
+                        child: Row(
+                          children: [
+                            ImageIcon(
+                              AssetImage(role == 'barber'
+                                ? AppImages.scissors
+                                : role == 'owner'
+                                  ? AppImages.admin
+                                  : AppImages.staff),
+                              color: isDark ? AppColor.darkText : AppColor.lightText,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              role.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark ? AppColor.darkText : AppColor.lightText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedRole = value;
+                        });
+                        _logger.d('Role: $value');
+                      },
+                    ),
                   ),
-                ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedRole = value;
-                  });
-                  _logger.d('Role: $value');
-                },
+                ),
               ),
-            ),
+            ],
           ),
 
           const SizedBox(height: 16),
 
           // Password
-          TextField(
+          TextFormField(
             controller: _passwordController,
             focusNode: _passwordFocus,
             obscureText: true,
-            decoration: InputDecoration(
-              labelText: 'Password',
-              labelStyle: TextStyle(color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
-              ),
-              prefixIcon: ImageIcon(
-                AssetImage(AppImages.lock),
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-              ),
+            decoration: const InputDecoration(
+              hintText: 'Password',
+              prefixIcon: Icon(Icons.lock_outline),
             ),
-            style: TextStyle(color: isDark ? AppColor.darkText : AppColor.lightText),
-            onChanged: (value) {
-              _logger.d('Password: $value');
-            },
+            validator: (v) => v!.isEmpty ? 'Enter password' : null,
           ),
 
           const SizedBox(height: 16),
 
           // Confirm Password
-          TextField(
+          TextFormField(
             controller: _confirmPasswordController,
             focusNode: _confirmPasswordFocus,
             obscureText: true,
-            decoration: InputDecoration(
-              labelText: 'Confirm Password',
-              labelStyle: TextStyle(color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
-              ),
-              prefixIcon: ImageIcon(
-                AssetImage(AppImages.secure),
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-              ),
+            decoration: const InputDecoration(
+              hintText: 'Confirm Password',
+              prefixIcon: Icon(Icons.lock_outline),
             ),
-            style: TextStyle(color: isDark ? AppColor.darkText : AppColor.lightText),
-            onChanged: (value) {
-              _logger.d('Confirm Password: $value');
-            },
+            validator: (v) => v!.isEmpty ? 'Confirm your password' : null,
           ),
 
           const SizedBox(height: 30),
@@ -646,7 +570,6 @@ class _SocialButton extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Image.asset(
             imagePath,
-            color: isDark ? AppColor.darkBackground : AppColor.lightCard,
             fit: BoxFit.contain,
           ),
         ),

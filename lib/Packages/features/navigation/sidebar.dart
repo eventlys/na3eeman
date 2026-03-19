@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../Models/ui/menu_item_model.dart';
+import '../../../../Providers/features/auth_provider.dart';
+import '../../../../core/enums/app_enums.dart';
+import '../../../../core/auth/role_permission_manager.dart';
+import '../../../../core/theme/colors.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
@@ -15,49 +20,50 @@ class Sidebar extends StatelessWidget {
     super.key,
     required this.controller,
     this.maxWidth = 320,
-    this.minWidth = 250,
-    this.widthPercentage = 0.45,
+    this.minWidth = 280,
+    this.widthPercentage = 0.7,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Calculate width inside build method where context is available
     final double calculatedWidth = _calculateWidth(context);
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+    final double offsetMultiplier = isRtl ? 1.0 : -1.0;
 
     return AnimatedBuilder(
       animation: controller.animation,
       builder: (context, child) {
         return Visibility(
           visible: controller.animation.value > 0,
-          child: GestureDetector(
-            onTap: controller.closeSidebar,
-            child: Container(
-              color: Colors.transparent,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: calculatedWidth,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                        ),
-                        child: _buildSidebarContent(context),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: controller.closeSidebar,
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                ],
+          child: Stack(
+            children: [
+              // Overlay
+              GestureDetector(
+                onTap: controller.closeSidebar,
+                child: Container(
+                  color: Colors.black.withValues(alpha: controller.animation.value * 0.4),
+                ),
               ),
-            ),
+
+              // Sidebar
+              Positioned(
+                left: isRtl ? null : 0,
+                right: isRtl ? 0 : null,
+                top: 0,
+                bottom: 0,
+                child: Transform.translate(
+                  offset: Offset(offsetMultiplier * (1 - controller.animation.value) * calculatedWidth, 0),
+                  child: SizedBox(
+                    width: calculatedWidth,
+                    child: Material(
+                      elevation: 16,
+                      color: Colors.transparent,
+                      child: _buildSidebarContent(context),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -66,45 +72,93 @@ class Sidebar extends StatelessWidget {
 
   double _calculateWidth(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final calculatedWidth = screenWidth * widthPercentage;
-    return calculatedWidth.clamp(minWidth, maxWidth);
+    return (screenWidth * widthPercentage).clamp(minWidth, maxWidth);
   }
 
   Widget _buildSidebarContent(BuildContext context) {
     return Stack(
       children: [
-        // Bubble Background
         const SidebarBackground(),
+        SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 40),
+              // User Profile
+              UserProfileSection(controller: controller),
 
-        // Sidebar Content
-        Column(
-          children: [
-            SizedBox(height: 50),
-            // User Profile Section
-            UserProfileSection(controller: controller),
+              const SizedBox(height: 24),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Divider(color: AppColors.almostBlack50),
+              ),
+              const SizedBox(height: 16),
 
-            // Divider
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Divider(color: Color(0x80c25858)),
-            ),
+              // Menu Items
+              Expanded(
+                child: _buildMenuItems(context),
+              ),
 
-            // Menu Items
-            Expanded(
-              child: _buildMenuItems(context),
-            ),
-          ],
+              // Footer / Branding
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'NA3EMAN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    Text(
+                      'Version 2.0.0',
+                      style: TextStyle(color: AppColors.almostBlack300, fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 
   Widget _buildMenuItems(BuildContext context) {
-    final menuItems = [
+    final authProvider = context.watch<AuthProvider>();
+    final user = authProvider.user;
+    final role = user?.role ?? UserRole.customer;
+
+    final List<MenuItem> menuItems = [
+      if (RolePermissionManager.canViewAdminDashboard(role))
+        MenuItem(
+          title: 'Admin Panel',
+          assetIcon: 'assets/icons/secure.png',
+          delay: 0,
+          onTap: () => Navigator.pushNamed(context, '/admin'),
+        ),
+      if (RolePermissionManager.canAccessShopManagement(role))
+        MenuItem(
+          title: 'Shop Dashboard',
+          assetIcon: 'assets/icons/setting.png',
+          delay: 1,
+          onTap: () => Navigator.pushNamed(context, '/owner_dashboard'),
+        ),
+      if (role == UserRole.employee)
+        MenuItem(
+          title: 'My Schedule',
+          assetIcon: 'assets/icons/plus.png',
+          delay: 1,
+          onTap: () => Navigator.pushNamed(context, '/employee_dashboard'),
+        ),
       MenuItem(
         title: 'Settings',
-        assetIcon: 'assets/icons/setting.png', // Use asset image
-        delay: 0,
+        assetIcon: 'assets/icons/setting.png',
+        delay: 3,
         onTap: controller.navigateToSettings,
       ),
       MenuItem(
@@ -120,51 +174,22 @@ class Sidebar extends StatelessWidget {
         onTap: controller.showInviteFriends,
       ),
       MenuItem(
-        title: 'Privacy',
+        title: 'Privacy Policy',
         assetIcon: 'assets/icons/lock.png',
-        delay: 1,
-        onTap: controller.showPrivacyPolicy,
-      ),
-      MenuItem(
-        title: 'Security',
-        assetIcon: 'assets/icons/secure.png',
-        delay: 2,
-        onTap: controller.showSecurityPolicy,
-      ),
-      MenuItem(
-        title: 'Rules',
-        assetIcon: 'assets/icons/star.png',
-        delay: 3,
-        onTap: controller.showAppRules,
-      ),
-      MenuItem(
-        title: 'Contact Us',
-        assetIcon: 'assets/icons/mail_view.png',
         delay: 6,
-        onTap: controller.showContactUs,
-      ),
-      MenuItem(
-        title: 'Report Shop',
-        assetIcon: 'assets/icons/report.png',
-        delay: 7,
-        onTap: controller.showReportShop,
-      ),
-      MenuItem(
-        title: 'User Reports',
-        assetIcon: 'assets/icons/file_star.png',
-        delay: 8,
-        onTap: controller.showUserReports,
+        onTap: controller.showPrivacyPolicy,
       ),
       MenuItem(
         title: 'Logout',
         assetIcon: 'assets/icons/exit.png',
-        delay: 9,
+        delay: 7,
         onTap: controller.showLogoutConfirmation,
       ),
     ];
 
+
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       itemCount: menuItems.length,
       itemBuilder: (context, index) {
         final item = menuItems[index];
@@ -177,4 +202,3 @@ class Sidebar extends StatelessWidget {
     );
   }
 }
-

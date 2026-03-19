@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/colors.dart';
 
 class SidebarItem extends StatelessWidget {
   final String title;
   final IconData? icon;
   final String? assetIcon;
   final VoidCallback onTap;
-  final Color backgroundColor;
-  final Color textColor;
-  final double iconSize;
+  final Color? backgroundColor;
 
   const SidebarItem({
     super.key,
@@ -15,56 +14,54 @@ class SidebarItem extends StatelessWidget {
     this.icon,
     this.assetIcon,
     required this.onTap,
-    this.backgroundColor = Colors.transparent,
-    this.textColor = Colors.black,
-    this.iconSize = 24.0,
-  }) : assert(icon != null || assetIcon != null, 'Either icon or assetIcon must be provided');
+    this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      // margin: const EdgeInsets.symmetric(vertical: 4),
-      elevation: 2,
-      shadowColor: Colors.transparent,
-      color: backgroundColor,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: ListTile(
-        leading: _buildLeadingIcon(),
+        onTap: onTap,
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: _buildIcon(isDark, context),
+        ),
         title: Text(
           title,
           style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: textColor,
-            fontSize: 16, // You can adjust text size
+            fontWeight: FontWeight.bold,
+            color: isDark ? AppColors.white : AppColors.almostBlack,
+            fontSize: 15,
           ),
         ),
-        // trailing: Icon(Icons.chevron_right, color: trailingColor, size: 20),
-        onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Control padding
+        trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.almostBlack200, size: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       ),
     );
   }
 
-  Widget _buildLeadingIcon() {
+  Widget _buildIcon(bool isDark, BuildContext context) {
     if (assetIcon != null) {
       return Image.asset(
         assetIcon!,
-        width: iconSize,
-        height: iconSize,
-        errorBuilder: (context, error, stackTrace) {
-          // Fallback to icon if image fails to load
-          return Icon(
-            icon ?? Icons.error_outline,
-            size: iconSize,
-          );
-        },
-      );
-    } else {
-      return Icon(
-        icon,
-        size: iconSize,
+        width: 20,
+        height: 20,
+        color: Theme.of(context).primaryColor,
+        errorBuilder: (_, __, ___) => Icon(Icons.circle, size: 20, color: Theme.of(context).primaryColor),
       );
     }
+    return Icon(icon ?? Icons.circle, size: 20, color: Theme.of(context).primaryColor);
   }
 }
-

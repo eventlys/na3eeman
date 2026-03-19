@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
-import '../../../../Services/enums/points_types.dart';
+import '../../../../core/enums/app_enums.dart';
 import '../../profile/widgets/rating_with_points_widget.dart';
 
 class ReviewsSection extends StatefulWidget {

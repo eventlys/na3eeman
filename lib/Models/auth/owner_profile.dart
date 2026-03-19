@@ -1,4 +1,4 @@
-import 'barber_profile.dart';
+// import 'barber_profile.dart';
 
 class OwnerProfile {
   final int id;
@@ -29,8 +29,8 @@ class OwnerProfile {
 
   factory OwnerProfile.fromJson(Map<String, dynamic> json) {
     return OwnerProfile(
-      id: json['id'] as int,
-      barberProfileId: json['barber'] as int, // This is the BarberProfile ID
+      id: (json['id'] as int?) ?? 0,
+      barberProfileId: (json['barber'] ?? json['id'] as int?) ?? 0, // This is the BarberProfile ID
       isOwner: json['is_owner'] as bool? ?? true,
       isWorker: json['is_worker'] as bool? ?? true,
       isSubscribed: json['is_subscribed'] as bool? ?? false,

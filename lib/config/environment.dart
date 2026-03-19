@@ -1,5 +1,5 @@
 /// Application Environment Configuration
-/// 
+///
 /// This file defines the environment configuration for the app.
 /// Different environments (dev, staging, prod) can be selected at build time.
 
@@ -13,16 +13,16 @@ class Environment {
   static EnvironmentConfig get config => _config;
 
   /// Initialize the environment configuration
-  /// 
+  ///
   /// Call this in main() before runApp()
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// await Environment.init(flavor: AppFlavor.prod);
   /// ```
   static Future<void> init({required AppFlavor flavor}) async {
     _flavor = flavor;
-    
+
     switch (flavor) {
       case AppFlavor.dev:
         _config = DevConfig();
@@ -35,7 +35,7 @@ class Environment {
         break;
     }
   }
-  
+
   static bool get isDevelopment => _flavor == AppFlavor.dev;
   static bool get isStaging => _flavor == AppFlavor.staging;
   static bool get isProduction => _flavor == AppFlavor.prod;
@@ -49,17 +49,17 @@ abstract class EnvironmentConfig {
   bool get enableLogging;
   Duration get apiTimeout;
   int get maxRetries;
-  
+
   // Feature flags
   bool get enableBiometricAuth;
   bool get enableSocialLogin;
   bool get enableCrashReporting;
   bool get enableAnalytics;
-  
+
   // OAuth/Social Auth
   String? get googleClientId;
   String? get appleClientId;
-  
+
   // Payment
   String? get stripePublishableKey;
 }
@@ -69,14 +69,17 @@ class DevConfig implements EnvironmentConfig {
   @override
   String get apiBaseUrl => const String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:8000/api/v1',  // Local development server
+    // NOTE: Android emulators route `localhost` to themselves, not your host.
+    // Use 10.0.2.2 to reach your host machine's backend from the emulator.
+    // For a physical device on the same WiFi, use your machine's LAN IP instead.
+    defaultValue: 'http://192.168.1.90:8080/api/v1',
   );
 
   @override
   String get appName => 'Na3eeman (Dev)';
 
   @override
-  bool get showDebugBanner => true;
+  bool get showDebugBanner => false;
 
   @override
   bool get enableLogging => true;
@@ -95,13 +98,14 @@ class DevConfig implements EnvironmentConfig {
   bool get enableSocialLogin => true;
 
   @override
-  bool get enableCrashReporting => false;  // Don't send dev crashes to Sentry
+  bool get enableCrashReporting => false; // Don't send dev crashes to Sentry
 
   @override
-  bool get enableAnalytics => false;  // Don't track dev usage
+  bool get enableAnalytics => false; // Don't track dev usage
 
   @override
-  String? get googleClientId => const String.fromEnvironment('GOOGLE_CLIENT_ID');
+  String? get googleClientId =>
+      const String.fromEnvironment('GOOGLE_CLIENT_ID');
 
   @override
   String? get appleClientId => const String.fromEnvironment('APPLE_CLIENT_ID');
@@ -109,7 +113,7 @@ class DevConfig implements EnvironmentConfig {
   @override
   String? get stripePublishableKey => const String.fromEnvironment(
     'STRIPE_PUBLISHABLE_KEY',
-    defaultValue: 'pk_test_...',  // Test key for development
+    defaultValue: 'pk_test_...', // Test key for development
   );
 }
 
@@ -143,21 +147,21 @@ class StagingConfig implements EnvironmentConfig {
   bool get enableSocialLogin => true;
 
   @override
-  bool get enableCrashReporting => true;  // Log staging crashes
+  bool get enableCrashReporting => true; // Log staging crashes
 
   @override
-  bool get enableAnalytics => true;  // Track staging usage
+  bool get enableAnalytics => true; // Track staging usage
 
   @override
-  String? get googleClientId => const String.fromEnvironment('GOOGLE_CLIENT_ID');
+  String? get googleClientId =>
+      const String.fromEnvironment('GOOGLE_CLIENT_ID');
 
   @override
   String? get appleClientId => const String.fromEnvironment('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey => const String.fromEnvironment(
-    'STRIPE_PUBLISHABLE_KEY',
-  );
+  String? get stripePublishableKey =>
+      const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
 }
 
 /// Production environment configuration
@@ -175,7 +179,7 @@ class ProdConfig implements EnvironmentConfig {
   bool get showDebugBanner => false;
 
   @override
-  bool get enableLogging => false;  // Minimize logging in production
+  bool get enableLogging => false; // Minimize logging in production
 
   @override
   Duration get apiTimeout => const Duration(seconds: 15);
@@ -196,13 +200,13 @@ class ProdConfig implements EnvironmentConfig {
   bool get enableAnalytics => true;
 
   @override
-  String? get googleClientId => const String.fromEnvironment('GOOGLE_CLIENT_ID');
+  String? get googleClientId =>
+      const String.fromEnvironment('GOOGLE_CLIENT_ID');
 
   @override
   String? get appleClientId => const String.fromEnvironment('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey => const String.fromEnvironment(
-    'STRIPE_PUBLISHABLE_KEY',
-  );
+  String? get stripePublishableKey =>
+      const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
 }

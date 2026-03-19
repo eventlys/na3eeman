@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../../Services/enums/gender.dart';
-import '../../Services/enums/user_role.dart';
+import '../../core/enums/app_enums.dart';
 
 @immutable
 class User {
@@ -16,8 +16,8 @@ class User {
   final String location;
   final double lat;
   final double lng;
-  final bool vrfidEmail;
-  final bool vrfidPhone;
+  final bool isEmailVerified;
+  final bool isPhoneVerified;
   final bool isDeleted;
   final DateTime? deletedAt;
   final DateTime createdAt;
@@ -25,6 +25,7 @@ class User {
   final bool isActive;
   final bool isStaff;
   final bool isSuperuser;
+  final String? specialization;
 
   const User({
     required this.id,
@@ -36,11 +37,11 @@ class User {
     this.profilePic,
     required this.role,
     required this.gender,
-    this.location = 'amman, Jordan',
+    this.location = 'Amman, Jordan',
     this.lat = 31.963158,
     this.lng = 35.930359,
-    this.vrfidEmail = false,
-    this.vrfidPhone = false,
+    this.isEmailVerified = false,
+    this.isPhoneVerified = false,
     this.isDeleted = false,
     this.deletedAt,
     required this.createdAt,
@@ -48,12 +49,18 @@ class User {
     this.isActive = true,
     this.isStaff = false,
     this.isSuperuser = false,
+    this.specialization,
   });
 
   String get fullName => '$firstName $lastName';
   bool get isCustomer => role == UserRole.customer;
-  bool get isBarber => role == UserRole.barber;
+  bool get isEmployee => role == UserRole.employee;
+  bool get isBarber => role == UserRole.employee;
   bool get isOwner => role == UserRole.owner;
+  bool get isReceptionist => role == UserRole.receptionist;
+  bool get isIntern => role == UserRole.intern;
+  bool get isAdmin => role == UserRole.admin;
+  bool get isStaffMember => isEmployee || isOwner || isReceptionist || isIntern || isAdmin;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -63,14 +70,14 @@ class User {
       phone: json['phone'] as String?,
       firstName: json['first_name'] as String? ?? '',
       lastName: json['last_name'] as String? ?? '',
-      profilePic: json['profile_pic'] as String?,
+      profilePic: (json['profile_pic_path'] ?? json['profile_pic']) as String?,
       role: UserRoleExtension.fromString(json['role'] as String? ?? 'CUSTOMER'),
       gender: GenderExtension.fromString(json['gender'] as String? ?? 'MALE'),
-      location: json['location'] as String? ?? 'amman, Jordan',
+      location: json['location'] as String? ?? 'Amman, Jordan',
       lat: (json['lat'] as num?)?.toDouble() ?? 31.963158,
       lng: (json['lng'] as num?)?.toDouble() ?? 35.930359,
-      vrfidEmail: json['vrfid_email'] as bool? ?? false,
-      vrfidPhone: json['vrfid_phone'] as bool? ?? false,
+      isEmailVerified: (json['is_email_verified'] ?? json['vrfid_email']) as bool? ?? false,
+      isPhoneVerified: (json['is_phone_verified'] ?? json['vrfid_phone']) as bool? ?? false,
       isDeleted: json['is_deleted'] as bool? ?? false,
       deletedAt: json['deleted_at'] != null
           ? DateTime.parse(json['deleted_at'] as String)
@@ -80,8 +87,12 @@ class User {
       isActive: json['is_active'] as bool? ?? true,
       isStaff: json['is_staff'] as bool? ?? false,
       isSuperuser: json['is_superuser'] as bool? ?? false,
+      specialization: json['specialization'] is List
+          ? (json['specialization'] as List).join(', ')
+          : json['specialization'] as String?,
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -97,8 +108,8 @@ class User {
       'location': location,
       'lat': lat,
       'lng': lng,
-      'vrfid_email': vrfidEmail,
-      'vrfid_phone': vrfidPhone,
+      'is_email_verified': isEmailVerified,
+      'is_phone_verified': isPhoneVerified,
       'is_deleted': isDeleted,
       'deleted_at': deletedAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
@@ -106,6 +117,7 @@ class User {
       'is_active': isActive,
       'is_staff': isStaff,
       'is_superuser': isSuperuser,
+      'specialization': specialization,
     };
   }
 
@@ -122,8 +134,8 @@ class User {
     String? location,
     double? lat,
     double? lng,
-    bool? vrfidEmail,
-    bool? vrfidPhone,
+    bool? isEmailVerified,
+    bool? isPhoneVerified,
     bool? isDeleted,
     DateTime? deletedAt,
     DateTime? createdAt,
@@ -131,6 +143,7 @@ class User {
     bool? isActive,
     bool? isStaff,
     bool? isSuperuser,
+    String? specialization,
   }) {
     return User(
       id: id ?? this.id,
@@ -145,8 +158,8 @@ class User {
       location: location ?? this.location,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
-      vrfidEmail: vrfidEmail ?? this.vrfidEmail,
-      vrfidPhone: vrfidPhone ?? this.vrfidPhone,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
       isDeleted: isDeleted ?? this.isDeleted,
       deletedAt: deletedAt ?? this.deletedAt,
       createdAt: createdAt ?? this.createdAt,
@@ -154,6 +167,7 @@ class User {
       isActive: isActive ?? this.isActive,
       isStaff: isStaff ?? this.isStaff,
       isSuperuser: isSuperuser ?? this.isSuperuser,
+      specialization: specialization ?? this.specialization,
     );
   }
 

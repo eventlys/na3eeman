@@ -18,6 +18,7 @@ class AppConfig {
   static const String appVersion = '1.0.0';
   static bool get isProduction => Environment.isProduction;
   static bool get isDevelopment => Environment.isDevelopment;
+  static bool get isDebug => Environment.isDevelopment;
 
   // Feature Flags - dynamic based on environment
   static bool get enableBiometricAuth => Environment.config.enableBiometricAuth;

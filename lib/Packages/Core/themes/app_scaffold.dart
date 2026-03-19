@@ -125,32 +125,32 @@ class AppScaffold extends StatelessWidget {
 
     return HeroControllerScope(
       controller: MaterialApp.createMaterialHeroController(),
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: Colors.transparent,
-        appBar: showAppBar && !useGlassSliverAppBar ? _buildAppBar(context) : null,
-        drawer: drawer,
-        endDrawer: endDrawer,
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                gradientColors.startColor,
-                gradientColors.endColor,
-              ],
-            ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              gradientColors.startColor,
+              gradientColors.endColor,
+            ],
           ),
-          child: _buildRefreshableBody(context),
         ),
-        floatingActionButton: floatingActionButton,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-        extendBody: extendBody,
-        extendBodyBehindAppBar: extendBodyBehindAppBar,
-        bottomNavigationBar: bottomNavigationBar ?? (user != null ? _buildNavigationBar(context) : null),
-        bottomSheet: bottomSheet,
+        child: Scaffold(
+          key: scaffoldKey,
+          backgroundColor: Colors.transparent,
+          appBar: showAppBar && !useGlassSliverAppBar ? _buildAppBar(context) : null,
+          drawer: drawer,
+          endDrawer: endDrawer,
+          body: _buildRefreshableBody(context),
+          floatingActionButton: floatingActionButton,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+          extendBody: extendBody,
+          extendBodyBehindAppBar: extendBodyBehindAppBar,
+          bottomNavigationBar: bottomNavigationBar ?? (user != null ? _buildNavigationBar(context) : null),
+          bottomSheet: bottomSheet,
+        ),
       ),
     );
   }

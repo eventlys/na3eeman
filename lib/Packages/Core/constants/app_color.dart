@@ -1,135 +1,243 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static const Color primary = Color(0xFF806C99);
-  static const Color secondary = Color(0xFFC25858);
+  AppColor._();
 
-  static const Color lightMaleBG = Color(0xFF9D8BB0);
-  static const Color lightFemaleBG = Color(0xFF92A0A6);
-  static const Color lightNonBinaryBG = Color(0xFFA68B6C);
-  static const Color lightPrimary = Color(0xFF806C99);
-  static const Color lightSecondary = Color(0xFFD17A7A);
-  static const Color lightAccent = Color(0xFFF18F01);
-  static const Color lightBackground = Color(0xFFF8F9FA);
-  static const Color lightCard = Color(0xFFFFFFFF);
-  static const Color lightText = Color(0xFF2B2D42);
-  static const Color lightTextSecondary = Color(0xFF6B7280);
-  static const Color lightTextHint = Color(0xFF9CA3AF);
-  static const Color lightSuccess = Color(0xFF4CAF50);
-  static const Color lightWarning = Color(0xFFFF9800);
-  static const Color lightError = Color(0xFFF44336);
-  static const Color lightInfo = Color(0xFF2196F3);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Core Brand Colors — Clean, Modern Barber App
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color primaryBlue   = Color(0xFF144EA0);    // Royal Blue
+  static const Color dustyPink     = Color(0xFFD097AE);    // Mauve/Pink
+  static const Color softBeige     = Color(0xFFE4DFC0);    // Light Beige/Cream
+  static const Color white         = Color(0xFFFFFFFF);    // Pure white
+  static const Color offWhite      = Color(0xFFF9F9F9);    // Slightly warm white
+  static const Color charcoal      = Color(0xFF1B1C1F);    // Dark Charcoal/Black (from palette)
+  static const Color darkGray      = Color(0xFF4A4A4A);    // Secondary text
+  static const Color mediumGray    = Color(0xFF9B9B9B);    // Hint/placeholder
+  static const Color lightGray     = Color(0xFFE8E8E8);    // Borders / dividers
+  static const Color paleGray      = Color(0xFFF5F5F5);    // Card backgrounds
+  static const Color black         = Color(0xFF1B1C1F);    // True dark (mapped to charcoal)
 
-  // Staff Management Specific Colors - Light Theme
-  static const Color lightBarber = Color(0xFF6D28D9);
-  static const Color lightManager = Color(0xFF059669);
-  static const Color lightAssistant = Color(0xFFDC2626);
-  static const Color lightReceptionist = Color(0xFF7C3AED);
+  // Legacy 4 Core Colors — kept for backward compatibility
+  static const Color bananaCream   = white;
+  static const Color royalBlue     = primaryBlue;
+  static const Color gumPink       = dustyPink;
+  static const Color midnightBlack = charcoal;
 
-  // Dark Theme Colors
-  static const Color darkMaleBG = Color(0xFF5A4A6B);
-  static const Color darkFemaleBG = Color(0xFF4A5568);
-  static const Color darkNonBinaryBG = Color(0xFF6B5A4A);
-  static const Color darkPrimary = Color(0xFF2E86AB);
-  static const Color darkSecondary = Color(0xFFA93D3D);
-  static const Color darkAccent = Color(0xFFF6AD55);
-  static const Color darkBackground = Color(0xFF1A202C);
-  static const Color darkCard = Color(0xFF2D3748);
-  static const Color darkText = Color(0xFFE2E8F0);
-  static const Color darkTextSecondary = Color(0xFFA0AEC0);
-  static const Color darkTextHint = Color(0xFF718096);
-  static const Color darkSuccess = Color(0xFF48BB78);
-  static const Color darkWarning = Color(0xFFED8936);
-  static const Color darkError = Color(0xFFF56565);
-  static const Color darkInfo = Color(0xFF4299E1);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Light Theme
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color lightBackground       = white;
+  static const Color lightSurface          = white;
+  static const Color lightCard             = white;
+  static const Color lightDivider          = lightGray;
+  static const Color lightText             = charcoal;
+  static const Color lightTextSecondary    = darkGray;
+  static const Color lightTextHint         = mediumGray;
 
-  // Staff Management Specific Colors - Dark Theme
-  static const Color darkBarber = Color(0xFF7C3AED);
-  static const Color darkManager = Color(0xFF059669);
-  static const Color darkAssistant = Color(0xFFE53E3E);
-  static const Color darkReceptionist = Color(0xFF805AD5);
-  static const Color trans = Color(0x00ffffff);
+  static const Color lightBackgroundStart  = white;
+  static const Color lightBackgroundEnd    = offWhite;
 
-  static const Color light = Color(0xffffffff);
-  static const Color dark = Color(0xff000000);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Dark Theme
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color darkBackground        = Color(0xFF121212);
+  static const Color darkSurface           = Color(0xFF1E1E1E);
+  static const Color darkCard              = Color(0xFF252525);
+  static const Color darkText              = Color(0xFFF5F5F5);
+  static const Color darkTextSecondary     = Color(0xFFBDBDBD);
+  static const Color darkTextHint          = Color(0xFF757575);
 
-  // Gender-specific accent colors
-  static const Color maleAccent = Color(0xFF6D28D9);
-  static const Color femaleAccent = Color(0xFFDB2777);
-  static const Color nonBinaryAccent = Color(0xFFF59E0B);
+  static const Color darkBackgroundStart   = Color(0xFF121212);
+  static const Color darkBackgroundEnd     = Color(0xFF1A1A1A);
 
-  // Gender-specific background colors
-  static const Color maleBackground = Color(0xFFE0E7FF);
-  static const Color femaleBackground = Color(0xFFFCE7F3);
-  static const Color nonBinaryBackground = Color(0xFFFEF3C7);
+  // Legacy aliases for dark
+  static const Color ninjaBlack   = darkBackground;
+  static const Color ninjaCard    = darkCard;
+  static const Color ninjaSurface = darkSurface;
+  static const Color ninjaDivider = Color(0xFF333333);
 
-  // Gender-specific dark background colors
-  static const Color darkMaleBackground = Color(0xFF312E81);
-  static const Color darkFemaleBackground = Color(0xFF831843);
-  static const Color darkNonBinaryBackground = Color(0xFF78350F);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Core aliases
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color primary          = primaryBlue;
+  static const Color secondary        = dustyPink;
+  static const Color lightPrimary     = primaryBlue;
+  static const Color darkPrimary      = primaryBlue;
+  static const Color lightSecondary   = dustyPink;
+  static const Color darkSecondary    = dustyPink;
+  static const Color lightAccent      = dustyPink;
+  static const Color darkAccent       = dustyPink;
 
-  static const Color darkWithOpacity = Color(0x1A000000);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Pink / Navy Palette Aliases (backward compat — mapped to new palette)
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color pinkPrimary      = dustyPink;
+  static const Color pinkLight        = softBeige;
+  static const Color pinkDark         = dustyPink;
+  static const Color pinkBgTint       = softBeige;
+  static const Color pinkDarkBgTint   = darkCard;
 
-    // Light Theme Gradient Backgrounds
-  static const Color lightBackgroundStart = Color(0xFFF8F9FA);
-  static const Color lightBackgroundEnd = Color(0xFFE9ECEF);
-  static const Color lightMaleBackgroundStart = Color(0xFFE3F2FD);
-  static const Color lightMaleBackgroundEnd = Color(0xFFBBDEFB);
-  static const Color lightFemaleBackgroundStart = Color(0xFFFCE4EC);
-  static const Color lightFemaleBackgroundEnd = Color(0xFFF8BBD0);
-  static const Color lightNonBinaryBackgroundStart = Color(0xFFF3E5F5);
-  static const Color lightNonBinaryBackgroundEnd = Color(0xFFE1BEE7);
+  static const Color navyPrimary      = primaryBlue;
+  static const Color navyLight        = primaryBlue;
+  static const Color navyDark         = dustyPink;
+  static const Color navyBgTint       = softBeige;
+  static const Color navyDarkBgTint   = darkCard;
 
-  // Dark Theme Gradient Backgrounds
-  static const Color darkBackgroundStart = Color(0xFF121212);
-  static const Color darkBackgroundEnd = Color(0xFF1E1E1E);
-  static const Color darkMaleBackgroundStart = Color(0xFF0D1B2A);
-  static const Color darkMaleBackgroundEnd = Color(0xFF1B263B);
-  static const Color darkFemaleBackgroundStart = Color(0xFF311B1B);
-  static const Color darkFemaleBackgroundEnd = Color(0xFF4A2323);
-  static const Color darkNonBinaryBackgroundStart = Color(0xFF2D1B2D);
-  static const Color darkNonBinaryBackgroundEnd = Color(0xFF3D2C3D);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Semantic Colors
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color success       = Color(0xFF4CAF50);
+  static const Color successLight  = Color(0xFFE8F5E9);
+  static const Color warning       = primaryBlue;
+  static const Color warningLight  = softBeige;
+  static const Color error         = Color(0xFFE53935);
+  static const Color errorLight    = Color(0xFFFFEBEE);
+  static const Color info          = Color(0xFF2196F3);
+  static const Color infoLight     = Color(0xFFE3F2FD);
 
-  // Skeleton Loading Colors
-  static const Color skeletonBaseLight = Color(0xFFE5E7EB);
-  static const Color skeletonHighlightLight = Color(0xFFF3F4F6);
-  static const Color skeletonBaseDark = Color(0xFF374151);
-  static const Color skeletonHighlightDark = Color(0xFF4B5563);
-  static const Color skeletonShimmerLight = Color(0xFFF9FAFB);
-  static const Color skeletonShimmerDark = Color(0xFF6B7280);
+  static const Color darkSuccess   = Color(0xFF66BB6A);
+  static const Color darkWarning   = primaryBlue;
+  static const Color darkError     = Color(0xFFEF5350);
+  static const Color darkInfo      = Color(0xFF42A5F5);
 
-  // Loading Indicator Colors
-  static const Color loadingPrimaryLight = Color(0xFF806C99);
-  static const Color loadingPrimaryDark = Color(0xFF2E86AB);
-  static const Color loadingSecondaryLight = Color(0xFFD17A7A);
-  static const Color loadingSecondaryDark = Color(0xFFA93D3D);
+  static const Color lightSuccess  = success;
+  static const Color lightWarning  = warning;
+  static const Color lightError    = error;
+  static const Color lightInfo     = info;
 
-  // Subscription Dialog Specific Colors
-  static const Color popularBadgeLight = Color(0xFFC25858);
-  static const Color popularBadgeDark = Color(0xFFC25858);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Role Colors
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color roleOwner        = primaryBlue;
+  static const Color roleManager      = dustyPink;
+  static const Color roleEmployee     = primaryBlue;
+  static const Color roleReceptionist = dustyPink;
+  static const Color roleHelper       = primaryBlue;
+  static const Color roleSuperAdmin   = charcoal;
 
-  // Border Colors
-  static const Color borderLight = Color(0xB33B7B44);
-  static const Color borderDark = Color(0xB33B7B44);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Subscription Tiers
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color tierBasic    = mediumGray;
+  static const Color tierGold     = primaryBlue;
+  static const Color tierElite    = dustyPink;
+  static const Color tierPremium  = dustyPink;
+  static const Color tierBusiness = primaryBlue;
 
-  // Button Colors
-  static const Color buttonBackgroundLight = Color(0x4DFFFFFF);
-  static const Color buttonBackgroundDark = Color(0x4D000000);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Avatar / Skeleton
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color avatarTintFemale        = Color(0x33144EA0);
+  static const Color avatarTintMale          = Color(0x33144EA0);
+  static const Color skeletonBaseLight       = paleGray;
+  static const Color skeletonHighlightLight  = lightGray;
+  static const Color skeletonBaseDark        = darkCard;
+  static const Color skeletonHighlightDark   = Color(0xFF333333);
 
-  // Feature Check Colors
-  static const Color featureCheckLight = Color(0xFF4CAF50);
-  static const Color featureCheckDark = Color(0xFF48BB78);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Transparency helpers
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color transparent    = Colors.transparent;
+  static const Color trans          = Colors.transparent;
+  static const Color light          = white;
+  static const Color dark           = charcoal;
+  static const Color overlay        = Color(0x801A1A1A);
+  static const Color overlayLight   = Color(0x331A1A1A);
+  static const Color darkWithOpacity = Color(0x1A121212);
 
-  // Price Text Colors
-  static const Color priceTextLight = Color(0xB33B7B44);
-  static const Color priceTextDark = Color(0xB33B7B44);
+  // ─────────────────────────────────────────────────────────────────────────
+  // Gender-aware Colors — unified
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color maleAccent         = primaryBlue;
+  static const Color femaleAccent       = dustyPink;
+  static const Color nonBinaryAccent    = primaryBlue;
 
-  // Gradient Opacity Colors
-  static const Color gradientStartLight = Color(0x80806C99);
-  static const Color gradientEndLight = Color(0x1AFFFFFF);
-  static const Color gradientSecondaryLight = Color(0x4DC25858);
-  static const Color gradientStartDark = Color(0x802E86AB);
-  static const Color gradientEndDark = Color(0x1A1A202C);
-  static const Color gradientSecondaryDark = Color(0x4DA93D3D);
+  static const Color maleBackground     = white;
+  static const Color femaleBackground   = white;
+  static const Color nonBinaryBackground = white;
+
+  static const Color darkMaleBackground     = darkBackground;
+  static const Color darkFemaleBackground   = darkBackground;
+  static const Color darkNonBinaryBackground = darkBackground;
+
+  static const Color lightMaleBG        = white;
+  static const Color lightFemaleBG      = white;
+  static const Color lightNonBinaryBG   = white;
+  static const Color darkMaleBG         = darkBackground;
+  static const Color darkFemaleBG       = darkBackground;
+  static const Color darkNonBinaryBG    = darkBackground;
+
+  // Background gradient aliases
+  static const Color lightMaleBackgroundStart      = white;
+  static const Color lightMaleBackgroundEnd        = offWhite;
+  static const Color lightFemaleBackgroundStart    = white;
+  static const Color lightFemaleBackgroundEnd      = offWhite;
+  static const Color lightNonBinaryBackgroundStart = white;
+  static const Color lightNonBinaryBackgroundEnd   = offWhite;
+
+  static const Color darkMaleBackgroundStart       = darkBackground;
+  static const Color darkMaleBackgroundEnd         = darkBackground;
+  static const Color darkFemaleBackgroundStart     = darkBackground;
+  static const Color darkFemaleBackgroundEnd       = darkBackground;
+  static const Color darkNonBinaryBackgroundStart  = darkBackground;
+  static const Color darkNonBinaryBackgroundEnd    = darkBackground;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Misc Legacy Aliases
+  // ─────────────────────────────────────────────────────────────────────────
+  static const Color bananaCream2          = offWhite;
+  static const Color lightBarber           = primaryBlue;
+  static const Color lightManager          = dustyPink;
+  static const Color lightAssistant        = dustyPink;
+  static const Color lightReceptionist     = primaryBlue;
+  static const Color darkBarber            = primaryBlue;
+  static const Color darkManager           = dustyPink;
+  static const Color darkAssistant         = dustyPink;
+  static const Color darkReceptionist      = primaryBlue;
+
+  static const Color popularBadgeLight     = primaryBlue;
+  static const Color popularBadgeDark      = primaryBlue;
+  static const Color borderLight           = lightGray;
+  static const Color borderDark            = Color(0xFF333333);
+  static const Color buttonBackgroundLight = white;
+  static const Color buttonBackgroundDark  = darkCard;
+  static const Color featureCheckLight     = primaryBlue;
+  static const Color featureCheckDark      = primaryBlue;
+  static const Color priceTextLight        = primaryBlue;
+  static const Color priceTextDark         = primaryBlue;
+
+  static const Color gradientStartLight      = primaryBlue;
+  static const Color gradientEndLight        = dustyPink;
+  static const Color gradientSecondaryLight  = primaryBlue;
+  static const Color gradientStartDark       = darkBackground;
+  static const Color gradientEndDark         = primaryBlue;
+  static const Color gradientSecondaryDark   = dustyPink;
+
+  static const Color loadingPrimaryLight     = primaryBlue;
+  static const Color loadingPrimaryDark      = primaryBlue;
+  static const Color loadingSecondaryLight   = dustyPink;
+  static const Color loadingSecondaryDark    = dustyPink;
+
+  // For compatibility if they are still referenced
+  static const Color primaryOrange         = primaryBlue;
+  static const Color accentOrange          = dustyPink;
+  static const Color softOrange            = softBeige;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Helper Methods
+  // ─────────────────────────────────────────────────────────────────────────
+  static Color genderPrimary({required bool isFemale, bool isDark = false}) {
+    return isFemale ? dustyPink : primaryBlue;
+  }
+
+  static Color genderBgTint({required bool isFemale, bool isDark = false}) {
+    return isDark ? darkCard : softBeige;
+  }
+
+  static Color subscriptionTierColor(String tier) {
+    return tier.toLowerCase() == 'gold' || tier.toLowerCase() == 'business'
+        ? primaryBlue
+        : dustyPink;
+  }
 }
-

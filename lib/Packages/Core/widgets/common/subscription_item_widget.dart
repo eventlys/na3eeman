@@ -480,7 +480,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
         _isLoading = false;
         _error = error.toString();
       });
-      return [];
+      return <Map<String, dynamic>>[];
     });
   }
 

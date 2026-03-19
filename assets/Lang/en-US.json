@@ -1,4 +1,14 @@
 {
     "User Name":"User Name",
-    "Password":"Password"
+    "Password":"Password",
+    "our_services": "Our Services",
+    "special_offers": "Special Offers",
+    "service_hair": "Hair",
+    "service_beauty": "Beauty",
+    "service_brides": "Brides",
+    "service_nails": "Nails",
+    "service_spa": "Spa",
+    "service_laser": "Laser",
+    "service_skin_care": "Skin Care",
+    "service_grooming": "Grooming"
 }

@@ -136,9 +136,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               width: double.infinity,
               child: PrimaryButton(
                 text: 'Send OTP',
-                onPressed: _isLoading ? null : () {
-                  _submitForgotPassword();
-                },
+                onPressed: _submitForgotPassword,
                 showRightIcon: true,
                 rightIcon: Icons.send, // Keeping Material icon for now, or replace with custom image icon
                 isLoading: _isLoading,
@@ -223,8 +221,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
               ),
 
-            const Spacer(),
-
+            const SizedBox(height: 48),
+            
             // Back to Login
             Center(
               child: TextButton(

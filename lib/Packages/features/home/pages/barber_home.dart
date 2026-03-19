@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../Core/constants/app_color.dart';
@@ -8,8 +9,8 @@ import '../../../Core/themes/button_theme.dart';
 import '../../../Core/themes/loading_indicator.dart';
 import '../../../Core/widgets/common/earnings_chart.dart';
 import '../../../Core/widgets/common/pending_confirmations.dart';
-import '../../Navigation/sidebar.dart';
-import '../../Navigation/sidebar_controller.dart';
+import '../../../features/navigation/sidebar.dart';
+import '../../../features/navigation/sidebar_controller.dart';
 import '../../appointments/widgets/appointments_list.dart';
 import '../../shop/widgets/branches_overview.dart';
 import '../widgets/status_row.dart';
@@ -22,7 +23,8 @@ class BarberHomePage extends StatefulWidget {
   State<BarberHomePage> createState() => _BarberHomePageState();
 }
 
-class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStateMixin {
+class _BarberHomePageState extends State<BarberHomePage>
+    with TickerProviderStateMixin {
   late SidebarController sidebarController;
   final ScrollController _scrollController = ScrollController();
 
@@ -43,18 +45,27 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
   bool _isLoading = true;
   String? _error;
   bool _isSidebarOpen = false;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
     sidebarController = SidebarController();
     sidebarController.init(this);
+  }
 
-    _authProvider = AuthProvider();
-    _shopProvider = ShopProvider();
-    _appointmentProvider = AppointmentProvider();
-
-    _loadAllData();
+  /// Use didChangeDependencies so the Provider tree (context) is ready.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initialized = true;
+      _authProvider = Provider.of<AuthProvider>(context, listen: false);
+      _shopProvider = Provider.of<ShopProvider>(context, listen: false);
+      _appointmentProvider =
+          Provider.of<AppointmentProvider>(context, listen: false);
+      _loadAllData();
+    }
   }
 
   Future<void> _loadAllData() async {
@@ -64,12 +75,46 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
     });
 
     try {
-      // Load all data from services
-      final homeData = await _apiService.fetchHomeData();
-      await _shopProvider.loadShopData();
-      await _appointmentProvider.loadAppointments();
-      final workingHours = await _apiService.fetchTodayWorkingHours();
-      final pendingConfirmations = await _apiService.fetchPendingConfirmations();
+      // Load providers first (they have their own fallbacks / mock data)
+      await Future.wait([
+        _shopProvider.loadShopData(),
+        _appointmentProvider.loadAppointments(),
+      ]);
+
+      final shopId = _shopProvider.branches.isNotEmpty
+          ? (_shopProvider.branches.first.id as int? ?? 0)
+          : 0;
+
+      // Fetch optional API data with individual error handling so one
+      // failure doesn't block the whole page.
+      Map<String, dynamic> homeData = {
+        'stats': {
+          'completed': _appointmentProvider.myAppointments
+              .where((a) => a.status == 'COMPLETED')
+              .length,
+          'pending': _appointmentProvider.myAppointments
+              .where((a) => a.status == 'PENDING')
+              .length,
+        },
+        'appointments': _appointmentProvider.myAppointments,
+        'earnings': [],
+      };
+
+      Map<String, dynamic>? workingHours;
+      List<dynamic> pendingConfirmations = [];
+
+      if (shopId > 0) {
+        try {
+          workingHours = await _apiService.fetchTodayWorkingHours(shopId);
+        } catch (_) {
+          // Backend endpoint may not exist yet; gracefully ignore
+        }
+        try {
+          final raw = await _apiService.fetchPendingConfirmations(shopId);
+          pendingConfirmations =
+              raw['results'] ?? raw['data'] ?? [];
+        } catch (_) {}
+      }
 
       setState(() {
         _homeData = homeData;
@@ -78,18 +123,56 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
         _workingHours = workingHours;
         _isLoading = false;
       });
-
     } catch (e) {
+      // Even on total failure, show mock data so the UI isn't blank
       setState(() {
-        _error = e.toString();
+        _homeData = _getMockHomeData();
+        _branches = [];
+        _pendingConfirmations = [];
         _isLoading = false;
+        _error = e.toString();
       });
     }
   }
 
+  Map<String, dynamic> _getMockHomeData() {
+    return {
+      'stats': {'completed': 12, 'pending': 3},
+      'appointments': [
+        {
+          'id': 1,
+          'customer_name': 'Ahmed Al-Rashid',
+          'start_time': DateTime.now()
+              .add(const Duration(hours: 1))
+              .toIso8601String(),
+          'status': 'PENDING',
+          'services': ['Haircut'],
+        },
+        {
+          'id': 2,
+          'customer_name': 'Sara Khalid',
+          'start_time': DateTime.now()
+              .add(const Duration(hours: 3))
+              .toIso8601String(),
+          'status': 'CONFIRMED',
+          'services': ['Beard Trim', 'Haircut'],
+        },
+      ],
+      'earnings': [
+        {'date': 'Mon', 'amount': 120.0},
+        {'date': 'Tue', 'amount': 95.0},
+        {'date': 'Wed', 'amount': 150.0},
+        {'date': 'Thu', 'amount': 80.0},
+        {'date': 'Fri', 'amount': 200.0},
+        {'date': 'Sat', 'amount': 175.0},
+        {'date': 'Sun', 'amount': 60.0},
+      ],
+    };
+  }
+
   Future<void> _handleConfirmationSuccess(int appointmentId) async {
     try {
-      await _apiService.confirmCashPayment(appointmentId, _authProvider.user?.id ?? 0);
+      await _apiService.confirmCashPayment(appointmentId);
       await _loadAllData();
     } catch (e) {
       print('Error confirming payment: $e');
@@ -129,11 +212,7 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
       user: _authProvider.user,
       scrollController: _scrollController,
       glassLeading: IconButton(
-        icon: Image.asset(
-          AppImages.menu,
-          width: 30,
-          height: 30,
-        ),
+        icon: Image.asset(AppImages.menu, width: 30, height: 30),
         onPressed: _toggleSidebar,
       ),
       showLoading: _isLoading,
@@ -143,8 +222,8 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
       customBody: _isLoading
           ? const Center(child: LoadingIndicator.skeleton())
           : _error != null
-              ? _buildErrorContent()
-              : _buildContent(),
+          ? _buildErrorContent()
+          : _buildContent(),
     );
   }
 
@@ -155,9 +234,9 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
         children: [
           Text(
             'Error: $_error',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColor.lightError,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColor.lightError),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -221,10 +300,7 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
             padding: EdgeInsets.all(16.0),
             child: Text(
               'Upcoming Appointments',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -236,21 +312,14 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
             padding: EdgeInsets.all(16.0),
             child: Text(
               "Today's Earnings",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ),
 
-        SliverToBoxAdapter(
-          child: EarningsChart(earningsData: earnings),
-        ),
+        SliverToBoxAdapter(child: EarningsChart(earningsData: earnings)),
 
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
       ],
     );
   }
@@ -278,9 +347,7 @@ class _BarberHomePageState extends State<BarberHomePage> with TickerProviderStat
           Icon(
             icon,
             size: 48,
-            color: isDark
-                ? AppColor.darkTextHint
-                : AppColor.lightTextHint,
+            color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
           ),
           const SizedBox(height: 12),
           Text(

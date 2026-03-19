@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_color.dart' hide UserGender;
+import '../constants/app_color.dart';
 import '../utils/helpers/themes_helpers.dart';
 import 'app_theme.dart';
 
@@ -40,17 +40,11 @@ class EmptyState extends StatelessWidget {
       if (gender != null) {
         switch (gender!) {
           case UserGender.male:
-            return isDark
-                ? AppColor.darkTextHint
-                : AppColor.lightTextHint;
+            return isDark ? AppColor.darkTextHint : AppColor.lightTextHint;
           case UserGender.female:
-            return isDark
-                ? AppColor.darkTextHint
-                : AppColor.lightTextHint;
+            return isDark ? AppColor.darkTextHint : AppColor.lightTextHint;
           case UserGender.nonBinary:
-            return isDark
-                ? AppColor.darkTextHint
-                : AppColor.lightTextHint;
+            return isDark ? AppColor.darkTextHint : AppColor.lightTextHint;
         }
       }
       return isDark ? AppColor.darkTextHint : AppColor.lightTextHint;
@@ -61,17 +55,11 @@ class EmptyState extends StatelessWidget {
       if (gender != null) {
         switch (gender!) {
           case UserGender.male:
-            return isDark
-                ? AppColor.darkText
-                : AppColor.lightText;
+            return isDark ? AppColor.darkText : AppColor.lightText;
           case UserGender.female:
-            return isDark
-                ? AppColor.darkText
-                : AppColor.lightText;
+            return isDark ? AppColor.darkText : AppColor.lightText;
           case UserGender.nonBinary:
-            return isDark
-                ? AppColor.darkText
-                : AppColor.lightText;
+            return isDark ? AppColor.darkText : AppColor.lightText;
         }
       }
       return isDark ? AppColor.darkText : AppColor.lightText;
@@ -121,20 +109,28 @@ class EmptyState extends StatelessWidget {
                 width: compact ? 80.0 : 120.0,
                 height: compact ? 80.0 : 120.0,
                 fit: BoxFit.contain,
-                color: gender != null ? _getGenderAccentColor(gender!, isDark) : null,
+                color: gender != null
+                    ? _getGenderAccentColor(gender!, isDark)
+                    : null,
               ),
               const SizedBox(height: 24),
             ] else if (icon != null) ...[
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: _getGenderBackgroundColor(gender, isDark).withValues(alpha: 0.1),
+                  color: _getGenderBackgroundColor(
+                    gender,
+                    isDark,
+                  ).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
                   size: compact ? 48.0 : iconSize,
-                  color: iconColor ?? _getGenderAccentColor(gender, isDark) ?? disabledColor,
+                  color:
+                      iconColor ??
+                      _getGenderAccentColor(gender, isDark) ??
+                      disabledColor,
                 ),
               ),
               const SizedBox(height: 16),
@@ -194,9 +190,13 @@ class EmptyState extends StatelessWidget {
       case UserGender.male:
         return isDark ? AppColor.darkMaleBackground : AppColor.maleBackground;
       case UserGender.female:
-        return isDark ? AppColor.darkFemaleBackground : AppColor.femaleBackground;
+        return isDark
+            ? AppColor.darkFemaleBackground
+            : AppColor.femaleBackground;
       case UserGender.nonBinary:
-        return isDark ? AppColor.darkNonBinaryBackground : AppColor.nonBinaryBackground;
+        return isDark
+            ? AppColor.darkNonBinaryBackground
+            : AppColor.nonBinaryBackground;
     }
   }
 
@@ -210,7 +210,8 @@ class EmptyState extends StatelessWidget {
   }) {
     return EmptyState(
       title: title,
-      description: description ?? 'There are no items to display at the moment.',
+      description:
+          description ?? 'There are no items to display at the moment.',
       icon: Icons.inventory_2_outlined,
       actionButton: actionButton,
       compact: compact,

@@ -7,7 +7,7 @@ import '../../../Core/constants/app_images.dart';
 import '../overlays/Inventory_add_item_dialog.dart';
 import 'inventory_list_item.dart';
 import 'inventory_low_stock_alert.dart';
-import 'low_stock_alert.dart';
+// import 'low_stock_alert.dart';
 
 class InventoryManager extends StatefulWidget {
   final Map<String, dynamic> currentUser;

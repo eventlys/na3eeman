@@ -1,268 +1,194 @@
 import 'package:flutter/material.dart';
-import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
+import 'package:provider/provider.dart';
+import '../../../../Models/shop/offer_model.dart';
+import '../../../../Providers/features/offers_provider.dart';
+import '../../../../core/theme/colors.dart';
+import '../pages/offer_details_page.dart';
 
-void main() {
-  runApp(const FigmaToCodeApp());
+class HorizontalShopScroll extends StatefulWidget {
+  const HorizontalShopScroll({super.key});
+
+  @override
+  State<HorizontalShopScroll> createState() => _HorizontalShopScrollState();
 }
 
-class FigmaToCodeApp extends StatelessWidget {
-  const FigmaToCodeApp({super.key});
+class _HorizontalShopScrollState extends State<HorizontalShopScroll> {
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initialized = true;
+      // Load offers if not loaded
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<OffersProvider>(context, listen: false).loadOffers();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final offersProvider = context.watch<OffersProvider>();
+    final offers = offersProvider.offers;
 
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: isDarkTheme ? AppColor.darkBackground : AppColor.lightBackground,
-      ),
-      home: Scaffold(
-        body: ListView(children: [
-          HorizontalShopScroll(),
-        ]),
+    if (offersProvider.isLoading && offers.isEmpty) {
+      return const SizedBox(
+        height: 170,
+        child: Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
+      );
+    }
+
+    if (offers.isEmpty) {
+      return const SizedBox(
+        height: 170,
+        child: Center(child: Text('No offers available at this moment')),
+      );
+    }
+
+    return SizedBox(
+      height: 170,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemCount: offers.length,
+        itemBuilder: (context, index) {
+          final offer = offers[index];
+          return OfferCard(offer: offer);
+        },
       ),
     );
   }
 }
 
-// Shop data model
-class Shop {
-  final String avatar;
-  final String title;
-  final String description;
-  final DateTime date;
-  final bool isSvg;
-  final String backgroundImage; // New background variable
+class OfferCard extends StatelessWidget {
+  final OfferModel offer;
 
-  Shop({
-    required this.avatar,
-    required this.title,
-    required this.description,
-    required this.date,
-    required this.backgroundImage, // Required background
-    this.isSvg = false,
-  });
-}
-
-class HorizontalShopScroll extends StatelessWidget {
-  final List<Shop> shops = [
-    Shop(
-      avatar: AppImages.shop1,
-      title: 'Your hair',
-      description: 'deserves the best. Enjoy & relax in a luxury Barber shop environment',
-      date: DateTime(2024, 1, 15),
-      backgroundImage: AppImages.shop1,
-    ),
-    Shop(
-      avatar: AppImages.shop2,
-      title: 'Premium Cuts',
-      description: 'Experience the finest barber services in town',
-      date: DateTime(2024, 1, 20),
-      backgroundImage: AppImages.shop2,
-      isSvg: true,
-    ),
-    Shop(
-      avatar: AppImages.shop3,
-      title: 'Style Masters',
-      description: 'Where style meets perfection and comfort',
-      date: DateTime(2024, 1, 10),
-      backgroundImage: AppImages.shop3,
-    ),
-    Shop(
-      avatar: AppImages.shop4,
-      title: 'Gentleman\'s Choice',
-      description: 'Luxury grooming for the modern man',
-      date: DateTime(2024, 1, 25),
-      backgroundImage: AppImages.shop4,
-      isSvg: true,
-    ),
-  ];
-
-  HorizontalShopScroll({super.key}) {
-    // Sort shops by date (latest first)
-    shops.sort((a, b) => b.date.compareTo(a.date));
-  }
+  const OfferCard({super.key, required this.offer});
 
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return ClipRect(
-      clipper: null,
-      child: SizedBox(
-        height: 180,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          itemCount: shops.length,
-          itemBuilder: (context, index) {
-            final shop = shops[index];
-            return ShopCard(shop: shop);
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class ShopCard extends StatelessWidget {
-  final Shop shop;
-
-  const ShopCard({super.key, required this.shop});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      width: 330,
-      margin: const EdgeInsets.only(right: 16),
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(35),
-        ),
-        shadows: [
-          BoxShadow(
-            color: isDarkTheme ? AppColor.darkWithOpacity : Colors.black.withValues(alpha: 0.25),
-            offset: const Offset(7, 7),
-            blurRadius: 15,
-            spreadRadius: -5,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OfferDetailsPage(offer: offer),
           ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 156,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: AssetImage(shop.backgroundImage),
-                fit: BoxFit.cover,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(35),
-              ),
-              shadows: [
-                BoxShadow(
-                  color: isDarkTheme ? AppColor.darkWithOpacity : Colors.black.withValues(alpha: 0.25),
-                  blurRadius: 10,
-                  offset: const Offset(5, 6),
-                  spreadRadius: -3,
-                )
-              ],
+        );
+      },
+      child: Container(
+        width: 280,
+        margin: const EdgeInsets.only(right: 14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+              offset: const Offset(0, 4),
+              blurRadius: 16,
+              spreadRadius: -2,
             ),
-          ),
-
-          // Dark overlay for better text readability
-          Container(
-            width: double.infinity,
-            height: 156,
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(35),
-            ),
-          ),
-
-          // Avatar/Logo container - BOTTOM-RIGHT
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Container(
-              width: 106,
-              height: 138,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(35),
-                    topRight: Radius.circular(35),
-                    bottomRight: Radius.circular(35),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              // Background gradient/image
+              Positioned.fill(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+                    ),
+                  ),
+                  child: Center(
+                    child: Opacity(
+                      opacity: 0.1,
+                      child: Icon(Icons.stars_rounded, color: Colors.white, size: 120),
+                    ),
                   ),
                 ),
               ),
-              child: Image(
-                image: AssetImage(shop.avatar),
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(35),
-                        topRight: Radius.circular(35),
-                        bottomRight: Radius.circular(35),
-                      ),
-                      color: isDarkTheme ? AppColor.darkError : AppColor.lightError,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
-                          size: 30
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Failed to load\n${shop.avatar.split('/').last}',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
 
-          // Title text - MOVED TO LEFT
-          Positioned(
-            left: 20,
-            top: 20,
-            child: SizedBox(
-              width: 180,
-              child: Text.rich(
-                TextSpan(
+              // Content Layout
+              Positioned(
+                left: 18,
+                bottom: 18,
+                right: 18,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextSpan(
-                      text: '${shop.title}\n',
-                      style: TextStyle(
-                        color: isDarkTheme ? AppColor.darkAccent : AppColor.lightAccent,
-                        fontSize: 24,
-                        fontFamily: 'Montserrat Alternates',
-                        fontWeight: FontWeight.w400,
-                        height: 1.5,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        offer.shopName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    TextSpan(
-                      text: _getMainDescription(shop.description),
-                      style: TextStyle(
+                    const SizedBox(height: 6),
+                    Text(
+                      offer.title,
+                      style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: 'Montserrat Alternates',
-                        fontWeight: FontWeight.w400,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                         height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      offer.price + ' JOD',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+
+              // Float Validity tag
+              Positioned(
+                top: 12,
+                right: 12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    offer.validityPeriod.contains('until') 
+                      ? 'Limited Time'
+                      : offer.validityPeriod,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
-  }
-
-  // Helper method to extract the first line for the title section
-  String _getMainDescription(String description) {
-    final lines = description.split('\n');
-    return lines.isNotEmpty ? lines[0] : '';
   }
 }

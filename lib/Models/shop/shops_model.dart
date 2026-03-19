@@ -44,10 +44,10 @@ class Shop {
       lng: (json['lng'] as num).toDouble(),
       openingTime: json['opening_time'] as String,
       closingTime: json['closing_time'] as String,
-      shopSeats: json['shop_seats'] as int,
-      shopStaff: json['shop_staff'] as int,
-      confirmedPhone: json['confirmed_phone'] as bool,
-      ownerId: json['owner'] as int,
+      shopSeats: json['shop_seats'] as int? ?? 0,
+      shopStaff: json['shop_staff'] as int? ?? 0,
+      confirmedPhone: json['confirmed_phone'] as bool? ?? false,
+      ownerId: json['owner'] as int? ?? 0,
       avgRating: (json['avg_rating'] as num?)?.toDouble(),
       reviews: json['reviews'] != null
           ? (json['reviews'] as List).map((r) => Review.fromJson(r)).toList()

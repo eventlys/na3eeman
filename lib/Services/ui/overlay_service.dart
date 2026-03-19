@@ -365,6 +365,7 @@ class OverlayService {
   }) {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showDialog(
       context: context,
@@ -374,15 +375,15 @@ class OverlayService {
         insetPadding: const EdgeInsets.all(20),
         child: Container(
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0x4dc25858),
-                Color(0x80806C99),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(16),
+            color: isDark ? const Color(0xff1E1E24) : Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -401,27 +402,27 @@ class OverlayService {
                     Expanded(
                       child: Text(
                         title,
-                        style: const TextStyle(
-                          fontSize: 20,
+                        style: TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: isDark ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.black),
+                      icon: Icon(Icons.close, color: isDark ? Colors.white70 : Colors.black87),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 4),
-                const Divider(color: Colors.black54),
-                const SizedBox(height: 4),
+                Divider(color: isDark ? Colors.white12 : Colors.black12),
+                const SizedBox(height: 12),
 
                 // Content
                 isForm
-                    ? Expanded(
+                    ? Flexible(
                         child: SingleChildScrollView(child: content),
                       )
                     : content,
@@ -432,6 +433,7 @@ class OverlayService {
       ),
     );
   }
+
 }
 
 // New overlay widgets (you'll need to create these)

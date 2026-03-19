@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/colors.dart';
 
 class ShopInfoSection extends StatelessWidget {
   final Map<String, dynamic> shopData;
@@ -10,46 +11,82 @@ class ShopInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rating = shopData['shopRating'] ?? 0.0;
-    final location = shopData['shopLocation'] ?? '';
-    final workingHours = shopData['workingHours'] ?? '';
+    final rating = (shopData['shopRating'] as num?)?.toDouble() ?? 4.5;
+    final location = shopData['shopLocation'] ?? shopData['location'] ?? 'Jordan';
+    final workingHours = shopData['workingHours'] ?? '9:00 AM - 9:00 PM';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Color(0x33FFFFFF),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Color(0x33FFFFFF)),
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Shop Information',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFFFFFFF),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Shop Details',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
+                    const SizedBox(width: 4),
+                    Text(
+                      rating.toStringAsFixed(1),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 24),
           _buildInfoRow(
-            icon: Icons.star,
-            title: 'Rating',
-            value: '$rating/5.0',
-          ),
-          SizedBox(height: 12),
-          _buildInfoRow(
-            icon: Icons.location_on,
+            context: context,
+            icon: Icons.location_on_rounded,
             title: 'Location',
-            value: location,
+            subTitle: location,
+            iconColor: Theme.of(context).primaryColor,
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 16),
           _buildInfoRow(
-            icon: Icons.access_time,
+            context: context,
+            icon: Icons.access_time_filled_rounded,
             title: 'Working Hours',
-            value: workingHours,
+            subTitle: workingHours,
+            iconColor: AppColors.pink,
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context: context,
+            icon: Icons.phone_rounded,
+            title: 'Phone',
+            subTitle: shopData['shopPhoneNumber'] ?? shopData['phoneNumber'] ?? 'Click for info',
+            iconColor: AppColors.success,
           ),
         ],
       ),
@@ -57,32 +94,39 @@ class ShopInfoSection extends StatelessWidget {
   }
 
   Widget _buildInfoRow({
+    required BuildContext context,
     required IconData icon,
     required String title,
-    required String value,
+    required String subTitle,
+    required Color iconColor,
   }) {
     return Row(
       children: [
-        Icon(icon, color: Color(0xFFFFFFFF), size: 20),
-        SizedBox(width: 12),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: iconColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: iconColor, size: 22),
+        ),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: TextStyle(
-                  color: Color(0xFFCCCCCC),
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: AppColors.almostBlack400,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 2),
               Text(
-                value,
-                style: TextStyle(
-                  color: Color(0xFFFFFFFF),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                subTitle,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -92,4 +136,3 @@ class ShopInfoSection extends StatelessWidget {
     );
   }
 }
-
