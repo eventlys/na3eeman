@@ -8,7 +8,7 @@ class AppColor {
   // ─────────────────────────────────────────────────────────────────────────
   static const Color primaryBlue   = Color(0xFF144EA0);    // Royal Blue
   static const Color dustyPink     = Color(0xFFD097AE);    // Mauve/Pink
-  static const Color softBeige     = Color(0xFFE4DFC0);    // Light Beige/Cream
+  static const Color softBeige     = Color(0xFFfbfaf5);    // Light Beige/Cream
   static const Color white         = Color(0xFFFFFFFF);    // Pure white
   static const Color offWhite      = Color(0xFFF9F9F9);    // Slightly warm white
   static const Color charcoal      = Color(0xFF1B1C1F);    // Dark Charcoal/Black (from palette)

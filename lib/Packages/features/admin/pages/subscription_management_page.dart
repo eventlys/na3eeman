@@ -24,24 +24,24 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
             const SizedBox(height: 24),
             const Text('Revenue by Tier', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildTierProgress('Basic', 0.4, '\$12,000', Theme.of(context).primaryColor),
-            _buildTierProgress('Gold', 0.25, '\$25,000', AppColors.cream600),
-            _buildTierProgress('Premium', 0.2, '\$45,000', AppColors.pink),
-            _buildTierProgress('Business', 0.15, '\$80,000', AppColors.success),
+            _buildTierProgress('Basic', 0.4, '\$12,000', Theme.of(context).primaryColor, context),
+            _buildTierProgress('Gold', 0.25, '\$25,000', AppColors.cream600, context),
+            _buildTierProgress('Premium', 0.2, '\$45,000', AppColors.pink, context),
+            _buildTierProgress('Business', 0.15, '\$80,000', AppColors.success, context),
             
             const SizedBox(height: 32),
             const Text('Recent Upgrades', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildUpgradeLog('Gentlemen Lounge', 'Basic → Premium', '10m ago'),
-            _buildUpgradeLog('Royal Cut', 'Gold → Business', '1h ago'),
-            _buildUpgradeLog('Modern Styles', 'New Subscription: Basic', '3h ago'),
+            _buildUpgradeLog('Gentlemen Lounge', 'Basic → Premium', '10m ago', context),
+            _buildUpgradeLog('Royal Cut', 'Gold → Business', '1h ago', context),
+            _buildUpgradeLog('Modern Styles', 'New Subscription: Basic', '3h ago', context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatCard(String title, String value, Color color, context) {
+  Widget _buildStatCard(String title, String value, Color color, BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -60,7 +60,7 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTierProgress(String label, double percent, String revenue, Color color) {
+  Widget _buildTierProgress(String label, double percent, String revenue, Color color, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -86,7 +86,7 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
     );
   }
 
-  Widget _buildUpgradeLog(String shop, String change, String time) {
+  Widget _buildUpgradeLog(String shop, String change, String time, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),

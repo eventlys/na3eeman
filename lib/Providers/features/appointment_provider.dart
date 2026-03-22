@@ -4,6 +4,7 @@ import 'auth_provider.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/shop/appointment_model.dart';
 import '../../Services/enums/appointment_status.dart';
+import '../../Services/api/api_service.dart';
 
 class AppointmentProvider extends BaseProvider {
   final List<ShopAppointment> _appointments = [];
@@ -18,17 +19,19 @@ class AppointmentProvider extends BaseProvider {
 
   bool get hasError => error != null;
 
-  List<ShopAppointment> get myAppointments {
+  List<dynamic> get myAppointments {
     if (_authProvider?.isBarber == true) {
       return _appointments
           .where((appt) => appt.barberId == _authProvider?.user?.id)
+          .map((a) => a.toJson())
           .toList();
     } else if (_authProvider?.isCustomer == true) {
       return _appointments
           .where((appt) => appt.customerId == _authProvider?.user?.id)
+          .map((a) => a.toJson())
           .toList();
     }
-    return _appointments;
+    return _appointments.map((a) => a.toJson()).toList();
   }
 
   Future<Map<String, dynamic>?> getSoonestAppointment(int customerId) async {
@@ -62,7 +65,19 @@ class AppointmentProvider extends BaseProvider {
       setLoading(true);
       clearError();
 
-      await _mockLoadAppointments();
+      // Fetch from API instead of mocks
+      final apiService = ApiService();
+      final response = await apiService.get('/shops/appointments/'); // Or Endpoints.appointments
+      final List<dynamic> data = response['results'] ?? response['data'] ?? [];
+      
+      _appointments.clear();
+      for (var item in data) {
+        try {
+          _appointments.add(ShopAppointment.fromJson(item));
+        } catch (e) {
+          print('Error parsing appointment item JSON: $e');
+        }
+      }
       notifyListeners();
     } catch (e) {
       setError(e.toString());

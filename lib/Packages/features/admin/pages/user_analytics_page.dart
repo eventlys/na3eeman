@@ -20,7 +20,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
           children: [
             const Text('Daily Active Users (DAU)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildChartPlaceholder('DAU: 5,240 (↑ 12%, context)'),
+            _buildChartPlaceholder('DAU: 5,240 (↑ 12%)', context),
 
             const SizedBox(height: 32),
             const Text('User Retention', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -32,7 +32,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
             const SizedBox(height: 32),
             const Text('Feature Popularity', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildFeatureUsage('Shop Search', '14.2k clicks', 0.9, Theme.of(context, context).primaryColor),
+            _buildFeatureUsage('Shop Search', '14.2k clicks', 0.9, Theme.of(context).primaryColor, context),
             _buildFeatureUsage('Booking', '3.8k attempts', 0.6, AppColors.pink, context),
             _buildFeatureUsage('Loyalty Check', '1.2k clicks', 0.2, AppColors.cream600, context),
           ],
@@ -41,7 +41,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildChartPlaceholder(String label, BuildContext context, context) {
+  Widget _buildChartPlaceholder(String label, BuildContext context) {
     return Container(
       height: 200,
       width: double.infinity,
@@ -80,7 +80,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureUsage(String name, String value, double percent, Color color, BuildContext context, context) {
+  Widget _buildFeatureUsage(String name, String value, double percent, Color color, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(

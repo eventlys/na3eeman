@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
+import '../../../features/navigation/sidebar.dart';
+import '../../../features/navigation/sidebar_controller.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -9,21 +12,55 @@ class AdminDashboardPage extends StatefulWidget {
   State<AdminDashboardPage> createState() => _AdminDashboardPageState();
 }
 
-class _AdminDashboardPageState extends State<AdminDashboardPage> {
+class _AdminDashboardPageState extends State<AdminDashboardPage> with SingleTickerProviderStateMixin {
+  late SidebarController sidebarController;
+
+  @override
+  void initState() {
+    super.initState();
+    sidebarController = SidebarController();
+    sidebarController.init(this);
+  }
+
+  @override
+  void dispose() {
+    sidebarController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSidebar() {
+    sidebarController.toggleSidebar();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Admin (God Mode)', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButtonStyled(
+          icon: Icons.menu_rounded,
+          onPressed: _toggleSidebar,
+        ),
         actions: [
           IconButtonStyled(
-            icon: Icons.shield_rounded,
-            onPressed: () {},
+            icon: Icons.notifications_none_rounded,
+            onPressed: () => NotificationsBottomSheet.show(context),
+          ),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/profile'),
+            child: CircleAvatar(
+              radius: 17,
+              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
+            ),
           ),
           const SizedBox(width: 16),
         ],
@@ -78,6 +115,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ],
         ),
       ),
+        ),
+        Sidebar(controller: sidebarController),
+      ],
     );
   }
 

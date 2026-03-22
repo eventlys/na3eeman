@@ -35,7 +35,7 @@ class AdminErrorReportsPage extends StatelessWidget {
             const Text('Recent Logs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             _buildLogTile('DEBUG', 'Init firebase messaging...', '2m ago', context),
-            _buildLogTile('INFO', 'User @zafar logged in', '5m ago', context),
+            _buildLogTile('INFO', 'User @Jafar logged in', '5m ago', context),
             _buildLogTile('WARN', 'API latency high @ /shops', '12m ago', context),
           ],
         ),
@@ -84,7 +84,7 @@ class AdminErrorReportsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLogTile(String level, String msg, String time, BuildContext context, context) {
+  Widget _buildLogTile(String level, String msg, String time, BuildContext context) {
     final color = level == 'WARN' ? AppColors.warning : (level == 'DEBUG' ? Theme.of(context).primaryColor : AppColors.success);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),

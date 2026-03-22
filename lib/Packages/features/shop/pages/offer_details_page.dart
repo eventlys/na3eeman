@@ -64,18 +64,20 @@ class OfferDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPlaceholderBackground() {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+    return Builder(builder: (context) {
+      return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+          ),
         ),
-      ),
-      child: const Center(
-        child: Icon(Icons.local_offer_rounded, color: Colors.white, size: 60),
-      ),
-    );
+        child: const Center(
+          child: Icon(Icons.local_offer_rounded, color: Colors.white, size: 60),
+        ),
+      );
+    });
   }
 
   Widget _buildOfferHeader(BuildContext context, bool isDark) {
@@ -91,7 +93,7 @@ class OfferDetailsPage extends StatelessWidget {
           ),
           child: Text(
             offer.shopName,
-            style: const TextStyle(
+            style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 12,
@@ -105,12 +107,12 @@ class OfferDetailsPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Row(
           children: [
             Text(
               '${offer.price} JOD',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -135,25 +137,27 @@ class OfferDetailsPage extends StatelessWidget {
   }
 
   Widget _buildValiditySection(bool isDark) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.access_time_filled_rounded, color: Theme.of(context).primaryColor),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              offer.validityPeriod,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+    return Builder(builder: (context) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.access_time_filled_rounded, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                offer.validityPeriod,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildDescriptionSection(bool isDark) {
@@ -177,26 +181,28 @@ class OfferDetailsPage extends StatelessWidget {
   }
 
   Widget _buildIncludedServices(bool isDark) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Included Services',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        const SizedBox(height: 12),
-        ...offer.includedServices!.map((service) => Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.check_circle_rounded, color: Theme.of(context).primaryColor, size: 20),
-                  const SizedBox(width: 12),
-                  Text(service),
-                ],
-              ),
-            )),
-      ],
-    );
+    return Builder(builder: (context) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Included Services',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 12),
+          ...offer.includedServices!.map((service) => Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.check_circle_rounded, color: Theme.of(context).primaryColor, size: 20),
+                    const SizedBox(width: 12),
+                    Text(service),
+                  ],
+                ),
+              )),
+        ],
+      );
+    });
   }
 
   Widget _buildBottomActions(BuildContext context) {

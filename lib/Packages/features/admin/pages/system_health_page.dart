@@ -78,7 +78,7 @@ class AdminSystemHealthPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCapacityGauge(String label, double percent, String note, BuildContext context, context) {
+  Widget _buildCapacityGauge(String label, double percent, String note, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(

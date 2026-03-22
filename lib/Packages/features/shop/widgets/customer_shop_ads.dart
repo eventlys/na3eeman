@@ -33,7 +33,7 @@ class _HorizontalShopScrollState extends State<HorizontalShopScroll> {
     final offers = offersProvider.offers;
 
     if (offersProvider.isLoading && offers.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 170,
         child: Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
       );
@@ -100,7 +100,7 @@ class OfferCard extends StatelessWidget {
               // Background gradient/image
               Positioned.fill(
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,

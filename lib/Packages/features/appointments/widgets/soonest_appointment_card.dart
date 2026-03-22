@@ -266,7 +266,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                   color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
+                child: Text(
                   'NEXT APPOINTMENT',
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
@@ -310,7 +310,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                     side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Delay',
                     style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
                   ),

@@ -230,7 +230,16 @@ class _ReportsPageState extends State<ReportsPage> {
 
         // Get shop ID from auth provider or context
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final shopId = authProvider.user?.id ?? 1; // Fallback to default shop ID
+        final shopId = authProvider.user?.shopId;
+        if (shopId == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Shop associated with operations not found.'),
+              backgroundColor: AppColor.lightError,
+            ),
+          );
+          return;
+        }
 
         // Use BusinessService to generate the report
         await _businessService.generateStaffReport(

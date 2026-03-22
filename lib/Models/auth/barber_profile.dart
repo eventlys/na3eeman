@@ -25,7 +25,9 @@ class BarberProfile {
       id: (json['id'] as int?) ?? 0,
       barberId: (json['barber'] ?? json['id'] as int?) ?? 0, // Changed from User object to ID
       bio: json['bio'] as String?,
-      specialties: json['specialties'] as String?,
+      specialties: json['specialties'] is List
+          ? (json['specialties'] as List).join(', ')
+          : json['specialties'] as String?,
       contactPhone: json['contact_phone'] as String?,
       hasAccess: json['has_access'] as bool? ?? false,
       avgRating: (json['avg_rating'] as num?)?.toDouble() ?? 0.0,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
+import '../../../features/navigation/sidebar.dart';
+import '../../../features/navigation/sidebar_controller.dart';
 
 class ReceptionistDashboard extends StatefulWidget {
   const ReceptionistDashboard({super.key});
@@ -9,21 +12,55 @@ class ReceptionistDashboard extends StatefulWidget {
   State<ReceptionistDashboard> createState() => _ReceptionistDashboardState();
 }
 
-class _ReceptionistDashboardState extends State<ReceptionistDashboard> {
+class _ReceptionistDashboardState extends State<ReceptionistDashboard> with SingleTickerProviderStateMixin {
+  late SidebarController sidebarController;
+
+  @override
+  void initState() {
+    super.initState();
+    sidebarController = SidebarController();
+    sidebarController.init(this);
+  }
+
+  @override
+  void dispose() {
+    sidebarController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSidebar() {
+    sidebarController.toggleSidebar();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Receptionist Desk', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButtonStyled(
+          icon: Icons.menu_rounded,
+          onPressed: _toggleSidebar,
+        ),
         actions: [
           IconButtonStyled(
-            icon: Icons.calendar_month_rounded,
-            onPressed: () {},
+            icon: Icons.notifications_none_rounded,
+            onPressed: () => NotificationsBottomSheet.show(context),
+          ),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/profile'),
+            child: CircleAvatar(
+              radius: 17,
+              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
+            ),
           ),
           const SizedBox(width: 16),
         ],
@@ -57,7 +94,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> {
             // Barber Schedules Overview
             _buildSectionHeader('Barber Status', 'Schedule'),
             const SizedBox(height: 16),
-            _buildBarberStatusItem('Zafar', 'Busy', AppColors.error, 'Finishing in 10m'),
+            _buildBarberStatusItem('Jafar', 'Busy', AppColors.error, 'Finishing in 10m'),
             _buildBarberStatusItem('Yousif', 'Available', AppColors.success, 'Next @ 2:00 PM'),
             _buildBarberStatusItem('Karim', 'On Break', AppColors.warning, 'Back in 15m'),
 
@@ -78,6 +115,9 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> {
         label: 'Find Customer',
         onPressed: () {},
       ),
+        ),
+        Sidebar(controller: sidebarController),
+      ],
     );
   }
 

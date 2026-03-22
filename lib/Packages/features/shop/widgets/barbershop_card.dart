@@ -192,7 +192,7 @@ class _BarbershopCardState extends State<BarbershopCard>
                                   widget.shopLocation.length > 15 
                                     ? '${widget.shopLocation.substring(0, 12)}...' 
                                     : widget.shopLocation,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,

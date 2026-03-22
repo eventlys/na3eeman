@@ -243,17 +243,19 @@ class AppScaffold extends StatelessWidget {
   }
 
   Widget _buildSliverContent() {
-    final sliverList = slivers ?? [
-      _buildGlassSliverAppBar(),
-      SliverList(
-        delegate: SliverChildListDelegate([
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: body ?? const SizedBox.shrink(),
-          ),
-        ]),
-      ),
-    ];
+    final sliverList = slivers != null
+        ? [_buildGlassSliverAppBar(), ...slivers!]
+        : [
+            _buildGlassSliverAppBar(),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: body ?? const SizedBox.shrink(),
+                ),
+              ]),
+            ),
+          ];
 
     return CustomScrollView(
       controller: scrollController,

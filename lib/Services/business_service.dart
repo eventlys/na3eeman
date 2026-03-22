@@ -1562,15 +1562,26 @@ class InventoryService {
 
   Future<List<dynamic>> getLowStockItems({int? shopId}) async {
     try {
+      if (shopId == null) {
+        throw Exception('Shop ID is required to fetch inventory items.');
+      }
       final Map<String, dynamic> queryParams = {};
-      if (shopId != null) queryParams['shop'] = shopId.toString();
+      final String endpoint = '/shops/shops/$shopId/inventory/';
+      queryParams['low_stock_only'] = 'true'; // Map to general endpoint list filter
 
       final response = await _apiService.get(
-        '/inventory/low-stock',
+        endpoint,
         queryParams: queryParams,
       );
 
-      final List<dynamic> data = response['data'] ?? [];
+      final List<dynamic> data = response['results'] ?? response['data'] ?? [];
+      
+      print('--- getLowStockItems ---');
+      print('shopId: $shopId');
+      print('Items count: ${data.length}');
+      if (data.isNotEmpty) print('First item: ${data.first}');
+      print('--------------------------');
+
       return data;
     } catch (e) {
       AppLogger.error('Error fetching low stock items: $e');
@@ -1586,21 +1597,32 @@ class InventoryService {
     int limit = 20,
   }) async {
     try {
+      if (shopId == null) {
+        throw Exception('Shop ID is required to fetch inventory items.');
+      }
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
         'limit': limit.toString(),
       };
 
-      if (shopId != null) queryParams['shop'] = shopId.toString();
       if (lowStockOnly != null) queryParams['low_stock_only'] = lowStockOnly.toString();
       if (category != null) queryParams['category'] = category;
 
+      final String endpoint = '/shops/shops/$shopId/inventory/';
+
       final response = await _apiService.get(
-        '/inventory',
+        endpoint,
         queryParams: queryParams,
       );
 
-      final List<dynamic> data = response['data'] ?? [];
+      final List<dynamic> data = response['results'] ?? response['data'] ?? [];
+      
+      print('--- getInventoryItems ---');
+      print('shopId: $shopId, lowStock: $lowStockOnly, category: $category');
+      print('Items count: ${data.length}');
+      if (data.isNotEmpty) print('First item: ${data.first}');
+      print('--------------------------');
+
       return data;
     } catch (e) {
       AppLogger.error('Error fetching inventory items: $e');
@@ -1610,15 +1632,16 @@ class InventoryService {
 
   Future<dynamic> updateItemQuantity({
     required String itemId,
+    required int shopId,
     required int newQuantity,
     String? reason,
   }) async {
     try {
       final response = await _apiService.patch(
-        '/inventory/$itemId/quantity',
+        '/shops/shops/$shopId/inventory/$itemId/',
         data: {
-          'quantity': newQuantity,
-          'reason': reason,
+          'quantity_in_stock': newQuantity,
+          if (reason != null) 'notes': reason, // Map reason to notes if needed
         },
       );
       return response['data'];
@@ -1636,12 +1659,11 @@ class InventoryService {
   }) async {
     try {
       final response = await _apiService.post(
-        '/inventory',
+        '/shops/shops/$shopId/inventory/',
         data: {
           'product': productId,
-          'shop': shopId,
           'quantity_in_stock': initialQuantity,
-          'notes': notes,
+          if (notes != null) 'notes': notes,
         },
       );
       return response['data'];
@@ -1651,9 +1673,9 @@ class InventoryService {
     }
   }
 
-  Future<void> deleteInventoryItem(String itemId) async {
+  Future<void> deleteInventoryItem({required String itemId, required int shopId}) async {
     try {
-      await _apiService.delete('/inventory/$itemId');
+      await _apiService.delete('/shops/shops/$shopId/inventory/$itemId/');
     } catch (e) {
       AppLogger.error('Error deleting inventory item: $e');
       throw ErrorHandler.handleException(e);

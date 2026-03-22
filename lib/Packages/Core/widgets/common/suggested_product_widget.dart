@@ -253,10 +253,17 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
 
     try {
       final inventoryService = Provider.of<InventoryService>(context, listen: false);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final shopId = authProvider.user?.shopId;
+      
+      if (shopId == null) {
+        throw 'Shop ID was not found for this account';
+      }
       final newQuantity = currentQuantity + 5; // Add 5 units for quick restock
 
       await inventoryService.updateItemQuantity(
         itemId: itemId,
+        shopId: shopId,
         newQuantity: newQuantity,
         reason: 'Quick restock from suggested products',
       );
@@ -295,9 +302,16 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
 
     try {
       final inventoryService = Provider.of<InventoryService>(context, listen: false);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final shopId = authProvider.user?.shopId;
+      
+      if (shopId == null) {
+        throw 'Shop ID was not found for this account';
+      }
 
       await inventoryService.updateItemQuantity(
         itemId: itemId,
+        shopId: shopId,
         newQuantity: 10, // Default restock quantity
         reason: 'Restocked from suggested products',
       );

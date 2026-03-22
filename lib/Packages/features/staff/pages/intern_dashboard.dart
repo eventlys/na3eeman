@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
+import '../../../features/navigation/sidebar.dart';
+import '../../../features/navigation/sidebar_controller.dart';
 // import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 
 class InternDashboard extends StatefulWidget {
   const InternDashboard({super.key});
@@ -9,20 +13,60 @@ class InternDashboard extends StatefulWidget {
   State<InternDashboard> createState() => _InternDashboardState();
 }
 
-class _InternDashboardState extends State<InternDashboard> {
-  String? attachedBarber = 'Zafar';
+class _InternDashboardState extends State<InternDashboard> with SingleTickerProviderStateMixin {
+  String? attachedBarber = 'Jafar';
+  late SidebarController sidebarController;
+
+  @override
+  void initState() {
+    super.initState();
+    sidebarController = SidebarController();
+    sidebarController.init(this);
+  }
+
+  @override
+  void dispose() {
+    sidebarController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSidebar() {
+    sidebarController.toggleSidebar();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: const Text('Intern Portal', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: AppBar(
+            title: const Text('Intern Portal', style: TextStyle(fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButtonStyled(
+              icon: Icons.menu_rounded,
+              onPressed: _toggleSidebar,
+            ),
+            actions: [
+              IconButtonStyled(
+                icon: Icons.notifications_none_rounded,
+                onPressed: () => NotificationsBottomSheet.show(context),
+              ),
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/profile'),
+                child: CircleAvatar(
+                  radius: 17,
+                  backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
+                ),
+              ),
+              const SizedBox(width: 16),
+            ],
+          ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -72,7 +116,7 @@ class _InternDashboardState extends State<InternDashboard> {
             // Active Barbers List
             _buildSectionHeader('Active Barbers', 'Assign'),
             const SizedBox(height: 16),
-            _buildMentorCard('Zafar', 'Master Barber', 'Available to shadow', true),
+            _buildMentorCard('Jafar', 'Master Barber', 'Available to shadow', true),
             _buildMentorCard('Yousif', 'Senior Barber', 'Busy (2 clients)', false),
             _buildMentorCard('Karim', 'Stylist', 'Available to shadow', false),
 
@@ -80,6 +124,9 @@ class _InternDashboardState extends State<InternDashboard> {
           ],
         ),
       ),
+        ),
+        Sidebar(controller: sidebarController),
+      ],
     );
   }
 
@@ -144,7 +191,7 @@ class _InternDashboardState extends State<InternDashboard> {
             ),
           ),
           if (isShadowing)
-            const Chip(
+            Chip(
               label: Text('ACTIVE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
               backgroundColor: Theme.of(context).primaryColor,
               padding: EdgeInsets.zero,

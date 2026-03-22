@@ -11,8 +11,9 @@ import 'inventory_low_stock_alert.dart';
 
 class InventoryManager extends StatefulWidget {
   final Map<String, dynamic> currentUser;
+  final String? category;
 
-  const InventoryManager({super.key, required this.currentUser});
+  const InventoryManager({super.key, required this.currentUser, this.category});
 
   @override
   InventoryManagerState createState() => InventoryManagerState();
@@ -22,11 +23,46 @@ class InventoryManagerState extends State<InventoryManager> {
   @override
   void initState() {
     super.initState();
-    // Load inventory when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
-      inventoryProvider.loadInventoryItems();
+      _loadItems();
     });
+  }
+
+  int? _lastLoadedShopId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authProvider = Provider.of<AuthProvider>(context);
+    final shopId = authProvider.user?.shopId;
+
+    if (shopId != null && shopId != _lastLoadedShopId) {
+      _lastLoadedShopId = shopId;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadItems();
+      });
+    }
+  }
+
+  Future<void> _loadItems({String? category}) async {
+    if (!mounted) return;
+    final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
+    int? shopId = widget.currentUser['shop'] as int?;
+    if (shopId == null) {
+      shopId = authProvider.user?.shopId;
+    }
+
+    if (shopId == null) {
+      print('InventoryManager: Skipping load items because shopId is null');
+      return;
+    }
+
+    await inventoryProvider.loadInventoryItems(
+      shopId: shopId,
+      category: category ?? widget.category,
+    );
   }
 
   Future<void> _increaseItemCount(Map<String, dynamic> item, BuildContext context) async {
@@ -41,14 +77,18 @@ class InventoryManagerState extends State<InventoryManager> {
         throw Exception('Item ID not found');
       }
 
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final shopId = authProvider.user?.shopId;
+
       await inventoryService.updateItemQuantity(
         itemId: itemId,
+        shopId: shopId ?? 1, // Fallback if needed, but it should be available
         newQuantity: currentCount + 1,
         reason: 'Manual count increase',
       );
 
       // Refresh the inventory
-      await inventoryProvider.loadInventoryItems();
+      await _loadItems();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,15 +121,20 @@ class InventoryManagerState extends State<InventoryManager> {
       final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
 
       try {
+        final shopId = result['shopId'] ?? (widget.currentUser['shop'] as int?);
+        if (shopId == null) {
+          throw Exception('Shop ID is missing. Cannot add inventory item.');
+        }
+        
         await inventoryService.addInventoryItem(
           productId: result['productId'] ?? 0,
-          shopId: result['shopId'] ?? 1, // Default shop ID
+          shopId: shopId,
           initialQuantity: result['count'] ?? 1,
           notes: result['description'],
         );
 
         // Refresh inventory
-        await inventoryProvider.loadInventoryItems();
+        await _loadItems();
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -180,6 +225,9 @@ class InventoryManagerState extends State<InventoryManager> {
     final currentUser = widget.currentUser;
     final isCustomer = currentUser['role'] == 'customer' || currentUser['isCustomer'] == true;
 
+    final authProvider = Provider.of<AuthProvider>(context);
+    final shopId = authProvider.user?.shopId ?? widget.currentUser['shop'] as int?;
+
     if (isCustomer) {
       return Center(
         child: Text(
@@ -187,6 +235,25 @@ class InventoryManagerState extends State<InventoryManager> {
           style: TextStyle(
             fontSize: 16,
             color: AppColor.lightTextSecondary
+          ),
+        ),
+      );
+    }
+
+    if (shopId == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: AppColor.lightPrimary),
+              const SizedBox(height: 16),
+              Text(
+                'Initializing shop details...',
+                style: TextStyle(color: AppColor.lightTextSecondary),
+              ),
+            ],
           ),
         ),
       );
@@ -235,7 +302,7 @@ class InventoryManagerState extends State<InventoryManager> {
                               height: 24,
                               color: AppColor.lightPrimary,
                             ),
-                            onPressed: () => inventoryProvider.loadInventoryItems(),
+                            onPressed: () => _loadItems(),
                             tooltip: 'Refresh Inventory',
                           ),
                         ],
@@ -284,7 +351,7 @@ class InventoryManagerState extends State<InventoryManager> {
                               ),
                               const SizedBox(height: 16),
                               ElevatedButton(
-                                onPressed: () => inventoryProvider.loadInventoryItems(),
+                                onPressed: () => _loadItems(),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColor.lightPrimary,
                                 ),

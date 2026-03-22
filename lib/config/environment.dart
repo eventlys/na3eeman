@@ -66,12 +66,16 @@ abstract class EnvironmentConfig {
 
 /// Development environment configuration
 class DevConfig implements EnvironmentConfig {
+  // --- Connection Options ---
+  // 1. Android Emulator: 'http://10.0.2.2:8080/api/v1'
+  // 2. iOS Simulator:   'http://localhost:8080/api/v1'
+  // 3. Local LAN IP:     'http://192.168.1.90:8080/api/v1' (Change to your PC's IP)
+  // 4. Remote Tunnel:   'https://xxxx.ngrok-free.app/api/v1' (Use for remote testing)
+  
   @override
   String get apiBaseUrl => const String.fromEnvironment(
     'API_BASE_URL',
-    // NOTE: Android emulators route `localhost` to themselves, not your host.
-    // Use 10.0.2.2 to reach your host machine's backend from the emulator.
-    // For a physical device on the same WiFi, use your machine's LAN IP instead.
+    // Change this defaultValue to switch connection types
     defaultValue: 'http://192.168.1.90:8080/api/v1',
   );
 

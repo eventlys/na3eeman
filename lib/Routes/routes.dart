@@ -16,6 +16,7 @@ import '../Packages/features/staff/pages/employee_dashboard.dart';
 import '../Packages/features/staff/pages/receptionist_dashboard.dart';
 import '../Packages/features/staff/pages/intern_dashboard.dart';
 import '../Packages/features/shop/pages/shop_owner_dashboard.dart';
+import '../Packages/features/staff/pages/employee_schedule_page.dart'; // Added
 
 // Navigations
 import '../Packages/features/Navigations/favorites_list_page.dart';
@@ -85,6 +86,7 @@ class AppRoutes {
 
     // ── Staff & Management ────────────────────────────────────────────────
     '/employee_dashboard': (context) => const EmployeeDashboard(),
+    '/employee_schedule': (context) => const EmployeeSchedulePage(),
     '/receptionist_dashboard': (context) => const ReceptionistDashboard(),
     '/intern_dashboard': (context) => const InternDashboard(),
     '/owner_dashboard': (context) => const ShopOwnerDashboard(),

@@ -315,7 +315,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'YOUR BALANCE',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
@@ -468,7 +468,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
           itemCount: 3,
           itemBuilder: (context, index) {
             return ListTile(
-              leading: const CircleAvatar(
+              leading: CircleAvatar(
                 backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
                 child: Icon(Icons.notifications_rounded, color: Theme.of(context).primaryColor),
               ),

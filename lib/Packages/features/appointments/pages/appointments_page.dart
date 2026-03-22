@@ -18,7 +18,9 @@ class AppointmentsPageState extends State<AppointmentsPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadAppointments();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadAppointments();
+    });
   }
 
   Future<void> _loadAppointments() async {
@@ -270,26 +272,21 @@ class AppointmentsPageState extends State<AppointmentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<AppointmentProvider>(context, listen: false);
-    final user = userProvider.user;
-    final userGender = _getUserGender(user);
+    return Consumer<AppointmentProvider>(
+      builder: (context, provider, child) {
+        final user = provider.user;
+        final userGender = _getUserGender(user);
 
-    return GlassPage(
-      title: 'My Appointments',
-      showBackButton: true,
-      user: user,
-      glassTextColor: _getTextColor(context),
-      glassPinned: true,
-      child: Consumer<AppointmentProvider>(
-        builder: (context, provider, child) {
-          return Container(
-            color: _getBackgroundColor(context, userGender),
-            child: CustomScrollView(
-              slivers: _buildSliverContent(provider, context, userGender),
-            ),
-          );
-        },
-      ),
+        return GlassPage(
+          title: 'My Appointments',
+          showBackButton: true,
+          user: user,
+          glassTextColor: _getTextColor(context),
+          glassPinned: true,
+          slivers: _buildSliverContent(provider, context, userGender),
+          child: const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

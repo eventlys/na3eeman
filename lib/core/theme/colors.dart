@@ -30,13 +30,13 @@ class AppColors {
   static const Color pink900 = Color(0xFF2F2228);
 
   // Cream (Background / Light Mode Surface)
-  static const Color cream = Color(0xFFE4DFC0);
+  static const Color cream = Color(0xFFfbfaf5);
   static const Color cream50 = Color(0xFFFCFBF6);
   static const Color cream100 = Color(0xFFF9F7EE);
   static const Color cream200 = Color(0xFFF3EFDD);
   static const Color cream300 = Color(0xFFEDE7CC);
   static const Color cream400 = Color(0xFFE8DFBB);
-  static const Color cream500 = Color(0xFFE4DFC0);
+  static const Color cream500 = Color(0xFFfbfaf5);
   static const Color cream600 = Color(0xFFCDC9AD);
   static const Color cream700 = Color(0xFF9B9782);
   static const Color cream800 = Color(0xFF676556);

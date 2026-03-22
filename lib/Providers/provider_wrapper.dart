@@ -21,8 +21,9 @@ import 'features/barber_provider.dart';
 import 'features/profit_provider.dart';
 import 'features/settings_provider.dart';
 // import 'features/points_provider.dart';
-// import 'features/inventory_provider.dart';
+import 'features/inventory_provider.dart'; // Added
 import 'features/offers_provider.dart';
+import '../Helpers/inventory_helpers.dart'; // Added
 
 // Service Locator
 final GetIt locator = GetIt.instance;
@@ -107,5 +108,17 @@ List<SingleChildWidget> providers = [
 
   // ── OffersProvider added for Special Offers features ────────────────────────
   ChangeNotifierProvider(create: (_) => OffersProvider()),
+
+  // ── Inventory Providers ──────────────────────────────────────────────────────
+  Provider(create: (_) => InventoryService(ApiService())),
+  ChangeNotifierProvider(
+    create: (context) {
+      final service = context.read<InventoryService>();
+      return InventoryProvider(
+        inventoryService: service,
+        inventoryHelpers: InventoryHelpers(service),
+      );
+    },
+  ),
 ];
 

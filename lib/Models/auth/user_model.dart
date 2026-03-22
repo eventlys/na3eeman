@@ -26,6 +26,7 @@ class User {
   final bool isStaff;
   final bool isSuperuser;
   final String? specialization;
+  final int? shopId; // Shop association for staff
 
   const User({
     required this.id,
@@ -50,6 +51,7 @@ class User {
     this.isStaff = false,
     this.isSuperuser = false,
     this.specialization,
+    this.shopId,
   });
 
   String get fullName => '$firstName $lastName';
@@ -90,6 +92,7 @@ class User {
       specialization: json['specialization'] is List
           ? (json['specialization'] as List).join(', ')
           : json['specialization'] as String?,
+      shopId: json['shop'] as int?,
     );
   }
 
@@ -118,6 +121,7 @@ class User {
       'is_staff': isStaff,
       'is_superuser': isSuperuser,
       'specialization': specialization,
+      'shop': shopId,
     };
   }
 
@@ -144,6 +148,7 @@ class User {
     bool? isStaff,
     bool? isSuperuser,
     String? specialization,
+    int? shopId,
   }) {
     return User(
       id: id ?? this.id,
@@ -168,6 +173,7 @@ class User {
       isStaff: isStaff ?? this.isStaff,
       isSuperuser: isSuperuser ?? this.isSuperuser,
       specialization: specialization ?? this.specialization,
+      shopId: shopId ?? this.shopId,
     );
   }
 

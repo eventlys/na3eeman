@@ -85,14 +85,14 @@ class Sidebar extends StatelessWidget {
             children: [
               const SizedBox(height: 40),
               // User Profile
-              UserProfileSection(controller: controller),
+              // UserProfileSection(controller: controller),
 
-              const SizedBox(height: 24),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Divider(color: AppColors.almostBlack50),
-              ),
-              const SizedBox(height: 16),
+              // const SizedBox(height: 24),
+              // const Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 24.0),
+              //   child: Divider(color: AppColors.almostBlack50),
+              // ),
+              // const SizedBox(height: 16),
 
               // Menu Items
               Expanded(
@@ -105,8 +105,8 @@ class Sidebar extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'NA3EMAN',
+                    Text(
+                      'NA3EEMAN',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -153,7 +153,7 @@ class Sidebar extends StatelessWidget {
           title: 'My Schedule',
           assetIcon: 'assets/icons/plus.png',
           delay: 1,
-          onTap: () => Navigator.pushNamed(context, '/employee_dashboard'),
+          onTap: () => Navigator.pushNamed(context, '/employee_schedule'),
         ),
       MenuItem(
         title: 'Settings',

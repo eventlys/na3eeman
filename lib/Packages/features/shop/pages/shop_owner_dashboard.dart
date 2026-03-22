@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 // import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
+import '../../../features/navigation/sidebar.dart';
+import '../../../features/navigation/sidebar_controller.dart';
 import '../widgets/profit_graph.dart';
 import '../widgets/inventory_alert_card.dart';
 import '../widgets/offers_card.dart';
@@ -13,13 +16,25 @@ class ShopOwnerDashboard extends StatefulWidget {
   State<ShopOwnerDashboard> createState() => _ShopOwnerDashboardState();
 }
 
-class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> {
-  bool _isLoading = false;
+class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> with SingleTickerProviderStateMixin {
+  late SidebarController sidebarController;
 
   @override
   void initState() {
     super.initState();
+    sidebarController = SidebarController();
+    sidebarController.init(this);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    sidebarController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSidebar() {
+    sidebarController.toggleSidebar();
   }
 
   void _loadData() {
@@ -30,16 +45,31 @@ class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Owner Dashboard', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButtonStyled(
+          icon: Icons.menu_rounded,
+          onPressed: _toggleSidebar,
+        ),
         actions: [
           IconButtonStyled(
-            icon: Icons.notifications_outlined,
-            onPressed: () {},
+            icon: Icons.notifications_none_rounded,
+            onPressed: () => NotificationsBottomSheet.show(context),
+          ),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/profile'),
+            child: CircleAvatar(
+              radius: 17,
+              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
+            ),
           ),
           const SizedBox(width: 16),
         ],
@@ -104,6 +134,9 @@ class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> {
         label: 'New Action',
         onPressed: () {},
       ),
+        ),
+        Sidebar(controller: sidebarController),
+      ],
     );
   }
 
