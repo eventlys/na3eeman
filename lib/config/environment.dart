@@ -76,7 +76,7 @@ class DevConfig implements EnvironmentConfig {
   String get apiBaseUrl => const String.fromEnvironment(
     'API_BASE_URL',
     // Change this defaultValue to switch connection types
-    defaultValue: 'http://192.168.1.90:8080/api/v1',
+    defaultValue: 'https://diedra-stedfast-clint.ngrok-free.dev/api/v1',
   );
 
   @override

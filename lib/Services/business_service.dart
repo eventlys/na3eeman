@@ -9,6 +9,7 @@ import 'package:printing/printing.dart';
 // Models
 import '../Helpers/customized/reports_helper.dart';
 import '../Helpers/error_handler.dart';
+import '../Helpers/config.dart';
 import '../Helpers/gallery_helper.dart';
 import '../Models/appointments/booking_group_model.dart';
 import '../Models/appointments/shop_appointments_model.dart';
@@ -211,7 +212,7 @@ class BusinessService {
   final ApiInterceptorService _logger = ApiInterceptorService(ApiService());
   final SecurityService _networkSecurity = SecurityService();
 
-  static const String _baseUrl = 'https://your-api-url.com/api';
+  static String get _baseUrl => AppConfig.baseUrl;
 
   // ============ APPOINTMENT SERVICES ============
 

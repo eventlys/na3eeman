@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:convert';
 import '../analytics_service.dart';
 import '../../Helpers/logger.dart';
+import '../../Helpers/config.dart';
 import '../security_service.dart';
 import '../storage_service.dart';
 import 'user_service.dart';
@@ -29,7 +30,7 @@ class AppManagementService with WidgetsBindingObserver {
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
 
   // Configuration
-  static const String _baseUrl = 'https://your-api-url.com/api';
+  static String get _baseUrl => AppConfig.baseUrl;
 
   // Background Tasks
   static const String syncTask = 'syncData';

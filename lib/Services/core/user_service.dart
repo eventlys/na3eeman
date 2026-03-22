@@ -1,6 +1,7 @@
 import '../api/api_interceptor_service.dart';
 import '../api/api_service.dart';
 import '../storage_service.dart';
+import '../../Helpers/config.dart';
 
 class UserService {
   final ApiInterceptorService _apiInterceptor;
@@ -8,7 +9,7 @@ class UserService {
 
   UserService() : _apiInterceptor = ApiInterceptorService(ApiService());
 
-  static const String _baseUrl = 'https://your-api-url.com/api';
+  static String get _baseUrl => AppConfig.baseUrl;
 
   Future<UserStatistics> getUserStatistics() async {
     final result = await _apiInterceptor.executeApiCall(
