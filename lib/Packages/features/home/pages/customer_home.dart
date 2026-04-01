@@ -16,7 +16,9 @@ import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../../appointments/widgets/soonest_appointment_card.dart';
 import '../../shop/widgets/barbershop_card.dart';
-import '../../shop/widgets/customer_shop_ads.dart' hide Shop;
+import '../../shop/widgets/customer_shop_ads.dart';
+import '../widgets/category_card.dart';
+import '../../../../Models/shop/category_model.dart';
 
 class CustomerHomePage extends StatefulWidget {
   const CustomerHomePage({super.key});
@@ -32,12 +34,10 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   bool _isSidebarOpen = false;
 
   late AuthProvider _authProvider;
-  late ShopProvider _shopProvider;
-  late AppointmentProvider _appointmentProvider;
   late FavoritesProvider _favoritesProvider;
   final ApiService _apiService = ApiService();
 
-  List<Shop> _shops = [];
+  List<Category> _categories = [];
   Map<String, dynamic> _userPoints = {'points': 0};
   bool _isLoading = true;
   bool _initialized = false;
@@ -55,8 +55,6 @@ class _CustomerHomePageState extends State<CustomerHomePage>
     if (!_initialized) {
       _initialized = true;
       _authProvider = Provider.of<AuthProvider>(context, listen: false);
-      _shopProvider = Provider.of<ShopProvider>(context, listen: false);
-      _appointmentProvider =Provider.of<AppointmentProvider>(context, listen: false);
       _favoritesProvider =Provider.of<FavoritesProvider>(context, listen: false);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,7 +70,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
 
     try {
       await Future.wait([
-        _loadShops(),
+        _loadCategories(),
         _loadUserPoints(),
       ]);
 
@@ -86,12 +84,21 @@ class _CustomerHomePageState extends State<CustomerHomePage>
     }
   }
 
-  Future<void> _loadShops() async {
+  Future<void> _loadCategories() async {
     try {
-      await _shopProvider.loadShopData();
-      if (mounted) setState(() => _shops = _shopProvider.shops);
+      final categories = await _apiService.getCategories();
+      final userGender = _authProvider.user?.gender;
+
+      final filtered = categories.where((cat) {
+        if (cat.targetGender == 'all') return true;
+        if (userGender == Gender.female && cat.targetGender == 'female') return true;
+        if (userGender == Gender.male && cat.targetGender == 'male') return true;
+        return false;
+      }).toList();
+
+      if (mounted) setState(() => _categories = filtered);
     } catch (e) {
-      if (mounted) setState(() => _shops = []);
+      if (mounted) setState(() => _categories = []);
     }
   }
 
@@ -118,22 +125,6 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   void _toggleSidebar() {
     setState(() => _isSidebarOpen = !_isSidebarOpen);
     sidebarController.toggleSidebar();
-  }
-
-  void _handleFavoriteChanged(bool isFavorite, Shop shop) async {
-    final shopMap = {
-      'id': shop.id,
-      'shopName': shop.shopName,
-    };
-    try {
-      if (isFavorite) {
-        await _favoritesProvider.addToFavorites(shopMap);
-      } else {
-        await _favoritesProvider.removeFromFavorites(shop.id.toString());
-      }
-    } catch (e) {
-      AppLogger.error('Failed to update favorite', error: e);
-    }
   }
 
   @override
@@ -210,21 +201,8 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                     ),
                     const SizedBox(height: 32),
 
-                    // Loyalty / Points Card
-                    _buildPointsTracker(isDark),
-
-                    const SizedBox(height: 32),
-
-                    // Ads / Promotions
-                    Text(
-                      'special_offers'.tr(),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const HorizontalShopScroll(),
-
+                    // Categories Grid (was "Our Services")
+                    _buildCategoriesGrid(isDark),
 
                     const SizedBox(height: 32),
 
@@ -233,56 +211,13 @@ class _CustomerHomePageState extends State<CustomerHomePage>
 
                     const SizedBox(height: 32),
 
-                    // Top Services
-                    _buildTopServices(isDark),
+                    // Loyalty / Points Card
+                    _buildPointsTracker(isDark),
 
                     const SizedBox(height: 32),
 
-                    // Nearby Shops Header
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Nearby Shops',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pushNamed(context, '/shops'),
-                          child: Text('see_all'.tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 32),
                   ],
-                ),
-              ),
-            ),
-
-            // Shop list
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final shop = _shops[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: BarbershopCard(
-                        title: shop.shopName,
-                        workingHours: '${shop.openingTime} – ${shop.closingTime}',
-                        profilePicture: shop.shopLogo != null 
-                            ? 'assets/salons/${shop.shopLogo}' 
-                            : 'assets/images/shop_placeholder.png',
-                        isClickable: true,
-                        shopLocation: shop.location,
-                        shopRating: shop.avgRating ?? 4.5,
-                        onCardTap: () => Navigator.pushNamed(context, '/shop_details', arguments: shop.toJson()),
-                        onFavoriteChanged: (isFav) => _handleFavoriteChanged(isFav, shop),
-                      ),
-                    );
-                  },
-                  childCount: min(5, _shops.length),
                 ),
               ),
             ),
@@ -373,87 +308,43 @@ class _CustomerHomePageState extends State<CustomerHomePage>
     );
   }
 
-  Widget _buildTopServices(bool isDark) {
-    final gender = _authProvider.user?.gender ?? Gender.male;
-
-    final List<Map<String, dynamic>> services = gender == Gender.female
-        ? [
-            {'icon': Icons.face_retouching_natural_rounded, 'label_key': 'service_hair', 'filter': 'hair'},
-            {'icon': Icons.brush_rounded, 'label_key': 'service_beauty', 'filter': 'beauty'},
-            {'icon': Icons.favorite_rounded, 'label_key': 'service_brides', 'filter': 'brides'},
-            {'icon': Icons.clean_hands_rounded, 'label_key': 'service_nails', 'filter': 'nails'},
-            {'icon': Icons.spa_rounded, 'label_key': 'service_spa', 'filter': 'spa'},
-            {'icon': Icons.flash_on_rounded, 'label_key': 'service_laser', 'filter': 'laser'},
-            {'icon': Icons.face_retouching_natural_rounded, 'label_key': 'service_skin_care', 'filter': 'skin_care'},
-          ]
-        : [
-            {'icon': Icons.content_cut_rounded, 'label_key': 'service_grooming', 'filter': 'grooming'},
-            {'icon': Icons.spa_rounded, 'label_key': 'service_spa', 'filter': 'spa'},
-            {'icon': Icons.clean_hands_rounded, 'label_key': 'service_nails', 'filter': 'nails'},
-          ];
-
+  Widget _buildCategoriesGrid(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'our_services'.tr(),
+          'Catygories'.tr(),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 110,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: services.length,
-            itemBuilder: (context, index) {
-              final service = services[index];
-              return GestureDetector(
-                onTap: () {
-                  // Navigate to search page with filter
-                  Navigator.pushNamed(
-                    context, 
-                    '/shops', 
-                    arguments: {'service_filter': service['filter'] as String}
-                  );
-                },
-                child: Container(
-                  width: 90,
-                  margin: const EdgeInsets.only(right: 16),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.almostBlack600 : AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(service['icon'] as IconData, color: Theme.of(context).primaryColor, size: 24),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        (service['label_key'] as String).tr(),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.85,
           ),
+          itemCount: _categories.length,
+          itemBuilder: (context, index) {
+            return CategoryCard(
+              category: _categories[index],
+              onTap: () => Navigator.pushNamed(
+                context, 
+                '/category_details', 
+                arguments: _categories[index],
+              ),
+            );
+          },
         ),
       ],
     );
   }
+
+  // _buildTopServices was removed as it's replaced by _buildCategoriesGrid
 
 
   void _showNotifications(BuildContext context) {

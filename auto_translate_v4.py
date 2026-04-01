@@ -140,7 +140,7 @@ translations = {
   "Description (Optional)": "الوصف (اختياري)",
   "Added to Favorites": "تمت الإضافة للمفضلة",
   "Share Dialog Opened": "تم فتح نافذة المشاركة",
-  "Our Services": "خدماتنا",
+  "Catigories": "خدماتنا",
   "Packages": "الباقات",
   "Packages and bundles coming soon!": "الباقات والعروض قريباً!",
   "Products": "المنتجات",

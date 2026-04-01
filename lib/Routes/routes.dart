@@ -10,6 +10,8 @@ import '../Packages/features/auth/pages/signup.dart';
 // Home
 import '../Packages/features/home/pages/admin_home.dart';
 import '../Packages/features/home/pages/customer_home.dart';
+import '../Packages/features/home/pages/category_details.dart';
+import '../Models/shop/category_model.dart';
 
 // Staff
 import '../Packages/features/staff/pages/employee_dashboard.dart';
@@ -77,6 +79,10 @@ class AppRoutes {
 
     // ── Customer ──────────────────────────────────────────────────────────
     '/customer_home': (context) => const CustomerHomePage(),
+    '/category_details': (context) {
+      final category = ModalRoute.of(context)!.settings.arguments as Category;
+      return CategoryDetailsPage(category: category);
+    },
     '/shops': (context) => const ShopListPage(),
     '/shop_details': (context) {
       final shopData = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

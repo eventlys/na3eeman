@@ -380,292 +380,160 @@ class _LoginPageState extends State<LoginPage>
         // Divider with label
         Row(
           children: [
-            Expanded(
-              child: Divider(
-                color: isDark ? AppColors.almostBlack600 : AppColors.cream600,
-              ),
-            ),
+            Expanded(child: Divider(color: isDark ? AppColors.almostBlack600 : AppColors.cream600)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text('quick_access_fast_login'.tr(),
-                style: TextStyle(
-                  color: AppColors.almostBlack400,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: AppColors.almostBlack400, fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
-            Expanded(
-              child: Divider(
-                color: isDark ? AppColors.almostBlack600 : AppColors.cream600,
-              ),
-            ),
+            Expanded(child: Divider(color: isDark ? AppColors.almostBlack600 : AppColors.cream600)),
           ],
         ),
+        const SizedBox(height: 16),
         // User Gender Toggle
         Center(
           child: ToggleButtons(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             isSelected: [_selectedGender == 'male', _selectedGender == 'female'],
-            onPressed: (index) {
-              setState(() {
-                _selectedGender = index == 0 ? 'male' : 'female';
-              });
-            },
+            onPressed: (index) => setState(() => _selectedGender = index == 0 ? 'male' : 'female'),
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text('male'.tr()),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text('female'.tr()),
-              ),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: Text('male'.tr())),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: Text('female'.tr())),
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
 
-        // User Type buttons
-        Text('fast_login_as'.tr(),
+        // List of Single Cards for each user type
+        _buildQuickAccessCard(
+          title: 'System Admin',
+          subtitle: 'Full platform control',
+          icon: Icons.admin_panel_settings_outlined,
+          color: Colors.blue,
+          onTap: () => _quickAccessLogin('admin@na3eeman.com'),
+        ),
+        _buildQuickAccessCard(
+          title: 'Customer',
+          subtitle: '${_selectedGender[0].toUpperCase() + _selectedGender.substring(1)} profile with loyalty points',
+          icon: Icons.person_outline_rounded,
+          color: AppColors.pink,
+          onTap: () => _quickAccessLogin('${_selectedGender}_customer1@test.com'),
+        ),
+        _buildQuickAccessCard(
+          title: 'Employee / Barber',
+          subtitle: 'Operational dashboard & schedules',
+          icon: Icons.content_cut_rounded,
+          color: Colors.orange,
+          onTap: () => _quickAccessLogin('employee1@test.com'),
+        ),
+        _buildQuickAccessCard(
+          title: 'Receptionist',
+          subtitle: 'Front-desk management',
+          icon: Icons.support_agent_outlined,
+          color: Colors.teal,
+          onTap: () => _quickAccessLogin('reception1@test.com'),
+        ),
+        _buildQuickAccessCard(
+          title: 'Intern',
+          subtitle: 'Task list & learning',
+          icon: Icons.school_outlined,
+          color: Colors.deepPurple,
+          onTap: () => _quickAccessLogin('intern1@test.com'),
+        ),
+
+        const SizedBox(height: 16),
+        Text('Business Owners (By Tier)',
           style: TextStyle(
             color: isDark ? AppColors.cream200 : AppColors.almostBlack600,
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
 
-        Row(
-          children: [
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Customer',
-                icon: Icons.person_outline_rounded,
-                role: 'customer',
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildRoleButton(
-                label: 'employee'.tr(),
-                icon: Icons.content_cut_rounded,
-                role: 'employee',
-                isDark: isDark,
-              ),
-            ),
-          ],
+        _buildQuickAccessCard(
+          title: 'Owner - Empire',
+          subtitle: 'Multi-branch & Advanced Analytics',
+          icon: Icons.domain_rounded,
+          color: Colors.indigo,
+          onTap: () => _quickAccessLogin('empire@owner.com'),
         ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Provider',
-                icon: Icons.storefront_rounded,
-                role: 'owner',
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildRoleButton(
-                label: 'admin'.tr(),
-                icon: Icons.admin_panel_settings_outlined,
-                role: 'admin',
-                isDark: isDark,
-              ),
-            ),
-          ],
+        _buildQuickAccessCard(
+          title: 'Owner - Elite',
+          subtitle: 'Premium Spa & Resource Mgmt',
+          icon: Icons.workspace_premium_outlined,
+          color: Colors.amber[700],
+          onTap: () => _quickAccessLogin('elite@owner.com'),
         ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Intern',
-                icon: Icons.school_outlined,
-                role: 'intern',
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Receptionist',
-                icon: Icons.support_agent_outlined,
-                role: 'receptionist',
-                isDark: isDark,
-              ),
-            ),
-          ],
+        _buildQuickAccessCard(
+          title: 'Owner - Studio (Basic)',
+          subtitle: 'Small team management',
+          icon: Icons.storefront_rounded,
+          color: Colors.green,
+          onTap: () => _quickAccessLogin('basic@owner.com'),
         ),
-        const SizedBox(height: 24),
-
-        Row(
-          children: [
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Owner',
-                sub: 'Artisan',
-                icon: Icons.store_mall_directory_outlined,
-                role: 'owner',
-                baseUsername: 'owner1',
-                tier: OwnerSubscriptionTier.artisan,
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Owner',
-                sub: 'Studio',
-                icon: Icons.storefront_rounded,
-                role: 'owner',
-                baseUsername: 'owner2',
-                tier: OwnerSubscriptionTier.studio,
-                isDark: isDark,
-              ),
-            ),
-          ],
+        _buildQuickAccessCard(
+          title: 'Owner - Artisan',
+          subtitle: 'Solo practitioner',
+          icon: Icons.store_mall_directory_outlined,
+          color: Colors.brown,
+          onTap: () => _quickAccessLogin('artisian@owner.com'),
         ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Owner',
-                sub: 'Elite',
-                icon: Icons.workspace_premium_outlined,
-                role: 'owner',
-                baseUsername: 'owner3',
-                tier: OwnerSubscriptionTier.elite,
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildRoleButton(
-                label: 'Owner',
-                sub: 'Empire',
-                icon: Icons.domain_rounded,
-                role: 'owner',
-                baseUsername: 'owner4',
-                tier: OwnerSubscriptionTier.empire,
-                isDark: isDark,
-              ),
-            ),
-          ],
+        _buildQuickAccessCard(
+          title: 'Owner - Expired',
+          subtitle: 'Renew subscription screen',
+          icon: Icons.history_rounded,
+          color: Colors.red,
+          onTap: () => _quickAccessLogin('expired@owner.com'),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 32),
       ],
     );
   }
 
-  Widget _buildMockButton(String label, Color color, OwnerSubscriptionTier tier, OwnerType type, {bool expired = false}) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
-      onTap: () => _quickAccessOwner(label, tier, type, expired),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.auto_awesome_rounded, size: 14, color: color),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRoleButton({
-    required String label,
+  Widget _buildQuickAccessCard({
+    required String title,
+    required String subtitle,
     required IconData icon,
-    required String role,
-    required bool isDark,
-    String? sub,
-    String? baseUsername,
-    OwnerSubscriptionTier? tier,
+    required VoidCallback onTap,
+    Color? color,
   }) {
-    return Material(
-      color: Colors.transparent,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: isDark ? AppColors.almostBlack500 : AppColors.almostBlack50),
+      ),
+      color: isDark ? AppColors.almostBlack600 : AppColors.white,
       child: InkWell(
-        onTap: () {
-          if (tier != null) {
-            _quickAccessOwner(
-              'Owner (${sub ?? tier.name})', 
-              tier, 
-              OwnerType.employeeOwner, 
-              false
-            );
-          } else {
-            _quickAccessRole(role, baseUsername: baseUsername);
-          }
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.almostBlack600 : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isDark ? AppColors.almostBlack500 : AppColors.cream400,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.15 : 0.04),
-                offset: const Offset(0, 2),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-          child: Column(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  color: (color ?? Theme.of(context).primaryColor).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).primaryColor,
-                  size: 22,
+                child: Icon(icon, color: color ?? Theme.of(context).primaryColor, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    Text(subtitle, style: TextStyle(color: isDark ? AppColors.cream600 : AppColors.almostBlack400, fontSize: 11)),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isDark ? AppColors.cream200 : AppColors.almostBlack600,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (sub != null) ...[
-                const SizedBox(height: 2),
-                Text(
-                  sub,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+              Icon(Icons.login_rounded, color: isDark ? AppColors.almostBlack400 : AppColors.almostBlack200, size: 20),
             ],
           ),
         ),
@@ -673,90 +541,11 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  void _quickAccessRole(String role, {String? baseUsername}) {
-    String prefix = _selectedGender == 'female' ? 'female_' : '';
-    String email = '${prefix}customer1@test.com';
-    
-    if (baseUsername != null) {
-      email = '$prefix$baseUsername@test.com';
-    } else {
-      switch (role.toLowerCase()) {
-        case 'admin':
-          email = 'admin@na3eeman.com';
-          break;
-        case 'owner':
-          email = '${prefix}owner1@test.com';
-          break;
-        case 'employee':
-          email = '${prefix}barber1@test.com';
-          break;
-        case 'intern':
-          email = '${prefix}intern1@test.com';
-          break;
-        case 'receptionist':
-          email = '${prefix}receptionist1@test.com';
-          break;
-      }
-    }
+  void _quickAccessLogin(String email) {
     setState(() {
       _emailController.text = email;
       _passwordController.text = 'Password123!';
     });
-    // Trigger standard login
     _handleLogin();
-  }
-
-  void _quickAccessOwner(String label, OwnerSubscriptionTier tier, OwnerType type, bool expired) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final gender = _selectedGender == 'female' ? g.Gender.female : g.Gender.male;
-    
-    final user = User(
-      id: 888,
-      email: 'mock_${tier.name}_${_selectedGender}@test.com',
-      username: 'mock_owner',
-      firstName: gender == g.Gender.male ? 'Ahmed' : 'Sarah',
-      lastName: 'Wilson',
-      role: UserRole.owner,
-      gender: gender,
-      location: 'Amman, Jordan',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    final barber = BarberProfile(
-      id: 888,
-      barberId: 888,
-      bio: 'Mock profile for testing',
-      specialties: 'All',
-      hasAccess: true,
-      avgRating: 4.8,
-    );
-
-    final owner = OwnerProfile(
-      id: 888,
-      barberProfileId: 888,
-      ownerType: type,
-      isSubscribed: !expired,
-      subscriptionTier: tier,
-      subscriptionStartDate: DateTime.now().subtract(const Duration(days: 30)),
-      subscriptionEndDate: expired 
-          ? DateTime.now().subtract(const Duration(days: 1)) 
-          : DateTime.now().add(const Duration(days: 30)),
-    );
-
-    authProvider.debugSetOwnerProfile(
-      user: user,
-      barberProfile: barber,
-      ownerProfile: owner,
-    );
-
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    themeProvider.setGender(gender == g.Gender.female ? UserGender.female : UserGender.male);
-
-    NavigationService.navigateToHomeBasedOnRole(context, 'owner');
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Logged in as $label')),
-    );
   }
 }

@@ -9,6 +9,7 @@ import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/loyalty/points_balance_model.dart';
 import '../../Models/staff/barber.dart';
+import '../../Models/shop/category_model.dart';
 import '../storage_service.dart';
 import '../security_service.dart';
 import 'endpoints.dart';
@@ -638,6 +639,44 @@ class ApiService {
   Future<List<dynamic>> getShopBarbers(int shopId) async {
     final response = await get(Endpoints.shopBarbers(shopId));
     return response['results'] ?? response['data'] ?? [];
+  }
+
+  // ==================== CATEGORY METHODS ====================
+
+  Future<List<Category>> getCategories() async {
+    final response = await get(Endpoints.categories);
+    final List<dynamic> data = response['results'] ?? response['data'] ?? [];
+    return data.map((cat) => Category.fromJson(cat)).toList();
+  }
+
+  Future<List<dynamic>> getAdsByCategory(int categoryId) async {
+    final response = await get(
+      Endpoints.allCampaigns,
+      queryParams: {'category': categoryId},
+    );
+    return response['results'] ?? response['data'] ?? [];
+  }
+
+  Future<List<dynamic>> getOffersByCategory(int categoryId) async {
+    final response = await get(
+      Endpoints.allOffers,
+      queryParams: {'category': categoryId},
+    );
+    return response['results'] ?? response['data'] ?? [];
+  }
+
+  Future<Map<String, dynamic>> getNearbySalonsByCategory({
+    required double latitude,
+    required double longitude,
+    required int categoryId,
+    int page = 1,
+  }) async {
+    final endpoint = Endpoints.getNearbyShopsByCategoryUrl(
+      latitude: latitude,
+      longitude: longitude,
+      categoryId: categoryId,
+    );
+    return await get(Endpoints.withPagination(endpoint, page: page));
   }
 
   // ==================== APPOINTMENT METHODS ====================

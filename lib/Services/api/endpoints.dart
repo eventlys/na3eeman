@@ -83,6 +83,9 @@ class Endpoints {
   static const String shopSearch = '/shops/shops/';  // Use query params  
   static const String nearbyShops = '/shops/shops/';  // Use query params with lat/lng
   static const String favoriteShops = '/shops/shops/';  // Filter by favorites
+  static const String categories = '/shops/categories/';
+  static const String allOffers = '/shops/all-offers/';
+  static const String allCampaigns = '/shops/all-campaigns/';
   
   // Shop nested resources
   static String shopOptions(int shopId) => '/shops/shops/$shopId/options/';
@@ -224,6 +227,21 @@ class Endpoints {
     return buildUrl(shops, {
       'lat': latitude,
       'lng': longitude,
+      if (radiusKm != null) 'radius': radiusKm,
+    });
+  }
+
+  /// Get nearby shops URL with category
+  static String getNearbyShopsByCategoryUrl({
+    required double latitude,
+    required double longitude,
+    required int categoryId,
+    double? radiusKm,
+  }) {
+    return buildUrl(shops, {
+      'lat': latitude,
+      'lng': longitude,
+      'category': categoryId,
       if (radiusKm != null) 'radius': radiusKm,
     });
   }
