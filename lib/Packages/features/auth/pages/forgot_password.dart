@@ -6,6 +6,7 @@ import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import 'otp_verification_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -77,8 +78,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     
     return AuthScaffold(
-      title: 'Forgot Password?',
-      subtitle: "Enter your email address and we'll send you a One-Time Password (OTP) to reset your password.",
+      title: 'forgot_password'.tr(),
+      subtitle: 'enter_your_email_address_and_we_ll_send_you_a_one_'.tr(),
       showBackButton: true,
       child: Form(
         key: _formKey,
@@ -92,7 +93,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: 'Email',
+                labelText: 'email'.tr().tr(),
                 prefixIcon: ImageIcon(
                   AssetImage(AppImages.mail_view),
                   color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -135,7 +136,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(
               width: double.infinity,
               child: PrimaryButton(
-                text: 'Send OTP',
+                text: 'send_otp'.tr(),
                 onPressed: _submitForgotPassword,
                 showRightIcon: true,
                 rightIcon: Icons.send, // Keeping Material icon for now, or replace with custom image icon
@@ -230,8 +231,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 style: TextButton.styleFrom(
                   foregroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
                 ),
-                child: Text(
-                  'Back to Login',
+                child: Text('back_to_login'.tr(),
                   style: TextStyle(
                     fontSize: 16,
                     color: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,

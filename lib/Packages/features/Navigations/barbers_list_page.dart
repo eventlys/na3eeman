@@ -10,6 +10,7 @@ import '../../Core/themes/loading_indicator.dart';
 import '../../Core/utils/helpers/refresh_widgets.dart';
 import '../../Core/widgets/shared/error_widget.dart';
 import '../shop/widgets/barber_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BarbersListPage extends StatefulWidget {
   const BarbersListPage({super.key});
@@ -248,8 +249,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  'Close',
+                child: Text('close'.tr(),
                   style: TextStyle(
                     color: AppColor.primary,
                   ),
@@ -364,8 +364,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    'Cancel',
+                  child: Text('cancel'.tr(),
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
@@ -398,8 +397,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
                       );
                     }
                   },
-                  child: Text(
-                    'Delete',
+                  child: Text('delete'.tr(),
                     style: TextStyle(
                       color: AppColor.secondary,
                       fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Providers/main_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -212,7 +213,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Appointment History'),
+        title: Text('appointment_history'.tr()),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -296,7 +297,7 @@ class _HistoryPageState extends State<HistoryPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadAppointments,
-              child: const Text('Try Again'),
+              child: Text('try_again'.tr()),
             ),
           ],
         ),

@@ -4,6 +4,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/utils/formatters.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BranchCard2 extends StatelessWidget {
   final VoidCallback? onTap;
@@ -102,8 +103,7 @@ class BranchCard2 extends StatelessWidget {
                         color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
                       ),
                     ),
-                    child: Text(
-                      'Assign Manager',
+                    child: Text('assign_manager'.tr(),
                       style: TextStyle(
                         color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
                       ),

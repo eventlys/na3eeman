@@ -7,6 +7,7 @@ import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/loading_indicator.dart';
 import '../widgets/barber_performance_chart.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BarberPerformancePage extends StatefulWidget {
   const BarberPerformancePage({super.key});
@@ -126,8 +127,7 @@ class _BarberPerformancePageState extends State<BarberPerformancePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColor.lightPrimary,
               ),
-              child: Text(
-                'Retry',
+              child: Text('retry'.tr(),
                 style: TextStyle(color: AppColor.light),
               ),
             ),

@@ -1,5 +1,6 @@
 // lib/Services/analytics/analytics_service.dart
 import 'api/api_service.dart';
+import 'api/endpoints.dart';
 
 class AnalyticsService {
   static final AnalyticsService _instance = AnalyticsService._internal();
@@ -194,5 +195,27 @@ class AnalyticsService {
       'duration_ms': durationMs,
       ...?parameters,
     });
+  }
+
+  // ============ ADMIN ANALYTICS FETCHING ============
+  
+  Future<Map<String, dynamic>> getAdminOverview() async {
+    return await _apiService.get(Endpoints.adminAnalyticsOverview);
+  }
+
+  Future<Map<String, dynamic>> getAdminUserAnalytics() async {
+    return await _apiService.get(Endpoints.adminAnalyticsUsers);
+  }
+
+  Future<Map<String, dynamic>> getAdminUsageAnalytics() async {
+    return await _apiService.get(Endpoints.adminAnalyticsUsage);
+  }
+
+  Future<Map<String, dynamic>> getAdminFinancialAnalytics() async {
+    return await _apiService.get(Endpoints.adminAnalyticsFinancial);
+  }
+
+  Future<Map<String, dynamic>> getAdminSystemAnalytics() async {
+    return await _apiService.get(Endpoints.adminAnalyticsSystem);
   }
 }

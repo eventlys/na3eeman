@@ -4,6 +4,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BarberCard extends StatelessWidget {
   final String barberId;
@@ -131,8 +132,7 @@ class BarberCard extends StatelessWidget {
                         color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'Edit',
+                      Text('edit'.tr(),
                         style: TextStyle(
                           color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                         ),
@@ -151,8 +151,7 @@ class BarberCard extends StatelessWidget {
                         color: isDarkTheme ? AppColor.darkError : AppColor.lightError,
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'Delete',
+                      Text('delete'.tr(),
                         style: TextStyle(
                           color: isDarkTheme ? AppColor.darkError : AppColor.lightError,
                         ),

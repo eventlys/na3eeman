@@ -3,6 +3,7 @@ import '../../../../Services/api/api_service.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/barbershop_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ShopListPage extends StatefulWidget {
   const ShopListPage({super.key});
@@ -104,7 +105,7 @@ class _ShopListPageState extends State<ShopListPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Discover Shops', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('discover_shops'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -123,7 +124,7 @@ class _ShopListPageState extends State<ShopListPage> {
             child: TextFormField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search by name or location...',
+                hintText: 'search_by_name_or_location'.tr(),
                 prefixIcon: Icon(Icons.search_rounded, color: Theme.of(context).primaryColor),
                 filled: true,
                 fillColor: isDark ? AppColors.almostBlack600 : AppColors.white,
@@ -162,7 +163,7 @@ class _ShopListPageState extends State<ShopListPage> {
             Text(_error, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             SecondaryButton(
-              text: 'Retry',
+              text: 'retry'.tr(),
               onPressed: _loadShops,
               width: 120,
             ),
@@ -178,7 +179,7 @@ class _ShopListPageState extends State<ShopListPage> {
           children: [
             Icon(Icons.search_off_rounded, size: 64, color: AppColors.almostBlack200),
             const SizedBox(height: 16),
-            const Text('No shops found nearby', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('no_shops_found_nearby'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       );

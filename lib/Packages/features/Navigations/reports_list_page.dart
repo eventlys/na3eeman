@@ -8,6 +8,7 @@ import '../../Core/constants/app_color.dart';
 import '../../Core/constants/app_images.dart';
 import '../../Core/themes/app_scaffold.dart';
 import 'report_download_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
@@ -23,7 +24,7 @@ class _ReportsPageState extends State<ReportsPage> {
   @override
   Widget build(BuildContext context) {
     return GlassPage(
-      title: 'Reports',
+      title: 'reports'.tr(),
       showBackButton: true,
       user: Provider.of<AuthProvider>(context, listen: false).user,
       glassExpandedHeight: 180,
@@ -101,7 +102,7 @@ class _ReportsPageState extends State<ReportsPage> {
         (context, index) {
           final reports = [
             _ReportItem(
-              title: 'Staff Performance Report',
+              title: 'staff_performance_report'.tr(),
               description: 'Detailed analysis of barber performance',
               icon: AppImages.file_star,
               color: AppColor.lightInfo,
@@ -223,7 +224,7 @@ class _ReportsPageState extends State<ReportsPage> {
       if (updatedRequest != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Generating report...'),
+            content: Text('generating_report'.tr()),
             backgroundColor: AppColor.primary,
           ),
         );
@@ -249,7 +250,7 @@ class _ReportsPageState extends State<ReportsPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Report generated successfully!'),
+            content: Text('report_success'.tr()),
             backgroundColor: AppColor.lightSuccess,
           ),
         );

@@ -3,6 +3,7 @@ import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Super Admin — System Health Page.
 class AdminSystemHealthPage extends StatelessWidget {
@@ -14,7 +15,7 @@ class AdminSystemHealthPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('System Health'),
+        title: Text('system_health_title'.tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),

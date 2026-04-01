@@ -15,6 +15,7 @@ import '../../appointments/widgets/appointments_list.dart';
 import '../../shop/widgets/branches_overview.dart';
 import '../widgets/status_row.dart';
 import '../widgets/working_hours_tracker.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BarberHomePage extends StatefulWidget {
   const BarberHomePage({super.key});
@@ -241,7 +242,7 @@ class _BarberHomePageState extends State<BarberHomePage>
           ),
           const SizedBox(height: 16),
           PrimaryButton(
-            text: 'Retry',
+            text: 'retry'.tr(),
             onPressed: _loadAllData,
             variant: ButtonVariant.filled,
           ),
@@ -307,12 +308,11 @@ class _BarberHomePageState extends State<BarberHomePage>
 
         AppointmentsList(appointments: appointments),
 
-        const SliverToBoxAdapter(
+        SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              "Today's Earnings",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.all(16.0),
+            child: Text('today_s_earnings'.tr(),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ),

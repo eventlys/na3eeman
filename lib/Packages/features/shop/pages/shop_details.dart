@@ -6,6 +6,7 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/shop_gallary.dart';
 import '../widgets/shop_info_section.dart';
 import '../widgets/services_section.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ShopDetailsPage extends StatefulWidget {
   final Map<String, dynamic> shopData;
@@ -109,13 +110,13 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
               IconButton(
                 icon: const Icon(Icons.favorite_border, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added to Favorites')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('added_to_favorites'.tr())));
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Share Dialog Opened')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('share_dialog_opened'.tr())));
                 },
               ),
             ],
@@ -151,8 +152,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Our Services',
+                    Text('our_services'.tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
@@ -179,14 +179,13 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Packages',
+                    Text('packages'.tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const ListTile(
+                    ListTile(
                       tileColor: AppColors.almostBlack50,
-                      title: Text('Packages and bundles coming soon!'),
+                      title: Text('packages_and_bundles_coming_soon'.tr()),
                       leading: Icon(Icons.card_giftcard),
                     ),
                   ],
@@ -200,14 +199,13 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Products',
+                    Text('products'.tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const ListTile(
+                    ListTile(
                       tileColor: AppColors.almostBlack50,
-                      title: Text('Shop products catalog coming soon!'),
+                      title: Text('shop_products_catalog_coming_soon'.tr()),
                       leading: Icon(Icons.shopping_bag_outlined),
                     ),
                   ],
@@ -221,14 +219,13 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Offers & Groups',
+                    Text('offers_groups'.tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const ListTile(
+                    ListTile(
                       tileColor: AppColors.almostBlack50,
-                      title: Text('Exclusive offers coming soon!'),
+                      title: Text('exclusive_offers_coming_soon'.tr()),
                       leading: Icon(Icons.local_offer_outlined),
                     ),
                   ],
@@ -242,8 +239,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Shop Feedback',
+                    Text('shop_feedback'.tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
@@ -251,9 +247,9 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                       children: [
                         const Icon(Icons.star, color: Colors.orange, size: 30),
                         const SizedBox(width: 8),
-                        Text('4.8 / 5', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        Text('4_8_5'.tr(), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
-                        const Text('(120 reviews)', style: TextStyle(color: Colors.grey)),
+                        Text('120_reviews'.tr(), style: TextStyle(color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -267,11 +263,11 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             children: [
                               CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
                               SizedBox(width: 8),
-                              Text('Ahmed M.', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('ahmed_m'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
                               Spacer(),
                               Icon(Icons.star, color: Colors.orange, size: 16),
                               Icon(Icons.star, color: Colors.orange, size: 16),
@@ -281,17 +277,17 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          const Text('Great service! Completely transformed my look. Highly recommended!'),
+                          Text('great_service_completely_transformed_my_look_highl'.tr()),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
                       onPressed: () {
-                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Feedback Entry Dialog')));
+                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('feedback_entry_dialog'.tr())));
                       },
                       icon: const Icon(Icons.rate_review),
-                      label: const Text('Add your feedback'),
+                      label: Text('add_your_feedback'.tr()),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size.fromHeight(48),
                         side: BorderSide(color: Theme.of(context).primaryColor),
@@ -339,7 +335,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
               ),
               const SizedBox(height: 16),
               PrimaryButton(
-                text: 'Book Appointment',
+                text: 'book_appointment'.tr(),
                 onPressed: () {
                   Navigator.pushNamed(context, '/book_appointment', arguments: {
                     'shopData': widget.shopData,

@@ -12,6 +12,7 @@ import '../../Helpers/config.dart';
 import '../security_service.dart';
 import '../storage_service.dart';
 import 'user_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppManagementService with WidgetsBindingObserver {
   static final AppManagementService _instance = AppManagementService._internal();
@@ -475,7 +476,7 @@ class AppManagementService with WidgetsBindingObserver {
 
       await _notifications.show(
         id: appointmentId.hashCode,
-        title: 'Appointment Reminder',
+        title: 'appointment_reminder'.tr(),
         body: 'You have an upcoming appointment',
         notificationDetails: platformDetails,
       );

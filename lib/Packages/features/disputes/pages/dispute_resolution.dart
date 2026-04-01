@@ -4,6 +4,7 @@ import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_button.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/common/app_text_field.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Dispute/Issue Resolution Page.
 /// Users can submit a dispute for a booking and track its status.
@@ -131,8 +132,7 @@ class _NewReportTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Issue type
-            Text(
-              'Issue Type',
+            Text('issue_type'.tr(),
               style: Theme.of(
                 context,
               ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -235,7 +235,7 @@ class _NewReportTab extends StatelessWidget {
             const SizedBox(height: 24),
 
             AppButton(
-              label: 'Submit Report',
+              label: 'submit_report'.tr(),
               fullWidth: true,
               isLoading: submitting,
               icon: Icons.send_rounded,

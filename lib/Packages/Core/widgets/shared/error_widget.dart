@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/app_color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 /// Different types of errors that can be displayed
@@ -266,7 +267,7 @@ class NetworkErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppErrorWidget(
-      title: 'Connection Error',
+      title: tr('connection_error'),
       message: message,
       errorType: ErrorType.network,
       onRetry: onRetry,
@@ -342,8 +343,7 @@ class ToastMessage {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   onRetry();
                 },
-                child: Text(
-                  'RETRY',
+                child: Text(tr('retry'),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

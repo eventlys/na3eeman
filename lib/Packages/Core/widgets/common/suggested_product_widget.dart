@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/inventory_helpers.dart';
 import '../../../../Services/business_service.dart';
+import '../../../../Providers/main_providers.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../base/error_boundary.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SuggestedProductWidget extends StatefulWidget {
   final Map<String, dynamic> productData;
@@ -322,7 +324,7 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Item restocked to 10 units'),
+            content: Text('item_restocked_to_10_units'.tr()),
             backgroundColor: _getSuccessColor(),
             behavior: SnackBarBehavior.floating,
           ),

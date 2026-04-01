@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../Packages/features/navigation/sidebar.dart';
 import '../../Packages/features/navigation/sidebar_controller.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -31,7 +32,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: Text('home_page'.tr()),
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () => sidebarController.toggleSidebar(),
@@ -86,9 +87,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: const Center(
-        child: Text(
-          'Home Page Content',
+      child: Center(
+        child: Text('home_page_content'.tr(),
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),

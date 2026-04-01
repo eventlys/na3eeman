@@ -5,6 +5,7 @@ import '../../constants/app_color.dart';
 import '../../themes/empty_state.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../base/error_boundary.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SubscriptionItemWidget extends StatelessWidget {
   final Map<String, dynamic> subscription;
@@ -217,8 +218,7 @@ class SubscriptionItemWidget extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
-              'Popular',
+            child: Text('popular'.tr(),
               style: TextStyle(
                 fontSize: 12,
                 color: AppColor.light,
@@ -558,7 +558,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
 
   Widget _buildErrorState(bool isDark, {String? error}) {
     return EmptyState.error(
-      title: 'Failed to Load Subscriptions',
+      title: 'failed_to_load_subscriptions'.tr(),
       description: error ?? _error ?? 'Please check your connection and try again.',
       onRetry: _loadSubscriptions,
       gender: widget.gender,
@@ -567,7 +567,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
 
   Widget _buildEmptyState(bool isDark) {
     return EmptyState.noItems(
-      title: 'No Subscriptions Available',
+      title: 'no_subscriptions_available'.tr(),
       description: widget.showFeaturedOnly 
           ? 'There are no featured subscriptions at the moment.'
           : 'There are no subscription plans available right now.',
@@ -577,7 +577,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
           backgroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
           foregroundColor: AppColor.light,
         ),
-        child: Text('Refresh'),
+        child: Text('refresh'.tr()),
       ),
       gender: widget.gender,
     );

@@ -1,0 +1,62 @@
+{
+  "@@locale": "en",
+  "app_name": "Na3eeman",
+  "admin_portal": "Admin (God Mode)",
+  "total_users": "Total Users",
+  "active_shops": "Active Shops",
+  "appointments": "Appointments",
+  "revenue": "Revenue",
+  "system_health": "System Health",
+  "view_api_logs": "View API Logs",
+  "api_status": "Backend API",
+  "cache_status": "Cache Service (Redis)",
+  "db_status": "DB (PostgreSQL)",
+  "admin_modules": "Admin Modules",
+  "settings": "Settings",
+  "insights": "Insights",
+  "analyze_trends": "Analyze Trends",
+  "users": "Users",
+  "finance": "Finance",
+  "analytics": "Analytics",
+  "compliance": "Compliance",
+  "intern_portal": "Intern Portal",
+  "learning_journey": "Learning Journey Under",
+  "explore_mentors": "Explore Mentors Below",
+  "active_assignments": "Active Assignments",
+  "daily_tasks": "Daily Tasks",
+  "add_task": "Add Task",
+  "weekly_training": "Weekly Training",
+  "monthly_targets": "Monthly Targets",
+  "show_pct": "Show %",
+  "show_num": "Show #",
+  "task_completion": "Task Completion",
+  "tasks_done_today": "{completed} of {total} tasks done for today",
+  "@tasks_done_today": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "show_more": "Show more",
+  "no_employees": "No employees found in the shop",
+  "shadowing": "SHADOWING",
+  "attach": "Attach",
+  "finish_tasks": "Finish Tasks",
+  "refresh": "Refresh",
+  "loading": "Loading...",
+  "growth_insight": "User growth is up 12% this week compared to last month.",
+  "top_categories_insight": "Top categories: Barbershops (65%), Spas (20%).",
+  "admin_panel": "Admin Panel",
+  "shop_dashboard": "Shop Dashboard",
+  "my_schedule": "My Schedule",
+  "offers": "Offers",
+  "ads": "Ads",
+  "feedback": "Feedback",
+  "tell_others": "Tell others about us",
+  "share_link": "Share Shop Link",
+  "privacy_policy": "Privacy Policy"
+}

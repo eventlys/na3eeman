@@ -11,6 +11,7 @@ import '../../Core/themes/loading_indicator.dart';
 import '../../Core/utils/helpers/refresh_widgets.dart';
 import '../../Core/widgets/shared/error_widget.dart';
 import '../shop/widgets/barbershop_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -160,7 +161,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       backgroundColor: AppColor.primary,
                       foregroundColor: AppColor.light,
                     ),
-                    child: const Text('Explore Shops'),
+                    child: Text('explore_shops'.tr()),
                   ),
                 ],
               ),
@@ -295,14 +296,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       backgroundColor: AppColor.primary,
                       foregroundColor: AppColor.light,
                     ),
-                    child: const Text('Book Appointment'),
+                    child: Text('book_appointment'.tr()),
                   ),
                 ),
                 const SizedBox(width: 12),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    'Close',
+                  child: Text('close'.tr(),
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
@@ -431,8 +431,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    'Cancel',
+                  child: Text('cancel'.tr(),
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),

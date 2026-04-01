@@ -7,6 +7,7 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../Services/ui/overlay_service.dart';
 import '../../../../Services/ui/navigation_service.dart';
 import '../../../features/shop/widgets/services_section.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BookAppointmentPage extends StatefulWidget {
   const BookAppointmentPage({super.key});
@@ -132,7 +133,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 Navigator.pop(context);
                 _completeBooking('Cash');
               },
-              child: const Text('Cash'),
+              child: Text('cash'.tr()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -161,7 +162,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Appointment'),
+        title: Text('book_appointment'.tr()),
         centerTitle: true,
       ),
       body: shopData == null 
@@ -363,7 +364,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: PrimaryButton(
-            text: 'Confirm & Pay',
+            text: 'confirm_pay'.tr(),
             onPressed: _handleConfirmBooking,
           ),
         ),

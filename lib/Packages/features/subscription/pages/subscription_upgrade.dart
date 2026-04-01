@@ -1,295 +1,152 @@
 import 'package:flutter/material.dart';
-import '../../../../Packages/Core/constants/app_color.dart';
-import '../../../../Packages/Core/constants/app_roles.dart';
-import '../../../../Packages/Core/themes/app_theme.dart';
-import '../../../../Packages/Core/widgets/common/app_button.dart';
-import '../../../../Packages/Core/widgets/common/app_card.dart';
+import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-/// Subscription tier comparison and upgrade page.
+/// Renders a receipt-like detail view for the selected subscription plan.
 class SubscriptionUpgradePage extends StatelessWidget {
   const SubscriptionUpgradePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Read passed arguments setup in settings modal
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ?? {};
+    final title = args['title'] as String? ?? 'Growth Plan';
+    final price = args['price'] as String? ?? '\$59/mo';
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Choose Your Plan')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            'Unlock More Features',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w800),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Upgrade to access advanced tools and grow your business.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isDark
-                  ? AppColor.darkTextSecondary
-                  : AppColor.lightTextSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          ..._plans.map(
-            (p) => Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _PlanCard(plan: p, isDark: isDark),
-            ),
-          ),
-        ],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text('review_plan'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-    );
-  }
-}
-
-// ── Plan data ─────────────────────────────────────────────────────────────────
-
-class _Plan {
-  const _Plan({
-    required this.tier,
-    required this.price,
-    required this.period,
-    required this.features,
-    this.highlight = false,
-    this.highlightLabel,
-  });
-  final SubscriptionTier tier;
-  final String price;
-  final String period;
-  final List<(String, bool)> features; // (text, isIncluded)
-  final bool highlight;
-  final String? highlightLabel;
-}
-
-const _plans = [
-  _Plan(
-    tier: SubscriptionTier.basic,
-    price: 'Free',
-    period: 'forever',
-    features: [
-      ('1 Active Booking', true),
-      ('Basic Profile', true),
-      ('Advanced Analytics', false),
-      ('Staff Management', false),
-      ('Priority Support', false),
-    ],
-  ),
-  _Plan(
-    tier: SubscriptionTier.gold,
-    price: 'SAR 49',
-    period: '/month',
-    features: [
-      ('Unlimited Bookings', true),
-      ('Custom Profile & Logo', true),
-      ('Basic Analytics', true),
-      ('Staff Management (2)', true),
-      ('Priority Support', false),
-    ],
-    highlight: false,
-  ),
-  _Plan(
-    tier: SubscriptionTier.elite,
-    price: 'SAR 99',
-    period: '/month',
-    features: [
-      ('Unlimited Bookings', true),
-      ('Custom Profile & Logo', true),
-      ('Advanced Analytics', true),
-      ('Staff Management (10)', true),
-      ('Priority Support', true),
-    ],
-    highlight: true,
-    highlightLabel: 'Most Popular',
-  ),
-  _Plan(
-    tier: SubscriptionTier.premium,
-    price: 'SAR 199',
-    period: '/month',
-    features: [
-      ('Everything in Elite', true),
-      ('Multi-Branch Support', true),
-      ('API Access', true),
-      ('Dedicated Account Manager', true),
-      ('24/7 Priority Support', true),
-    ],
-  ),
-  _Plan(
-    tier: SubscriptionTier.business,
-    price: 'Custom',
-    period: '',
-    features: [
-      ('Everything in Premium', true),
-      ('Unlimited Branches', true),
-      ('Custom Integrations', true),
-      ('SLA Guarantee', true),
-      ('Onboarding & Training', true),
-    ],
-  ),
-];
-
-// ── Plan Card ─────────────────────────────────────────────────────────────────
-
-class _PlanCard extends StatelessWidget {
-  const _PlanCard({required this.plan, required this.isDark});
-  final _Plan plan;
-  final bool isDark;
-
-  Color get _tierColor => AppColor.subscriptionTierColor(plan.tier.name);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        AppCard(
-          type: plan.highlight ? AppCardType.gradient : AppCardType.outlined,
-          gradient: plan.highlight
-              ? LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [_tierColor, _tierColor.withOpacity(0.7)],
-                )
-              : null,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            // Receipt Card
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.almostBlack600 : AppColors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 15, offset: const Offset(0, 10))
+                ]
+              ),
+              child: Column(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: plan.highlight
-                          ? Colors.white.withOpacity(0.2)
-                          : _tierColor.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                    ),
-                    child: Text(
-                      plan.tier.displayName,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: plan.highlight ? Colors.white : _tierColor,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: plan.price,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: plan.highlight ? Colors.white : null,
-                          ),
-                        ),
-                        TextSpan(
-                          text: plan.period,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: plan.highlight
-                                ? Colors.white70
-                                : (isDark
-                                      ? AppColor.darkTextSecondary
-                                      : AppColor.lightTextSecondary),
-                          ),
-                        ),
-                      ],
-                    ),
+                  Icon(Icons.check_circle_rounded, size: 48, color: Theme.of(context).primaryColor),
+                  const SizedBox(height: 12),
+                  Text('plan_confirmed_selection'.tr(), style: TextStyle(color: AppColors.almostBlack300, fontSize: 13)),
+                  const SizedBox(height: 4),
+                  Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 32),
+
+                  // Receipt rows
+                  _buildReceiptRow('Billing Period', 'Monthly', isDark),
+                  _buildReceiptRow('Amount Due', price, isDark, isBold: true),
+                  _buildReceiptRow('Seat Limit', title == 'Basic Plan' ? '1 Seat' : (title == 'Enterprise' ? 'Unlimited' : 'Up to 5 seats'), isDark),
+                  
+                  const Divider(height: 48, thickness: 1.2),
+
+                  // Total
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('total_charges'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(price, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 40),
 
-              // Features
-              ...plan.features.map((f) {
-                final (text, included) = f;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
+            // Instructions Box
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.1)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Icon(
-                        included
-                            ? Icons.check_circle_rounded
-                            : Icons.cancel_rounded,
-                        size: 18,
-                        color: included
-                            ? (plan.highlight ? Colors.white : AppColor.success)
-                            : (isDark
-                                  ? AppColor.darkTextHint
-                                  : AppColor.lightTextHint),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: included
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: plan.highlight
-                              ? (included ? Colors.white : Colors.white60)
-                              : null,
-                          decoration: included
-                              ? null
-                              : TextDecoration.lineThrough,
-                        ),
-                      ),
+                      Icon(Icons.payment_rounded, color: Theme.of(context).primaryColor),
+                      const SizedBox(width: 8),
+                      Text('payment_instructions'.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                     ],
                   ),
-                );
-              }),
-
-              const SizedBox(height: 16),
-              AppButton(
-                label: plan.price == 'Free'
-                    ? 'Current Plan'
-                    : plan.price == 'Custom'
-                    ? 'Contact Sales'
-                    : 'Upgrade to ${plan.tier.displayName}',
-                fullWidth: true,
-                type: plan.highlight
-                    ? AppButtonType.primary
-                    : AppButtonType.outline,
-                onPressed: plan.price == 'Free' ? null : () {},
-              ),
-            ],
-          ),
-        ),
-        if (plan.highlight && plan.highlightLabel != null)
-          Positioned(
-            top: -2,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: _tierColor,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
-              ),
-              child: Text(
-                plan.highlightLabel!,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                ),
+                  const SizedBox(height: 12),
+                  Text('please_proceed_with_your_primary_linked_account_ba'.tr(), style: TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                ],
               ),
             ),
-          ),
-      ],
+            const SizedBox(height: 16),
+            
+            if (title == 'Enterprise')
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(color: Colors.amber.withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.amber.withOpacity(0.2))),
+                child: Row(
+                  children: [
+                    const Icon(Icons.info_outline, color: Colors.amber),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text('multi_branch_support_setup_required_admin_action_a'.tr(), style: TextStyle(fontSize: 11))),
+                  ],
+                ),
+              ),
+
+            const SizedBox(height: 40),
+
+            // Actions
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('processing_payment_mock_step'.tr())));
+                },
+                child: Text('proceed_to_pay'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (title == 'Enterprise')
+              SizedBox(
+                width: double.infinity,
+                child: TextButton.icon(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('admin_alerted_regarding_multi_branch_access'.tr())));
+                  },
+                  icon: const Icon(Icons.support_agent_rounded, size: 20),
+                  label: Text('contact_admin'.tr()),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReceiptRow(String label, String value, bool isDark, {bool isBold = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 14)),
+          Text(value, style: TextStyle(fontWeight: isBold ? FontWeight.w900 : FontWeight.w600, fontSize: 14, color: isDark ? Colors.white : Colors.black)),
+        ],
+      ),
     );
   }
 }

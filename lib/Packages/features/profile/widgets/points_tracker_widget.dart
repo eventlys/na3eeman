@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PointsTrackerWidget extends StatelessWidget {
   const PointsTrackerWidget({super.key});
@@ -106,8 +107,7 @@ class PointsTrackerWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Quick Actions',
+        Text('quick_actions'.tr(),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.grey.shade800,
@@ -224,7 +224,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
         ],
       ),
@@ -237,7 +237,7 @@ class PointsTrackerWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('App Feedback'),
+        title: Text('app_feedback'.tr()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -256,7 +256,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -277,7 +277,7 @@ class PointsTrackerWidget extends StatelessWidget {
                 }
               }
             },
-            child: Text('Submit'),
+            child: Text('submit'.tr()),
           ),
         ],
       ),
@@ -308,7 +308,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           ElevatedButton(
             onPressed: () async {

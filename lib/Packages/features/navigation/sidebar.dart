@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../Models/ui/menu_item_model.dart';
 import '../../../../Providers/features/auth_provider.dart';
 import '../../../../core/enums/app_enums.dart';
-import '../../../../core/auth/role_permission_manager.dart';
+// import '../../../../core/auth/role_permission_manager.dart';
 import '../../../../core/theme/colors.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
-import 'widgets/user_profile_section.dart';
+// import 'widgets/user_profile_section.dart';
+// import 'package:na3eeman/Packages/features/owner/widgets/campaign_management_widgets.dart';
 
 class Sidebar extends StatelessWidget {
   final SidebarController controller;
@@ -27,7 +29,7 @@ class Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double calculatedWidth = _calculateWidth(context);
-    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+    final bool isRtl = Directionality.of(context).name == 'rtl';
     final double offsetMultiplier = isRtl ? 1.0 : -1.0;
 
     return AnimatedBuilder(
@@ -105,8 +107,7 @@ class Sidebar extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'NA3EEMAN',
+                    Text('na3eeman'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -114,7 +115,7 @@ class Sidebar extends StatelessWidget {
                         letterSpacing: 2,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Version 2.0.0',
                       style: TextStyle(color: AppColors.almostBlack300, fontSize: 10),
                     ),
@@ -133,70 +134,119 @@ class Sidebar extends StatelessWidget {
     final user = authProvider.user;
     final role = user?.role ?? UserRole.customer;
 
-    final List<MenuItem> menuItems = [
-      if (RolePermissionManager.canViewAdminDashboard(role))
+    final List<MenuItem> allItems = [
+      MenuItem(
+        title: 'admin_panel'.tr(),
+        assetIcon: 'assets/icons/secure.png',
+        delay: 0,
+        onTap: () => Navigator.pushNamed(context, '/admin'),
+        requiresAuth: true,
+        requiredRoles: [UserRole.admin],
+      ),
+      if (role == UserRole.owner || role == UserRole.admin)
         MenuItem(
-          title: 'Admin Panel',
-          assetIcon: 'assets/icons/secure.png',
-          delay: 0,
-          onTap: () => Navigator.pushNamed(context, '/admin'),
-        ),
-      if (RolePermissionManager.canAccessShopManagement(role))
-        MenuItem(
-          title: 'Shop Dashboard',
+          title: 'shop_dashboard'.tr(),
           assetIcon: 'assets/icons/setting.png',
           delay: 1,
-          onTap: () => Navigator.pushNamed(context, '/owner_dashboard'),
+          onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.shopId ?? 1}),
+          requiresAuth: true,
+          requiredRoles: [UserRole.owner, UserRole.admin],
         ),
-      if (role == UserRole.employee)
+      if (role == UserRole.owner || role == UserRole.admin)
         MenuItem(
-          title: 'My Schedule',
-          assetIcon: 'assets/icons/plus.png',
+          title: 'management'.tr(),
+          assetIcon: 'assets/icons/setting.png',
           delay: 1,
-          onTap: () => Navigator.pushNamed(context, '/employee_schedule'),
+          onTap: () => Navigator.pushNamed(context, '/management_dashboard'),
+          requiresAuth: true,
+          requiredRoles: [UserRole.owner, UserRole.admin],
         ),
       MenuItem(
-        title: 'Settings',
+        title: 'my_schedule'.tr(),
+        assetIcon: 'assets/icons/plus.png',
+        delay: 1,
+        onTap: () => Navigator.pushNamed(context, '/employee_schedule'),
+        requiresAuth: true,
+        requiredRoles: [UserRole.employee],
+      ),
+      MenuItem(
+        title: 'intern_activity'.tr(),
+        assetIcon: 'assets/icons/setting.png',
+        delay: 1,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/intern_activity');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.intern],
+      ),
+      // Owner + Receptionist ONLY: Offers Section
+      MenuItem(
+        title: 'active_campaigns'.tr(),
+        assetIcon: 'assets/icons/plus.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/active_campaigns');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.receptionist],
+      ),
+      MenuItem(
+        title: 'feedback'.tr(),
+        assetIcon: 'assets/icons/setting.png',
+        delay: 2,
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('feedback_display'.tr())));
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.receptionist],
+      ),
+      MenuItem(
+        title: 'settings'.tr(),
         assetIcon: 'assets/icons/setting.png',
         delay: 3,
         onTap: controller.navigateToSettings,
       ),
       MenuItem(
-        title: 'Favorites',
-        assetIcon: 'assets/icons/heart.png',
-        delay: 4,
-        onTap: controller.navigateToFavorites,
-      ),
-      MenuItem(
-        title: 'Invite Friends',
+        title: 'tell_others'.tr(),
         assetIcon: 'assets/icons/plus.png',
-        delay: 5,
+        delay: 4,
         onTap: controller.showInviteFriends,
       ),
       MenuItem(
-        title: 'Privacy Policy',
+        title: 'share_link'.tr(),
+        assetIcon: 'assets/icons/plus.png',
+        delay: 5,
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('shop_link_copied'.tr())));
+        },
+      ),
+      MenuItem(
+        title: 'privacy_policy'.tr(),
         assetIcon: 'assets/icons/lock.png',
         delay: 6,
         onTap: controller.showPrivacyPolicy,
       ),
       MenuItem(
-        title: 'Logout',
+        title: 'logout'.tr().tr(),
         assetIcon: 'assets/icons/exit.png',
         delay: 7,
         onTap: controller.showLogoutConfirmation,
       ),
     ];
 
+    final filteredItems = allItems.where((item) => item.isAccessible(role)).toList();
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      itemCount: menuItems.length,
+      itemCount: filteredItems.length,
       itemBuilder: (context, index) {
-        final item = menuItems[index];
+        final item = filteredItems[index];
         return AnimatedSidebarItem(
           item: item,
           animation: controller.animation,
-          delay: item.delay,
+          delay: index, // Apply sequential delay base on sequence
         );
       },
     );

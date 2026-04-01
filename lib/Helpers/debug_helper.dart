@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'logger.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DebugHelper {
   static final DebugHelper _instance = DebugHelper._internal();
@@ -218,7 +219,7 @@ class DebugHelper {
     if (!_showDebugBanner) return child;
 
     return Banner(
-      message: 'DEBUG',
+      message: 'debug'.tr(),
       location: BannerLocation.topEnd,
       color: Colors.red.withOpacity(0.6),
       child: child,
@@ -446,28 +447,28 @@ class _DebugMenu extends StatelessWidget {
     final debugHelper = DebugHelper();
 
     return AlertDialog(
-      title: const Text('Debug Menu'),
+      title: Text('debug_menu'.tr()),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _DebugToggle(
-              title: 'Debug Banner',
+              title: 'debug_banner'.tr(),
               value: debugHelper.showDebugBanner,
               onChanged: (value) => debugHelper.toggleDebugBanner(),
             ),
             _DebugToggle(
-              title: 'Performance Overlay',
+              title: 'performance_overlay'.tr(),
               value: debugHelper._enablePerformanceOverlay,
               onChanged: (value) => debugHelper.togglePerformanceOverlay(),
             ),
             _DebugToggle(
-              title: 'Slow Animations',
+              title: 'slow_animations'.tr(),
               value: debugHelper._enableSlowAnimations,
               onChanged: (value) => debugHelper.toggleSlowAnimations(),
             ),
             _DebugToggle(
-              title: 'Debug Logging',
+              title: 'debug_logging'.tr(),
               value: debugHelper.enableDebugLogging,
               onChanged: (value) => debugHelper.toggleDebugLogging(),
             ),
@@ -477,7 +478,7 @@ class _DebugMenu extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text('close'.tr()),
         ),
       ],
     );

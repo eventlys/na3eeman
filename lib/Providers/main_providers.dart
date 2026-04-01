@@ -15,3 +15,4 @@ export 'features/inventory_provider.dart';
 export 'features/offers_provider.dart';
 export 'features/service_provider.dart';
 export 'features/performance_provider.dart';
+export 'features/admin_analytics_provider.dart';

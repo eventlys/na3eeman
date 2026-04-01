@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class OffersCard extends StatelessWidget {
   const OffersCard({super.key});
@@ -28,13 +29,12 @@ class OffersCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.campaign_rounded, color: AppColors.pink),
-                  SizedBox(width: 8),
-                  Text(
-                    'Active Offers',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const Icon(Icons.campaign_rounded, color: AppColors.pink),
+                  const SizedBox(width: 8),
+                  Text('active_offers'.tr(),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

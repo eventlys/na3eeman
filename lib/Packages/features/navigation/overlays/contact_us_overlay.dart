@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ContactUsOverlay extends StatefulWidget {
   const ContactUsOverlay({super.key});
@@ -167,10 +168,10 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
         const SizedBox(height: 16),
         TextFormField(
           controller: _emailController,
-          decoration: const InputDecoration(
-            labelText: 'Email Address',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.email, color: Color(0xFF806C99)),
+          decoration: InputDecoration(
+            labelText: 'email_address'.tr(),
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.email, color: Color(0xFF806C99)),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -185,10 +186,10 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
         const SizedBox(height: 16),
         TextFormField(
           controller: _subjectController,
-          decoration: const InputDecoration(
-            labelText: 'Subject',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.subject, color: Color(0xFF806C99)),
+          decoration: InputDecoration(
+            labelText: 'subject'.tr().tr(),
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.subject, color: Color(0xFF806C99)),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {

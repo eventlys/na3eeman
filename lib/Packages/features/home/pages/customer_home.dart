@@ -243,14 +243,14 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Nearby Barber Shops',
+                          'Nearby Shops',
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pushNamed(context, '/shops'),
-                          child: Text('See All', style: TextStyle(color: Theme.of(context).primaryColor)),
+                          child: Text('see_all'.tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
                         ),
                       ],
                     ),
@@ -271,7 +271,9 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       child: BarbershopCard(
                         title: shop.shopName,
                         workingHours: '${shop.openingTime} – ${shop.closingTime}',
-                        profilePicture: 'assets/images/shop_placeholder.png',
+                        profilePicture: shop.shopLogo != null 
+                            ? 'assets/salons/${shop.shopLogo}' 
+                            : 'assets/images/shop_placeholder.png',
                         isClickable: true,
                         shopLocation: shop.location,
                         shopRating: shop.avgRating ?? 4.5,
@@ -348,7 +350,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Redeem', style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text('redeem'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(width: 12),
@@ -361,7 +363,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('History', style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text('history'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -461,7 +463,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
       backgroundColor: Colors.transparent,
       builder: (context) => _buildBottomSheetContainer(
         context: context,
-        title: 'Notifications',
+        title: 'notifications'.tr(),
         child: ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -473,8 +475,8 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                 child: Icon(Icons.notifications_rounded, color: Theme.of(context).primaryColor),
               ),
               title: Text('Notification Title ${index + 1}'),
-              subtitle: Text('This is a notification message mockup details.'),
-              trailing: const Text('2h ago', style: TextStyle(fontSize: 12)),
+              subtitle: Text('this_is_a_notification_message_mockup_details'.tr()),
+              trailing: Text('2h_ago'.tr(), style: TextStyle(fontSize: 12)),
             );
           },
         ),
@@ -492,12 +494,12 @@ class _CustomerHomePageState extends State<CustomerHomePage>
         title: 'Redeem Points',
         child: Column(
           children: [
-            const Text('You have 0 points to redeem.', textAlign: TextAlign.center),
+            Text('You have ${_userPoints['points'] ?? 0} points to redeem.', textAlign: TextAlign.center),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor, foregroundColor: Colors.white),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             )
           ],
         ),

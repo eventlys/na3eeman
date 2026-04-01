@@ -4,6 +4,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
 import '../../constants/app_color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ReportDownloadDialog extends StatefulWidget {
   final BusinessService businessService;
@@ -93,7 +94,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
   void _showSuccessSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Report generated successfully!'),
+        content: Text('report_success'.tr()),
         backgroundColor: AppColor.lightSuccess,
         behavior: SnackBarBehavior.floating,
       ),
@@ -117,14 +118,13 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
     final selectedShop = shopProvider.selectedShop;
 
     return AlertDialog(
-      title: const Text('Download Report'),
+      title: Text('download_report'.tr()),
       backgroundColor: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'File Format: PDF',
+            Text('file_format_pdf'.tr(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
@@ -173,7 +173,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
             DropdownButtonFormField<StaffReportType>(
               initialValue: _selectedReportType,
               decoration: InputDecoration(
-                labelText: 'Report Type',
+                labelText: 'report_type'.tr(),
                 labelStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
@@ -218,7 +218,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
             DropdownButtonFormField<ReportTime>(
               initialValue: _selectedTime,
               decoration: InputDecoration(
-                labelText: 'Time Period',
+                labelText: 'time_period'.tr(),
                 labelStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
@@ -264,11 +264,11 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
               controller: _fileNameController,
               enabled: !_isGenerating,
               decoration: InputDecoration(
-                labelText: 'File Name',
+                labelText: 'file_name'.tr(),
                 labelStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
-                hintText: 'Enter file name',
+                hintText: 'enter_file_name'.tr(),
                 hintStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
                 ),
@@ -301,8 +301,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Report Details',
+                  Text('report_details'.tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
@@ -374,8 +373,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text(
-                    'Generating report...',
+                  Text('generating_report'.tr(),
                     style: TextStyle(
                       color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                       fontSize: 14,
@@ -390,8 +388,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
       actions: [
         TextButton(
           onPressed: _isGenerating ? null : () => Navigator.of(context).pop(false),
-          child: Text(
-            'Cancel',
+          child: Text('cancel'.tr(),
             style: TextStyle(
               color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
             ),
@@ -416,7 +413,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     ),
                   ),
                 )
-              : const Text('Download'),
+              : Text('download'.tr()),
         ),
       ],
     );

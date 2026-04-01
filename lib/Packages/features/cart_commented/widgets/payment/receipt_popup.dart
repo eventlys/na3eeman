@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:easy_localization/easy_localization.dart';
 // import 'payment_methods.dart';
 //
 // class ReceiptPopup {
@@ -31,7 +32,7 @@
 //           actions: [
 //             TextButton(
 //               onPressed: () => Navigator.of(context).pop(),
-//               child: const Text('Cancel'),
+//               child: Text('cancel'.tr()),
 //             ),
 //             ElevatedButton(
 //               onPressed: () async {
@@ -47,7 +48,7 @@
 //                   );
 //                 }
 //               },
-//               child: const Text('Confirm & Pay'),
+//               child: Text('confirm_pay'.tr()),
 //             ),
 //           ],
 //         );

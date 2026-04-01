@@ -6,6 +6,7 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../pages/shop_schedule_page.dart';
 import '../../../../Services/business_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ServicesSection extends StatelessWidget {
   final Map<String, dynamic> shopData;
@@ -131,8 +132,7 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text(
-                'Services & Prices',
+              Text('services_prices'.tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -170,8 +170,7 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text(
-                'Services & Prices',
+              Text('services_prices'.tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -189,8 +188,7 @@ class ServicesSection extends StatelessWidget {
               border: Border.all(color: AppColor.borderLight),
             ),
             child: Center(
-              child: Text(
-                'Unable to load services. Please try again.',
+              child: Text('unable_to_load_services_please_try_again'.tr(),
                 style: TextStyle(
                   color: AppColor.lightTextSecondary,
                   fontSize: 14,
@@ -228,8 +226,7 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text(
-                'Services & Prices',
+              Text('services_prices'.tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -261,8 +258,7 @@ class ServicesSection extends StatelessWidget {
         border: Border.all(color: AppColor.borderLight),
       ),
       child: Center(
-        child: Text(
-          'No services available',
+        child: Text('no_services_available'.tr(),
           style: TextStyle(
             color: AppColor.lightTextSecondary,
             fontSize: 14,

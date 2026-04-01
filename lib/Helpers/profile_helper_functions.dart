@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/main_providers.dart';
 import '../Services/core/user_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHelperFunctions {
   // Initialize text controllers with user data
@@ -82,7 +83,7 @@ class ProfileHelperFunctions {
       await _updateProviderState(profile, authProvider, context);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
+        SnackBar(content: Text('profile_updated_successfully'.tr())),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -153,22 +154,20 @@ class ProfileHelperFunctions {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Profile'),
-          content: const Text(
-            'Are you sure you want to delete your profile? This action cannot be undone.',
+          title: Text('delete_profile'.tr()),
+          content: Text('are_you_sure_you_want_to_delete_your_profile_this_'.tr(),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onConfirm();
               },
-              child: const Text(
-                'Delete',
+              child: Text('delete'.tr(),
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -192,7 +191,7 @@ class ProfileHelperFunctions {
       await authProvider.logout();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile deleted successfully')),
+        SnackBar(content: Text('profile_deleted_successfully'.tr())),
       );
 
       onSuccess();
@@ -216,7 +215,7 @@ class ProfileHelperFunctions {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Choose from Gallery'),
+                title: Text('choose_from_gallery'.tr()),
                 onTap: () {
                   Navigator.of(context).pop();
                   // Implement gallery picker
@@ -224,7 +223,7 @@ class ProfileHelperFunctions {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Take a Photo'),
+                title: Text('take_a_photo'.tr()),
                 onTap: () {
                   Navigator.of(context).pop();
                   // Implement camera

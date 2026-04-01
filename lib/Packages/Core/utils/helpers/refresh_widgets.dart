@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide RefreshIndicator;
+import 'package:easy_localization/easy_localization.dart';
 
 class RefreshableList extends StatelessWidget {
   final RefreshController refreshController;
@@ -31,15 +32,15 @@ class RefreshableList extends StatelessWidget {
         builder: (context, mode) {
           Widget body;
           if (mode == RefreshStatus.idle) {
-            body = const Text("Pull down to refresh");
+            body = Text('pull_down_to_refresh'.tr());
           } else if (mode == RefreshStatus.refreshing) {
             body = const CircularProgressIndicator();
           } else if (mode == RefreshStatus.failed) {
-            body = const Text("Refresh failed!");
+            body = Text('refresh_failed'.tr());
           } else if (mode == RefreshStatus.canRefresh) {
-            body = const Text("Release to refresh");
+            body = Text('release_to_refresh'.tr());
           } else {
-            body = const Text("Refresh completed");
+            body = Text('refresh_completed'.tr());
           }
           return Container(
             height: 60,
@@ -51,15 +52,15 @@ class RefreshableList extends StatelessWidget {
         builder: (context, mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = const Text("Pull up to load more");
+            body = Text('pull_up_to_load_more'.tr());
           } else if (mode == LoadStatus.loading) {
             body = const CircularProgressIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = const Text("Load failed!");
+            body = Text('load_failed'.tr());
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text("Release to load more");
+            body = Text('release_to_load_more'.tr());
           } else {
-            body = const Text("No more data");
+            body = Text('no_more_data'.tr());
           }
           return Container(
             height: 60,

@@ -6,6 +6,7 @@ import '../../themes/loading_indicator.dart';
 import '../../utils/formatters.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../base/error_boundary.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 class SubscriptionCard extends StatefulWidget {
@@ -236,7 +237,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
   Widget _buildErrorCard(String error, bool isDark, Gender gender) {
     return EmptyState.error(
-      title: 'Unable to Load Subscription',
+      title: 'unable_to_load_subscription'.tr(),
       description: error,
       onRetry: _refreshSubscription,
       gender: _convertToUserGender(gender),
@@ -245,7 +246,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
   Widget _buildNoSubscriptionCard(List<dynamic> plans, bool isDark, Gender gender) {
     return EmptyState(
-      title: 'No Active Subscription',
+      title: 'no_active_subscription'.tr(),
       description: plans.isNotEmpty 
           ? 'Choose from ${plans.length} available plans to get started'
           : 'No subscription plans available at the moment',
@@ -253,7 +254,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
       actionButton: ElevatedButton.icon(
         onPressed: widget.onUpgrade,
         icon: const Icon(Icons.upgrade),
-        label: const Text('View Plans'),
+        label: Text('view_plans'.tr()),
       ),
       gender: _convertToUserGender(gender),
     );
@@ -297,8 +298,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Subscription',
+                Text('subscription'.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -399,8 +399,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
   Widget _buildFeaturesList(List<String> features, Color primaryColor, Color textColor) {
     if (features.isEmpty) {
-      return Text(
-        'No features available',
+      return Text('no_features_available'.tr(),
         style: TextStyle(
           color: textColor.withValues(alpha: 0.5),
           fontStyle: FontStyle.italic,

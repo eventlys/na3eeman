@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'l10n/app_localizations.dart';
 
 import 'config/environment.dart';
 import 'Helpers/config.dart';
@@ -15,6 +16,7 @@ import 'Services/core/performance_service.dart';
 import 'Services/general_service.dart';
 import 'Services/storage_service.dart';
 import 'Services/ui/sidebar_navigation_service.dart';
+import 'Packages/Core/widgets/base/error_boundary.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'Services/notification/fcm_service.dart';
@@ -79,7 +81,8 @@ void main() async {
     EasyLocalization(
       supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
       path: 'assets/Lang', 
-      fallbackLocale: const Locale('en', 'US'),
+      fallbackLocale: const Locale('ar', 'EG'),
+      startLocale: const Locale('ar', 'EG'),
       child: MultiProvider(
         providers: [
           ...providers,
@@ -101,20 +104,35 @@ class MyApp extends StatelessWidget {
     return ShowCaseWidget(
       builder: (context) => Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
-          return MaterialApp(
-            title: AppConfig.appName,
-            navigatorKey: SideNavigationService.navigatorKey,
-            initialRoute: '/',
-            routes: AppRoutes.routes,
-            debugShowCheckedModeBanner: AppConfig.showDebugBanner,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            // ── Dynamic theme: gender accent (Pink/Navy) + brightness ──────
-            theme: themeProvider.currentTheme,
-            // Provide dark theme as fallback for OS-level dark mode requests
-            darkTheme: themeProvider.isDark ? themeProvider.currentTheme : null,
-            themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
+          return ErrorBoundary(
+            isDarkMode: themeProvider.isDark,
+            // Try to get gender from current user if possible, or leave null for default
+            userGender: null, 
+            onRetry: () {
+              // Logic to reload app or go home
+              Navigator.of(SideNavigationService.navigatorKey.currentContext!).pushReplacementNamed('/');
+            },
+            child: MaterialApp(
+              title: AppConfig.appName,
+              navigatorKey: SideNavigationService.navigatorKey,
+              initialRoute: '/',
+              routes: AppRoutes.routes,
+              debugShowCheckedModeBanner: AppConfig.showDebugBanner,
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                ...context.localizationDelegates,
+              ],
+              supportedLocales: [
+                const Locale('ar'),
+                const Locale('en'),
+                ...context.supportedLocales,
+              ],
+              locale: context.locale,
+
+              theme: themeProvider.currentTheme,
+              darkTheme: themeProvider.isDark ? themeProvider.currentTheme : null,
+              themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
+            ),
           );
         },
       ),

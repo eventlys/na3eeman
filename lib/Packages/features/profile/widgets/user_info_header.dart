@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UserInfoHeader extends StatelessWidget {
   const UserInfoHeader({super.key});
@@ -155,7 +156,7 @@ class UserInfoHeader extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.photo_camera),
-              title: const Text('Change Profile Picture'),
+              title: Text('change_profile_picture'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 _showImageSourceDialog(context, authProvider);
@@ -176,7 +177,7 @@ class UserInfoHeader extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change Profile Picture'),
+        title: Text('change_profile_picture'.tr()),
         content: const Text('Select image source'),
         actions: [
           TextButton(
@@ -184,14 +185,14 @@ class UserInfoHeader extends StatelessWidget {
               Navigator.pop(context);
               // Implement camera functionality
             },
-            child: const Text('Camera'),
+            child: Text('camera'.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               // Implement gallery functionality
             },
-            child: const Text('Gallery'),
+            child: Text('gallery'.tr()),
           ),
         ],
       ),

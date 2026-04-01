@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/utils/formatters.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BranchesOverview extends StatelessWidget {
   final List<dynamic> branches;
@@ -46,8 +47,7 @@ class BranchesOverview extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Shop Branches',
+              Text('shop_branches'.tr(),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -57,8 +57,7 @@ class BranchesOverview extends StatelessWidget {
               if (onViewAllBranches != null)
                 TextButton(
                   onPressed: onViewAllBranches,
-                  child: Text(
-                    'View All',
+                  child: Text('view_all'.tr(),
                     style: TextStyle(
                       color: AppColor.lightPrimary,
                     ),
@@ -110,8 +109,7 @@ class BranchesOverview extends StatelessWidget {
             color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
           ),
           const SizedBox(height: 12),
-          Text(
-            'No Branches Available',
+          Text('no_branches_available'.tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -119,8 +117,7 @@ class BranchesOverview extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Add your first branch to get started',
+          Text('add_your_first_branch_to_get_started'.tr(),
             style: TextStyle(
               color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
               fontSize: 14,
@@ -136,7 +133,7 @@ class BranchesOverview extends StatelessWidget {
               backgroundColor: AppColor.lightPrimary,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Add First Branch'),
+            child: Text('add_first_branch'.tr()),
           ),
         ],
       ),

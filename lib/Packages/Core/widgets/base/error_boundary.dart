@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../utils/helpers/themes_helpers.dart';
+import '../../../../Helpers/error_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 class ErrorBoundary extends StatefulWidget {
@@ -40,81 +42,96 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
 
   Widget _buildDefaultErrorWidget() {
     final colors = _getErrorColors();
-    final icon = _getErrorIcon();
-
+    final isNetworkError = error is AppError && (error as AppError).type == ErrorType.network;
+    
     return Scaffold(
       backgroundColor: colors['background'],
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                icon,
-                width: 80,
-                height: 80,
-                color: colors['icon'],
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Oops! Something went wrong',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: colors['text'],
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TweenAnimationBuilder(
+              duration: const Duration(milliseconds: 800),
+              tween: Tween<double>(begin: 0, end: 1),
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.scale(
+                    scale: 0.8 + (0.2 * value),
+                    child: child,
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: colors['primary']!.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                error?.toString() ?? 'An unexpected error occurred',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colors['textSecondary'],
+                child: Icon(
+                  isNetworkError ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                  size: 80,
+                  color: colors['primary'],
                 ),
               ),
-              const SizedBox(height: 32),
-              _buildRetryButton(colors),
-              const SizedBox(height: 16),
-              _buildReportButton(colors),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRetryButton(Map<String, Color> colors) {
-    return ElevatedButton(
-      onPressed: _handleRetry,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: colors['primary'],
-        foregroundColor: colors['buttonText'],
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            AppImages.refresh,
-            width: 20,
-            height: 20,
-            color: colors['buttonText'],
-          ),
-          const SizedBox(width: 8),
-          const Text(
-            'Try Again',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
             ),
-          ),
-        ],
+            const SizedBox(height: 40),
+            Text(
+              isNetworkError ? 'Connectivity Lost' : 'Unexpected Error',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: colors['text'],
+                letterSpacing: -0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              isNetworkError 
+                ? 'We couldn\'t reach our servers. Please check your internet connection and try again.'
+                : (error?.toString() ?? 'An unexpected error occurred. Our team has been notified.'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: colors['textSecondary'],
+              ),
+            ),
+            const SizedBox(height: 48),
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: _handleRetry,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors['primary'],
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(isNetworkError ? Icons.refresh_rounded : Icons.home_rounded, size: 24),
+                    const SizedBox(width: 12),
+                    Text(
+                      isNetworkError ? 'Retry Connection' : 'Go Back Home',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -139,7 +156,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
             color: colors['secondary'],
           ),
           const SizedBox(width: 6),
-          const Text('Report Issue'),
+          Text('report_issue'.tr()),
         ],
       ),
     );
@@ -158,7 +175,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               color: _getErrorColors()['primary'],
             ),
             const SizedBox(width: 8),
-            const Text('Error Details'),
+            Text('error_details'.tr()),
           ],
         ),
         content: SingleChildScrollView(
@@ -172,8 +189,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               ),
               const SizedBox(height: 8),
               if (stackTrace != null) ...[
-                const Text(
-                  'Stack Trace:',
+                Text('stack_trace'.tr(),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -188,7 +204,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text('close'.tr()),
           ),
         ],
       ),
@@ -346,8 +362,7 @@ class ErrorBoundaryBuilder extends StatelessWidget {
             color: colors['icon'],
           ),
           const SizedBox(height: 12),
-          Text(
-            'Builder Error',
+          Text('builder_error'.tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

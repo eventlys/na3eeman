@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_roles.dart';
 import '../../themes/app_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Wraps any widget with a subscription-gate overlay.
 /// If the user's tier is insufficient, the child is blurred and a lock +
@@ -172,8 +173,7 @@ class _LockOverlay extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Text(
-            'Upgrade to unlock',
+          Text('upgrade_to_unlock'.tr(),
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: Colors.white70),
@@ -193,8 +193,7 @@ class _LockOverlay extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
-              child: const Text(
-                'Upgrade Now',
+              child: Text('upgrade_now'.tr(),
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ),

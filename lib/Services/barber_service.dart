@@ -2,6 +2,7 @@ import '../Helpers/barber_list_helper.dart';
 import '../Helpers/error_handler.dart';
 import '../Helpers/logger.dart';
 import 'api/api_service.dart';
+import 'api/endpoints.dart';
 
 class BarberService {
   final ApiService _apiService = ApiService();
@@ -31,7 +32,7 @@ class BarberService {
         queryParams['is_active'] = isActive.toString();
       }
 
-      final response = await _apiService.get('/staff', queryParams: queryParams);
+      final response = await _apiService.get(Endpoints.usersStaff, queryParams: queryParams);
 
       final List<dynamic> data = response['data'] ?? [];
       return data.map((barberData) => BarberDto.fromJson(barberData)).toList();

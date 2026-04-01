@@ -4,6 +4,7 @@ import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Super Admin — User Management Page.
 /// Lists all platform users (customers + barbers/staff) with ban/verify actions.
@@ -41,7 +42,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Management'),
+        title: Text('user_management'.tr()),
         bottom: TabBar(
           controller: _tabs,
           labelColor: primary,

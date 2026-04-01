@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class FeedbackOverlay extends StatefulWidget {
   const FeedbackOverlay({super.key});
@@ -16,7 +17,7 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Send Feedback'),
+      title: Text('send_feedback'.tr()),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -25,8 +26,8 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
             children: [
               TextFormField(
                 controller: _subjectController,
-                decoration: const InputDecoration(
-                  labelText: 'Subject',
+                decoration: InputDecoration(
+                  labelText: 'subject'.tr().tr(),
                   hintText: 'Brief description of your feedback',
                 ),
                 validator: (value) {
@@ -56,7 +57,7 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Rating:'),
+                  Text('rating'.tr()),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -84,11 +85,11 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('cancel'.tr()),
         ),
         ElevatedButton(
           onPressed: _submitFeedback,
-          child: const Text('Send Feedback'),
+          child: Text('send_feedback'.tr()),
         ),
       ],
     );

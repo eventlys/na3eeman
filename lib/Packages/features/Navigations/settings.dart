@@ -12,6 +12,9 @@ import '../../Core/widgets/common/setting_tile.dart';
 import '../auth/overlays/change_password_overlay.dart';
 import 'package:provider/provider.dart';
 import '../../../Providers/app_providers.dart';
+import '../../../core/enums/app_enums.dart';
+import '../../../Providers/features/auth_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -32,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: CustomScrollView(
         slivers: [
           GlassSliverAppBar(
-            title: 'Settings',
+            title: tr('settings'),
           ),
           SliverPadding(
             padding: const EdgeInsets.all(16),
@@ -42,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildSectionHeader('Account Settings'),
                 SettingTile(
                   icon: Icons.person,
-                  title: 'Profile',
+                  title: tr('profile'),
                   onTap: () => Navigator.pushNamed(context, '/profile'),
                 ),
                 SettingTile(
@@ -50,6 +53,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'Change Password',
                   onTap: () => _showChangePasswordDialog(),
                 ),
+                if (Provider.of<AuthProvider>(context, listen: false).user?.role == UserRole.owner || Provider.of<AuthProvider>(context, listen: false).user?.role == UserRole.receptionist)
+                  SettingTile(
+                    icon: Icons.card_membership_rounded,
+                    title: 'Subscription Management',
+                    onTap: () => _showSubscriptionManagementModal(),
+                  ),
                 const SizedBox(height: 16),
 
                 // App Preferences
@@ -123,9 +132,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.logout),
-                    label: const Text(
-                      'Logout',
-                      style: TextStyle(fontSize: 16),
+                    label: Text(tr('logout'),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -179,6 +187,95 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => const ChangePasswordDialog(),
+    );
+  }
+
+  void _showSubscriptionManagementModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.65,
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            Text(tr('subscription_plans'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _buildSubscriptionCard('Basic Plan', '\$29/mo', ['1 Barber Seat', 'Basic Analytics', 'Email Support']),
+                    _buildSubscriptionCard('Growth Plan', '\$59/mo', ['Up to 5 Barbers', 'Full Analytics', 'Priority Support'], isRecommended: true),
+                    _buildSubscriptionCard('Enterprise', '\$99/mo', ['Unlimited', 'Branch Multi-management', '24/7 Dedicated Support']),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubscriptionCard(String title, String price, List<String> features, {bool isRecommended = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: 280,
+      margin: const EdgeInsets.only(right: 16, bottom: 20, top: 12),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: isRecommended ? Theme.of(context).primaryColor : (isDark ? Colors.grey[900] : Colors.white),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isRecommended ? Colors.transparent : (isDark ? Colors.grey[800]! : Colors.grey[200]!)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isRecommended)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
+              child: Text(tr('recommended'), style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+            ),
+          Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isRecommended ? Colors.white : (isDark ? Colors.white : Colors.black))),
+          const SizedBox(height: 8),
+          Text(price, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: isRecommended ? Colors.white : Theme.of(context).primaryColor)),
+          const Divider(height: 32, color: Colors.grey),
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: features.map((f) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(children: [Icon(Icons.check_circle, color: isRecommended ? Colors.white : Colors.green, size: 16), const SizedBox(width: 8), Text(f, style: TextStyle(color: isRecommended ? Colors.white : (isDark ? Colors.grey[300] : Colors.grey[700]), fontSize: 13))]),
+              )).toList(),
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/subscription/upgrade', arguments: {'title': title, 'price': price});
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: isRecommended ? Colors.white : Theme.of(context).primaryColor, foregroundColor: isRecommended ? Theme.of(context).primaryColor : Colors.white),
+              child: Text(tr('select_plan')),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -4,6 +4,7 @@ import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SoonestAppointmentCard extends StatefulWidget {
   final Function(Map<String, dynamic>)? onAppointmentDelayed;
@@ -202,7 +203,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Close'),
+                    child: Text('close'.tr()),
                   ),
                 ),
               ],
@@ -404,8 +405,7 @@ class _DelayAppointmentDialogState extends State<_DelayAppointmentDialog> {
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Cancel',
+              child: Text('cancel'.tr(),
                 style: TextStyle(color: isDark ? AppColors.cream400 : AppColors.almostBlack400),
               ),
             ),

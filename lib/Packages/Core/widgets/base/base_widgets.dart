@@ -4,6 +4,7 @@ import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../themes/glass_appbar.dart';
 import '../../utils/helpers/themes_helpers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
@@ -104,8 +105,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
             valueColor: AlwaysStoppedAnimation<Color>(_getIconColor()),
           ),
           const SizedBox(height: 16),
-          Text(
-            'Loading...',
+          Text('loading'.tr(),
             style: TextStyle(
               color: isDarkMode ? AppColor.darkText : AppColor.lightText,
               fontSize: 16,
@@ -132,8 +132,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
               color: _getErrorColor(),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Oops! Something went wrong',
+            Text('oops_something_went_wrong'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -156,8 +155,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
                 Icons.refresh,
                 color: _getIconColor(),
               ),
-              label: Text(
-                'Try Again',
+              label: Text('try_again'.tr(),
                 style: TextStyle(
                   color: isDarkMode ? AppColor.darkText : AppColor.lightText,
                 ),

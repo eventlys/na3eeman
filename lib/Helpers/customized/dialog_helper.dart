@@ -16,14 +16,13 @@ class DialogHelper {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Select Language',
+              Text(tr('select_language'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               ListTile(
                 leading: const Text('🇺🇸'),
-                title: const Text('English'),
+                title: Text(tr('english')),
                 trailing: languageService.currentLanguage == 'English'
                     ? const Icon(Icons.check, color: Colors.green)
                     : null,
@@ -63,14 +62,13 @@ class DialogHelper {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Select Theme',
+              Text(tr('select_theme'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               ListTile(
                 leading: const Icon(Icons.light_mode),
-                title: const Text('Light Mode'),
+                title: Text(tr('light_mode')),
                 trailing: !themeProvider.isDark
                     ? const Icon(Icons.check, color: Colors.green)
                     : null,
@@ -82,7 +80,7 @@ class DialogHelper {
               ),
               ListTile(
                 leading: const Icon(Icons.dark_mode),
-                title: const Text('Dark Mode'),
+                title: Text(tr('dark_mode')),
                 trailing: themeProvider.isDark
                     ? const Icon(Icons.check, color: Colors.green)
                     : null,

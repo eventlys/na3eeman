@@ -15,7 +15,7 @@
 // class OverlayService {
 //   static void showPrivacyPolicy() {
 //     _showDialog(
-//       title: 'Privacy Policy',
+//       title: 'privacy_policy'.tr(),
 //       icon: 'assets/icons/lock.png',
 //       content: PrivacyPolicyOverlay(),
 //     );
@@ -23,7 +23,7 @@
 //
 //   static void showSecurityPolicy() {
 //     _showDialog(
-//       title: 'Security Policy',
+//       title: 'security_policy'.tr(),
 //       icon: 'assets/icons/secure.png',
 //       content: SecurityPolicyOverlay(),
 //     );
@@ -31,7 +31,7 @@
 //
 //   static void showAppRules() {
 //     _showDialog(
-//       title: 'Application Rules',
+//       title: 'application_rules'.tr(),
 //       icon: 'assets/icons/report.png',
 //       content: AppRulesOverlay(),
 //     );
@@ -39,7 +39,7 @@
 //
 //   static void showInviteFriends() {
 //     _showDialog(
-//       title: 'Invite Friends',
+//       title: 'invite_friends'.tr(),
 //       icon: 'assets/icons/plus.png',
 //       content: InviteFriendsOverlay(),
 //     );
@@ -47,7 +47,7 @@
 //
 //   static void showContactUs() {
 //     _showDialog(
-//       title: 'Contact Us',
+//       title: 'contact_us'.tr(),
 //       icon: 'assets/icons/mail_view.png',
 //       content: ContactUsOverlay(),
 //       isForm: true,
@@ -56,7 +56,7 @@
 //
 //   static void showReportShop() {
 //     _showDialog(
-//       title: 'Report Shop',
+//       title: 'report_shop'.tr(),
 //       icon: 'assets/icons/report.png',
 //       content: ReportShopOverlay(),
 //       isForm: true,
@@ -65,7 +65,7 @@
 //
 //   static void showReportProblem() {
 //     _showDialog(
-//       title: 'Report A Problem',
+//       title: 'report_a_problem'.tr(),
 //       icon: 'assets/icons/report.png',
 //       content: ReportProblemOverlay(),
 //       isForm: true,
@@ -74,7 +74,7 @@
 //
 //     static void showFeedback() {
 //     _showDialog(
-//       title: 'your Feedback matters',
+//       title: 'your_feedback_matters'.tr(),
 //       icon: 'assets/icons/chat_text.png',
 //       content: FeedbackOverlay(),
 //       isForm: true,
@@ -83,7 +83,7 @@
 //
 //   static void showUserReports() {
 //     _showDialog(
-//       title: 'User Reports',
+//       title: 'user_reports'.tr(),
 //       icon: 'assets/icons/file_star_view.png',
 //       content: UserReportsOverlay(),
 //     );
@@ -91,7 +91,7 @@
 //
 //   static void showLogoutConfirmation({required VoidCallback onConfirm}) {
 //     _showDialog(
-//       title: 'Logout',
+//       title: 'logout'.tr().tr(),
 //       icon: 'assets/icons/exit.png',
 //       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
 //     );
@@ -170,14 +170,14 @@
 //   //   return Column(
 //   //     mainAxisSize: MainAxisSize.min,
 //   //     children: [
-//   //       const Text('Are you sure you want to logout?'),
+//   //       Text('are_you_sure_you_want_to_logout'.tr()),
 //   //       const SizedBox(height: 16),
 //   //       Row(
 //   //         children: [
 //   //           Expanded(
 //   //             child: OutlinedButton(
 //   //               onPressed: () => Navigator.of(SideNavigationService.navigatorKey.currentContext!).pop(),
-//   //               child: const Text('Cancel'),
+//   //               child: Text('cancel'.tr()),
 //   //             ),
 //   //           ),
 //   //           const SizedBox(width: 8),
@@ -190,7 +190,7 @@
 //   //               style: ElevatedButton.styleFrom(
 //   //                 backgroundColor: Colors.red,
 //   //               ),
-//   //               child: const Text('Logout'),
+//   //               child: Text('logout'.tr().tr()),
 //   //             ),
 //   //           ),
 //   //         ],
@@ -212,6 +212,7 @@ import '../../Packages/features/navigation/overlays/report_shop_overlay.dart';
 import '../../Packages/features/navigation/overlays/security_policy_overlay.dart';
 import '../../Packages/features/navigation/overlays/user_reports_overlay.dart';
 import 'sidebar_navigation_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class OverlayService {
   static final OverlayService _instance = OverlayService._internal();
@@ -222,7 +223,7 @@ class OverlayService {
 
   static void showPrivacyPolicy() {
     _showDialog(
-      title: 'Privacy Policy',
+      title: 'privacy_policy'.tr(),
       icon: 'assets/icons/lock.png',
       content: PrivacyPolicyOverlay(),
     );
@@ -230,7 +231,7 @@ class OverlayService {
 
   static void showSecurityPolicy() {
     _showDialog(
-      title: 'Security Policy',
+      title: 'security_policy'.tr(),
       icon: 'assets/icons/secure.png',
       content: SecurityPolicyOverlay(),
     );
@@ -238,7 +239,7 @@ class OverlayService {
 
   static void showAppRules() {
     _showDialog(
-      title: 'Application Rules',
+      title: 'application_rules'.tr(),
       icon: 'assets/icons/report.png',
       content: AppRulesOverlay(),
     );
@@ -246,7 +247,7 @@ class OverlayService {
 
   static void showInviteFriends() {
     _showDialog(
-      title: 'Invite Friends',
+      title: 'invite_friends'.tr(),
       icon: 'assets/icons/plus.png',
       content: InviteFriendsOverlay(),
     );
@@ -254,7 +255,7 @@ class OverlayService {
 
   static void showContactUs() {
     _showDialog(
-      title: 'Contact Us',
+      title: 'contact_us'.tr(),
       icon: 'assets/icons/mail_view.png',
       content: ContactUsOverlay(),
       isForm: true,
@@ -263,7 +264,7 @@ class OverlayService {
 
   static void showReportShop() {
     _showDialog(
-      title: 'Report Shop',
+      title: 'report_shop'.tr(),
       icon: 'assets/icons/report.png',
       content: ReportShopOverlay(),
       isForm: true,
@@ -272,7 +273,7 @@ class OverlayService {
 
   static void showReportProblem() {
     _showDialog(
-      title: 'Report A Problem',
+      title: 'report_a_problem'.tr(),
       icon: 'assets/icons/report.png',
       content: ReportProblemOverlay(),
       isForm: true,
@@ -281,7 +282,7 @@ class OverlayService {
 
   static void showFeedback() {
     _showDialog(
-      title: 'Your Feedback Matters',
+      title: 'your_feedback_matters'.tr(),
       icon: 'assets/icons/chat_text.png',
       content: FeedbackOverlay(),
       isForm: true,
@@ -290,7 +291,7 @@ class OverlayService {
 
   static void showUserReports() {
     _showDialog(
-      title: 'User Reports',
+      title: 'user_reports'.tr(),
       icon: 'assets/icons/file_star_view.png',
       content: UserReportsOverlay(),
     );
@@ -298,7 +299,7 @@ class OverlayService {
 
   static void showLogoutConfirmation({required VoidCallback onConfirm}) {
     _showDialog(
-      title: 'Logout',
+      title: 'logout'.tr().tr(),
       icon: 'assets/icons/exit.png',
       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
     );
@@ -311,7 +312,7 @@ class OverlayService {
     VoidCallback? onBookingComplete,
   }) {
     _showDialog(
-      title: 'Book Appointment',
+      title: 'book_appointment'.tr(),
       icon: 'assets/icons/calendar.png',
       content: AppointmentBookingOverlay(
         shopId: shopId,
@@ -330,7 +331,7 @@ class OverlayService {
     required Function(String) onPaymentFailure,
   }) {
     _showDialog(
-      title: 'Complete Payment',
+      title: 'complete_payment'.tr(),
       icon: 'assets/icons/payment.png',
       content: PaymentOverlay(
         amount: amount,
@@ -348,7 +349,7 @@ class OverlayService {
     required String source,
   }) {
     _showDialog(
-      title: 'Loyalty Points Earned!',
+      title: 'loyalty_points_earned'.tr(),
       icon: 'assets/icons/star.png',
       content: LoyaltyPointsOverlay(
         points: points,
@@ -463,7 +464,7 @@ class AppointmentBookingOverlay extends StatelessWidget {
               Navigator.of(context).pop();
               onBookingComplete?.call();
             },
-            child: const Text('Confirm Booking'),
+            child: Text('confirm_booking'.tr()),
           ),
         ],
       ),
@@ -503,7 +504,7 @@ class PaymentOverlay extends StatelessWidget {
                     Navigator.of(context).pop();
                     onPaymentFailure('Payment cancelled');
                   },
-                  child: const Text('Cancel'),
+                  child: Text('cancel'.tr()),
                 ),
               ),
               const SizedBox(width: 8),
@@ -513,7 +514,7 @@ class PaymentOverlay extends StatelessWidget {
                     Navigator.of(context).pop();
                     onPaymentSuccess('payment_123');
                   },
-                  child: const Text('Pay Now'),
+                  child: Text('pay_now'.tr()),
                 ),
               ),
             ],
@@ -559,7 +560,7 @@ class LoyaltyPointsOverlay extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Awesome!'),
+            child: Text('awesome'.tr()),
           ),
         ],
       ),

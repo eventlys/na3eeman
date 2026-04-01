@@ -5,6 +5,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../Core/backgrounds/bd_faded.dart';
 import '../../../Core/themes/glass_appbar.dart';
 import '../../../Core/widgets/common/date_time_pickers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ShopSchedulePage extends StatefulWidget {
   final Map<String, dynamic> serviceData;
@@ -123,8 +124,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
                   children: [
                     Icon(Icons.calendar_today, color: const Color(0xffc25858)),
                     const SizedBox(width: 8),
-                    Text(
-                      'Schedule Type',
+                    Text('schedule_type'.tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -142,8 +142,8 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
                   children: [
                     _buildScheduleOption(
                       context,
-                      title: 'One Time Only',
-                      subtitle: 'Schedule this appointment once',
+                      title: 'one_time_only'.tr(),
+                      subtitle: 'schedule_this_appointment_once'.tr(),
                       icon: Icons.event,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -156,8 +156,8 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
                     const SizedBox(height: 12),
                     _buildScheduleOption(
                       context,
-                      title: 'Bi-Weekly',
-                      subtitle: 'Repeat every 2 weeks',
+                      title: 'bi_weekly'.tr(),
+                      subtitle: 'repeat_every_2_weeks'.tr(),
                       icon: Icons.repeat,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -170,8 +170,8 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
                     const SizedBox(height: 12),
                     _buildScheduleOption(
                       context,
-                      title: 'Monthly',
-                      subtitle: 'Repeat every month',
+                      title: 'monthly'.tr().tr(),
+                      subtitle: 'repeat_every_month'.tr(),
                       icon: Icons.calendar_month,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -198,8 +198,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
                   ),
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      'Cancel',
+                    child: Text('cancel'.tr(),
                       style: TextStyle(
                         color: const Color(0xffc25858),
                         fontSize: 16,
@@ -267,8 +266,8 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
   void _confirmSchedule(String scheduleType) {
     if (_selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select both date and time'),
+        SnackBar(
+          content: Text('please_select_both_date_and_time'.tr()),
           backgroundColor: Colors.red,
         ),
       );
@@ -299,7 +298,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
         body: CustomScrollView(
           slivers: [
             GlassSliverAppBar(
-              title: 'Book a haircut',
+              title: 'book_a_haircut'.tr(),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
@@ -337,8 +336,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                             ),
-                            child: const Text(
-                              'Confirm Schedule',
+                            child: Text('confirm_schedule'.tr(),
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -370,8 +368,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Selected Services',
+          Text('selected_services'.tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -386,8 +383,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
           // Additional Services
           if (additionalServices.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text(
-              'Additional Services:',
+            Text('additional_services'.tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -400,8 +396,7 @@ class ShopSchedulePageState extends State<ShopSchedulePage> {
           const SizedBox(height: 12),
 
           // Available Additional Services
-          Text(
-            'Add More Services:',
+          Text('add_more_services'.tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,

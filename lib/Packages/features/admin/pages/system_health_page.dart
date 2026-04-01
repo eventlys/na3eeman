@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AdminSystemHealthPage extends StatelessWidget {
   const AdminSystemHealthPage({super.key});
@@ -11,7 +12,7 @@ class AdminSystemHealthPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('System Health', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('system_health_title'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

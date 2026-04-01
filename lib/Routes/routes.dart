@@ -18,6 +18,11 @@ import '../Packages/features/staff/pages/intern_dashboard.dart';
 import '../Packages/features/shop/pages/shop_owner_dashboard.dart';
 import '../Packages/features/staff/pages/employee_schedule_page.dart'; // Added
 
+import '../Packages/features/owner/dashboard/pages/owner_dashboard_page.dart';
+import '../Packages/features/owner/dashboard/pages/owner_management_dashboard_page.dart';
+import '../Packages/features/owner/dashboard/pages/campaign_management_page.dart';
+import '../Packages/features/staff/pages/intern_activity_page.dart';
+
 // Navigations
 import '../Packages/features/Navigations/favorites_list_page.dart';
 import '../Packages/features/Navigations/history_page.dart';
@@ -89,7 +94,13 @@ class AppRoutes {
     '/employee_schedule': (context) => const EmployeeSchedulePage(),
     '/receptionist_dashboard': (context) => const ReceptionistDashboard(),
     '/intern_dashboard': (context) => const InternDashboard(),
-    '/owner_dashboard': (context) => const ShopOwnerDashboard(),
+    '/intern_activity': (context) => const InternActivityPage(),
+    // ── New tier-aware owner dashboard ──────────────────────────────────────
+    '/owner_dashboard': (context) => const OwnerDashboardPage(),
+    '/management_dashboard': (context) => const OwnerManagementDashboardPage(),
+    '/active_campaigns': (context) => const CampaignManagementPage(),
+    // Legacy alias — kept for backward compat while migrating references
+    '/shop_owner_dashboard': (context) => const ShopOwnerDashboard(),
     '/staff': (context) => const StaffManagementPage(),
 
     // ── Legacy Admin (placeholder) ────────────────────────────────────────

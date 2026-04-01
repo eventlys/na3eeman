@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class InventoryAlertCard extends StatelessWidget {
   const InventoryAlertCard({super.key});
@@ -29,13 +30,12 @@ class InventoryAlertCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: AppColors.error),
-                  SizedBox(width: 8),
-                  Text(
-                    'Low Stock Alerts',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const Icon(Icons.warning_amber_rounded, color: AppColors.error),
+                  const SizedBox(width: 8),
+                  Text('low_stock_alerts'.tr(),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -59,7 +59,7 @@ class InventoryAlertCard extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () {},
-              child: Text('Manage Inventory', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+              child: Text('manage_inventory'.tr(), style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

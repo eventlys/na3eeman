@@ -12,6 +12,9 @@ import '../../Models/staff/barber.dart';
 import '../storage_service.dart';
 import '../security_service.dart';
 import 'endpoints.dart';
+import 'dart:io';
+
+enum RefreshResult { success, networkError, authError }
 
 /// Refactored API Service with automatic token refresh and clean endpoint management
 class ApiService {
@@ -24,6 +27,9 @@ class ApiService {
   final UnifiedStorageService _storage = UnifiedStorageService();
   final SecurityService _security = SecurityService();
   final Connectivity _connectivity = Connectivity();
+
+  // Enum to handle different refresh outcomes
+  static const String _authClearKey = 'auth_clearing_in_progress';
 
   // Token refresh lock to prevent multiple simultaneous refresh attempts
   bool _isRefreshing = false;
@@ -134,6 +140,9 @@ class ApiService {
       // Make HTTP request
       final response = await _makeHttpRequest(method, uri, headers, data);
 
+      // Update Inactivity timer for "session maintained"
+      _storage.setPreference('last_activity', DateTime.now().toIso8601String());
+
       // Handle response
       return await _handleResponse(response);
     } on AppError catch (e) {
@@ -143,8 +152,9 @@ class ApiService {
           retryCount == 0) {
         AppLogger.debug('Got 401, attempting token refresh...');
 
-        final refreshed = await _attemptTokenRefresh();
-        if (refreshed) {
+        final refreshResult = await _attemptTokenRefresh();
+        
+        if (refreshResult == RefreshResult.success) {
           AppLogger.debug('Token refreshed successfully, retrying request...');
           return _request(
             method,
@@ -155,10 +165,15 @@ class ApiService {
             requiresAuth: requiresAuth,
             retryCount: retryCount + 1,
           );
-        } else {
-          // Refresh failed, clear auth and throw
+        } else if (refreshResult == RefreshResult.authError) {
+          // Refresh failed due to invalid token - logout
+          AppLogger.error('Auth failure during refresh, clearing session.');
           await _clearAuthData();
           rethrow;
+        } else {
+          // Network Error or other transient error - DO NOT clear session
+          AppLogger.warning('Network error during refresh, keeping session as is.');
+          throw AppError('Network unavailable for token refresh', type: ErrorType.network);
         }
       }
 
@@ -270,7 +285,9 @@ class ApiService {
           throw AppError('Unsupported HTTP method: $method');
       }
     } on TimeoutException {
-      throw AppError('Request timed out', type: ErrorType.network);
+      throw AppError('Request timed out after ${timeout.inSeconds}s', type: ErrorType.network);
+    } on SocketException catch (e) {
+      throw AppError('Connection refused or network unavailable: $e', type: ErrorType.network);
     } finally {
       client.close();
     }
@@ -291,24 +308,49 @@ class ApiService {
     }
 
     // Parse JSON
-    Map<String, dynamic> responseBody;
+    dynamic responseBody;
     try {
-      responseBody = json.decode(response.body) as Map<String, dynamic>;
+      responseBody = json.decode(response.body);
     } catch (e) {
       throw AppError('Invalid JSON response', type: ErrorType.server);
     }
 
+    // Wrap List body to Map with 'results' key to keep clients aligned
+    if (responseBody is List) {
+      final Map<String, dynamic> wrapped = {};
+      wrapped['results'] = responseBody;
+      responseBody = wrapped;
+    }
+
     // Handle success (2xx)
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      return responseBody;
+      return responseBody as Map<String, dynamic>;
     }
 
     // Handle errors
-    final errorMessage =
-        responseBody['message'] ??
-        responseBody['detail'] ??
-        responseBody['error'] ??
-        'An error occurred';
+    final mapBody = responseBody as Map<String, dynamic>;
+    String errorMessage = mapBody['message'] ??
+        mapBody['detail'] ??
+        mapBody['error'] ??
+        '';
+
+    if (errorMessage.isEmpty) {
+      final buffer = StringBuffer();
+      mapBody.forEach((key, value) {
+        if (value is List) {
+          buffer.write('$key: ${value.join(", ")}. ');
+        } else if (value is Map) {
+          buffer.write('$key: ${value.toString()}. ');
+        } else {
+          buffer.write('$key: $value. ');
+        }
+      });
+      errorMessage = buffer.toString().trim();
+    }
+
+    if (errorMessage.isEmpty) {
+      errorMessage = 'An error occurred';
+    }
 
     switch (response.statusCode) {
       case 401:
@@ -321,7 +363,7 @@ class ApiService {
         throw AppError(
           errorMessage,
           type: ErrorType.validation,
-          details: responseBody['errors'] ?? responseBody['details'],
+          details: mapBody['errors'] ?? mapBody['details'],
         );
       case >= 400 && < 500:
         throw AppError(errorMessage, type: ErrorType.client);
@@ -334,16 +376,16 @@ class ApiService {
 
   // ==================== TOKEN REFRESH ====================
 
-  Future<bool> _attemptTokenRefresh() async {
+  Future<RefreshResult> _attemptTokenRefresh() async {
     // If already refreshing, wait for that to complete
     if (_isRefreshing) {
       final completer = Completer<String>();
       _refreshCompleters.add(completer);
       try {
         await completer.future;
-        return true;
+        return RefreshResult.success;
       } catch (e) {
-        return false;
+        return RefreshResult.authError;
       }
     }
 
@@ -355,10 +397,10 @@ class ApiService {
 
       if (refreshToken == null || refreshToken.isEmpty) {
         AppLogger.debug('No refresh token available');
-        return false;
+        return RefreshResult.authError;
       }
 
-      // Call refresh endpoint (don't use _request to avoid infinite loop)
+      // Call refresh endpoint 
       final uri = _buildUri(Endpoints.tokenRefresh, null);
       final headers = {
         'Content-Type': 'application/json',
@@ -374,40 +416,43 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        final newAccessToken = data['access'];
+        final newAccessToken = data['access'] ?? data['token'];
 
         if (newAccessToken != null) {
-          // Save new token
           await _storage.setAuthTokens(newAccessToken, refreshToken);
-
-          // Notify waiting requests
+          
           for (var completer in _refreshCompleters) {
             completer.complete(newAccessToken);
           }
           _refreshCompleters.clear();
 
           AppLogger.debug('Token refresh successful');
-          return true;
+          return RefreshResult.success;
         }
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        AppLogger.error('Refresh token is invalid/expired (401/403)');
+        return RefreshResult.authError;
       }
 
-      // Refresh failed
-      AppLogger.error('Token refresh failed: ${response.statusCode}');
-      for (var completer in _refreshCompleters) {
-        completer.completeError(AppError('Token refresh failed'));
-      }
-      _refreshCompleters.clear();
-
-      return false;
+      AppLogger.error('Token refresh failed with code: ${response.statusCode}');
+      return RefreshResult.authError;
+    } on SocketException {
+      AppLogger.warning('Network error during refresh attempt');
+      return RefreshResult.networkError;
+    } on TimeoutException {
+      AppLogger.warning('Timeout durante refresh attempt');
+      return RefreshResult.networkError;
     } catch (e) {
       AppLogger.error('Token refresh exception', error: e);
-      for (var completer in _refreshCompleters) {
-        completer.completeError(e);
-      }
-      _refreshCompleters.clear();
-      return false;
+      return RefreshResult.authError;
     } finally {
       _isRefreshing = false;
+      for (var completer in _refreshCompleters) {
+        if (!completer.isCompleted) {
+          completer.completeError(AppError('Token refresh final failure'));
+        }
+      }
+      _refreshCompleters.clear();
     }
   }
 
@@ -795,5 +840,97 @@ class ApiService {
   Future<void> _clearAuthData() async {
     await _storage.clearAuthData();
     AppLogger.debug('Auth data cleared');
+  }
+
+  // ==================== DASHBOARD & ANALYTICS ====================
+
+  /// Fetches a retail snapshot for the specified shop (Owner Studio+).
+  Future<Map<String, dynamic>> getRetailSnapshot(int shopId) async {
+    return get(Endpoints.shopRetailSnapshot(shopId));
+  }
+
+  /// Fetches the employee leaderboard for the specified shop (Owner Studio+).
+  Future<List<dynamic>> getTeamLeaderboard(int shopId) async {
+    final response = await get(Endpoints.shopTeamLeaderboard(shopId));
+    if (response.containsKey('results')) {
+      return response['results'] as List<dynamic>;
+    }
+    if (response is List) return response as List<dynamic>;
+    return [];
+  }
+
+  /// Fetches daily earnings (cash vs card) for the specified shop (Owner).
+  Future<Map<String, dynamic>> getDailyEarnings(int shopId) async {
+    try {
+      return await get(Endpoints.shopDailyEarnings(shopId));
+    } catch (e) {
+      return {'cash': 0.0, 'card': 0.0, 'total': 0.0};
+    }
+  }
+
+  /// Fetches the intern activity feed (Intern Role).
+  Future<Map<String, dynamic>> getInternActivity() async {
+    return get(Endpoints.internActivity);
+  }
+
+  // ==================== NOTIFICATIONS ====================
+
+  /// Fetches list of system notifications for the current user.
+  Future<List<dynamic>> getNotifications() async {
+    final response = await get(Endpoints.notifications);
+    if (response.containsKey('results')) {
+      return response['results'] as List<dynamic>;
+    }
+    return [];
+  }
+
+  /// Marks a specific notification as read.
+  Future<void> markNotificationRead(int id) async {
+    await post(Endpoints.notificationMarkRead(id));
+  }
+
+  /// Marks all notifications for current user as read.
+  Future<void> markAllNotificationsRead() async {
+    await post(Endpoints.notificationsMarkAllRead);
+  }
+
+  // ==================== CAMPAIGNS ====================
+
+  /// Fetches all offers for a shop.
+  Future<List<dynamic>> getShopOffers(int shopId) async {
+    final response = await get(Endpoints.shopOffers(shopId));
+    if (response.containsKey('results')) {
+      return response['results'] as List<dynamic>;
+    }
+    return [];
+  }
+
+  /// Creates a new offer.
+  Future<Map<String, dynamic>> createOffer(int shopId, Map<String, dynamic> data) async {
+    return post(Endpoints.shopOffers(shopId), data: data);
+  }
+
+  /// Deletes an offer.
+  Future<void> deleteOffer(int shopId, int offerId) async {
+    await delete('${Endpoints.shopOffers(shopId)}$offerId/');
+  }
+
+  /// Fetches all ad campaigns for a shop.
+  Future<List<dynamic>> getShopAdCampaigns(int shopId) async {
+    final response = await get(Endpoints.shopAdCampaigns(shopId));
+    if (response.containsKey('results')) {
+      return response['results'] as List<dynamic>;
+    }
+    return [];
+  }
+
+  /// Creates a new ad campaign.
+  Future<Map<String, dynamic>> createAdCampaign(int shopId, Map<String, dynamic> data) async {
+    return post(Endpoints.shopAdCampaigns(shopId), data: data);
+  }
+
+  /// Deletes an ad campaign.
+  Future<void> deleteAdCampaign(int shopId, int campaignId) async {
+    await delete('${Endpoints.shopAdCampaigns(shopId)}$campaignId/');
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
-import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
+// import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
 import '../../../../Packages/Core/widgets/common/app_button.dart';
-import '../../../../Providers/app_providers.dart';
-import 'package:provider/provider.dart';
+// import '../../../../Providers/app_providers.dart';
+// import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Three-step onboarding flow.
 /// Step 1: Welcome — Step 2: Pick Gender (sets theme accent) — Step 3: Pick Role.
@@ -133,8 +134,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         TextButton(
                           onPressed: () =>
                               Navigator.pushReplacementNamed(context, '/login'),
-                          child: Text(
-                            'Already have an account? Log in',
+                          child: Text('already_have_an_account_log_in'.tr(),
                             style: TextStyle(
                               fontSize: 13,
                               color: isDark
@@ -177,8 +177,7 @@ class _WelcomePage extends StatelessWidget {
             child: Icon(Icons.cut_rounded, size: 60, color: primary),
           ),
           const SizedBox(height: 40),
-          Text(
-            'Welcome to Na3eeman',
+          Text('welcome_to_na3eeman'.tr(),
             style: Theme.of(
               context,
             ).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800),
@@ -214,8 +213,7 @@ class _GenderPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Personalise Your Theme',
+          Text('personalise_your_theme'.tr(),
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),
@@ -233,7 +231,7 @@ class _GenderPage extends StatelessWidget {
           Row(
             children: [
               _GenderCard(
-                label: 'Male',
+                label: 'male'.tr(),
                 emoji: '✂️',
                 accent: AppColor.navyPrimary,
                 bgTint: AppColor.navyBgTint,
@@ -242,7 +240,7 @@ class _GenderPage extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               _GenderCard(
-                label: 'Female',
+                label: 'female'.tr(),
                 emoji: '💅',
                 accent: AppColor.pinkPrimary,
                 bgTint: AppColor.pinkBgTint,
@@ -254,8 +252,7 @@ class _GenderPage extends StatelessWidget {
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => onSelect(UserGender.nonBinary),
-            child: const Text(
-              'Prefer not to say',
+            child: Text('prefer_not_to_say'.tr(),
               style: TextStyle(fontSize: 13),
             ),
           ),
@@ -335,15 +332,14 @@ class _RolePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'How will you use Na3eeman?',
+          Text('how_will_you_use_na3eeman'.tr(),
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
           _RoleTile(
             icon: Icons.person_rounded,
-            label: 'I\'m a Customer',
+            label: tr('i_m_a_customer'),
             description: 'Book appointments and discover barbers.',
             isSelected: isCustomer,
             primary: primary,
@@ -352,7 +348,7 @@ class _RolePage extends StatelessWidget {
           const SizedBox(height: 14),
           _RoleTile(
             icon: Icons.cut_rounded,
-            label: 'I\'m a Barber / Staff',
+            label: tr('i_m_a_barber_staff'),
             description: 'Manage your shop, bookings, and team.',
             isSelected: !isCustomer,
             primary: primary,

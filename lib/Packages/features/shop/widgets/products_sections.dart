@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../Core/themes/animated_cart_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProductSection extends StatelessWidget {
   final Map<String, dynamic> shopData;
@@ -31,8 +32,7 @@ class ProductSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Products & Prices',
+          Text('products_prices'.tr(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

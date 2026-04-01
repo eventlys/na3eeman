@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import '../../../../Helpers/registration_helper.dart';
+import '../../../../Helpers/error_handler.dart';
 import '../../../../Providers/main_providers.dart';
+import '../../../../Providers/app_providers.dart';
+// import '../../../../core/enums/app_enums.dart';
+import 'package:provider/provider.dart';
+import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../Services/api/auth_service.dart';
 import '../../../../Services/repositories/auth_repository.dart';
@@ -11,6 +16,7 @@ import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import '../../../Core/widgets/common/text_links.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -79,6 +85,66 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
+    // Password strength validation (Matches Backend rules)
+    final password = _passwordController.text;
+    if (password.length < 8) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        SnackBar(
+          content: Text('Password must be at least 8 characters long'),
+          backgroundColor: AppColor.lightError,
+        ),
+      );
+      return;
+    }
+    if (!password.contains(RegExp(r'[0-9]'))) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        SnackBar(
+          content: Text('Password must contain at least one number'),
+          backgroundColor: AppColor.lightError,
+        ),
+      );
+      return;
+    }
+    if (!password.contains(RegExp(r'[A-Z]'))) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        SnackBar(
+          content: Text('Password must contain at least one uppercase letter'),
+          backgroundColor: AppColor.lightError,
+        ),
+      );
+      return;
+    }
+    if (!password.contains(RegExp(r'[a-z]'))) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        SnackBar(
+          content: Text('Password must contain at least one lowercase letter'),
+          backgroundColor: AppColor.lightError,
+        ),
+      );
+      return;
+    }
+    if (!password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'))) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        SnackBar(
+          content: Text('Password must contain at least one special character'),
+          backgroundColor: AppColor.lightError,
+        ),
+      );
+      return;
+    }
+
+    // Phone validation (Matches Backend \d{9,15})
+    final phone = _phoneController.text;
+    if (phone.isNotEmpty && (phone.length < 9 || phone.length > 15)) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        SnackBar(
+          content: Text('Phone number must be between 9 and 15 digits'),
+          backgroundColor: AppColor.lightError,
+        ),
+      );
+      return;
+    }
+
     if (_selectedGender == null) {
       ScaffoldMessenger.of(currentContext).showSnackBar(
         SnackBar(
@@ -111,17 +177,49 @@ class _SignupPageState extends State<SignupPage> {
         role: _selectedRole!,
       );
 
-      if (response['success'] == true) {
-        final userRole = response['user']['role'] ?? 'customer';
+      final bool isSuccess = response['user'] != null || response['email'] != null;
+
+      if (isSuccess) {
+        final userRole = response['role'] ?? response['user']?['role'] ?? _selectedRole ?? 'customer';
+        final hasTokens = response['access'] != null;
+        final genderStr = response['gender'] ?? response['user']?['gender'] ?? _selectedGender ?? 'MALE';
 
         if (currentContext.mounted) {
+          final themeProvider = Provider.of<ThemeProvider>(currentContext, listen: false);
+          themeProvider.setGender(genderStr.toString().toLowerCase() == 'female' ? UserGender.female : UserGender.male);
+
+          if (!hasTokens) {
+            try {
+              final loginResponse = await _authService.login(
+                _emailController.text,
+                _passwordController.text,
+              );
+              if (loginResponse['access'] != null) {
+                ScaffoldMessenger.of(currentContext).showSnackBar(
+                  SnackBar(
+                    content: Text('Signup successful! Logging you in...'),
+                    backgroundColor: AppColor.lightSuccess,
+                  ),
+                );
+                NavigationService.navigateToHomeBasedOnRole(currentContext, userRole.toString());
+                return;
+              }
+            } catch (e) {
+              _logger.e('Auto-login failed: $e');
+            }
+          }
           ScaffoldMessenger.of(currentContext).showSnackBar(
             SnackBar(
-              content: Text('Signup successful!'),
+              content: Text(hasTokens ? 'Signup successful!' : 'Signup successful! Please log in.'),
               backgroundColor: AppColor.lightSuccess,
             ),
           );
-          NavigationService.navigateToHomeBasedOnRole(currentContext, userRole);
+          
+          if (hasTokens) {
+            NavigationService.navigateToHomeBasedOnRole(currentContext, userRole);
+          } else {
+            Navigator.pushReplacementNamed(currentContext, '/login');
+          }
         }
       } else {
         final errorMessage = response['message'] ?? 'Signup failed';
@@ -140,7 +238,7 @@ class _SignupPageState extends State<SignupPage> {
       if (currentContext.mounted) {
         ScaffoldMessenger.of(currentContext).showSnackBar(
           SnackBar(
-            content: Text('Signup failed: ${e.toString()}'),
+            content: Text(e is AppError ? e.message : 'Signup failed: ${e.toString()}'),
             backgroundColor: AppColor.lightError,
           ),
         );
@@ -163,7 +261,7 @@ class _SignupPageState extends State<SignupPage> {
         selectedGender: _selectedGender,
       );
 
-      if (response['success'] == true && context.mounted) {
+      if (response['user'] != null && context.mounted) {
         final userRole = response['user']['role'] ?? 'customer';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -249,10 +347,23 @@ class _SignupPageState extends State<SignupPage> {
             controller: _firstNameController,
             focusNode: _firstNameFocus,
             decoration: const InputDecoration(
-              hintText: 'Full Name',
+              hintText: 'First Name',
               prefixIcon: Icon(Icons.person_outline),
             ),
-            validator: (v) => v!.isEmpty ? 'Enter full name' : null,
+            validator: (v) => v!.isEmpty ? 'Enter first name' : null,
+          ),
+
+          const SizedBox(height: 16),
+
+          // Last Name
+          TextFormField(
+            controller: _lastNameController,
+            focusNode: _lastNameFocus,
+            decoration: const InputDecoration(
+              hintText: 'Last Name',
+              prefixIcon: Icon(Icons.person_outline),
+            ),
+            validator: (v) => v!.isEmpty ? 'Enter last name' : null,
           ),
 
           const SizedBox(height: 16),
@@ -262,9 +373,9 @@ class _SignupPageState extends State<SignupPage> {
             controller: _emailController,
             focusNode: _emailFocus,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: 'Email Address',
-              prefixIcon: Icon(Icons.email_outlined),
+            decoration: InputDecoration(
+              hintText: 'email_address'.tr(),
+              prefixIcon: const Icon(Icons.email_outlined),
             ),
             validator: (v) => v!.isEmpty ? 'Enter email' : null,
           ),
@@ -276,9 +387,9 @@ class _SignupPageState extends State<SignupPage> {
             controller: _phoneController,
             focusNode: _phoneFocus,
             keyboardType: TextInputType.phone,
-            decoration: const InputDecoration(
-              hintText: 'Phone Number',
-              prefixIcon: Icon(Icons.phone_outlined),
+            decoration: InputDecoration(
+              hintText: 'phone_number'.tr(),
+              prefixIcon: const Icon(Icons.phone_outlined),
             ),
             validator: (v) => v!.isEmpty ? 'Enter phone number' : null,
           ),
@@ -299,8 +410,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedGender,
-                      hint: Text(
-                        'Gender',
+                      hint: Text('gender'.tr(),
                         style: TextStyle(
                           color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
                           fontSize: 16,
@@ -361,8 +471,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedRole,
-                      hint: Text(
-                        'Role',
+                      hint: Text('role'.tr().tr(),
                         style: TextStyle(
                           color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
                           fontSize: 16,
@@ -374,7 +483,7 @@ class _SignupPageState extends State<SignupPage> {
                         AssetImage(AppImages.arrow_red),
                         color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                       ),
-                      items: ['customer', 'barber', 'owner']
+                      items: ['customer', 'barber', 'owner', 'receptionist', 'intern']
                           .map((role) => DropdownMenuItem(
                         value: role,
                         child: Row(
@@ -420,9 +529,9 @@ class _SignupPageState extends State<SignupPage> {
             controller: _passwordController,
             focusNode: _passwordFocus,
             obscureText: true,
-            decoration: const InputDecoration(
-              hintText: 'Password',
-              prefixIcon: Icon(Icons.lock_outline),
+            decoration: InputDecoration(
+              hintText: 'password'.tr(),
+              prefixIcon: const Icon(Icons.lock_outline),
             ),
             validator: (v) => v!.isEmpty ? 'Enter password' : null,
           ),
@@ -434,9 +543,9 @@ class _SignupPageState extends State<SignupPage> {
             controller: _confirmPasswordController,
             focusNode: _confirmPasswordFocus,
             obscureText: true,
-            decoration: const InputDecoration(
-              hintText: 'Confirm Password',
-              prefixIcon: Icon(Icons.lock_outline),
+            decoration: InputDecoration(
+              hintText: 'confirm_password'.tr(),
+              prefixIcon: const Icon(Icons.lock_outline),
             ),
             validator: (v) => v!.isEmpty ? 'Confirm your password' : null,
           ),
@@ -469,7 +578,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               TextLink(
                 link: '/login',
-                text: 'Back to Login',
+                text: 'back_to_login'.tr(),
                 color: AppColor.primary,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,

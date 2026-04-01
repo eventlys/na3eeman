@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/colors.dart';
+// import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ModernShopGallery extends StatefulWidget {
   final int imageCount;
@@ -34,13 +35,12 @@ class _ModernShopGalleryState extends State<ModernShopGallery> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Showcase',
+            Text('showcase'.tr(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () {},
-              child: Text('View All', style: TextStyle(color: Theme.of(context).primaryColor)),
+              child: Text('view_all'.tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
             ),
           ],
         ),

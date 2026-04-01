@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../Helpers/customized/points_tracker_helpers.dart';
 import '../../../Providers/main_providers.dart';
 import '../../Core/constants/app_color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PointsTrackerDialogs {
   // Rate App Dialog
@@ -83,8 +84,7 @@ class PointsTrackerDialogs {
           children: [
             Icon(Icons.feedback_rounded, color: AppColor.primary),
             const SizedBox(width: 8),
-            Text(
-              'App Feedback',
+            Text('app_feedback'.tr(),
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onSurface,
               ),
@@ -125,8 +125,7 @@ class PointsTrackerDialogs {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
+            child: Text('cancel'.tr(),
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
@@ -268,8 +267,7 @@ class PointsTrackerDialogs {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
+            child: Text('cancel'.tr(),
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),

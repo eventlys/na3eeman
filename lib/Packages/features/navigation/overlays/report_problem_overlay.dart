@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ReportProblemOverlay extends StatefulWidget {
   const ReportProblemOverlay({super.key});
@@ -16,7 +17,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Report a Problem'),
+      title: Text('report_problem'.tr()),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -28,22 +29,22 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
                 decoration: const InputDecoration(
                   labelText: 'Problem Type',
                 ),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: 'bug',
-                    child: Text('Bug Report'),
+                    child: Text('bug_report'.tr()),
                   ),
                   DropdownMenuItem(
                     value: 'abuse',
-                    child: Text('Usage Abuse'),
+                    child: Text('usage_abuse'.tr()),
                   ),
                   DropdownMenuItem(
                     value: 'feature',
-                    child: Text('Feature Request'),
+                    child: Text('feature_request'.tr()),
                   ),
                   DropdownMenuItem(
                     value: 'other',
-                    child: Text('Other'),
+                    child: Text('other'.tr()),
                   ),
                 ],
                 onChanged: (value) {
@@ -55,8 +56,8 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _subjectController,
-                decoration: const InputDecoration(
-                  labelText: 'Subject',
+                decoration: InputDecoration(
+                  labelText: 'subject'.tr().tr(),
                   hintText: 'Brief description of the problem',
                 ),
                 validator: (value) {
@@ -70,8 +71,8 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 5,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
+                decoration: InputDecoration(
+                  labelText: 'description'.tr(),
                   hintText: 'Please describe the problem in detail...',
                   alignLabelWithHint: true,
                 ),
@@ -89,7 +90,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('cancel'.tr()),
         ),
         ElevatedButton(
           onPressed: _submitReport,

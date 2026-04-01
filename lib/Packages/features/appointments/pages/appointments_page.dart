@@ -6,6 +6,7 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../widgets/appointment_accordion.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppointmentsPage extends StatefulWidget {
   const AppointmentsPage({super.key});
@@ -214,7 +215,7 @@ class AppointmentsPageState extends State<AppointmentsPage> {
                   backgroundColor: _getAccentColor(context, userGender),
                   foregroundColor: Colors.white,
                 ),
-                child: const Text('Try Again'),
+                child: Text('try_again'.tr()),
               ),
             ],
           ),

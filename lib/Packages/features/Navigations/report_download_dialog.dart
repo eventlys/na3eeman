@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../Services/business_service.dart';
 import '../../../Services/enums/report_enums.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SimpleReportDialog extends StatelessWidget {
   final StaffReportRequest initialRequest;
@@ -12,7 +13,7 @@ class SimpleReportDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Report Options'),
+      title: Text('report_options'.tr()),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,11 +28,11 @@ class SimpleReportDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Cancel'),
+          child: Text('cancel'.tr()),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(initialRequest),
-          child: const Text('Generate'),
+          child: Text('generate'.tr()),
         ),
       ],
     );

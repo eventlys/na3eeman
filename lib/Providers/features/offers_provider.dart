@@ -1,49 +1,94 @@
 import 'package:flutter/material.dart';
 import '../../Models/shop/offer_model.dart';
+import '../../Models/shop/ad_campaign_model.dart';
 import '../../Services/business_service.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class OffersProvider with ChangeNotifier {
   final OffersService _offersService = OffersService();
 
   List<OfferModel> _offers = [];
+  List<AdCampaignModel> _adCampaigns = [];
   bool _isLoading = false;
   String? _error;
 
   List<OfferModel> get offers => _offers;
+  List<AdCampaignModel> get adCampaigns => _adCampaigns;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  Future<void> loadOffers() async {
+  
+  /// Loads all campaigns (Offers & Ads) for a specific shop.
+  /// Used by Owner Dashboard and Specific Shop pages.
+  Future<void> loadCampaigns(int shopId) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final response = await _offersService.getBarberOffers();
-      final offersList = response['offers'] as List? ?? [];
+      final offersData = await _offersService.getShopOffers(shopId);
+      final adsData = await _offersService.getShopAdCampaigns(shopId);
       
-      if (offersList.isEmpty) {
-        _offers = _getMockOffers();
-      } else {
-        _offers = offersList.map((e) => OfferModel.fromMap(e as Map<String, dynamic>)).toList();
-      }
+      _offers = offersData.map((e) => OfferModel.fromMap(e as Map<String, dynamic>)).toList();
+      _adCampaigns = adsData.map((e) => AdCampaignModel.fromMap(e as Map<String, dynamic>)).toList();
     } catch (e) {
-      _offers = _getMockOffers(); // Fallback to mock data on error too
+      _error = 'Failed to load campaigns: $e';
+      // No fallback to mock as per Sprint 2 rules
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> createOffer(OfferModel offer) async {
+  /// Alias for loadCampaigns used by generic shop preview widgets.
+  /// If [shopId] is null, it attempts to load featured offers (currently fallback to shop 1).
+  Future<void> loadOffers({int? shopId}) async {
+    await loadCampaigns(shopId ?? 1); 
+  }
+
+  Future<void> createOffer(int shopId, OfferModel offer) async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      await _offersService.createOffer(offer.toMap());
-      await loadOffers();
+      await _offersService.createOffer(shopId, offer.toMap());
+      await loadCampaigns(shopId);
     } catch (e) {
       _error = 'Failed to create offer: $e';
+      notifyListeners();
+    }
+  }
+
+  Future<void> createAdCampaign(int shopId, AdCampaignModel ad) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _offersService.createAdCampaign(shopId, ad.toMap());
+      await loadCampaigns(shopId);
+    } catch (e) {
+      _error = 'Failed to create ad campaign: $e';
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteOffer(int shopId, int offerId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _offersService.deleteOffer(shopId, offerId);
+      await loadCampaigns(shopId);
+    } catch (e) {
+      _error = 'Failed to delete offer: $e';
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteAdCampaign(int shopId, int adId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _offersService.deleteAdCampaign(shopId, adId);
+      await loadCampaigns(shopId);
+    } catch (e) {
+      _error = 'Failed to delete ad campaign: $e';
       notifyListeners();
     }
   }
@@ -52,32 +97,4 @@ class OffersProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
   }
-
-  List<OfferModel> _getMockOffers() {
-    return [
-      OfferModel(
-        id: 1,
-        title: 'Summer Glow Package ☀️',
-        description: 'Complete grooming session with face scrub, premium haircut & styling, and relaxing head massage.',
-        price: '25.00',
-        originalPrice: '40.00',
-        validityPeriod: 'Valid until June 30, 2026',
-        shopId: 1,
-        shopName: 'Elite Grooming Lounge',
-        includedServices: ['Premium Haircut', 'Face Scrub & Steam', 'Head Massage'],
-      ),
-      OfferModel(
-        id: 2,
-        title: 'Complete Bridal Glow 💅',
-        description: 'Ensure look perfection with nails spa, hair styles treatments, and professional makeup options.',
-        price: '150.00',
-        originalPrice: '200.00',
-        validityPeriod: 'Valid until June 15, 2026',
-        shopId: 2,
-        shopName: 'Rose Beauty Center',
-        includedServices: ['Nails Spa', 'Hair Treatments', 'Bridal Makeup Setup'],
-      ),
-    ];
-  }
 }
-

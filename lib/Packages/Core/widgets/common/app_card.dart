@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../themes/app_theme.dart';
 import '../../constants/app_color.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 enum AppCardType { elevated, outlined, gradient }
 
 /// Themed card widget with three visual styles.
 ///
 /// ```dart
-/// AppCard(child: Text('Hello'))
-/// AppCard(type: AppCardType.gradient, child: Text('Gold'))
+/// AppCard(child: Text('hello'.tr()))
+/// AppCard(type: AppCardType.gradient, child: Text('gold'.tr()))
 /// ```
 class AppCard extends StatelessWidget {
   const AppCard({

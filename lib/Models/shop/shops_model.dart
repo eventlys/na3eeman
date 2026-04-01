@@ -12,6 +12,7 @@ class Shop {
   final int shopStaff;
   final bool confirmedPhone;
   final int ownerId;
+  final String? shopLogo;
   final double? avgRating;
   final List<Review>? reviews;
 
@@ -29,6 +30,7 @@ class Shop {
     required this.shopStaff,
     required this.confirmedPhone,
     required this.ownerId,
+    this.shopLogo,
     this.avgRating,
     this.reviews,
   });
@@ -48,6 +50,7 @@ class Shop {
       shopStaff: json['shop_staff'] as int? ?? 0,
       confirmedPhone: json['confirmed_phone'] as bool? ?? false,
       ownerId: json['owner'] as int? ?? 0,
+      shopLogo: json['shop_logo'] as String?,
       avgRating: (json['avg_rating'] as num?)?.toDouble(),
       reviews: json['reviews'] != null
           ? (json['reviews'] as List).map((r) => Review.fromJson(r)).toList()
@@ -70,6 +73,7 @@ class Shop {
       'shop_staff': shopStaff,
       'confirmed_phone': confirmedPhone,
       'owner': ownerId,
+      'shop_logo': shopLogo,
     };
   }
 }

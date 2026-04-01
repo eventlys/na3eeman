@@ -1,5 +1,6 @@
 // Helpers/ui/dialog_helper.dart
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DialogHelper {
   static void showSubscriptionUpgradeDialog({
@@ -10,24 +11,24 @@ class DialogHelper {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Upgrade Subscription'),
+        title: Text('upgrade_subscription'.tr()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Enterprise Plan'),
+              title: Text('enterprise_plan'.tr()),
               subtitle: const Text('\$199.99/month'),
               trailing: ElevatedButton(
                 onPressed: onEnterpriseUpgrade,
-                child: const Text('Upgrade'),
+                child: Text('upgrade'.tr()),
               ),
             ),
             ListTile(
-              title: const Text('Premium Plan'),
+              title: Text('premium_plan'.tr()),
               subtitle: const Text('\$149.99/month'),
               trailing: ElevatedButton(
                 onPressed: onPremiumUpgrade,
-                child: const Text('Upgrade'),
+                child: Text('upgrade'.tr()),
               ),
             ),
           ],
@@ -35,7 +36,7 @@ class DialogHelper {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
         ],
       ),

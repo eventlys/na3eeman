@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../../core/enums/app_enums.dart';
+// import '../../../../core/enums/app_enums.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 class UserReportsOverlay extends StatefulWidget {
@@ -283,7 +284,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _loadUserReports,
-              child: const Text('Retry'),
+              child: Text('retry'.tr()),
             ),
           ],
         ),
@@ -513,7 +514,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text('close'.tr()),
           ),
           if (status != 'resolved')
             ElevatedButton(

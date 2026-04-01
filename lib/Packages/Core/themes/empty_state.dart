@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_color.dart';
 import '../utils/helpers/themes_helpers.dart';
 import 'app_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EmptyState extends StatelessWidget {
   final String title;
@@ -264,7 +265,7 @@ class EmptyState extends StatelessWidget {
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: Text('try_again'.tr()),
             )
           : null,
       gender: gender,
@@ -285,7 +286,7 @@ class EmptyState extends StatelessWidget {
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text('retry'.tr()),
             )
           : null,
       gender: gender,

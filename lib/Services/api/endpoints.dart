@@ -27,7 +27,7 @@ class Endpoints {
   // ==================== USER PROFILE ====================
   static const String currentUser = '/auth/me/';  // Current user profile (was /auth/profile)
   static const String profile = '/auth/me/';  // Alias for backward compatibility
-  static const String profileBarber = '/auth/profile/barber/';
+  static const String profileBarber = '/auth/profile/employee/';  // Fixed: backend uses /employee/ not /barber/
   static const String profileOwner = '/auth/profile/owner/';
   static const String profilePicture = '/auth/profile/picture/';
   static const String profileLocation = '/auth/profile/location/';
@@ -62,6 +62,13 @@ class Endpoints {
   static String adminUserDetail(int userId) => '/auth/admin/users/$userId/';
   static const String adminUserStats = '/auth/admin/stats/'; 
 
+  // ==================== INTERN MANAGEMENT ====================
+  static const String internTasks = '/auth/intern/tasks/';
+  static String internTaskDetail(int id) => '/auth/intern/tasks/$id/';
+  static const String internTargets = '/auth/intern/targets/';
+  static const String internAttach = '/auth/intern/attach/';
+  static const String internActivity = '/auth/intern/activity/';
+
   // ==================== INVITATIONS ====================
   static const String invitationsSend = '/auth/invitations/send/';
   static const String invitationsRegister = '/auth/invitations/register/';
@@ -94,7 +101,7 @@ class Endpoints {
   static String appointmentCancel(int id) => '/shops/appointments/$id/cancel/';
   static String appointmentReschedule(int id) => '/shops/appointments/$id/reschedule/';
   static String appointmentComplete(int id) => '/shops/appointments/$id/complete/';
-  static String appointmentConfirmCashPayment(int id) => '/shops/appointments/$id/confirm-cash/';
+  static String appointmentConfirmCashPayment(int id) => '/shops/appointments/$id/confirm_payment/';  // Fixed: backend uses confirm_payment not confirm-cash
   
   // User appointments
   static const String userAppointments = '/shops/appointments/';  // Filter by user
@@ -108,6 +115,17 @@ class Endpoints {
   // ==================== SUBSCRIPTIONS ====================
   static const String subscriptions = '/shops/subscriptions/';
   static String subscriptionDetails(int id) => '/shops/subscriptions/$id/';
+
+  // ==================== OWNER / SUBSCRIPTION MANAGEMENT ====================
+  static const String ownerProfile = '/auth/profile/owner/';
+  // Note: The following endpoints need to be implemented on the backend in users/views.py
+  // static const String ownerSubscription = '/owners/subscription/';
+  // static const String ownerSubscriptionUpgrade = '/owners/subscription/upgrade/';
+  // static const String ownerSubscriptionCancel = '/owners/subscription/cancel/';
+  // static const String ownerSubscriptionRenew = '/owners/subscription/renew/';
+  // static const String ownerTrial = '/owners/subscription/trial/';
+  // static const String ownerFeatureAccess = '/owners/features/check/';
+  // static const String ownerStaffLimit = '/owners/staff/limit/';
 
   // ==================== HAIRCUT STYLES ====================
   static const String haircutStyles = '/shops/haircut-styles/';
@@ -126,8 +144,26 @@ class Endpoints {
   static const String paymentConfirm = '/payments/confirm/';
 
   // ==================== ANALYTICS ====================
-  // Note: May not exist in backend yet
+  static const String adminAnalyticsOverview = '/analytics/overview/';
+  static const String adminAnalyticsUsers = '/analytics/users/';
+  static const String adminAnalyticsUsage = '/analytics/usage/';
+  static const String adminAnalyticsFinancial = '/analytics/financial/';
+  static const String adminAnalyticsSystem = '/analytics/system/';
   static const String analyticsEvents = '/analytics/events/';
+  static String shopRetailSnapshot(int shopId) => '/shops/shops/$shopId/retail_snapshot/';
+  static String shopTeamLeaderboard(int shopId) => '/shops/shops/$shopId/team_leaderboard/';
+  static String shopDailyEarnings(int shopId) => '/shops/shops/$shopId/daily_earnings/';
+  static String shopResourceOccupancy(int shopId) => '/shops/shops/$shopId/resource_occupancy/';
+  static String shopEmployees(int shopId) => '/shops/shops/$shopId/employees/';
+
+  // Notifications
+  static const String notifications = '/auth/notifications/';
+  static String notificationMarkRead(int id) => '/auth/notifications/$id/mark-read/';
+  static const String notificationsMarkAllRead = '/auth/notifications/mark-all-read/';
+
+  // Campaigns
+  static String shopOffers(int shopId) => '/shops/shops/$shopId/offers/';
+  static String shopAdCampaigns(int shopId) => '/shops/shops/$shopId/campaigns/';
 
   // ==================== UTILITY ====================
   static const String health = '/health/';

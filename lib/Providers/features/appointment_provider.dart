@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
 import '../../Models/auth/user_model.dart';
@@ -91,12 +91,30 @@ class AppointmentProvider extends BaseProvider {
     try {
       if (_authProvider?.user?.id == null) return;
 
-      // Simulate network delay to yield execution
-      await Future.delayed(const Duration(milliseconds: 100));
+      // Filter local appointments for future ones
+      final now = DateTime.now();
+      final futureAppointments = _appointments
+          .where((appt) => 
+              appt.startTime.isAfter(now) && 
+              appt.status == AppointmentStatus.scheduled)
+          .toList()
+        ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
-      // Convert mock data to map format for the widget
-      final mockAppointment = _mockSoonestAppointment();
-      _soonestAppointment = mockAppointment;
+      if (futureAppointments.isNotEmpty) {
+        final a = futureAppointments.first;
+        _soonestAppointment = {
+          'id': a.id,
+          'customerId': a.customerId,
+          'shopId': a.shopId,
+          'barberId': a.barberId,
+          'dateTime': a.startTime.toIso8601String(),
+          'totalPrice': 0.0, // Should be calculated or from API
+          'shopName': 'Shop #${a.shopId}',
+          'services': a.services,
+        };
+      } else {
+        _soonestAppointment = null;
+      }
       notifyListeners();
     } catch (e) {
       print('Error loading soonest appointment: $e');

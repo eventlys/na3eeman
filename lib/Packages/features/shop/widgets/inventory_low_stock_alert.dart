@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../Helpers/inventory_helpers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LowStockSimpleAlert extends StatelessWidget {
   final List<dynamic> items;
@@ -36,8 +37,7 @@ class LowStockSimpleAlert extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Low Stock Alert',
+                Text('low_stock_alert'.tr(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.orange[800],

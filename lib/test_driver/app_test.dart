@@ -1,4 +1,5 @@
 // import 'package:flutter_driver/flutter_driver.dart';
+// import 'package:easy_localization/easy_localization.dart';
 // import 'package:test/test.dart';
 //
 // void main() {
@@ -22,10 +23,10 @@
 //       final loginButton = find.byValueKey('login_button');
 //
 //       await driver.tap(emailField);
-//       await driver.enterText('test@example.com');
+//       await driver.enterText('test_example_com'.tr());
 //
 //       await driver.tap(passwordField);
-//       await driver.enterText('Test123!');
+//       await driver.enterText('test123'.tr());
 //
 //       await driver.tap(loginButton);
 //

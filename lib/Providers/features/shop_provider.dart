@@ -5,6 +5,7 @@ import '../../Models/shop/shops_model.dart';
 import '../../Models/shop/branch_model.dart';
 import '../../Models/shop/shop_service_model.dart';
 import '../../Models/inventory/inventory_item.dart';
+import '../../Services/api/api_service.dart';
 
 class ShopProvider extends BaseProvider {
   List<Shop> _shops = [];
@@ -69,86 +70,53 @@ class ShopProvider extends BaseProvider {
   }
 
   Future<void> loadShops() async {
-    await Future.delayed(const Duration(seconds: 1));
-    _shops = [
-      Shop(
-        id: 1,
-        shopName: 'Modern Cuts Barbershop',
-        shopPhonNum: '+962791234567',
-        shopDescription:
-            'Premium barbershop offering modern haircuts and grooming services',
-        location: 'Abdali, Amman, Jordan',
-        lat: 31.9539,
-        lng: 35.9106,
-        openingTime: '09:00',
-        closingTime: '20:00',
-        shopSeats: 5,
-        shopStaff: 3,
-        confirmedPhone: true,
-        ownerId: _authProvider?.user?.id ?? 1,
-        avgRating: 4.5,
-      ),
-    ];
+    try {
+      final response = await ApiService().get('/shops/shops/');
+      print('Frontend: loadShops Response: $response');
+      final List<dynamic> results = response['results'] ?? response['data'] ?? [];
+      _shops = results.map<Shop>((json) => Shop.fromJson(json as Map<String, dynamic>)).toList();
+      if (_shops.isNotEmpty && _selectedShop == null) {
+         _selectedShop = _shops.first; // Default select
+      }
+    } catch (e) {
+      print('Frontend: loadShops Error: $e');
+    }
   }
 
   Future<void> loadBranches() async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    _branches = [
-      Branch(
-        id: 1,
-        name: 'Modern Cuts - Abdali',
-        address: 'Abdali Mall, Level 2, Amman, Jordan',
-        phone: '+962791234567',
-        isOpen: true,
-        todayAppointments: 15,
-        todayRevenue: 450.0,
-        manager: 'Sarah Wilson',
-        monthlyRevenue: 13500.0,
-        totalSales: 450,
-        lowStockItems: 3,
-        email: 'abdali@moderncuts.com',
-        openingDate: DateTime(2023, 1, 15),
-        totalEmployees: 5,
-        shopId: 1,
-        openingTime: '09:00',
-        closingTime: '20:00',
-        seats: 5,
-        staffCount: 3,
-        lat: 31.9539,
-        lng: 35.9106,
-      ),
-    ];
+    try {
+      if (_selectedShop == null) return;
+      final response = await ApiService().get('/shops/shops/${_selectedShop!.id}/branches/');
+      print('Frontend: loadBranches Response: $response');
+      final List<dynamic> results = response['results'] ?? response['data'] ?? [];
+      _branches = results.map<Branch>((json) => Branch.fromJson(json as Map<String, dynamic>)).toList();
+    } catch (e) {
+      print('Frontend: loadBranches Error: $e');
+    }
   }
 
   Future<void> loadServices() async {
-    await Future.delayed(const Duration(milliseconds: 600));
-    _services = [
-      ShopService(
-        name: 'Classic Haircut',
-        price: '25.00',
-        duration: '30min',
-        type: 'OPTION',
-        id: 1,
-        description: 'Traditional haircut with scissor and clipper work',
-        shopId: 1,
-      ),
-    ];
+    try {
+      if (_selectedShop == null) return;
+      final response = await ApiService().get('/shops/${_selectedShop!.id}/services/');
+      print('Frontend: loadServices Response: $response');
+      final List<dynamic> results = response['results'] ?? response['data'] ?? response['options'] ?? [];
+      _services = results.map<ShopService>((json) => ShopService.fromMap(json as Map<String, dynamic>)).toList();
+    } catch (e) {
+      print('Frontend: loadServices Error: $e');
+    }
   }
 
   Future<void> loadInventory() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    _inventory = [
-      InventoryItem(
-        id: '1',
-        productId: 1,
-        shopId: 1,
-        quantityInStock: 15,
-        lastUpdated: DateTime.now(),
-        productName: 'Hair Styling Gel',
-        productDescription: 'Premium hold styling gel',
-        productPrice: 12.99,
-      ),
-    ];
+    try {
+      if (_selectedShop == null) return;
+      final response = await ApiService().get('/shops/${_selectedShop!.id}/inventory/');
+      print('Frontend: loadInventory Response: $response');
+      final List<dynamic> results = response['results'] ?? response['data'] ?? [];
+      _inventory = results.map<InventoryItem>((json) => InventoryItem.fromJson(json as Map<String, dynamic>)).toList();
+    } catch (e) {
+      print('Frontend: loadInventory Error: $e');
+    }
   }
 
   Future<void> selectShop(Shop shop) async {
@@ -166,6 +134,107 @@ class ShopProvider extends BaseProvider {
   Future<void> loadShopSpecificData() async {
     if (_selectedShop != null) {
       await Future.wait([loadServices(), loadInventory()]);
+    }
+  }
+
+  Future<void> createProductOnBackend({
+    required String name,
+    required double price,
+    required String description,
+    required int stock,
+  }) async {
+    if (_selectedShop != null) {
+      try {
+        final data = {
+          'product_name': name,
+          'product_price': price,
+          'product_description': description,
+          'category': 'Consumables', // Default for demo
+          'stock': stock
+        };
+        print('Frontend: Creating Product with data: $data');
+        // Actual endpoint logic here or simulation with endpoint setups
+        final response = await ApiService().post('/shops/${_selectedShop!.id}/inventory/', data: data);
+        print('Frontend: createProduct Response: $response');
+        await loadInventory(); // Reload to capture new list
+      } catch (e) {
+        print('Frontend: createProduct Error: $e');
+      }
+    }
+  }
+
+  Future<void> adjustStockOnBackend(String inventoryId, int increment) async {
+    try {
+      print('Frontend: Adjusting Stock count for $inventoryId by $increment');
+      // Simulated endpoint PUT logic
+      final response = await ApiService().post('/shops/inventory/$inventoryId/adjust_stock/', data: {'increment': increment});
+      print('Frontend: adjustStock Response: $response');
+      await loadInventory(); // Reload to capture new quantities
+    } catch (e) {
+      print('Frontend: adjustStock Error: $e');
+      // For demo, apply locally if API isn't ready
+      final index = _inventory.indexWhere((item) => item.id == inventoryId);
+      if (index != -1) {
+        _inventory[index] = InventoryItem(
+          id: _inventory[index].id,
+          productId: _inventory[index].productId,
+          shopId: _inventory[index].shopId,
+          quantityInStock: _inventory[index].quantityInStock + increment,
+          lastUpdated: DateTime.now(),
+          productName: _inventory[index].productName,
+          productDescription: _inventory[index].productDescription,
+          productPrice: _inventory[index].productPrice,
+        );
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> updateShopOnBackend({required String name, required String phone, required String location, required String description}) async {
+    if (_selectedShop != null) {
+      try {
+        final data = {
+          'shop_name': name,
+          'shop_phone_num': phone,
+          'location': location,
+          'shop_description': description,
+        };
+        print('Frontend: Updating Shop on Backend with data: $data');
+        final response = await ApiService().put('/shops/shops/${_selectedShop!.id}/', data: data);
+        print('Frontend: updateShopOnBackend Response: $response');
+        _selectedShop = Shop.fromJson(response);
+        notifyListeners();
+      } catch (e) {
+        print('Frontend: updateShopOnBackend Error: $e');
+      }
+    }
+  }
+
+  void updateShopInMemory({required String name, required String phone, required String location, required String description}) {
+    if (_selectedShop != null) {
+      _selectedShop = Shop(
+        id: _selectedShop!.id,
+        shopName: name,
+        shopPhonNum: phone,
+        shopDescription: description,
+        location: location,
+        lat: _selectedShop!.lat,
+        lng: _selectedShop!.lng,
+        openingTime: _selectedShop!.openingTime,
+        closingTime: _selectedShop!.closingTime,
+        shopSeats: _selectedShop!.shopSeats,
+        shopStaff: _selectedShop!.shopStaff,
+        confirmedPhone: _selectedShop!.confirmedPhone,
+        ownerId: _selectedShop!.ownerId,
+        avgRating: _selectedShop!.avgRating,
+      );
+      
+      // Also update in list if any list iterates it
+      final index = _shops.indexWhere((s) => s.id == _selectedShop!.id);
+      if (index != -1) {
+        _shops[index] = _selectedShop!;
+      }
+      notifyListeners();
     }
   }
 }

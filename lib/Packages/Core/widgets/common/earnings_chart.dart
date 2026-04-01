@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EarningsChart extends StatelessWidget {
   final dynamic earningsData;
@@ -69,8 +70,7 @@ class EarningsChart extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            "Weekly Earnings Trend",
+          Text('weekly_earnings_trend'.tr(),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: textColor,
@@ -147,19 +147,19 @@ class EarningsChart extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _StatItem(
-          label: 'Total',
+          label: 'total'.tr(),
           value: '\$${totalEarnings.toStringAsFixed(0)}',
           color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
           theme: theme,
         ),
         _StatItem(
-          label: 'Appointments',
+          label: 'appointments'.tr(),
           value: totalAppointments.toString(),
           color: isDark ? AppColor.darkInfo : AppColor.lightInfo,
           theme: theme,
         ),
         _StatItem(
-          label: 'Average',
+          label: 'average'.tr(),
           value: '\$${averagePerAppointment.toStringAsFixed(0)}',
           color: isDark ? AppColor.darkWarning : AppColor.lightWarning,
           theme: theme,
@@ -187,8 +187,7 @@ class EarningsChart extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Text(
-          'No earnings data available',
+        child: Text('no_earnings_data_available'.tr(),
           style: theme.textTheme.bodyLarge?.copyWith(
             color: textColor,
           ),

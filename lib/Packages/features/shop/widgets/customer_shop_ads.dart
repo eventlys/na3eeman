@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Models/shop/offer_model.dart';
 import '../../../../Providers/features/offers_provider.dart';
-import '../../../../core/theme/colors.dart';
+// import '../../../../core/theme/colors.dart';
 import '../pages/offer_details_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HorizontalShopScroll extends StatefulWidget {
   const HorizontalShopScroll({super.key});
@@ -40,9 +41,9 @@ class _HorizontalShopScrollState extends State<HorizontalShopScroll> {
     }
 
     if (offers.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 170,
-        child: Center(child: Text('No offers available at this moment')),
+        child: Center(child: Text('no_offers_available_at_this_moment'.tr())),
       );
     }
 

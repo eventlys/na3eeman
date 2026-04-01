@@ -1777,15 +1777,30 @@ class InventoryService {
 }
 
 class OffersService {
-  Future<Map<String, dynamic>> getBarberOffers() async {
-    // This would typically make an API call to get offers
-    // For now, we'll return an empty list since we don't have the endpoint
-    return {'offers': []};
+  final ApiService _apiService = ApiService();
+
+  Future<List<dynamic>> getShopOffers(int shopId) async {
+    return _apiService.getShopOffers(shopId);
   }
 
-  Future<Map<String, dynamic>> createOffer(Map<String, dynamic> offerData) async {
-    // This would create a new offer via API
-    return {'success': true, 'offer': offerData};
+  Future<Map<String, dynamic>> createOffer(int shopId, Map<String, dynamic> offerData) async {
+    return _apiService.createOffer(shopId, offerData);
+  }
+
+  Future<void> deleteOffer(int shopId, int offerId) async {
+    await _apiService.deleteOffer(shopId, offerId);
+  }
+
+  Future<List<dynamic>> getShopAdCampaigns(int shopId) async {
+    return _apiService.getShopAdCampaigns(shopId);
+  }
+
+  Future<Map<String, dynamic>> createAdCampaign(int shopId, Map<String, dynamic> data) async {
+    return _apiService.createAdCampaign(shopId, data);
+  }
+
+  Future<void> deleteAdCampaign(int shopId, int campaignId) async {
+    await _apiService.deleteAdCampaign(shopId, campaignId);
   }
 }
 

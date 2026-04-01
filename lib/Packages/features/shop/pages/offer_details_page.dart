@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../Models/shop/offer_model.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class OfferDetailsPage extends StatelessWidget {
   final OfferModel offer;
@@ -164,8 +165,7 @@ class OfferDetailsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'About This Offer',
+        Text('about_this_offer'.tr(),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const SizedBox(height: 12),
@@ -185,8 +185,7 @@ class OfferDetailsPage extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Included Services',
+          Text('included_services'.tr(),
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           const SizedBox(height: 12),
@@ -232,7 +231,7 @@ class OfferDetailsPage extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               elevation: 0,
             ),
-            child: const Text('Book This Offer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            child: Text('book_this_offer'.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           ),
         ),
       ),
@@ -281,8 +280,7 @@ class _BookingSheetState extends State<_BookingSheet> {
             decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Select Date & Time',
+          Text('select_date_time'.tr(),
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 24),
@@ -320,9 +318,9 @@ class _BookingSheetState extends State<_BookingSheet> {
           const SizedBox(height: 16),
 
           // Time Selection Slots
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
-            child: Text('Available Slots', style: TextStyle(fontWeight: FontWeight.w600)),
+            child: Text('available_slots'.tr(), style: TextStyle(fontWeight: FontWeight.w600)),
           ),
           const SizedBox(height: 12),
           SizedBox(
@@ -368,7 +366,7 @@ class _BookingSheetState extends State<_BookingSheet> {
                   ? () {
                       Navigator.pop(context); // Close sheet
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Booking request sent successfully!')),
+                        SnackBar(content: Text('booking_request_sent_successfully'.tr())),
                       );
                     }
                   : null,
@@ -377,7 +375,7 @@ class _BookingSheetState extends State<_BookingSheet> {
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Confirm Booking'),
+              child: Text('confirm_booking'.tr()),
             ),
           ),
         ],

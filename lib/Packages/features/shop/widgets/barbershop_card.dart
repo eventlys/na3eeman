@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BarbershopCard extends StatefulWidget {
   final String title;
@@ -75,7 +76,7 @@ class _BarbershopCardState extends State<BarbershopCard>
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not launch maps')),
+          SnackBar(content: Text('could_not_launch_maps'.tr())),
         );
       }
     }

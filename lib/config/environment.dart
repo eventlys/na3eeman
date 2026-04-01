@@ -1,3 +1,5 @@
+// import 'package:flutter/foundation.dart';
+
 /// Application Environment Configuration
 ///
 /// This file defines the environment configuration for the app.

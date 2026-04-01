@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../themes/app_theme.dart';
 import '../../constants/app_color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Navigation item data model.
 class AppNavItem {
@@ -40,59 +41,59 @@ class AppBottomNavBar extends StatelessWidget {
 
   // ── Predefined item sets ──────────────────────────────────────────────────
 
-  static const List<AppNavItem> customerItems = [
+  static final List<AppNavItem> customerItems = [
     AppNavItem(
-      label: 'Home',
+      label: 'home'.tr(),
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
       route: '/customer_home',
     ),
     AppNavItem(
-      label: 'Shops',
+      label: 'shops'.tr(),
       icon: Icons.storefront_outlined,
       activeIcon: Icons.storefront_rounded,
       route: '/shops',
     ),
     AppNavItem(
-      label: 'Bookings',
+      label: 'bookings'.tr(),
       icon: Icons.calendar_today_outlined,
       activeIcon: Icons.calendar_today_rounded,
       route: '/appointments',
     ),
     AppNavItem(
-      label: 'Favourites',
+      label: 'favourites'.tr(),
       icon: Icons.favorite_outline,
       activeIcon: Icons.favorite_rounded,
       route: '/favorites',
     ),
     AppNavItem(
-      label: 'Profile',
+      label: 'profile'.tr(),
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,
       route: '/profile',
     ),
   ];
 
-  static const List<AppNavItem> barberItems = [
+  static List<AppNavItem> barberItems = [
     AppNavItem(
-      label: 'Home',
+      label: 'home'.tr(),
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
       route: '/barber_home',
     ),
     AppNavItem(
-      label: 'Bookings',
+      label: 'bookings'.tr(),
       icon: Icons.calendar_today_outlined,
       activeIcon: Icons.calendar_today_rounded,
       route: '/appointments',
     ),
     AppNavItem(
-      label: 'History',
+      label: 'history'.tr(),
       icon: Icons.history_rounded,
       route: '/history',
     ),
     AppNavItem(
-      label: 'Profile',
+      label: 'profile'.tr(),
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,
       route: '/profile',

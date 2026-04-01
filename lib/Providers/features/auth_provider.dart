@@ -1,14 +1,16 @@
+import 'dart:convert';
 // import 'package:flutter/material.dart';
 import '../base_provider.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/auth/barber_profile.dart';
-import '../../Models/auth/owner_profile.dart';
+import 'package:na3eeman/Models/auth/owner_profile.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/auth_service.dart';
 import '../../Services/repositories/auth_repository.dart';
 import '../../Services/enums/gender.dart';
 import '../../core/enums/app_enums.dart';
+import '../../core/enums/owner_enums.dart';
 import '../../core/auth/role_permission_manager.dart';
 
 class AuthProvider extends BaseProvider {
@@ -35,6 +37,86 @@ class AuthProvider extends BaseProvider {
   Gender? get userGender => _user?.gender;
   /// The currently active JWT access token. Null if not logged in.
   String? get currentToken => _currentToken;
+
+  /// Load auth details from storage on startup.
+  Future<void> loadSavedAuth() async {
+    try {
+      final tokens = await secureStorage.getAuthTokens();
+      final accessToken = tokens['authToken'];
+      
+      if (accessToken != null && accessToken.isNotEmpty) {
+        final profile = await secureStorage.getUserProfile();
+        if (profile != null) {
+          _user = profile;
+          _isAuthenticated = true;
+          _currentToken = accessToken;
+          
+          // Rehydrate other profiles based on role if needed
+          _rehydrateProfiles();
+
+          // INACTIVITY CHECK: "2 months" (60 days)
+          final bool isExpired = await checkInactivity();
+          if (isExpired) {
+            AppLogger.info('Session expired due to inactivity.');
+            return;
+          }
+
+          notifyListeners();
+          AppLogger.info('Auth restored for user: ${_user?.email}');
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Failed to load saved auth data', error: e);
+    }
+  }
+
+  void _rehydrateProfiles() {
+    final userData = secureStorage.getMemoryCache('user_profile_${_user?.id}') ?? 
+                     secureStorage.getPreference('user_data');
+                     
+    if (userData != null) {
+      try {
+        final Map<String, dynamic> data = userData is String 
+            ? Map<String, dynamic>.from(json.decode(userData)) 
+            : Map<String, dynamic>.from(userData);
+            
+        if (_user?.isBarber == true || _user?.isOwner == true) {
+          _barberProfile = BarberProfile.fromJson(data['barber_profile'] ?? data);
+        }
+        if (_user?.isOwner == true) {
+          _ownerProfile = OwnerProfile.fromJson(data['owner_profile'] ?? data);
+        }
+      } catch (e) {
+        AppLogger.error('Rehydrating profiles failed', error: e);
+      }
+    }
+  }
+
+  /// Checks if the user was inactive for too long. Returns true if expired and logged out.
+  Future<bool> checkInactivity() async {
+    final lastActivityStr = secureStorage.getPreference('last_activity');
+    if (lastActivityStr != null) {
+      try {
+        final lastActivity = DateTime.parse(lastActivityStr as String);
+        final difference = DateTime.now().difference(lastActivity);
+
+        // CONFIG: update duration back to 6 days for testing if needed
+        // Current: 60 days (2 months)
+        if (difference.inDays >= 60) {
+          await logout();
+          return true;
+        }
+      } catch (e) {
+        AppLogger.error('Error parsing last_activity timestamp: $e');
+      }
+    }
+    await updateLastActivity();
+    return false;
+  }
+
+  Future<void> updateLastActivity() async {
+    await secureStorage.setPreference('last_activity', DateTime.now().toIso8601String());
+  }
 
   // Role-based convenience getters
   bool get isCustomer => _user?.isCustomer ?? false;
@@ -128,13 +210,14 @@ class AuthProvider extends BaseProvider {
     _ownerProfile = OwnerProfile(
       id: 1,
       barberProfileId: 2,
+      ownerType: OwnerType.employeeOwner,
       isOwner: true,
       isWorker: true,
       isSubscribed: true,
       hasBranches: true,
       hasOffers: true,
       avgRating: 4.8,
-      subscriptionTier: 'PREMIUM',
+      subscriptionTier: OwnerSubscriptionTier.elite, // was 'PREMIUM' string
       subscriptionStartDate: DateTime.now().subtract(const Duration(days: 30)),
       subscriptionEndDate: DateTime.now().add(const Duration(days: 335)),
     );
@@ -189,6 +272,8 @@ class AuthProvider extends BaseProvider {
           refreshToken ?? '',
         );
 
+        await updateLastActivity(); // Update activity on login
+
         setLoading(false);
         return true;
       } else {
@@ -229,6 +314,8 @@ class AuthProvider extends BaseProvider {
           accessToken,
           refreshToken ?? '',
         );
+
+        await updateLastActivity(); // Update activity on login
 
         setLoading(false);
         return true;
@@ -398,5 +485,20 @@ class AuthProvider extends BaseProvider {
       print('Error updating profile in provider: $e');
       rethrow;
     }
+  }
+
+  /// DEBUG ONLY: Manually override the current user and profiles for testing.
+  void debugSetOwnerProfile({
+    required User user,
+    BarberProfile? barberProfile,
+    OwnerProfile? ownerProfile,
+  }) {
+    _user = user;
+    _barberProfile = barberProfile;
+    _ownerProfile = ownerProfile;
+    _isAuthenticated = true;
+    _currentToken = 'debug_token';
+    notifyListeners();
+    AppLogger.warning('DEBUG: Auth system overridden for testing');
   }
 }

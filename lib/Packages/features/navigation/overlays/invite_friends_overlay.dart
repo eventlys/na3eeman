@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class InviteFriendsOverlay extends StatefulWidget {
   const InviteFriendsOverlay({super.key});
@@ -112,7 +113,7 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
               child: ElevatedButton.icon(
                 onPressed: _shareLink,
                 icon: const Icon(Icons.share, size: 18, color: Colors.black),
-                label: const Text('Share'),
+                label: Text('share'.tr()),
               ),
             ),
           ],

@@ -6,6 +6,7 @@ import '../../../../Helpers/subscription_helper.dart';
 import '../../../shared/overlays/subscription_details_dialog.dart';
 import '../../constants/app_color.dart';
 import '../../utils/helpers/themes_helpers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SubscriptionListWidget extends StatefulWidget {
   final VoidCallback onSubscriptionSuccess;
@@ -140,8 +141,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightError,
           ),
           SizedBox(height: 16),
-          Text(
-            'Failed to load subscriptions',
+          Text('failed_to_load_subscriptions'.tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                   : AppColor.lightPrimary,
               foregroundColor: AppColor.light,
             ),
-            child: Text('Try Again'),
+            child: Text('try_again'.tr()),
           ),
         ],
       ),
@@ -189,8 +189,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightTextHint,
           ),
           SizedBox(height: 16),
-          Text(
-            'No Subscriptions Available',
+          Text('no_subscriptions_available'.tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -200,8 +199,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
             ),
           ),
           SizedBox(height: 8),
-          Text(
-            'There are no subscription plans available at the moment.',
+          Text('there_are_no_subscription_plans_available_at_the_m'.tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).brightness == Brightness.dark
@@ -237,8 +235,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
         // Header
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Text(
-            'Subscribe to the Shop',
+          child: Text('subscribe_to_the_shop'.tr(),
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -283,7 +280,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                   vertical: 12,
                 ),
               ),
-              child: const Text('Show More'),
+              child: Text('show_more'.tr()),
             ),
           ),
 

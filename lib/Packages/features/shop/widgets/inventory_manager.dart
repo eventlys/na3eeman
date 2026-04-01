@@ -7,6 +7,7 @@ import '../../../Core/constants/app_images.dart';
 import '../overlays/Inventory_add_item_dialog.dart';
 import 'inventory_list_item.dart';
 import 'inventory_low_stock_alert.dart';
+import 'package:easy_localization/easy_localization.dart';
 // import 'low_stock_alert.dart';
 
 class InventoryManager extends StatefulWidget {
@@ -161,8 +162,7 @@ class InventoryManagerState extends State<InventoryManager> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
-          'Delete Item',
+        title: Text('delete_item'.tr(),
           style: TextStyle(color: AppColor.lightText),
         ),
         backgroundColor: AppColor.lightCard,
@@ -173,15 +173,13 @@ class InventoryManagerState extends State<InventoryManager> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              'Cancel',
+            child: Text('cancel'.tr(),
               style: TextStyle(color: AppColor.lightTextSecondary),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              'Delete',
+            child: Text('delete'.tr(),
               style: TextStyle(color: AppColor.lightError)
             ),
           ),
@@ -230,8 +228,7 @@ class InventoryManagerState extends State<InventoryManager> {
 
     if (isCustomer) {
       return Center(
-        child: Text(
-          'Inventory management is only available for owners',
+        child: Text('inventory_management_is_only_available_for_owners'.tr(),
           style: TextStyle(
             fontSize: 16,
             color: AppColor.lightTextSecondary
@@ -249,8 +246,7 @@ class InventoryManagerState extends State<InventoryManager> {
             children: [
               CircularProgressIndicator(color: AppColor.lightPrimary),
               const SizedBox(height: 16),
-              Text(
-                'Initializing shop details...',
+              Text('initializing_shop_details'.tr(),
                 style: TextStyle(color: AppColor.lightTextSecondary),
               ),
             ],
@@ -288,8 +284,7 @@ class InventoryManagerState extends State<InventoryManager> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Inventory Management',
+                          Text('inventory_management'.tr(),
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppColor.lightText,
@@ -332,8 +327,7 @@ class InventoryManagerState extends State<InventoryManager> {
                                 color: AppColor.lightError,
                               ),
                               const SizedBox(height: 16),
-                              Text(
-                                'Failed to load inventory',
+                              Text('failed_to_load_inventory'.tr(),
                                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppColor.lightText,
                                 ),
@@ -355,8 +349,7 @@ class InventoryManagerState extends State<InventoryManager> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColor.lightPrimary,
                                 ),
-                                child: Text(
-                                  'Retry',
+                                child: Text('retry'.tr(),
                                   style: TextStyle(color: AppColor.light),
                                 ),
                               ),
@@ -398,8 +391,7 @@ class InventoryManagerState extends State<InventoryManager> {
                                   color: AppColor.lightTextSecondary,
                                 ),
                                 const SizedBox(height: 16),
-                                Text(
-                                  'No items in inventory',
+                                Text('no_items_in_inventory'.tr(),
                                   style: TextStyle(
                                     fontSize: 18,
                                     color: AppColor.lightTextSecondary

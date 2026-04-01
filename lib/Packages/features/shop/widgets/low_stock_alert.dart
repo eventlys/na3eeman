@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LowStockDetailedAlert extends StatelessWidget {
   final int? shopId;
@@ -42,8 +43,7 @@ class LowStockDetailedAlert extends StatelessWidget {
                     color: AppColor.lightWarning,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'Low Stock Alert',
+                  Text('low_stock_alert'.tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColor.lightWarning,

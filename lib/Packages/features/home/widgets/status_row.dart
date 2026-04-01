@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class StatsRow extends StatelessWidget {
   final int completedOrders;
@@ -20,7 +21,7 @@ class StatsRow extends StatelessWidget {
         children: [
           Expanded(
             child: _StatCard(
-              title: 'Completed',
+              title: 'completed'.tr().tr(),
               value: completedOrders.toString(),
               // color: AppColor.lightSuccess,
               // darkColor: AppColor.darkSuccess,
@@ -30,7 +31,7 @@ class StatsRow extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: _StatCard(
-              title: 'Pending',
+              title: 'pending'.tr().tr(),
               value: pendingOrders.toString(),
               // color: AppColor.lightWarning,
               // darkColor: AppColor.darkWarning,

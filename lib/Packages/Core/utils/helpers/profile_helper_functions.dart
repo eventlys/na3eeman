@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../Services/core/user_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHelperFunctions {
   static void initializeControllers({
@@ -82,19 +83,19 @@ class ProfileHelperFunctions {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Profile'),
-        content: const Text('Are you sure you want to delete your profile? This action cannot be undone.'),
+        title: Text('delete_profile'.tr()),
+        content: Text('are_you_sure_you_want_to_delete_your_profile_this_'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onConfirm();
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text('delete'.tr(), style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -116,7 +117,7 @@ class ProfileHelperFunctions {
       // await ApiService.deleteProfile();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile deleted')),
+        SnackBar(content: Text('profile_deleted'.tr())),
       );
 
       onSuccess();
@@ -140,22 +141,22 @@ class ProfileHelperFunctions {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change Profile Picture'),
-        content: const Text('Choose an option'),
+        title: Text('change_profile_picture'.tr()),
+        content: Text('choose_an_option'.tr()),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _pickImageFromGallery();
             },
-            child: const Text('Gallery'),
+            child: Text('gallery'.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _takePhoto();
             },
-            child: const Text('Camera'),
+            child: Text('camera'.tr()),
           ),
         ],
       ),

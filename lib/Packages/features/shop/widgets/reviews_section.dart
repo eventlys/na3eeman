@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/enums/app_enums.dart';
 import '../../profile/widgets/rating_with_points_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ReviewsSection extends StatefulWidget {
   final Map<String, dynamic> shopData;
@@ -98,16 +99,14 @@ class ReviewsSectionState extends State<ReviewsSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Customer Reviews',
+              Text('customer_reviews'.tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFFFFFFF),
                 ),
               ),
-              Text(
-                'See All',
+              Text('see_all'.tr(),
                 style: TextStyle(
                   color: Color(0xFF2196F3),
                   fontWeight: FontWeight.w500,
@@ -133,8 +132,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Add Your Review',
+                Text('add_your_review'.tr(),
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontSize: 16,
@@ -166,7 +164,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
                   maxLines: 3,
                   style: TextStyle(color: Color(0xFFFFFFFF)),
                   decoration: InputDecoration(
-                    hintText: 'Write your review here...',
+                    hintText: 'write_your_review_here'.tr(),
                     hintStyle: TextStyle(color: Color(0xFFCCCCCC)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -195,7 +193,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text('Submit Review'),
+                    child: Text('submit_review'.tr()),
                   ),
                 ),
               ],

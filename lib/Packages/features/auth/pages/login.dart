@@ -8,6 +8,12 @@ import '../../../../core/enums/app_enums.dart';
 import '../../../../Providers/app_providers.dart';
 import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../Models/auth/user_model.dart';
+import '../../../../Models/auth/owner_profile.dart';
+import '../../../../Models/auth/barber_profile.dart';
+import '../../../../core/enums/owner_enums.dart';
+import '../../../../Services/enums/gender.dart' as g;
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -151,8 +157,7 @@ class _LoginPageState extends State<LoginPage>
                     const SizedBox(height: 32),
 
                     // Welcome Title
-                    Text(
-                      'NA3EEMAN',
+                    Text('na3eeman'.tr(),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.displayMedium?.copyWith(
                         color: Theme.of(context).primaryColor,
@@ -160,8 +165,7 @@ class _LoginPageState extends State<LoginPage>
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Professional Grooming Services',
+                    Text('professional_grooming_services'.tr(),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: isDark ? AppColors.cream600 : AppColors.almostBlack400,
@@ -179,8 +183,7 @@ class _LoginPageState extends State<LoginPage>
                     const SizedBox(height: 32),
 
                     // Email field
-                    Text(
-                      'Email Address',
+                    Text('email_address'.tr(),
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                     const SizedBox(height: 8),
@@ -195,8 +198,7 @@ class _LoginPageState extends State<LoginPage>
                     const SizedBox(height: 20),
 
                     // Password field
-                    Text(
-                      'Password',
+                    Text('password'.tr(),
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                     const SizedBox(height: 8),
@@ -259,13 +261,13 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text('Remember me'),
+                            Text('remember_me'.tr()),
                           ],
                         ),
                         TextButton(
                           onPressed: () =>
                               Navigator.pushNamed(context, '/forgot-password'),
-                          child: const Text('Forgot password?'),
+                          child: Text('forgot_password'.tr()),
                         ),
                       ],
                     ),
@@ -282,12 +284,12 @@ class _LoginPageState extends State<LoginPage>
                     const SizedBox(height: 24),
 
                     // OR divider
-                    const Row(
+                    Row(
                       children: [
                         Expanded(child: Divider()),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('OR'),
+                          child: Text('or'.tr()),
                         ),
                         Expanded(child: Divider()),
                       ],
@@ -295,11 +297,11 @@ class _LoginPageState extends State<LoginPage>
                     const SizedBox(height: 24),
 
                     // Social Login Mock
-                    SecondaryButton(
-                      text: 'Continue with Phone',
-                      icon: Icons.phone_android_rounded,
-                      onPressed: () {}, // Planned feature
-                    ),
+                    // SecondaryButton(
+                    //   text: 'Continue with Phone',
+                    //   icon: Icons.phone_android_rounded,
+                    //   onPressed: () {}, // Planned feature
+                    // ),
 
                     const SizedBox(height: 32),
 
@@ -311,8 +313,7 @@ class _LoginPageState extends State<LoginPage>
                         GestureDetector(
                           onTap: () =>
                               Navigator.pushNamed(context, '/signup'),
-                          child: const Text(
-                            'Sign up',
+                          child: Text('sign_up'.tr(),
                             style: TextStyle(
                               color: AppColors.pink,
                               fontWeight: FontWeight.bold,
@@ -386,8 +387,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'Quick Access (Fast Login)',
+              child: Text('quick_access_fast_login'.tr(),
                 style: TextStyle(
                   color: AppColors.almostBlack400,
                   fontSize: 12,
@@ -412,14 +412,14 @@ class _LoginPageState extends State<LoginPage>
                 _selectedGender = index == 0 ? 'male' : 'female';
               });
             },
-            children: const [
+            children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('Male'),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text('male'.tr()),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('Female'),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text('female'.tr()),
               ),
             ],
           ),
@@ -427,8 +427,7 @@ class _LoginPageState extends State<LoginPage>
         const SizedBox(height: 16),
 
         // User Type buttons
-        Text(
-          'Fast Login as',
+        Text('fast_login_as'.tr(),
           style: TextStyle(
             color: isDark ? AppColors.cream200 : AppColors.almostBlack600,
             fontSize: 13,
@@ -450,7 +449,7 @@ class _LoginPageState extends State<LoginPage>
             const SizedBox(width: 10),
             Expanded(
               child: _buildRoleButton(
-                label: 'Employee',
+                label: 'employee'.tr(),
                 icon: Icons.content_cut_rounded,
                 role: 'employee',
                 isDark: isDark,
@@ -472,7 +471,7 @@ class _LoginPageState extends State<LoginPage>
             const SizedBox(width: 10),
             Expanded(
               child: _buildRoleButton(
-                label: 'Admin',
+                label: 'admin'.tr(),
                 icon: Icons.admin_panel_settings_outlined,
                 role: 'admin',
                 isDark: isDark,
@@ -502,7 +501,91 @@ class _LoginPageState extends State<LoginPage>
             ),
           ],
         ),
+        const SizedBox(height: 24),
+
+        Row(
+          children: [
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Owner',
+                sub: 'Artisan',
+                icon: Icons.store_mall_directory_outlined,
+                role: 'owner',
+                baseUsername: 'owner1',
+                tier: OwnerSubscriptionTier.artisan,
+                isDark: isDark,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Owner',
+                sub: 'Studio',
+                icon: Icons.storefront_rounded,
+                role: 'owner',
+                baseUsername: 'owner2',
+                tier: OwnerSubscriptionTier.studio,
+                isDark: isDark,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Owner',
+                sub: 'Elite',
+                icon: Icons.workspace_premium_outlined,
+                role: 'owner',
+                baseUsername: 'owner3',
+                tier: OwnerSubscriptionTier.elite,
+                isDark: isDark,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildRoleButton(
+                label: 'Owner',
+                sub: 'Empire',
+                icon: Icons.domain_rounded,
+                role: 'owner',
+                baseUsername: 'owner4',
+                tier: OwnerSubscriptionTier.empire,
+                isDark: isDark,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
       ],
+    );
+  }
+
+  Widget _buildMockButton(String label, Color color, OwnerSubscriptionTier tier, OwnerType type, {bool expired = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => _quickAccessOwner(label, tier, type, expired),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.auto_awesome_rounded, size: 14, color: color),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -511,11 +594,25 @@ class _LoginPageState extends State<LoginPage>
     required IconData icon,
     required String role,
     required bool isDark,
+    String? sub,
+    String? baseUsername,
+    OwnerSubscriptionTier? tier,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => _quickAccessRole(role),
+        onTap: () {
+          if (tier != null) {
+            _quickAccessOwner(
+              'Owner (${sub ?? tier.name})', 
+              tier, 
+              OwnerType.employeeOwner, 
+              false
+            );
+          } else {
+            _quickAccessRole(role, baseUsername: baseUsername);
+          }
+        },
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -558,6 +655,17 @@ class _LoginPageState extends State<LoginPage>
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              if (sub != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  sub,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -565,25 +673,30 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  void _quickAccessRole(String role) {
+  void _quickAccessRole(String role, {String? baseUsername}) {
     String prefix = _selectedGender == 'female' ? 'female_' : '';
     String email = '${prefix}customer1@test.com';
-    switch (role.toLowerCase()) {
-      case 'admin':
-        email = 'admin@na3eeman.com';
-        break;
-      case 'owner':
-        email = '${prefix}owner1@test.com';
-        break;
-      case 'employee':
-        email = '${prefix}barber1@test.com';
-        break;
-      case 'intern':
-        email = '${prefix}intern1@test.com';
-        break;
-      case 'receptionist':
-        email = '${prefix}receptionist1@test.com';
-        break;
+    
+    if (baseUsername != null) {
+      email = '$prefix$baseUsername@test.com';
+    } else {
+      switch (role.toLowerCase()) {
+        case 'admin':
+          email = 'admin@na3eeman.com';
+          break;
+        case 'owner':
+          email = '${prefix}owner1@test.com';
+          break;
+        case 'employee':
+          email = '${prefix}barber1@test.com';
+          break;
+        case 'intern':
+          email = '${prefix}intern1@test.com';
+          break;
+        case 'receptionist':
+          email = '${prefix}receptionist1@test.com';
+          break;
+      }
     }
     setState(() {
       _emailController.text = email;
@@ -591,5 +704,59 @@ class _LoginPageState extends State<LoginPage>
     });
     // Trigger standard login
     _handleLogin();
+  }
+
+  void _quickAccessOwner(String label, OwnerSubscriptionTier tier, OwnerType type, bool expired) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final gender = _selectedGender == 'female' ? g.Gender.female : g.Gender.male;
+    
+    final user = User(
+      id: 888,
+      email: 'mock_${tier.name}_${_selectedGender}@test.com',
+      username: 'mock_owner',
+      firstName: gender == g.Gender.male ? 'Ahmed' : 'Sarah',
+      lastName: 'Wilson',
+      role: UserRole.owner,
+      gender: gender,
+      location: 'Amman, Jordan',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    final barber = BarberProfile(
+      id: 888,
+      barberId: 888,
+      bio: 'Mock profile for testing',
+      specialties: 'All',
+      hasAccess: true,
+      avgRating: 4.8,
+    );
+
+    final owner = OwnerProfile(
+      id: 888,
+      barberProfileId: 888,
+      ownerType: type,
+      isSubscribed: !expired,
+      subscriptionTier: tier,
+      subscriptionStartDate: DateTime.now().subtract(const Duration(days: 30)),
+      subscriptionEndDate: expired 
+          ? DateTime.now().subtract(const Duration(days: 1)) 
+          : DateTime.now().add(const Duration(days: 30)),
+    );
+
+    authProvider.debugSetOwnerProfile(
+      user: user,
+      barberProfile: barber,
+      ownerProfile: owner,
+    );
+
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    themeProvider.setGender(gender == g.Gender.female ? UserGender.female : UserGender.male);
+
+    NavigationService.navigateToHomeBasedOnRole(context, 'owner');
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Logged in as $label')),
+    );
   }
 }

@@ -6,7 +6,7 @@ import '../Helpers/config.dart';
 import '../Services/business_service.dart';
 import '../Services/api/api_service.dart';
 import '../Services/ui/navigation_service.dart';
-import '../Packages/Core/utils/helpers/themes_helpers.dart';
+// import '../Packages/Core/utils/helpers/themes_helpers.dart';
 import 'app_providers.dart';
 // import 'base_provider.dart';
 import 'features/app_state_provider.dart';
@@ -23,6 +23,10 @@ import 'features/settings_provider.dart';
 // import 'features/points_provider.dart';
 import 'features/inventory_provider.dart'; // Added
 import 'features/offers_provider.dart';
+import 'features/owner_provider.dart'; // ← Owner module
+import 'features/intern_provider.dart'; // Added
+import 'features/notification_provider.dart';
+import 'features/admin_analytics_provider.dart';
 import '../Helpers/inventory_helpers.dart'; // Added
 
 // Service Locator
@@ -94,6 +98,13 @@ List<SingleChildWidget> providers = [
   // Independent providers (no auth proxy needed — handles missing token gracefully)
   ChangeNotifierProvider(create: (_) => FavoritesProvider()),
 
+  // ── OwnerProvider ─────────────────────────────────────────────────────────
+  ChangeNotifierProxyProvider<AuthProvider, OwnerProvider>(
+    create: (_) => OwnerProvider(),
+    update: (_, authProvider, ownerProvider) =>
+        ownerProvider!..updateAuth(authProvider),
+  ),
+
   // ── BarberProvider ───────────────────────────────────────────────────────────
   // Registered here so any route deep in the tree can call
   // Provider.of<BarberProvider>(context) without a ProviderNotFoundException.
@@ -120,5 +131,8 @@ List<SingleChildWidget> providers = [
       );
     },
   ),
+  ChangeNotifierProvider(create: (_) => InternProvider()),
+  ChangeNotifierProvider(create: (_) => AdminAnalyticsProvider()),
+  ChangeNotifierProvider(create: (_) => NotificationProvider()),
 ];
 

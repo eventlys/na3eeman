@@ -1,5 +1,4 @@
 import '../../core/enums/app_enums.dart';
-// import '../../Models/auth/user_model.dart';
 
 class RolePermissionManager {
   static bool canAccessShopManagement(UserRole role) {
@@ -14,13 +13,20 @@ class RolePermissionManager {
     return [UserRole.owner, UserRole.admin].contains(role);
   }
 
+  static bool canManageSubscriptions(UserRole role) {
+    return [UserRole.owner, UserRole.receptionist, UserRole.admin].contains(role);
+  }
+
+  static bool canManageOffersAndAds(UserRole role) {
+    return [UserRole.owner, UserRole.receptionist, UserRole.admin].contains(role);
+  }
+
+  static bool canViewFeedback(UserRole role) {
+    return [UserRole.owner, UserRole.receptionist, UserRole.admin].contains(role);
+  }
+
   static bool canManageAppointments(UserRole role) {
-    return [
-      UserRole.owner,
-      UserRole.employee,
-      UserRole.receptionist,
-      UserRole.admin,
-    ].contains(role);
+    return [UserRole.owner, UserRole.employee, UserRole.receptionist, UserRole.admin].contains(role);
   }
 
   static bool canViewAllBarberSchedules(UserRole role) {

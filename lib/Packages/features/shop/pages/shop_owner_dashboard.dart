@@ -8,6 +8,7 @@ import '../../../features/navigation/sidebar_controller.dart';
 import '../widgets/profit_graph.dart';
 import '../widgets/inventory_alert_card.dart';
 import '../widgets/offers_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ShopOwnerDashboard extends StatefulWidget {
   const ShopOwnerDashboard({super.key});
@@ -50,7 +51,7 @@ class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> with SingleTick
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Owner Dashboard', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('owner_dashboard'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButtonStyled(
@@ -131,7 +132,7 @@ class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> with SingleTick
       ),
       floatingActionButton: FloatingActionButtonStyled(
         icon: Icons.add_rounded,
-        label: 'New Action',
+        label: 'new_action'.tr(),
         onPressed: () {},
       ),
         ),
@@ -150,7 +151,7 @@ class _ShopOwnerDashboardState extends State<ShopOwnerDashboard> with SingleTick
         ),
         TextButton(
           onPressed: onSeeAll,
-          child: Text('View All', style: TextStyle(color: Theme.of(context).primaryColor)),
+          child: Text('view_all'.tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
         ),
       ],
     );

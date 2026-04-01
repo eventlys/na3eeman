@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../profile/widgets/custom_profile_avatar.dart';
 import '../../profile/widgets/profile_avatar_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BarberData {
   final String image;
@@ -44,8 +45,7 @@ class HorizontalBarberScroll extends StatelessWidget {
           // Title
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 15.0),
-            child: Text(
-              'Our Barbers',
+            child: Text('our_barbers'.tr(),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class VisaPaymentPage extends StatelessWidget {
   final String scheduleType;
@@ -30,7 +31,7 @@ class VisaPaymentPage extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: onPaymentComplete,
-              child: const Text('Complete Payment'),
+              child: Text('complete_payment'.tr()),
             ),
           ],
         ),

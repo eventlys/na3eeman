@@ -5,6 +5,7 @@ import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/utils/helpers/themes_helpers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppointmentAccordion extends StatefulWidget {
   final Map<String, dynamic> appointment;
@@ -309,13 +310,13 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                   children: [
                     _buildDetailRow(
                       icon: Icons.access_time,
-                      title: 'Date',
+                      title: 'date'.tr(),
                       value: _formatAppointmentDate(),
                     ),
                     const SizedBox(height: 12),
                     _buildDetailRow(
                       icon: Icons.schedule,
-                      title: 'Time',
+                      title: 'time'.tr(),
                       value: _formatAppointmentTime(),
                     ),
                     const SizedBox(height: 12),
@@ -331,7 +332,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                     ],
                     _buildDetailRow(
                       icon: Icons.person,
-                      title: 'Barber',
+                      title: 'barber'.tr().tr(),
                       value: _getBarberName(),
                     ),
                     const SizedBox(height: 12),

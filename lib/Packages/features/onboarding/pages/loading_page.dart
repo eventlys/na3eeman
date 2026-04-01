@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
@@ -41,8 +42,10 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     if (!mounted) return;
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
+    // Load auth details from storage (loads token and restores session)
+    await authProvider.loadSavedAuth();
 
-    // TODO: Ideally check token in secure storage here if persistence exists
     final bool isLoggedIn = authProvider.isAuthenticated;
 
     if (isLoggedIn) {
@@ -128,8 +131,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                     children: [
                       Icon(Icons.cut_rounded, size: 80, color: theme.colorScheme.primary),
                       const SizedBox(height: 16),
-                      Text(
-                        'NA3EEMAN',
+                      Text('na3eeman'.tr(),
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           letterSpacing: 4,

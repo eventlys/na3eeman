@@ -59,9 +59,9 @@ class AuthService {
         'email': email,
         'username': email.split('@')[0],
         'phone': phoneNumber,
-        'gender': gender,
+        'gender': gender.toUpperCase(),
         'password': password,
-        'role': role,
+        'role': role.toUpperCase(),
       };
 
       final response = await _authRepository.register(userData);

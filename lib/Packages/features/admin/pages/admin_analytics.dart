@@ -1,243 +1,243 @@
 import 'package:flutter/material.dart';
-import '../../../../Packages/Core/constants/app_color.dart';
-import '../../../../Packages/Core/constants/app_roles.dart';
-import '../../../../Packages/Core/themes/app_theme.dart';
-import '../../../../Packages/Core/widgets/common/app_card.dart';
-import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
+import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../Providers/features/admin_analytics_provider.dart';
 
-/// Super Admin — Analytics Page.
-/// Shows peak hour heatmap, top services, and retention stats.
-class AdminAnalyticsPage extends StatelessWidget {
+class AdminAnalyticsPage extends StatefulWidget {
   const AdminAnalyticsPage({super.key});
 
   @override
+  State<AdminAnalyticsPage> createState() => _AdminAnalyticsPageState();
+}
+
+class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AdminAnalyticsProvider>().fetchAllAnalytics();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = context.watch<AdminAnalyticsProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Usage & Analytics')),
-      drawer: const AppDrawer(
-        role: UserRole.superAdmin,
-        currentRoute: '/admin/analytics',
+      appBar: AppBar(
+        title: const Text('Advanced Analytics', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: provider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () => provider.fetchAllAnalytics(),
+              child: ListView(
+                padding: const EdgeInsets.all(24),
+                children: [
+                  _buildSectionHeader('User Growth (30d)'),
+                  const SizedBox(height: 24),
+                  _buildGrowthChart(provider.userStats?['growth_30d'] ?? []),
+                  const SizedBox(height: 32),
+                  
+                  Row(
+                    children: [
+                      Expanded(child: _buildDistributionChart('User Roles', provider.userStats?['distribution_by_role'] ?? [])),
+                      const SizedBox(width: 16),
+                      Expanded(child: _buildDistributionChart('Genders', provider.userStats?['distribution_by_gender'] ?? [])),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  _buildSectionHeader('Top Performing Shops'),
+                  const SizedBox(height: 16),
+                  _buildTopShopsList(provider.usageStats?['top_shops'] ?? []),
+                  
+                  const SizedBox(height: 32),
+                  _buildSectionHeader('Appointment Status'),
+                  const SizedBox(height: 16),
+                  _buildStatusDistribution(provider.usageStats?['appointment_status_distribution'] ?? []),
+                  
+                  const SizedBox(height: 48),
+                ],
+              ),
+            ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Widget _buildGrowthChart(List<dynamic> data) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    if (data.isEmpty) {
+      return const SizedBox(
+        height: 200,
+        child: Center(child: Text('No growth data available', style: TextStyle(color: AppColors.almostBlack300))),
+      );
+    }
+
+    final spots = data.asMap().entries.map((e) {
+      return FlSpot(e.key.toDouble(), (e.value['count'] ?? 0).toDouble());
+    }).toList();
+
+    return Container(
+      height: 220,
+      padding: const EdgeInsets.only(top: 16, right: 16, left: 0),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+      ),
+      child: LineChart(
+        LineChartData(
+          gridData: const FlGridData(show: false),
+          titlesData: const FlTitlesData(show: false),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              color: Theme.of(context).primaryColor,
+              barWidth: 4,
+              isStrokeCapRound: true,
+              dotData: const FlDotData(show: false),
+              belowBarData: BarAreaData(
+                show: true,
+                color: Theme.of(context).primaryColor.withOpacity(0.1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDistributionChart(String title, List<dynamic> data) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    if (data.isEmpty) return const SizedBox();
+
+    final colors = [
+      Theme.of(context).primaryColor,
+      AppColors.pink,
+      AppColors.success,
+      AppColors.warning,
+      AppColors.blue,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+      ),
+      child: Column(
         children: [
-          _SectionLabel('Retention & Engagement', context),
-          const SizedBox(height: 12),
-          _StatRow(
-            stats: const [
-              ('Retention Rate', '74.2%', AppColor.success),
-              ('Avg. Sessions/Month', '6.8', AppColor.navyPrimary),
-              ('Repeat Bookings', '58%', AppColor.pinkPrimary),
-            ],
-            isDark: isDark,
+          Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 100,
+            child: PieChart(
+              PieChartData(
+                sectionsSpace: 2,
+                centerSpaceRadius: 20,
+                sections: data.asMap().entries.map((e) {
+                  return PieChartSectionData(
+                    color: colors[e.key % colors.length],
+                    value: (e.value['count'] ?? 0).toDouble(),
+                    title: '',
+                    radius: 12,
+                  );
+                }).toList(),
+              ),
+            ),
           ),
-          const SizedBox(height: 24),
-          _SectionLabel('Peak Hours Heatmap', context),
-          const SizedBox(height: 12),
-          AppCard(
-            type: AppCardType.elevated,
-            child: _PeakHoursTable(isDark: isDark),
-          ),
-          const SizedBox(height: 24),
-          _SectionLabel('Top Services', context),
-          const SizedBox(height: 12),
-          _TopServicesList(isDark: isDark),
+          const SizedBox(height: 8),
+          ...data.take(3).map((item) => Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              '${item['role'] ?? item['gender'] ?? 'Other'}: ${item['count']}',
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+            ),
+          )),
         ],
       ),
     );
   }
-}
 
-class _StatRow extends StatelessWidget {
-  const _StatRow({required this.stats, required this.isDark});
-  final List<(String, String, Color)> stats;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: stats.map((s) {
-        final (label, value, color) = s;
-        return Expanded(
-          child: AppCard(
-            type: AppCardType.elevated,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            child: Column(
-              children: [
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: color,
-                  ),
+  Widget _buildTopShopsList(List<dynamic> shops) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      children: shops.map((shop) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                 backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                 child: Text(shop['shop_name'][0], style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(shop['shop_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${shop['app_count']} appointments', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                  ],
                 ),
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.bodySmall,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                ),
-              ],
-            ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.almostBlack100),
+            ],
           ),
         );
       }).toList(),
     );
   }
-}
 
-// ── Peak Hours Table (heatmap-style) ─────────────────────────────────────────
-
-class _PeakHoursTable extends StatelessWidget {
-  const _PeakHoursTable({required this.isDark});
-  final bool isDark;
-
-  static const _hours = ['8am', '10am', '12pm', '2pm', '4pm', '6pm', '8pm'];
-  static const _days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  // Intensity 0.0 - 1.0
-  static const _data = [
-    [0.3, 0.4, 0.6, 0.5, 0.4, 0.3, 0.2],
-    [0.4, 0.5, 0.7, 0.6, 0.5, 0.4, 0.3],
-    [0.2, 0.3, 0.5, 0.4, 0.3, 0.2, 0.1],
-    [0.3, 0.4, 0.6, 0.7, 0.5, 0.3, 0.2],
-    [0.5, 0.8, 1.0, 0.9, 0.8, 0.7, 0.5],
-    [0.6, 0.9, 1.0, 1.0, 0.9, 0.8, 0.6],
-    [0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.1],
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-    return Table(
-      columnWidths: const {0: FixedColumnWidth(36)},
-      children: [
-        // Header row
-        TableRow(
-          children: [
-            const SizedBox(),
-            ..._hours.map(
-              (h) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Text(
-                  h,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ],
-        ),
-        ..._days.asMap().entries.map((dayEntry) {
-          final di = dayEntry.key;
-          final day = dayEntry.value;
-          return TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
-                child: Text(
-                  day,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              ..._hours.asMap().entries.map((hEntry) {
-                final intensity = _data[di][hEntry.key];
-                return Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: Container(
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: primary.withOpacity(intensity * 0.8 + 0.05),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                );
-              }),
-            ],
-          );
-        }),
-      ],
-    );
-  }
-}
-
-// ── Top Services ─────────────────────────────────────────────────────────────
-
-class _TopServicesList extends StatelessWidget {
-  const _TopServicesList({required this.isDark});
-  final bool isDark;
-
-  static const _services = [
-    ('Classic Haircut', '14,230 bookings', 0.92),
-    ('Fade & Shave', '11,800 bookings', 0.76),
-    ('Beard Trim', '9,540 bookings', 0.62),
-    ('Hair Colouring', '7,210 bookings', 0.47),
-    ('Kids Haircut', '5,830 bookings', 0.38),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-    return AppCard(
-      type: AppCardType.outlined,
+  Widget _buildStatusDistribution(List<dynamic> stats) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+      ),
       child: Column(
-        children: _services.asMap().entries.map((e) {
-          final (name, count, pct) = e.value;
+        children: stats.map((s) {
+          final status = s['status'].toString();
+          final count = s['count'] as int;
+          Color color = AppColors.almostBlack100;
+          if (status == 'COMPLETED') color = AppColors.success;
+          if (status == 'CANCELLED') color = AppColors.error;
+          if (status == 'SCHEDULED') color = AppColors.blue;
+
           return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Column(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          '${e.key + 1}.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColor.darkTextHint
-                                : AppColor.lightTextHint,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      count,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isDark
-                            ? AppColor.darkTextSecondary
-                            : AppColor.lightTextSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                LinearProgressIndicator(
-                  value: pct,
-                  backgroundColor: primary.withOpacity(0.1),
-                  valueColor: AlwaysStoppedAnimation<Color>(primary),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                  minHeight: 5,
-                ),
+                Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+                const SizedBox(width: 12),
+                Text(status, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                const Spacer(),
+                Text(count.toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           );
@@ -247,9 +247,3 @@ class _TopServicesList extends StatelessWidget {
   }
 }
 
-Widget _SectionLabel(String text, BuildContext context) => Text(
-  text,
-  style: Theme.of(
-    context,
-  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-);

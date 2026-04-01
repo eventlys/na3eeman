@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:easy_localization/easy_localization.dart';
 // import '../../../Helpers/customized/cart_helpers.dart';
 // import '../../../Models/commerce/cart_model.dart';
 // import '../../Core/backgrounds/bd_faded.dart';
@@ -67,7 +68,7 @@
 //         actions: [
 //           TextButton(
 //             onPressed: () => Navigator.pop(context),
-//             child: const Text('Cancel'),
+//             child: Text('cancel'.tr()),
 //           ),
 //           ElevatedButton(
 //             onPressed: () {
@@ -79,7 +80,7 @@
 //                 const SnackBar(content: Text('Order placed successfully!')),
 //               );
 //             },
-//             child: const Text('Confirm'),
+//             child: Text('confirm'.tr()),
 //           ),
 //         ],
 //       ),

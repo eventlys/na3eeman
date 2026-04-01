@@ -23,13 +23,45 @@ class InventoryProvider with ChangeNotifier {
 
   List<dynamic> _inventoryItems = [];
 
+  List<dynamic> get items => _inventoryItems;
+  List<dynamic> get consumables => _inventoryItems.where((i) {
+    if (i is Map) return i['category'] == 'CONSUMABLE';
+    // Fallback for typed objects if applicable
+    return false;
+  }).toList();
+  List<dynamic> get personalKitItems => _inventoryItems.where((i) {
+    if (i is Map) return i['category'] == 'EQUIPMENT';
+     return false;
+  }).toList();
   List<dynamic> get inventoryItems => _inventoryItems;
 
-  Future<void> loadInventoryItems({
-    int? shopId,
+  Future<void> loadInventory(int shopId, {
     bool? lowStockOnly,
     String? category,
   }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+ 
+     try {
+       _inventoryItems = await _inventoryService.getInventoryItems(
+         shopId: shopId,
+         lowStockOnly: lowStockOnly,
+         category: category,
+       );
+     } catch (e) {
+       _error = 'Failed to load inventory items: ${e.toString()}';
+     } finally {
+       _isLoading = false;
+       notifyListeners();
+     }
+   }
+ 
+   Future<void> loadInventoryItems({
+     int? shopId,
+     bool? lowStockOnly,
+     String? category,
+   }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();

@@ -165,7 +165,7 @@ class AuthRepository {
     try {
       await _apiService.post(
         '/auth/logout/',
-        data: refreshToken != null ? {'refresh_token': refreshToken} : null,
+        data: refreshToken != null ? {'refresh': refreshToken} : null,
       );
     } catch (error) {
       AppLogger.error('Logout failed', error: error);

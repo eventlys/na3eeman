@@ -1,208 +1,125 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../../../Packages/Core/constants/app_color.dart';
-import '../../../../Packages/Core/constants/app_roles.dart';
-import '../../../../Packages/Core/themes/app_theme.dart';
-import '../../../../Packages/Core/widgets/common/app_card.dart';
-import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../Providers/features/admin_analytics_provider.dart';
 
-/// Super Admin — Financial Reports Page.
-class AdminFinancialReportsPage extends StatelessWidget {
+class AdminFinancialReportsPage extends StatefulWidget {
   const AdminFinancialReportsPage({super.key});
 
   @override
+  State<AdminFinancialReportsPage> createState() => _AdminFinancialReportsPageState();
+}
+
+class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AdminAnalyticsProvider>().fetchFinancialAnalytics();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = context.watch<AdminAnalyticsProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final stats = provider.financialStats;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Financial Reports')),
-      drawer: const AppDrawer(
-        role: UserRole.superAdmin,
-        currentRoute: '/admin/finance',
+      appBar: AppBar(
+        title: const Text('Financial Intelligence', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _SectionLabel('Revenue (Last 7 Days)', context),
-          const SizedBox(height: 12),
-          AppCard(
-            type: AppCardType.elevated,
-            child: SizedBox(height: 200, child: _RevenueChart(isDark: isDark)),
-          ),
-          const SizedBox(height: 24),
-          _SectionLabel('Subscription Revenue by Tier', context),
-          const SizedBox(height: 12),
-          _TierBreakdown(isDark: isDark),
-          const SizedBox(height: 24),
-          _SectionLabel('Pending Payout Requests', context),
-          const SizedBox(height: 12),
-          _PayoutQueue(isDark: isDark),
-        ],
+      body: provider.isLoading && stats == null
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () => provider.fetchFinancialAnalytics(),
+              child: ListView(
+                padding: const EdgeInsets.all(24),
+                children: [
+                  _buildSectionHeader('Revenue Trends (30d)'),
+                  const SizedBox(height: 24),
+                  _buildRevenueChart(stats?['daily_revenue_30d'] ?? []),
+                  const SizedBox(height: 32),
+                  
+                  _buildSectionHeader('Payment Methods'),
+                  const SizedBox(height: 16),
+                  _buildMethodBreakdown(stats?['payment_method_distribution'] ?? []),
+                  
+                  const SizedBox(height: 32),
+                  _buildSectionHeader('Recent Payouts'),
+                  const SizedBox(height: 16),
+                  _buildPayoutList(),
+                  
+                  const SizedBox(height: 48),
+                ],
+              ),
+            ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
+  }
+
+  Widget _buildRevenueChart(List<dynamic> data) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (data.isEmpty) return const SizedBox(height: 200, child: Center(child: Text('No financial data')));
+
+    final spots = data.asMap().entries.map((e) {
+      return FlSpot(e.key.toDouble(), (e.value['revenue'] ?? 0).toDouble());
+    }).toList();
+
+    return Container(
+      height: 220,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+      ),
+      child: LineChart(
+        LineChartData(
+          gridData: const FlGridData(show: false),
+          titlesData: const FlTitlesData(show: false),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              color: AppColors.success,
+              barWidth: 4,
+              belowBarData: BarAreaData(show: true, color: AppColors.success.withOpacity(0.1)),
+              dotData: const FlDotData(show: false),
+            ),
+          ],
+        ),
       ),
     );
   }
-}
 
-// ── Revenue Line Chart ────────────────────────────────────────────────────────
-
-class _RevenueChart extends StatelessWidget {
-  const _RevenueChart({required this.isDark});
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-    final spots = const [
-      FlSpot(0, 12400),
-      FlSpot(1, 18200),
-      FlSpot(2, 15600),
-      FlSpot(3, 22000),
-      FlSpot(4, 19800),
-      FlSpot(5, 27400),
-      FlSpot(6, 31200),
-    ];
-    final labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-    return LineChart(
-      LineChartData(
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          getDrawingHorizontalLine: (_) => FlLine(
-            color: (isDark ? AppColor.ninjaDivider : AppColor.lightDivider),
-            strokeWidth: 1,
-          ),
-        ),
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 40,
-              getTitlesWidget: (v, _) => Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: Text(
-                  '${(v / 1000).toStringAsFixed(0)}k',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: isDark
-                        ? AppColor.darkTextHint
-                        : AppColor.lightTextHint,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (v, _) => Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  labels[v.toInt()],
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: isDark
-                        ? AppColor.darkTextHint
-                        : AppColor.lightTextHint,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            color: primary,
-            barWidth: 3,
-            belowBarData: BarAreaData(
-              show: true,
-              color: primary.withOpacity(0.1),
-            ),
-            dotData: const FlDotData(show: false),
-          ),
-        ],
+  Widget _buildMethodBreakdown(List<dynamic> data) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
       ),
-    );
-  }
-}
-
-// ── Tier Breakdown ────────────────────────────────────────────────────────────
-
-class _TierBreakdown extends StatelessWidget {
-  const _TierBreakdown({required this.isDark});
-  final bool isDark;
-
-  static const _tiers = [
-    ('Business', 'SAR 42,000', AppColor.tierBusiness, 0.65),
-    ('Premium', 'SAR 28,400', AppColor.tierPremium, 0.44),
-    ('Elite', 'SAR 18,200', AppColor.tierElite, 0.28),
-    ('Gold', 'SAR 12,100', AppColor.tierGold, 0.19),
-    ('Basic', 'SAR 3,200', AppColor.tierBasic, 0.05),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      type: AppCardType.outlined,
       child: Column(
-        children: _tiers.map((t) {
-          final (name, value, color, pct) = t;
+        children: data.map((item) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      value,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: isDark
-                            ? AppColor.darkTextSecondary
-                            : AppColor.lightTextSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                LinearProgressIndicator(
-                  value: pct,
-                  backgroundColor: color.withOpacity(0.12),
-                  valueColor: AlwaysStoppedAnimation<Color>(color),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                  minHeight: 6,
-                ),
+                Icon(item['method'] == 'CASH' ? Icons.money_rounded : Icons.credit_card_rounded, color: AppColors.almostBlack200, size: 20),
+                const SizedBox(width: 12),
+                Text(item['method'], style: const TextStyle(fontWeight: FontWeight.w500)),
+                const Spacer(),
+                Text('${item['count']} Tx', style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           );
@@ -210,132 +127,52 @@ class _TierBreakdown extends StatelessWidget {
       ),
     );
   }
-}
 
-// ── Payout Queue ─────────────────────────────────────────────────────────────
+  Widget _buildPayoutList() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Mocking payouts for now as backend doesn't have a payout model yet
+    final payouts = [
+      {'shop': 'Golden Scissors', 'amount': '420.00', 'status': 'Pending'},
+      {'shop': 'Elite Barbers', 'amount': '1,250.00', 'status': 'Processed'},
+    ];
 
-class _PayoutModel {
-  const _PayoutModel(this.shopName, this.amount, this.date, this.status);
-  final String shopName;
-  final String amount;
-  final String date;
-  final String status; // 'pending' | 'approved' | 'rejected'
-}
-
-final _mockPayouts = [
-  const _PayoutModel('Ahmad Barber', 'SAR 12,400', '27 Feb', 'pending'),
-  const _PayoutModel('Style Palace', 'SAR 8,700', '25 Feb', 'pending'),
-  const _PayoutModel('Nailem Salon', 'SAR 5,300', '24 Feb', 'approved'),
-  const _PayoutModel('The Fade Shop', 'SAR 19,200', '22 Feb', 'rejected'),
-];
-
-class _PayoutQueue extends StatelessWidget {
-  const _PayoutQueue({required this.isDark});
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      type: AppCardType.outlined,
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: _mockPayouts.asMap().entries.map((e) {
-          final i = e.key;
-          final p = e.value;
-          final statusColor = p.status == 'pending'
-              ? AppColor.warning
-              : p.status == 'approved'
-              ? AppColor.success
-              : AppColor.error;
-          return Column(
+    return Column(
+      children: payouts.map((p) {
+        final isPending = p['status'] == 'Pending';
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+          ),
+          child: Row(
             children: [
-              ListTile(
-                title: Text(
-                  p.shopName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p['shop']!, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('\$${p['amount']}', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16)),
+                  ],
                 ),
-                subtitle: Text(
-                  '${p.amount} · ${p.date}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark
-                        ? AppColor.darkTextSecondary
-                        : AppColor.lightTextSecondary,
-                  ),
-                ),
-                trailing: p.status == 'pending'
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _ActionChip('Approve', AppColor.success, () {}),
-                          const SizedBox(width: 6),
-                          _ActionChip('Reject', AppColor.error, () {}),
-                        ],
-                      )
-                    : Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(AppRadius.pill),
-                        ),
-                        child: Text(
-                          p.status,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: statusColor,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
               ),
-              if (i < _mockPayouts.length - 1)
-                Divider(
-                  height: 1,
-                  color: isDark ? AppColor.ninjaDivider : AppColor.lightDivider,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (isPending ? AppColors.warning : AppColors.success).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Text(
+                  p['status']!,
+                  style: TextStyle(color: isPending ? AppColors.warning : AppColors.success, fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
-          );
-        }).toList(),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
-
-class _ActionChip extends StatelessWidget {
-  const _ActionChip(this.label, this.color, this.onTap);
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    ),
-  );
-}
-
-Widget _SectionLabel(String text, BuildContext context) => Text(
-  text,
-  style: Theme.of(
-    context,
-  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-);

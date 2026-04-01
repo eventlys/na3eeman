@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Services/enums/appointment_status.dart';
 import '../../constants/app_color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppointmentStatsRow extends StatelessWidget {
   final bool? isDarkMode;
@@ -46,7 +47,7 @@ class AppointmentStatsRow extends StatelessWidget {
         children: [
           Expanded(
             child: _buildStatCard(
-              title: 'Completed',
+              title: 'completed'.tr().tr(),
               count: completedCount,
               color: darkMode ? AppColor.darkSuccess : AppColor.lightSuccess,
               icon: Icons.check_circle,
@@ -56,7 +57,7 @@ class AppointmentStatsRow extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: _buildStatCard(
-              title: 'Pending',
+              title: 'pending'.tr().tr(),
               count: pendingCount,
               color: darkMode ? AppColor.darkWarning : AppColor.lightWarning,
               icon: Icons.pending_actions,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/enums/app_enums.dart';
 
 class MenuItem {
   final String title;
@@ -8,7 +9,7 @@ class MenuItem {
   final VoidCallback onTap;
   final String? route;
   final bool? requiresAuth;
-  final List<String>? requiredRoles;
+  final List<UserRole>? requiredRoles;
 
   MenuItem({
     required this.title,
@@ -21,10 +22,10 @@ class MenuItem {
     this.requiredRoles,
   }) : assert(icon != null || assetIcon != null, 'Either icon or assetIcon must be provided');
 
-  bool isAccessible(List<String> userRoles) {
+  bool isAccessible(UserRole userRole) {
     if (!requiresAuth!) return true;
     if (requiredRoles == null || requiredRoles!.isEmpty) return true;
-    return userRoles.any((role) => requiredRoles!.contains(role));
+    return requiredRoles!.contains(userRole);
   }
 }
 

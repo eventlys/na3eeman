@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddItemDialog extends StatefulWidget {
   const AddItemDialog({super.key});
@@ -24,7 +25,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add New Item'),
+      title: Text('add_new_item'.tr()),
       content: Form(
         key: _formKey,
         child: Column(
@@ -32,8 +33,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Item Name',
+              decoration: InputDecoration(
+                labelText: 'item_name'.tr(),
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -46,8 +47,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _countController,
-              decoration: const InputDecoration(
-                labelText: 'Initial Count',
+              decoration: InputDecoration(
+                labelText: 'initial_count'.tr(),
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
@@ -65,8 +66,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description (Optional)',
+              decoration: InputDecoration(
+                labelText: 'description_optional'.tr(),
                 border: OutlineInputBorder(),
               ),
               maxLines: 2,
@@ -77,7 +78,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text('cancel'.tr()),
         ),
         ElevatedButton(
           onPressed: () {
@@ -93,7 +94,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
               });
             }
           },
-          child: const Text('Add Item'),
+          child: Text('add_item'.tr()),
         ),
       ],
     );

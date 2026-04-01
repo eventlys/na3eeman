@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ShopInfoSection extends StatelessWidget {
   final Map<String, dynamic> shopData;
@@ -39,8 +40,7 @@ class ShopInfoSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Shop Details',
+              Text('shop_details'.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -68,7 +68,7 @@ class ShopInfoSection extends StatelessWidget {
           _buildInfoRow(
             context: context,
             icon: Icons.location_on_rounded,
-            title: 'Location',
+            title: 'location'.tr().tr(),
             subTitle: location,
             iconColor: Theme.of(context).primaryColor,
           ),
@@ -76,7 +76,7 @@ class ShopInfoSection extends StatelessWidget {
           _buildInfoRow(
             context: context,
             icon: Icons.access_time_filled_rounded,
-            title: 'Working Hours',
+            title: 'working_hours'.tr(),
             subTitle: workingHours,
             iconColor: AppColors.pink,
           ),
@@ -84,7 +84,7 @@ class ShopInfoSection extends StatelessWidget {
           _buildInfoRow(
             context: context,
             icon: Icons.phone_rounded,
-            title: 'Phone',
+            title: 'phone'.tr().tr(),
             subTitle: shopData['shopPhoneNumber'] ?? shopData['phoneNumber'] ?? 'Click for info',
             iconColor: AppColors.success,
           ),

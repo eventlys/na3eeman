@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BranchCard extends StatelessWidget {
   final VoidCallback onViewAll;
@@ -29,8 +30,7 @@ class BranchCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Branch Management',
+                Text('branch_management'.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

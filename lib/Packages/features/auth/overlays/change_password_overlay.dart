@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -19,7 +20,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Change Password'),
+      title: Text('change_password'.tr()),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -30,7 +31,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 controller: _currentPasswordController,
                 obscureText: _obscureCurrentPassword,
                 decoration: InputDecoration(
-                  labelText: 'Current Password',
+                  labelText: 'current_password'.tr(),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscureCurrentPassword
@@ -56,7 +57,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 controller: _newPasswordController,
                 obscureText: _obscureNewPassword,
                 decoration: InputDecoration(
-                  labelText: 'New Password',
+                  labelText: 'new_password'.tr(),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscureNewPassword
@@ -85,7 +86,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
                 decoration: InputDecoration(
-                  labelText: 'Confirm New Password',
+                  labelText: 'confirm_new_password'.tr(),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscureConfirmPassword
@@ -116,11 +117,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('cancel'.tr()),
         ),
         ElevatedButton(
           onPressed: _changePassword,
-          child: const Text('Change Password'),
+          child: Text('change_password'.tr()),
         ),
       ],
     );
@@ -130,7 +131,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     if (_formKey.currentState!.validate()) {
       // Implement password change logic here
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password changed successfully')),
+        SnackBar(content: Text('password_changed_successfully'.tr())),
       );
       Navigator.pop(context);
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ReportShopOverlay extends StatefulWidget {
   const ReportShopOverlay({super.key});
@@ -80,10 +81,10 @@ class _ReportShopOverlayState extends State<ReportShopOverlay> {
                         },
                         dropdownColor: Color(0xffffffff),
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        decoration: const InputDecoration(
-                          labelText: 'Issue Type',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(
+                        decoration: InputDecoration(
+                          labelText: 'issue_type'.tr(),
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(
                               Icons.warning,
                               color: Color(0xb3c25858)
                           ),
@@ -92,8 +93,8 @@ class _ReportShopOverlayState extends State<ReportShopOverlay> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _shopNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Shop Name',
+                        decoration: InputDecoration(
+                          labelText: 'shop_name'.tr(),
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.store, color: Color(0xb3c25858)),
                         ),
@@ -140,8 +141,7 @@ class _ReportShopOverlayState extends State<ReportShopOverlay> {
                   shadowColor: Colors.transparent,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text(
-                  'Submit Report',
+                child: Text('submit_report'.tr(),
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
