@@ -3715,6 +3715,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Request marked as resolved'**
   String get requestResolved;
+
+  /// No description provided for @enhancedFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Enhanced Features'**
+  String get enhancedFeatures;
 }
 
 class _AppLocalizationsDelegate

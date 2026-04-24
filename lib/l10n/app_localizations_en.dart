@@ -1897,4 +1897,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestResolved => 'Request marked as resolved';
+
+  @override
+  String get enhancedFeatures => 'Enhanced Features';
 }

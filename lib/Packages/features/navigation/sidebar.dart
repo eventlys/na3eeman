@@ -9,8 +9,7 @@ import '../../../core/theme/colors.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
-// import 'widgets/user_profile_section.dart';
-// import 'package:na3eeman/Packages/features/owner/widgets/campaign_management_widgets.dart';
+import '../../../core/widgets/rules/rules_guide_sheet.dart';
 
 class Sidebar extends StatelessWidget {
   final SidebarController controller;
@@ -193,7 +192,7 @@ class Sidebar extends StatelessWidget {
         requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
       ),
       MenuItem(
-        title: 'Offers & Packages',
+        title: 'offers_packages'.tr(),
         assetIcon: 'assets/icons/plus.png',
         delay: 2,
         onTap: () {
@@ -204,7 +203,7 @@ class Sidebar extends StatelessWidget {
         requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
       ),
       MenuItem(
-        title: 'Analytics',
+        title: 'analytics'.tr(),
         assetIcon: 'assets/icons/setting.png',
         delay: 2,
         onTap: () {
@@ -214,9 +213,42 @@ class Sidebar extends StatelessWidget {
         requiresAuth: true,
         requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
       ),
+      MenuItem(
+        title: 'expenses'.tr(),
+        assetIcon: 'assets/icons/money.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/expenses');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+      ),
+      MenuItem(
+        title: 'payroll'.tr(),
+        assetIcon: 'assets/icons/wallet.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/payroll');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+      ),
+      MenuItem(
+        title: 'data_management'.tr(),
+        assetIcon: 'assets/icons/details.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/data');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+      ),
       // ── Receptionist POS ─────────────────────────────────────────
       MenuItem(
-        title: 'POS Terminal',
+        title: 'pos_terminal'.tr(),
         assetIcon: 'assets/icons/plus.png',
         delay: 2,
         onTap: () {
@@ -228,7 +260,40 @@ class Sidebar extends StatelessWidget {
       ),
       // ── Customer loyalty / referral ──────────────────────────────
       MenuItem(
-        title: 'My Points',
+        title: 'application_rules'.tr(),
+        assetIcon: 'assets/icons/secure.png',
+        delay: 3,
+        onTap: () {
+          controller.closeSidebar();
+          RulesGuideSheet.showRulesSheet(context);
+        },
+      ),
+      MenuItem(
+        title: 'user_guides'.tr(),
+        assetIcon: 'assets/icons/info.png',
+        delay: 3,
+        onTap: () {
+          controller.closeSidebar();
+          RulesGuideSheet.showGuideSheet(context);
+        },
+      ),
+      if (role == UserRole.owner || role == UserRole.admin || role == UserRole.cofounder)
+        MenuItem(
+          title: 'enhanced_features'.tr(),
+          assetIcon: 'assets/icons/premium.png',
+          delay: 3,
+          onTap: () {
+            controller.closeSidebar();
+            // Show a summary or navigate to a special dashboard
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Accessing Enhanced Feature Suite...'))
+            );
+          },
+          requiresAuth: true,
+          requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder],
+        ),
+      MenuItem(
+        title: 'my_points'.tr(),
         assetIcon: 'assets/icons/plus.png',
         delay: 3,
         onTap: () {
@@ -297,7 +362,7 @@ class Sidebar extends StatelessWidget {
         onTap: controller.showPrivacyPolicy,
       ),
       MenuItem(
-        title: 'logout'.tr().tr(),
+        title: 'logout'.tr(),
         assetIcon: 'assets/icons/exit.png',
         delay: 7,
         onTap: controller.showLogoutConfirmation,

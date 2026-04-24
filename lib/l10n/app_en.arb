@@ -2224,5 +2224,6 @@
   "managementDashboard": "Management",
   "@managementDashboard": { "description": "Management dashboard title" },
   "createStaffMembers": "Create Staff Members",
-  "@createStaffMembers": { "description": "Create staff members menu item" }
+  "@createStaffMembers": { "description": "Create staff members menu item" },
+  "enhancedFeatures": "Enhanced Features"
 }

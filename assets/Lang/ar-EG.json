@@ -467,5 +467,17 @@
   "quick_access_fast_login": "دخول سريع",
   "fast_login_as": "دخول سريع كـ",
   "mock_owner_variants_local_state": "خيارات تجريبية للمالك",
-  "no_targets": "لم يتم تحديد أهداف لهذا الشهر"
+  "no_targets": "لم يتم تحديد أهداف لهذا الشهر",
+  "user_guides": "أدلة المستخدم",
+  "enhanced_features": "الميزات المتقدمة",
+  "pos_terminal": "نظام البيع (POS)",
+  "offers_packages": "العروض والباقات",
+  "my_points": "نقاطي",
+  "data_management": "إدارة البيانات",
+  "expenses": "المصاريف",
+  "payroll": "الرواتب",
+  "shop_dashboard": "لوحة المتجر",
+  "management": "الإدارة",
+  "enhanced_features": "الميزات المتقدمة",
+  "shop_link_copied": "تم نسخ رابط المتجر بنجاح!"
 }

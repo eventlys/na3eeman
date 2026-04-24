@@ -2152,5 +2152,6 @@
   "searchServicesSalons": "ابحث في الخدمات والمحلات",
   "@searchServicesSalons": { "description": "Search bar hint for customers" },
   "submitSuggestion": "إرسال الاقتراح",
-  "@submitSuggestion": { "description": "Submit suggestion button" }
+  "@submitSuggestion": { "description": "Submit suggestion button" },
+  "enhancedFeatures": "الميزات المتقدمة"
 }

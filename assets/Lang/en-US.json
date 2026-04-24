@@ -467,5 +467,17 @@
   "don_t_have_an_account": "Don't have an account?",
   "quick_access_fast_login": "Quick Access (Fast Login)",
   "fast_login_as": "Fast Login as",
-  "mock_owner_variants_local_state": "Mock Owner Variants (Local State)"
+  "mock_owner_variants_local_state": "Mock Owner Variants (Local State)",
+  "user_guides": "User Guides",
+  "enhanced_features": "Enhanced Features",
+  "pos_terminal": "POS Terminal",
+  "offers_packages": "Offers & Packages",
+  "my_points": "My Points",
+  "data_management": "Data Management",
+  "expenses": "Expenses",
+  "payroll": "Payroll",
+  "shop_dashboard": "Shop Dashboard",
+  "management": "Management",
+  "enhanced_features": "Enhanced Features",
+  "shop_link_copied": "Shop Link Copied to Clipboard!"
 }

@@ -1889,4 +1889,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get requestResolved => 'تم تمييز الطلب كمحلول';
+
+  @override
+  String get enhancedFeatures => 'الميزات المتقدمة';
 }
