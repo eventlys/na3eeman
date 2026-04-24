@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -23,7 +24,7 @@ class TeamLeaderboardWidget extends StatelessWidget {
               children: [
                 Icon(Icons.leaderboard_rounded, size: 18, color: theme.primaryColor),
                 const SizedBox(width: 8),
-                Text('team_leaderboard'.tr(), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                Text(AppLocalizations.of(context)!.teamLeaderboard, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               ],
             ),
             if (owner.isAnalyticsLoading)
@@ -34,7 +35,7 @@ class TeamLeaderboardWidget extends StatelessWidget {
         if (leaderboard.isEmpty && !owner.isAnalyticsLoading)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Center(child: Text('No data available', style: TextStyle(color: theme.hintColor, fontSize: 12))),
+            child: Center(child: Text(AppLocalizations.of(context)!.noDataAvailable, style: TextStyle(color: theme.hintColor, fontSize: 12))),
           ),
         ...leaderboard.asMap().entries.map((entry) {
           final rank = entry.key + 1;

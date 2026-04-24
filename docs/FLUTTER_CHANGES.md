@@ -47,8 +47,8 @@ The Flutter app has been refactored to use a dynamic environment configuration s
 | `/auth/login` | `/auth/login/` | Trailing slash added |
 | `/auth/profile` | `/auth/me/` | Renamed for clarity |
 | `/auth/refresh` | `/auth/token/refresh/` | JWT endpoint structure |
-| `/shops` | `/shops/shops/` | RESTful nesting |
-| `/appointments` | `/shops/appointments/` | Moved under shops |
+| `/salons` | `/salons/salons/` | RESTful nesting |
+| `/appointments` | `/salons/appointments/` | Moved under salons |
 | `/loyalty/balance` | `/loyalty/balance/` | Consistent structure |
 
 ## 🚀 How to Use
@@ -89,7 +89,7 @@ flutter build apk --release \
 ```dart
 // Hardcoded endpoints
 final response = await ApiService().get('/auth/profile');
-final shops = await ApiService().get('/shops?page=1&limit=20');
+final salons = await ApiService().get('/salons?page=1&limit=20');
 ```
 
 #### After (New Way)
@@ -101,14 +101,14 @@ import 'package:na3eeman/Services/api/api_service.dart';
 final user = await ApiService().getCurrentUser();
 
 // Using helper methods
-final shops = await ApiService().getShops(
+final salons = await ApiService().getSalons(
   page: 1,
   pageSize: 20,
   search: 'barber',
 );
 
 // Manual endpoint construction if needed
-final endpoint = Endpoints.withPagination(Endpoints.shops, page: 2);
+final endpoint = Endpoints.withPagination(Endpoints.salons, page: 2);
 final response = await ApiService().get(endpoint);
 ```
 
@@ -138,7 +138,7 @@ Automatic retry for network failures:
 
 ```dart
 // Automatically retries up to 3 times for network errors
-final shops = await ApiService().getShops();
+final salons = await ApiService().getSalons();
 // If it fails due to network timeout, it will retry with exponential backoff
 ```
 
@@ -149,7 +149,7 @@ final shops = await ApiService().getShops();
 - [ ] Replace manual pagination params with helper methods
 - [ ] Update auth providers to handle new token structure
 - [ ] Test login flow end-to-end
-- [ ] Test shop listing and details
+- [ ] Test salon listing and details
 - [ ] Test appointment booking
 - [ ] Test loyalty balance and redemption
 - [ ] Verify token refresh works automatically

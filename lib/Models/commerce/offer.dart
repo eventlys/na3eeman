@@ -7,7 +7,7 @@ class Offer {
   final DateTime endDate;
   final bool isActive;
   final List<String> applicableServices; // Service types or specific service IDs
-  final int? shopId;
+  final int? salonId;
 
   Offer({
     required this.id,
@@ -18,7 +18,7 @@ class Offer {
     required this.endDate,
     required this.isActive,
     required this.applicableServices,
-    this.shopId,
+    this.salonId,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
@@ -31,7 +31,7 @@ class Offer {
       endDate: DateTime.parse(json['end_date'] as String? ?? DateTime.now().toString()),
       isActive: json['is_active'] ?? true,
       applicableServices: List<String>.from(json['applicable_services'] ?? []),
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
     );
   }
 
@@ -45,7 +45,7 @@ class Offer {
       'end_date': endDate.toIso8601String(),
       'is_active': isActive,
       'applicable_services': applicableServices,
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 

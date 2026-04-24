@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Models/shop/shop_schedule_model.dart';
-// import '../Models/shop_service_model.dart';
+import '../../Models/salon/salon_schedule_model.dart';
+// import '../Models/salon_service_model.dart';
 
 class ScheduleHelper {
   // Mock data - replace with actual API calls
@@ -62,13 +62,13 @@ class ScheduleHelper {
         .toList();
   }
 
-  static Future<void> bookSchedule(ShopScheduleSlot scheduleSlot) async {
+  static Future<void> bookSchedule(SalonScheduleSlot scheduleSlot) async {
     // Implement actual booking logic here
     await Future.delayed(Duration(seconds: 1)); // Simulate API call
     print('Schedule booked: ${scheduleSlot.dateTime}');
   }
 
-  static Future<List<ShopScheduleSlot>> getUserSchedules() async {
+  static Future<List<SalonScheduleSlot>> getUserSchedules() async {
     // Implement actual fetch logic here
     await Future.delayed(Duration(seconds: 1));
     return [];

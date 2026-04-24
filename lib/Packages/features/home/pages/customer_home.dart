@@ -1,24 +1,28 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'dart:math';
+import 'package:na3eeman/l10n/app_localizations.dart';
+// import 'package:easy_localization/easy_localization.dart';
+// import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Services/enums/gender.dart';
 // import 'package:na3eeman/Packages/Core/widgets/shared/error_widget.dart';
 
 
-import '../../../../Helpers/logger.dart';
-import '../../../../Models/shop/shops_model.dart';
-import '../../../../Providers/main_providers.dart';
+// import '../../../../Helpers/logger.dart';
+// import '../../../../Models/salon/salons_model.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../Providers/app_providers.dart';
+import '../../../../Providers/main_providers.dart';
+import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
+import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../appointments/widgets/soonest_appointment_card.dart';
-import '../../shop/widgets/barbershop_card.dart';
-import '../../shop/widgets/customer_shop_ads.dart';
+// import '../../salon/widgets/barbershop_card.dart';
+// import '../../salon/widgets/customer_salon_ads.dart';
 import '../widgets/category_card.dart';
-import '../../../../Models/shop/category_model.dart';
+import '../../../../Models/salon/category_model.dart';
 
 class CustomerHomePage extends StatefulWidget {
   const CustomerHomePage({super.key});
@@ -37,7 +41,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   late FavoritesProvider _favoritesProvider;
   final ApiService _apiService = ApiService();
 
-  List<Category> _categories = [];
+  List<Category> _allCategories = [];
   Map<String, dynamic> _userPoints = {'points': 0};
   bool _isLoading = true;
   bool _initialized = false;
@@ -86,19 +90,14 @@ class _CustomerHomePageState extends State<CustomerHomePage>
 
   Future<void> _loadCategories() async {
     try {
-      final categories = await _apiService.getCategories();
-      final userGender = _authProvider.user?.gender;
-
-      final filtered = categories.where((cat) {
-        if (cat.targetGender == 'all') return true;
-        if (userGender == Gender.female && cat.targetGender == 'female') return true;
-        if (userGender == Gender.male && cat.targetGender == 'male') return true;
-        return false;
-      }).toList();
-
-      if (mounted) setState(() => _categories = filtered);
+      final List<dynamic> categories = await _apiService.getCategories();
+      if (mounted) {
+        setState(() {
+          _allCategories = categories.map((e) => Category.fromJson(e)).toList();
+        });
+      }
     } catch (e) {
-      if (mounted) setState(() => _categories = []);
+      print("Error loading categories: $e"); if (mounted) setState(() => _allCategories = []);
     }
   }
 
@@ -156,19 +155,12 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                 icon: Icons.menu_rounded,
                 onPressed: _toggleSidebar,
               ),
-              const Spacer(),
+              const SizedBox(width: 12),
+              const GlobalSearchBar(),
+              const SizedBox(width: 12),
               IconButtonStyled(
                 icon: Icons.notifications_none_rounded,
                 onPressed: () => _showNotifications(context),
-              ),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/profile'),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-                  child: Icon(Icons.person, color: Theme.of(context).primaryColor),
-                ),
               ),
             ],
           ),
@@ -186,23 +178,26 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Hello, $userName! 👋',
-                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Ready for your fresh look today?',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
-                      ),
-                    ),
+                    // Text(
+                    //   'Hello, $userName! 👋',
+                    //   style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   'Ready for your fresh look today?',
+                    //   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    //     color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 16),
+                    // // Categories Grid (Scenario 1: Book for yourself)
+                    _buildCategoriesGrid(isDark, Provider.of<AuthProvider>(context).user?.gender),
                     const SizedBox(height: 32),
 
-                    // Categories Grid (was "Our Services")
-                    _buildCategoriesGrid(isDark),
+                    // Gift a Service (Scenario 2: Gift for someone)
+                    _buildGiftModeToggle(isDark),
 
                     const SizedBox(height: 32),
 
@@ -215,6 +210,9 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                     _buildPointsTracker(isDark),
 
                     const SizedBox(height: 32),
+
+                    // Help Us Improve Section
+                    const FeedbackSection(),
 
                     const SizedBox(height: 32),
                   ],
@@ -232,15 +230,135 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   }
 
   Widget _buildPointsTracker(bool isDark) {
-    final points = _userPoints['points'] ?? 0;
+    return Consumer<PointsProvider>(
+      builder: (context, pointsProvider, child) {
+        final points = pointsProvider.currentBalance;
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isDark 
+                ? [AppColors.almostBlack600, AppColors.almostBlack600.withOpacity(0.8)]
+                : [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.85)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withOpacity(isDark ? 0 : 0.2),
+                offset: const Offset(0, 10),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'LOYALTY BALANCE',
+                        style: TextStyle(
+                          color: AppColors.white.withOpacity(0.7),
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$points Points',
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.stars_rounded, color: Colors.amber, size: 32),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                   _buildPointsInfoItem(Icons.add_circle_outline, '+25', 'Per Visit'),
+                   const SizedBox(width: 24),
+                   _buildPointsInfoItem(Icons.verified_user_outlined, '+15', 'On Time'),
+                ],
+              ),
+              const Divider(height: 32, color: Colors.white24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                   const Text(
+                    'Complete more appointments to unlock rewards!',
+                    style: TextStyle(color: Colors.white70, fontSize: 10),
+                  ),
+                  InkWell(
+                    onTap: _showHistory,
+                    child: const Row(
+                      children: [
+                        Text('History', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                        Icon(Icons.chevron_right, color: Colors.white, size: 16),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPointsInfoItem(IconData icon, String points, String label) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.white70, size: 16),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(points, style: const TextStyle(color: AppColors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+            Text(label, style: const TextStyle(color: Colors.white60, fontSize: 10)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGiftModeToggle(bool isDark) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isMaleTheme = themeProvider.gender == UserGender.male;
+    final giftColor = isMaleTheme ? AppColors.pink : AppColors.blue;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: giftColor.withOpacity(isDark ? 0.3 : 0.1),
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).primaryColor.withOpacity(0.3),
+            color: giftColor.withOpacity(0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -250,55 +368,56 @@ class _CustomerHomePageState extends State<CustomerHomePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'YOUR BALANCE',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: giftColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.card_giftcard_rounded, color: giftColor, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Gift a Service',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : AppColors.almostBlack,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Perfect for friends and loved ones',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Icon(Icons.stars_rounded, color: AppColors.cream400, size: 24),
             ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '$points Points',
-            style: const TextStyle(
-              color: AppColors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
           ),
           const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
-                child: ElevatedButton(
-                  onPressed: _redeemPoints,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.white,
-                    foregroundColor: Theme.of(context).primaryColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text('redeem'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                child: _giftGenderButton(
+                  label: 'GIFT HIM',
+                  gender: Gender.male,
+                  color: AppColors.blue,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ElevatedButton(
-                  onPressed: _showHistory,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: AppColors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text('history'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                child: _giftGenderButton(
+                  label: 'GIFT HER',
+                  gender: Gender.female,
+                  color: AppColors.pink,
                 ),
               ),
             ],
@@ -308,44 +427,109 @@ class _CustomerHomePageState extends State<CustomerHomePage>
     );
   }
 
-  Widget _buildCategoriesGrid(bool isDark) {
+  Widget _giftGenderButton({
+    required String label,
+    required Gender gender,
+    required Color color,
+  }) {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/category_selection',
+          arguments: {
+            'giftMode': true,
+            'giftGender': gender.name.toUpperCase(),
+          },
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoriesGrid(bool isDark, Gender? userGender) {
+    // Dynamically filter categories based on the live user state
+    final displayCategories = _allCategories.where((cat) {
+      final catGender = cat.targetGender.trim().toLowerCase();
+      
+      // Universally show unisex
+      if (catGender == 'all' || catGender == 'both' || catGender == 'unisex') return true;
+      
+      // Strict matching for populated user
+      if (userGender == Gender.female && (catGender == 'female' || catGender == 'women' || catGender == 'f')) return true;
+      if (userGender == Gender.male && (catGender == 'male' || catGender == 'men' || catGender == 'm')) return true;
+      
+      return false;
+    }).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Catygories'.tr(),
+          AppLocalizations.of(context)!.catigories,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.85,
-          ),
-          itemCount: _categories.length,
-          itemBuilder: (context, index) {
-            return CategoryCard(
-              category: _categories[index],
-              onTap: () => Navigator.pushNamed(
-                context, 
-                '/category_details', 
-                arguments: _categories[index],
+        if (displayCategories.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Text(
+                'No categories found.',
+                style: TextStyle(color: isDark ? AppColors.cream600 : AppColors.almostBlack300),
               ),
-            );
-          },
-        ),
+            ),
+          )
+        else
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.85,
+            ),
+            itemCount: displayCategories.length,
+            itemBuilder: (context, index) {
+              return CategoryCard(
+                category: displayCategories[index],
+                onTap: () => Navigator.pushNamed(
+                  context, 
+                  '/category_details', 
+                  arguments: {
+                    'category': displayCategories[index],
+                    'giftMode': false,
+                    'giftGender': null,
+                  },
+                ),
+              );
+            },
+          ),
       ],
     );
   }
-
-  // _buildTopServices was removed as it's replaced by _buildCategoriesGrid
-
 
   void _showNotifications(BuildContext context) {
     showModalBottomSheet(
@@ -354,7 +538,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
       backgroundColor: Colors.transparent,
       builder: (context) => _buildBottomSheetContainer(
         context: context,
-        title: 'notifications'.tr(),
+        title: AppLocalizations.of(context)!.notifications,
         child: ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -366,8 +550,8 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                 child: Icon(Icons.notifications_rounded, color: Theme.of(context).primaryColor),
               ),
               title: Text('Notification Title ${index + 1}'),
-              subtitle: Text('this_is_a_notification_message_mockup_details'.tr()),
-              trailing: Text('2h_ago'.tr(), style: TextStyle(fontSize: 12)),
+              subtitle: Text(AppLocalizations.of(context)!.thisIsANotificationMessageMockupDetails),
+              trailing: Text(AppLocalizations.of(context)!.key2HAgo, style: TextStyle(fontSize: 12)),
             );
           },
         ),
@@ -390,7 +574,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor, foregroundColor: Colors.white),
-              child: Text('cancel'.tr()),
+              child: Text(AppLocalizations.of(context)!.cancel),
             )
           ],
         ),

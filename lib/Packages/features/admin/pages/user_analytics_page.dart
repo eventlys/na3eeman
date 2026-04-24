@@ -32,7 +32,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
             const SizedBox(height: 32),
             const Text('Feature Popularity', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildFeatureUsage('Shop Search', '14.2k clicks', 0.9, Theme.of(context).primaryColor, context),
+            _buildFeatureUsage('Salon Search', '14.2k clicks', 0.9, Theme.of(context).primaryColor, context),
             _buildFeatureUsage('Booking', '3.8k attempts', 0.6, AppColors.pink, context),
             _buildFeatureUsage('Loyalty Check', '1.2k clicks', 0.2, AppColors.cream600, context),
           ],

@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
@@ -31,7 +32,7 @@ class _ReceptionistFeedbackPageState extends State<ReceptionistFeedbackPage> wit
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: 'customer_feedback'.tr()),
+            Tab(text: AppLocalizations.of(context)!.customerFeedback),
             Tab(text: 'Staff Feedback'),
           ],
         ),
@@ -73,7 +74,7 @@ class _ReceptionistFeedbackPageState extends State<ReceptionistFeedbackPage> wit
           author: isStaff ? 'Jafar (Barber)' : 'Zaid Hassan',
           content: isStaff ? 'Air conditioning requires maintenance session soon.' : 'Waiting time was a bit long but service felt premium.',
           rating: isStaff ? 3.5 : 4.0,
-          target: isStaff ? 'To Shop' : 'To Shop',
+          target: isStaff ? 'To Salon' : 'To Salon',
           dateTime: 'Yesterday',
         ),
       ],

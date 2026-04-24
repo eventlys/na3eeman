@@ -885,15 +885,15 @@ GSFormStyle(
 )
 ```
 
-### [shopping_card](https://pub.dev/packages/shopping_card)
+### [salonping_card](https://pub.dev/packages/salonping_card)
 ```dart
 dependencies:
-  shopping_card: ^0.0.1
+  salonping_card: ^0.0.1
 ```
-`import 'package:shopping_card_listview/shopping_card.dart_listview';`
+`import 'package:salonping_card_listview/salonping_card.dart_listview';`
 ```dart
 import 'package:flutter/material.dart';
-import 'package:shopping_card_listview/shopping_card.dart_listview';
+import 'package:salonping_card_listview/salonping_card.dart_listview';
 
 void main() {
   runApp(const MyApp());
@@ -910,33 +910,33 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    List<ShoppingCardData> products = [
-      ShoppingCardData(
+    List<SalonpingCardData> products = [
+      SalonpingCardData(
           imageUrl: 'https://cdn.dummyjson.com/product-images/beauty/red-lipstick/1.webp',
           title: 'Demo Product1',
           price: '\$10.00',
           totalItems: 15,
           
         ),
-      ShoppingCardData(
+      SalonpingCardData(
           imageUrl: 'https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp',
           title: 'Demo Product2',
           price: '\$10.00',
           totalItems: 15,
         ),
-      ShoppingCardData(
+      SalonpingCardData(
           imageUrl: 'https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp',
           title: 'Demo Product3',
           price: '\$10.00',
           totalItems: 15,
         
         ),
-      ShoppingCardData(
+      SalonpingCardData(
           imageUrl: 'https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp',
           title: 'Demo Product4',
           price: '\$10.00', totalItems: 15,
         ),
-      ShoppingCardData(
+      SalonpingCardData(
           imageUrl: 'https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp',
           title: 'Demo Product5',
           price: '\$10.00',
@@ -945,9 +945,9 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Shopping Card Demo',
+      title: 'Salonping Card Demo',
       home: Scaffold(
-        appBar: AppBar(title: const Text('Shopping Card UI')),
+        appBar: AppBar(title: const Text('Salonping Card UI')),
         body: CardListView(
           scrollDirection: Axis.vertical,
           onClick: (product){

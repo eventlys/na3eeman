@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -78,8 +79,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     
     return AuthScaffold(
-      title: 'forgot_password'.tr(),
-      subtitle: 'enter_your_email_address_and_we_ll_send_you_a_one_'.tr(),
+      title: AppLocalizations.of(context)!.forgotPassword,
+      subtitle: AppLocalizations.of(context)!.enterYourEmailAddressAndWeLlSendYouAOne,
       showBackButton: true,
       child: Form(
         key: _formKey,
@@ -93,7 +94,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: 'email'.tr().tr(),
+                labelText: AppLocalizations.of(context)!.email,
                 prefixIcon: ImageIcon(
                   AssetImage(AppImages.mail_view),
                   color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -136,7 +137,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(
               width: double.infinity,
               child: PrimaryButton(
-                text: 'send_otp'.tr(),
+                text: AppLocalizations.of(context)!.sendOtp,
                 onPressed: _submitForgotPassword,
                 showRightIcon: true,
                 rightIcon: Icons.send, // Keeping Material icon for now, or replace with custom image icon
@@ -231,7 +232,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 style: TextButton.styleFrom(
                   foregroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
                 ),
-                child: Text('back_to_login'.tr(),
+                child: Text(AppLocalizations.of(context)!.backToLogin,
                   style: TextStyle(
                     fontSize: 16,
                     color: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,

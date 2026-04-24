@@ -1,229 +1,60 @@
-// lib/Services/ui/navigation_service.dart
 import 'package:flutter/material.dart';
-import '../analytics_service.dart';
 
 class NavigationService {
-  static final NavigationService _instance = NavigationService._internal();
-
-  factory NavigationService() => _instance;
-
-  NavigationService._internal();
-
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  // Get home route based on user role
-  static String getHomeRouteBasedOnRole(String role) {
+  static void navigateToHomeBasedOnRole(BuildContext context, String role, {String? tier}) {
     switch (role.toUpperCase()) {
-      case 'OWNER':
-        return '/owner_dashboard';
-      case 'EMPLOYEE':
-      case 'BARBER':
-        return '/employee_dashboard';
-      case 'RECEPTIONIST':
-        return '/receptionist_dashboard';
-      case 'INTERN':
-        return '/intern_dashboard';
-      case 'ADMIN':
-        return '/admin';
       case 'CUSTOMER':
-        return '/customer_home';
+        Navigator.pushNamedAndRemoveUntil(context, '/customer_home', (route) => false);
+        break;
+      case 'BARBER':
+      case 'EMPLOYEE':
+        Navigator.pushNamedAndRemoveUntil(context, '/employee_dashboard', (route) => false);
+        break;
+      case 'INTERN':
+        Navigator.pushNamedAndRemoveUntil(context, '/intern_dashboard', (route) => false);
+        break;
+      case 'RECEPTIONIST':
+        Navigator.pushNamedAndRemoveUntil(context, '/receptionist_dashboard', (route) => false);
+        break;
+      case 'OWNER':
+      case 'OWNER_EMPLOYEE':
+      case 'OWNER_OWNER':
+      case 'MANAGER':
+      case 'COFOUNDER':
+        Navigator.pushNamedAndRemoveUntil(context, '/owner_dashboard', (route) => false);
+        break;
+      case 'ADMIN':
+      case 'SUPERADMIN':
+        Navigator.pushNamedAndRemoveUntil(context, '/admin', (route) => false);
+        break;
       default:
-        return '/customer_home';
+        Navigator.pushNamedAndRemoveUntil(context, '/customer_home', (route) => false);
+
     }
   }
 
-  // Navigate to home based on role
-  static void navigateToHomeBasedOnRole(BuildContext context, String role) {
-    try {
-      final routeName = getHomeRouteBasedOnRole(role);
-      Navigator.pushReplacementNamed(context, routeName);
-      
-      // Log navigation event
-      AnalyticsService().logCustomEvent(
-        name: 'navigate_to_home',
-        parameters: {'role': role},
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Navigation error: ${e.toString()}')),
-      );
+  static void goBack(BuildContext context) {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
     }
   }
 
-  // Navigate to appointment booking
-  void navigateToAppointmentBooking(BuildContext context, {
-    required int shopId,
-    int? barberId,
-    List<Map<String, dynamic>>? services,
-  }) {
-    Navigator.pushNamed(
-      context,
-      '/book_appointment',
-      arguments: {
-        'shopId': shopId,
-        'barberId': barberId,
-        'services': services,
-      },
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_booking',
-      parameters: {
-        'shop_id': shopId,
-        'barber_id': barberId,
-      },
-    );
+  static void navigateToProfile(BuildContext context) {
+    Navigator.pushNamed(context, '/profile');
   }
 
-  // Navigate to appointment details
-  void navigateToAppointmentDetails(BuildContext context, String appointmentId) {
-    Navigator.pushNamed(
-      context,
-      '/appointment_details',
-      arguments: {'appointmentId': appointmentId},
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_appointment_details',
-      parameters: {'appointment_id': appointmentId},
-    );
+  static void navigateToSettings(BuildContext context) {
+    Navigator.pushNamed(context, '/settings');
   }
 
-  // Navigate to loyalty page
-  void navigateToLoyalty(BuildContext context, int customerId) {
-    Navigator.pushNamed(
-      context,
-      '/loyalty',
-      arguments: {'customerId': customerId},
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_loyalty',
-      parameters: {'customer_id': customerId},
-    );
+  static void navigateToSalonDetails(BuildContext context, Map<String, dynamic> salonData) {
+    Navigator.pushNamed(context, '/salon-details', arguments: {'salonData': salonData});
   }
 
-  // Navigate to free haircut redemption
-  void navigateToFreeHaircutRedemption(BuildContext context, int customerId) {
-    Navigator.pushNamed(
-      context,
-      '/free_haircut_redemption',
-      arguments: {'customerId': customerId},
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_free_haircut',
-      parameters: {'customer_id': customerId},
-    );
-  }
-
-  // Navigate to payment
-  void navigateToPayment(BuildContext context, {
-    required double amount,
-    required String appointmentId,
-    required String paymentMethod,
-  }) {
-    Navigator.pushNamed(
-      context,
-      '/payment',
-      arguments: {
-        'amount': amount,
-        'appointmentId': appointmentId,
-        'paymentMethod': paymentMethod,
-      },
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_payment',
-      parameters: {
-        'amount': amount,
-        'appointment_id': appointmentId,
-        'payment_method': paymentMethod,
-      },
-    );
-  }
-
-  // Navigate to staff management
-  void navigateToStaffManagement(BuildContext context, int shopId) {
-    Navigator.pushNamed(
-      context,
-      '/staff_management',
-      arguments: {'shopId': shopId},
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_staff_management',
-      parameters: {'shop_id': shopId},
-    );
-  }
-
-  // Navigate to inventory management
-  void navigateToInventoryManagement(BuildContext context, int shopId) {
-    Navigator.pushNamed(
-      context,
-      '/inventory_management',
-      arguments: {'shopId': shopId},
-    );
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_inventory',
-      parameters: {'shop_id': shopId},
-    );
-  }
-
-  // Navigate to subscription management
-  void navigateToSubscriptionManagement(BuildContext context) {
-    Navigator.pushNamed(context, '/subscription_management');
-
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to_subscription',
-    );
-  }
-
-  // Generic navigation methods
-  Future<dynamic> navigateTo(String routeName, {dynamic arguments}) {
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_to',
-      parameters: {'route': routeName},
-    );
-    
-    return navigatorKey.currentState!.pushNamed(routeName, arguments: arguments);
-  }
-
-  void goBack() {
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_back',
-    );
-    
-    navigatorKey.currentState!.pop();
-  }
-
-  // Replace current route
-  Future<dynamic> replaceWith(String routeName, {dynamic arguments}) {
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_replace',
-      parameters: {'route': routeName},
-    );
-    
-    return navigatorKey.currentState!.pushReplacementNamed(routeName, arguments: arguments);
-  }
-
-  // Clear all routes and go to new route
-  void clearAllAndGoTo(String routeName, {dynamic arguments}) {
-    AnalyticsService().logCustomEvent(
-      name: 'navigate_clear_all',
-      parameters: {'route': routeName},
-    );
-    
-    navigatorKey.currentState!.pushNamedAndRemoveUntil(
-      routeName,
-      (route) => false,
-      arguments: arguments,
-    );
-  }
-
-  // Check if can pop
-  bool canPop() {
-    return navigatorKey.currentState!.canPop();
+  static void navigateToBooking(BuildContext context, Map<String, dynamic> salonData, List<Map<String, dynamic>> services) {
+    Navigator.pushNamed(context, '/book-appointment', arguments: {
+      'salonData': salonData,
+      'selectedServices': services,
+    });
   }
 }

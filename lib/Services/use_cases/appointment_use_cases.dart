@@ -11,7 +11,7 @@ class AppointmentUseCases {
     int page = 1,
     int limit = 20,
     String? status,
-    int? shopId,
+    int? salonId,
     int? customerId,
   })
   async {
@@ -22,14 +22,14 @@ class AppointmentUseCases {
       page: page,
       limit: limit,
       status: status,
-      shopId: shopId,
+      salonId: salonId,
       customerId: customerId,
     );
   }
 
   Future<dynamic> bookAppointment({
     required int customerId,
-    required int shopId,
+    required int salonId,
     required int? barberId,
     required DateTime startTime,
     required DateTime endTime,
@@ -42,7 +42,7 @@ class AppointmentUseCases {
   })
   async {
     if (customerId <= 0) throw AppError('Invalid customer ID');
-    if (shopId <= 0) throw AppError('Invalid shop ID');
+    if (salonId <= 0) throw AppError('Invalid salon ID');
     if (startTime.isBefore(DateTime.now())) {
       throw AppError('Appointment time must be in the future');
     }
@@ -68,7 +68,7 @@ class AppointmentUseCases {
 
     return await _appointmentService.bookAppointment(
       customerId: customerId,
-      shopId: shopId,
+      salonId: salonId,
       barberId: barberId,
       startTime: startTime,
       endTime: endTime,
@@ -118,10 +118,10 @@ class AppointmentUseCases {
     await _appointmentService.confirmCashPayment(appointmentId, confirmedByUserId, amount);
   }
 
-  Future<dynamic> createFreeAppointment(int customerId, {int? shopId}) async {
+  Future<dynamic> createFreeAppointment(int customerId, {int? salonId}) async {
     if (customerId <= 0) throw AppError('Invalid customer ID');
-    if (shopId != null && shopId <= 0) throw AppError('Invalid shop ID');
+    if (salonId != null && salonId <= 0) throw AppError('Invalid salon ID');
 
-    return await _appointmentService.createFreeAppointment(customerId, shopId: shopId);
+    return await _appointmentService.createFreeAppointment(customerId, salonId: salonId);
   }
 }

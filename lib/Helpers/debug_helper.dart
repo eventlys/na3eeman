@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -215,11 +216,11 @@ class DebugHelper {
   }
 
   // Debug widget helpers
-  Widget debugBanner(Widget child) {
+  Widget debugBanner(Widget child, BuildContext context) {
     if (!_showDebugBanner) return child;
 
     return Banner(
-      message: 'debug'.tr(),
+      message: AppLocalizations.of(context)!.debug,
       location: BannerLocation.topEnd,
       color: Colors.red.withOpacity(0.6),
       child: child,
@@ -402,7 +403,7 @@ class DebugWrapper extends StatelessWidget {
     }
 
     if (showBanner) {
-      wrappedChild = DebugHelper().debugBanner(wrappedChild);
+      wrappedChild = DebugHelper().debugBanner(wrappedChild, context);
     }
 
     if (showPerformance) {
@@ -447,28 +448,28 @@ class _DebugMenu extends StatelessWidget {
     final debugHelper = DebugHelper();
 
     return AlertDialog(
-      title: Text('debug_menu'.tr()),
+      title: Text(AppLocalizations.of(context)!.debugMenu),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _DebugToggle(
-              title: 'debug_banner'.tr(),
+              title: AppLocalizations.of(context)!.debugBanner,
               value: debugHelper.showDebugBanner,
               onChanged: (value) => debugHelper.toggleDebugBanner(),
             ),
             _DebugToggle(
-              title: 'performance_overlay'.tr(),
+              title: AppLocalizations.of(context)!.performanceOverlay,
               value: debugHelper._enablePerformanceOverlay,
               onChanged: (value) => debugHelper.togglePerformanceOverlay(),
             ),
             _DebugToggle(
-              title: 'slow_animations'.tr(),
+              title: AppLocalizations.of(context)!.slowAnimations,
               value: debugHelper._enableSlowAnimations,
               onChanged: (value) => debugHelper.toggleSlowAnimations(),
             ),
             _DebugToggle(
-              title: 'debug_logging'.tr(),
+              title: AppLocalizations.of(context)!.debugLogging,
               value: debugHelper.enableDebugLogging,
               onChanged: (value) => debugHelper.toggleDebugLogging(),
             ),
@@ -478,7 +479,7 @@ class _DebugMenu extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('close'.tr()),
+          child: Text(AppLocalizations.of(context)!.close),
         ),
       ],
     );

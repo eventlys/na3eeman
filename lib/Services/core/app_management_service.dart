@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -12,6 +13,7 @@ import '../../Helpers/config.dart';
 import '../security_service.dart';
 import '../storage_service.dart';
 import 'user_service.dart';
+import '../ui/sidebar_navigation_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class AppManagementService with WidgetsBindingObserver {
@@ -280,9 +282,9 @@ class AppManagementService with WidgetsBindingObserver {
     });
 
     switch (path) {
-      case '/shop':
-        final shopId = queryParams['id'];
-        if (shopId != null) _navigateToShop(int.parse(shopId));
+      case '/salon':
+        final salonId = queryParams['id'];
+        if (salonId != null) _navigateToSalon(int.parse(salonId));
         break;
       case '/appointment':
         final appointmentId = queryParams['id'];
@@ -474,9 +476,12 @@ class AppManagementService with WidgetsBindingObserver {
         iOS: DarwinNotificationDetails(),
       );
 
+      final context = SideNavigationService.navigatorKey.currentContext;
+      if (context == null) return;
+
       await _notifications.show(
         id: appointmentId.hashCode,
-        title: 'appointment_reminder'.tr(),
+        title: AppLocalizations.of(context)!.appointmentReminder,
         body: 'You have an upcoming appointment',
         notificationDetails: platformDetails,
       );
@@ -492,7 +497,7 @@ class AppManagementService with WidgetsBindingObserver {
   }
 
   // Navigation Methods (to be implemented based on your navigation setup)
-  void _navigateToShop(int shopId) {}
+  void _navigateToSalon(int salonId) {}
   void _navigateToAppointment(String appointmentId) {}
   void _navigateToOffer(String offerId) {}
   void _navigateToLoyalty(int customerId) {}

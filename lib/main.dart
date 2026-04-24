@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'l10n/app_localizations.dart';
 
 import 'config/environment.dart';
@@ -11,10 +10,12 @@ import 'Providers/app_providers.dart';
 import 'Providers/main_providers.dart';
 import 'Providers/provider_wrapper.dart';
 import 'Routes/routes.dart';
+import 'Providers/locale_provider.dart';
 import 'Services/api/api_service.dart';
 import 'Services/core/performance_service.dart';
 import 'Services/general_service.dart';
 import 'Services/storage_service.dart';
+import 'Services/security_service.dart';
 import 'Services/ui/sidebar_navigation_service.dart';
 import 'Packages/Core/widgets/base/error_boundary.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +26,6 @@ import 'package:showcaseview/showcaseview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
 
   try {
     await Firebase.initializeApp(
@@ -77,20 +77,23 @@ void main() async {
   // Register background tasks
   BackgroundService().registerPeriodicTasks();
 
+  // Security Hardening
+  final securityResult = await SecurityService().performSecurityScan();
+  if (!securityResult.isSecure) {
+    AppLogger.warning('App running in insecure environment: ${securityResult.scanError ?? "Rooted/Modified device"}');
+  }
+  
+  // Enable screenshot prevention for the whole app as a security baseline
+  // Sensitive screens will reinforce this
+  await SecurityService().allowScreenshots();
+
   runApp(
-    EasyLocalization(
-      supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
-      path: 'assets/Lang', 
-      fallbackLocale: const Locale('ar', 'EG'),
-      startLocale: const Locale('ar', 'EG'),
-      child: MultiProvider(
-        providers: [
-          ...providers,
-          // Legacy points provider kept for backward compatibility
-          ChangeNotifierProvider(create: (_) => PointsProvider(ApiService())),
-        ],
-        child: const MyApp(),
-      ),
+    MultiProvider(
+      providers: [
+        ...providers,
+        ChangeNotifierProvider(create: (_) => PointsProvider(ApiService())),
+      ],
+      child: const MyApp(),
     ),
   );
 }
@@ -100,16 +103,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ThemeProvider drives the MaterialApp theme reactively
     return ShowCaseWidget(
-      builder: (context) => Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) {
+      builder: (context) => Consumer2<ThemeProvider, LocaleProvider>(
+        builder: (context, themeProvider, localeProvider, _) {
           return ErrorBoundary(
             isDarkMode: themeProvider.isDark,
-            // Try to get gender from current user if possible, or leave null for default
             userGender: null, 
             onRetry: () {
-              // Logic to reload app or go home
               Navigator.of(SideNavigationService.navigatorKey.currentContext!).pushReplacementNamed('/');
             },
             child: MaterialApp(
@@ -118,16 +118,11 @@ class MyApp extends StatelessWidget {
               initialRoute: '/',
               routes: AppRoutes.routes,
               debugShowCheckedModeBanner: AppConfig.showDebugBanner,
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                ...context.localizationDelegates,
-              ],
-              supportedLocales: [
-                const Locale('ar'),
-                const Locale('en'),
-                ...context.supportedLocales,
-              ],
-              locale: context.locale,
+              
+              // Localization Configuration
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: localeProvider.locale,
 
               theme: themeProvider.currentTheme,
               darkTheme: themeProvider.isDark ? themeProvider.currentTheme : null,

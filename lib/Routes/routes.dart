@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // Auth
 import '../Packages/features/auth/pages/forgot_password.dart';
@@ -11,19 +12,26 @@ import '../Packages/features/auth/pages/signup.dart';
 import '../Packages/features/home/pages/admin_home.dart';
 import '../Packages/features/home/pages/customer_home.dart';
 import '../Packages/features/home/pages/category_details.dart';
-import '../Models/shop/category_model.dart';
+import '../Packages/features/home/pages/category_selection_page.dart';
+import '../Models/salon/category_model.dart';
 
 // Staff
 import '../Packages/features/staff/pages/employee_dashboard.dart';
 import '../Packages/features/staff/pages/receptionist_dashboard.dart';
 import '../Packages/features/staff/pages/intern_dashboard.dart';
-import '../Packages/features/shop/pages/shop_owner_dashboard.dart';
+import '../Packages/features/salon/pages/salon_owner_dashboard.dart';
 import '../Packages/features/staff/pages/employee_schedule_page.dart'; // Added
+import '../Packages/features/staff/pages/staff_profile_page.dart';
 
-import '../Packages/features/owner/dashboard/pages/owner_dashboard_page.dart';
-import '../Packages/features/owner/dashboard/pages/owner_management_dashboard_page.dart';
-import '../Packages/features/owner/dashboard/pages/campaign_management_page.dart';
-import '../Packages/features/staff/pages/intern_activity_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/owner_dashboard_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/owner_management_dashboard_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/campaign_management_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/feedback_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/revenue_controls_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/voucher_management_page.dart';
+import 'package:na3eeman/Packages/features/staff/pages/receptionist/receptionist_inventory_page.dart';
+import 'package:na3eeman/Packages/features/staff/pages/receptionist/receptionist_products_page.dart';
+import 'package:na3eeman/Packages/features/staff/pages/intern_activity_page.dart';
 
 // Navigations
 import '../Packages/features/Navigations/favorites_list_page.dart';
@@ -38,11 +46,22 @@ import '../Packages/features/appointments/pages/book_appointment_page.dart';
 
 // Profile
 import '../Packages/features/profile/pages/profile_page.dart';
+import '../Packages/features/profile/pages/loyalty_history_page.dart';
+import '../Packages/features/profile/pages/referral_card_page.dart';
+import '../Packages/features/profile/pages/gift_card_page.dart';
 
-// Shop
-import '../Packages/features/shop/pages/shop_details.dart';
-import '../Packages/features/shop/pages/shops.dart';
-import '../Packages/features/shop/widgets/staff_management_page.dart';
+// POS + Offers + Analytics (new competitive parity)
+import '../Packages/features/staff/pages/receptionist/pos_terminal_page.dart';
+import '../Packages/features/owner/dashboard/pages/offers_management_page.dart';
+import '../Packages/features/owner/dashboard/pages/analytics_dashboard_page.dart';
+import '../Packages/features/owner/dashboard/pages/expenses_page.dart';
+import '../Packages/features/owner/dashboard/pages/payroll_page.dart';
+import '../Packages/features/owner/dashboard/pages/data_management_page.dart';
+
+// Salon
+import '../Packages/features/salon/pages/salon_details.dart';
+import '../Packages/features/salon/pages/salons.dart';
+import '../Packages/features/salon/widgets/staff_management_page.dart';
 
 // ── NEW: Super Admin Dashboard ──
 import '../Packages/features/admin/pages/admin_dashboard.dart';
@@ -53,12 +72,15 @@ import '../Packages/features/admin/pages/system_health_page.dart';
 import '../Packages/features/admin/pages/error_reports_page.dart';
 import '../Packages/features/admin/pages/subscription_management_page.dart';
 import '../Packages/features/admin/pages/admin_compliance.dart';
+import '../Packages/features/admin/pages/admin_create_staff_page.dart';
+import '../Packages/features/admin/pages/admin_service_requests_page.dart';
 
 // ── NEW: Missing Pages ──
 import '../Packages/features/onboarding/pages/onboarding.dart';
 import '../Packages/features/onboarding/pages/loading_page.dart';
 import '../Packages/features/subscription/pages/subscription_upgrade.dart';
 import '../Packages/features/disputes/pages/dispute_resolution.dart';
+import '../Providers/features/auth_provider.dart';
 
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
@@ -80,19 +102,48 @@ class AppRoutes {
     // ── Customer ──────────────────────────────────────────────────────────
     '/customer_home': (context) => const CustomerHomePage(),
     '/category_details': (context) {
-      final category = ModalRoute.of(context)!.settings.arguments as Category;
-      return CategoryDetailsPage(category: category);
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final category = args['category'] as Category;
+      final giftMode = args['giftMode'] as bool? ?? false;
+      final giftGender = args['giftGender'] as String?;
+      return CategoryDetailsPage(
+        category: category,
+        giftMode: giftMode,
+        giftGender: giftGender,
+      );
     },
-    '/shops': (context) => const ShopListPage(),
-    '/shop_details': (context) {
-      final shopData = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ShopDetailsPage(shopData: shopData);
+    '/category_selection': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ?? {};
+      final giftMode = args['giftMode'] as bool? ?? false;
+      final giftGender = args['giftGender'] as String?;
+      return CategorySelectionPage(
+        giftMode: giftMode,
+        giftGender: giftGender,
+      );
+    },
+    '/salons': (context) => const SalonListPage(),
+    '/salon_details': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final salonData = args['salonData'] as Map<String, dynamic>;
+      final giftMode = args['giftMode'] as bool? ?? false;
+      final giftGender = args['giftGender'] as String?;
+      return SalonDetailsPage(
+        salonData: salonData,
+        giftMode: giftMode,
+        giftGender: giftGender,
+      );
     },
     '/book_appointment': (context) => const BookAppointmentPage(),
     '/appointments': (context) => const AppointmentsPage(),
     '/history': (context) => const HistoryPage(),
     '/favorites': (context) => const FavoritesPage(),
-    '/profile': (context) => const ProfilePage(),
+    '/profile': (context) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.user?.isStaffMember == true) {
+        return const StaffProfilePage();
+      }
+      return const ProfilePage();
+    },
     '/settings': (context) => const SettingsPage(),
 
     // ── Staff & Management ────────────────────────────────────────────────
@@ -104,9 +155,14 @@ class AppRoutes {
     // ── New tier-aware owner dashboard ──────────────────────────────────────
     '/owner_dashboard': (context) => const OwnerDashboardPage(),
     '/management_dashboard': (context) => const OwnerManagementDashboardPage(),
+    '/management/revenue': (context) => const RevenueControlsPage(),
+    '/management/vouchers': (context) => const VoucherManagementPage(),
+    '/management/inventory': (context) => const ReceptionistInventoryPage(),
+    '/management/products': (context) => const ReceptionistProductsPage(),
     '/active_campaigns': (context) => const CampaignManagementPage(),
+    '/feedback_page': (context) => const FeedbackPage(),
     // Legacy alias — kept for backward compat while migrating references
-    '/shop_owner_dashboard': (context) => const ShopOwnerDashboard(),
+    '/salon_owner_dashboard': (context) => const SalonOwnerDashboard(),
     '/staff': (context) => const StaffManagementPage(),
 
     // ── Legacy Admin (placeholder) ────────────────────────────────────────
@@ -121,6 +177,8 @@ class AppRoutes {
     '/admin/system': (context) => const AdminSystemHealthPage(),
     '/admin/errors': (context) => const AdminErrorReportsPage(),
     '/admin/subs': (context) => const AdminSubscriptionManagementPage(),
+    '/admin/create-staff': (context) => const AdminCreateStaffPage(),
+    '/admin/service-requests': (context) => const AdminServiceRequestsPage(),
 
     // ── Shared / Utility ──────────────────────────────────────────────────
     '/report': (context) => const ReportsPage(),
@@ -129,5 +187,18 @@ class AppRoutes {
     // ── NEW Missing Pages ─────────────────────────────────────────────────
     '/subscription/upgrade': (context) => const SubscriptionUpgradePage(),
     '/disputes': (context) => const DisputeResolutionPage(),
+
+    // ── Competitive Parity — Customer ─────────────────────────────────────
+    '/loyalty/history': (context) => const LoyaltyHistoryPage(),
+    '/loyalty/referral': (context) => const ReferralCardPage(),
+    '/gift-card': (context) => const GiftCardPage(),
+
+    // ── Competitive Parity — Staff / Owner ────────────────────────────────
+    '/pos': (context) => const PosTerminalPage(),
+    '/management/offers': (context) => const OffersManagementPage(),
+    '/management/analytics': (context) => const AnalyticsDashboardPage(),
+    '/management/expenses': (context) => const ExpensesPage(),
+    '/management/payroll': (context) => const PayrollPage(),
+    '/management/data': (context) => const DataManagementPage(),
   };
 }

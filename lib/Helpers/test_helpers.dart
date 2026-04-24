@@ -27,14 +27,14 @@ class TestData {
     };
   }
 
-  static Map<String, dynamic> getTestShop() {
+  static Map<String, dynamic> getTestSalon() {
     return {
-      'id': 'shop_123',
-      'title': 'Test Barber Shop',
+      'id': 'salon_123',
+      'title': 'Test Barber Salon',
       'workingHours': '9:00 - 18:00',
-      'shopLocation': '123 Test Street',
-      'shopRating': 4.5,
-      'profilePicture': 'https://example.com/shop.jpg',
+      'salonLocation': '123 Test Street',
+      'salonRating': 4.5,
+      'profilePicture': 'https://example.com/salon.jpg',
     };
   }
 }

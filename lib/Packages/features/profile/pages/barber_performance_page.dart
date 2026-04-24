@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Helpers/barber_list_helper.dart';
@@ -127,7 +128,7 @@ class _BarberPerformancePageState extends State<BarberPerformancePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColor.lightPrimary,
               ),
-              child: Text('retry'.tr(),
+              child: Text(AppLocalizations.of(context)!.retry,
                 style: TextStyle(color: AppColor.light),
               ),
             ),

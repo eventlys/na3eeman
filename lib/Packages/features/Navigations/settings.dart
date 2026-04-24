@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/l10n/app_localizations.dart';
+
 import '../../../Helpers/customized/dialog_helper.dart';
-import '../../../Services/ui/language_service.dart';
+import '../../../Models/subscription/subscription_plan_model.dart';
+import '../../../Services/api/api_service.dart';
 import '../../../Services/ui/overlay_service.dart';
 import '../../../Services/ui/sidebar_navigation_service.dart';
-import '../../../Services/ui/theme_service.dart';
 import '../../../Services/utils/location_service.dart';
-import '../../Core/themes/glass_appbar.dart';
-import '../../Core/widgets/common/custom_switch_tile.dart';
-import '../../Core/widgets/common/setting_tile.dart';
+import '../../Core/constants/app_roles.dart';
 import '../auth/overlays/change_password_overlay.dart';
-import 'package:provider/provider.dart';
 import '../../../Providers/app_providers.dart';
-import '../../../core/enums/app_enums.dart';
+import '../../../Providers/locale_provider.dart';
 import '../../../Providers/features/auth_provider.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -24,131 +23,186 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final ThemeService _themeService = ThemeService();
-  final LanguageService _languageService = LanguageService();
   final LocationService _locationService = LocationService();
+  final ApiService _apiService = ApiService();
+  List<SubscriptionPlan>? _plans;
+  bool _isLoadingPlans = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPlans();
+  }
+
+  Future<void> _fetchPlans() async {
+    if (_plans != null) return;
+    setState(() => _isLoadingPlans = true);
+    try {
+      final plans = await _apiService.getSubscriptionPlans();
+      if (mounted) {
+        setState(() {
+          _plans = (plans as List).map((p) => SubscriptionPlan.fromJson(p)).toList();
+          _isLoadingPlans = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoadingPlans = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.user;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: CustomScrollView(
-        slivers: [
-          GlassSliverAppBar(
-            title: tr('settings'),
+      appBar: AppBar(
+        title: Text(
+          l10n.settings,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        physics: const BouncingScrollPhysics(),
+        children: [
+          const SizedBox(height: 12),
+          
+          // Account Settings
+          _buildSectionHeader('Account Settings'),
+          _buildCleanTile(
+            icon: Icons.person_outline_rounded,
+            title: l10n.profile,
+            onTap: () => Navigator.pushNamed(context, '/profile'),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // Account Settings
-                _buildSectionHeader('Account Settings'),
-                SettingTile(
-                  icon: Icons.person,
-                  title: tr('profile'),
-                  onTap: () => Navigator.pushNamed(context, '/profile'),
-                ),
-                SettingTile(
-                  icon: Icons.lock,
-                  title: 'Change Password',
-                  onTap: () => _showChangePasswordDialog(),
-                ),
-                if (Provider.of<AuthProvider>(context, listen: false).user?.role == UserRole.owner || Provider.of<AuthProvider>(context, listen: false).user?.role == UserRole.receptionist)
-                  SettingTile(
-                    icon: Icons.card_membership_rounded,
-                    title: 'Subscription Management',
-                    onTap: () => _showSubscriptionManagementModal(),
-                  ),
-                const SizedBox(height: 16),
+          _buildCleanTile(
+            icon: Icons.lock_outline_rounded,
+            title: l10n.changePassword,
+            onTap: () => _showChangePasswordDialog(),
+          ),
+          if (user?.role == UserRole.owner || user?.role == UserRole.receptionist)
+            _buildCleanTile(
+              icon: Icons.card_membership_rounded,
+              title: 'Subscription Management',
+              onTap: () => _showSubscriptionManagementModal(),
+            ),
+          
+          const SizedBox(height: 16),
 
-                // App Preferences
-                _buildSectionHeader('App Preferences'),
-                ListenableBuilder(
-                  listenable: _languageService,
-                  builder: (context, child) {
-                    return SettingTile(
-                      icon: Icons.language,
-                      title: 'Change Language',
-                      subtitle: _languageService.currentLanguage,
-                      onTap: () => _changeLanguage(),
-                    );
-                  },
-                ),
-                Consumer<ThemeProvider>(
-                  builder: (context, themeProvider, child) {
-                    final themeName = themeProvider.isDark ? 'Dark' : 'Light';
-                    return SettingTile(
-                      icon: _getThemeIcon(themeName),
-                      title: 'Change Theme',
-                      subtitle: themeName,
-                      onTap: () => _changeTheme(),
-                    );
-                  },
-                ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _locationService.locationEnabledNotifier,
-                  builder: (context, isEnabled, child) {
-                    return CustomSwitchTile(
-                      icon: Icons.location_on,
-                      title: 'Location Privacy',
-                      subtitle: isEnabled ? 'Enabled' : 'Disabled',
-                      value: isEnabled,
-                      onChanged: (value) => _locationService.toggleLocation(value),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
+          // App Preferences
+          _buildSectionHeader('App Preferences'),
+          Consumer<LocaleProvider>(
+            builder: (context, localeProvider, child) {
+              final isArabic = localeProvider.locale.languageCode == 'ar';
+              return _buildSwitchTile(
+                icon: Icons.language_rounded,
+                title: 'Language',
+                subtitle: isArabic ? 'العربية' : 'English',
+                value: isArabic,
+                onChanged: (val) {
+                  localeProvider.setLocale(Locale(val ? 'ar' : 'en'));
+                },
+              );
+            },
+          ),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return _buildSwitchTile(
+                icon: themeProvider.isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                title: 'Dark Mode',
+                subtitle: themeProvider.isDark ? 'Dark Theme' : 'Light Theme',
+                value: themeProvider.isDark,
+                onChanged: (val) {
+                  themeProvider.toggleBrightness();
+                },
+              );
+            },
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _locationService.locationEnabledNotifier,
+            builder: (context, isEnabled, child) {
+              return _buildSwitchTile(
+                icon: Icons.location_on_outlined,
+                title: 'Location Privacy',
+                subtitle: isEnabled ? 'Always On' : 'Off',
+                value: isEnabled,
+                onChanged: (value) => _locationService.toggleLocation(value),
+              );
+            },
+          ),
+          
+          const SizedBox(height: 16),
 
-                // Support & Feedback
-                _buildSectionHeader('Support & Feedback'),
-                SettingTile(
-                  icon: Icons.star,
-                  title: 'Rate Us',
-                  onTap: () => _rateApp(),
-                ),
-                SettingTile(
-                  icon: Icons.feedback,
-                  title: 'Send Feedback',
-                  onTap: () => OverlayService.showFeedback(),
-                ),
-                SettingTile(
-                  icon: Icons.report_problem,
-                  title: 'Report a Problem',
-                  onTap: () => OverlayService.showReportProblem(),
-                ),
-                const SizedBox(height: 16),
+          // Support & Feedback
+          _buildSectionHeader('Support & Feedback'),
+          _buildCleanTile(
+            icon: Icons.star_outline_rounded,
+            title: 'Rate Us',
+            onTap: () => _rateApp(),
+          ),
+          _buildCleanTile(
+            icon: Icons.feedback_outlined,
+            title: 'Send Feedback',
+            onTap: () => OverlayService.showFeedback(),
+          ),
+          _buildCleanTile(
+            icon: Icons.report_problem_outlined,
+            title: 'Report a Problem',
+            onTap: () => _showReportProblemDialog(),
+          ),
+          
+          const SizedBox(height: 16),
 
-                // Additional Suggested Settings
-                _buildSectionHeader('More'),
-                SettingTile(
-                  icon: Icons.security,
-                  title: 'Privacy & Security',
-                  onTap: () => OverlayService.showPrivacyPolicy(),
-                ),
-                const SizedBox(height: 16),
+          // More
+          _buildSectionHeader('More'),
+          _buildCleanTile(
+            icon: Icons.security_outlined,
+            title: 'Privacy & Security',
+            onTap: () => _showPrivacyPolicy(),
+          ),
+          _buildCleanTile(
+            icon: Icons.rule_rounded,
+            title: 'App Rules',
+            onTap: () => _showAppRules(),
+          ),
 
-                // Logout Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.logout),
-                    label: Text(tr('logout'),
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: () => OverlayService.showLogoutConfirmation(
-                      onConfirm: () {
-                        SideNavigationService.navigateToLogin();
-                      },
-                    ),
-                  ),
+          const SizedBox(height: 48),
+          
+          // Logout
+          Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: TextButton.icon(
+              icon: const Icon(Icons.logout_rounded, color: Colors.redAccent, size: 20),
+              label: Text(
+                l10n.logout,
+                style: const TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
                 ),
-                const SizedBox(height: 20),
-              ]),
+              ),
+              onPressed: () => OverlayService.showLogoutConfirmation(
+                onConfirm: () {
+                  SideNavigationService.navigateToLogin();
+                },
+              ),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Colors.redAccent.withOpacity(0.05),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
             ),
           ),
         ],
@@ -158,29 +212,77 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+      padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
       child: Text(
-        title,
+        title.toUpperCase(),
         style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).colorScheme.primary,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.2,
+          color: Colors.grey[500],
         ),
       ),
     );
   }
 
-  IconData _getThemeIcon(String themeMode) {
-    switch (themeMode) {
-      case 'Light':
-        return Icons.light_mode;
-      case 'Dark':
-        return Icons.dark_mode;
-      case 'System':
-        return Icons.phone_iphone;
-      default:
-        return Icons.light_mode;
-    }
+  Widget _buildCleanTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+      ),
+      subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[600])) : null,
+      trailing: const Icon(Icons.chevron_right_rounded, size: 22, color: Colors.grey),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildSwitchTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+      ),
+      subtitle: Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      trailing: Transform.scale(
+        scale: 0.8,
+        child: Switch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: Theme.of(context).primaryColor,
+        ),
+      ),
+      onTap: () => onChanged(!value),
+    );
   }
 
   void _showChangePasswordDialog() {
@@ -196,7 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.65,
+        height: MediaQuery.of(context).size.height * 0.7,
         padding: const EdgeInsets.symmetric(vertical: 24),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -204,20 +306,25 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Column(
           children: [
-            Text(tr('subscription_plans'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+            const Text('Subscription Plans', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
             Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _buildSubscriptionCard('Basic Plan', '\$29/mo', ['1 Barber Seat', 'Basic Analytics', 'Email Support']),
-                    _buildSubscriptionCard('Growth Plan', '\$59/mo', ['Up to 5 Barbers', 'Full Analytics', 'Priority Support'], isRecommended: true),
-                    _buildSubscriptionCard('Enterprise', '\$99/mo', ['Unlimited', 'Branch Multi-management', '24/7 Dedicated Support']),
-                  ],
-                ),
-              ),
+              child: _isLoadingPlans 
+                ? const Center(child: CircularProgressIndicator())
+                : _plans == null || _plans!.isEmpty
+                  ? Center(child: Text('No plans available at the moment', style: TextStyle(color: Colors.grey[600])))
+                  : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: _plans!.map((plan) => _buildSubscriptionCard(
+                        plan.name, 
+                        '\$${plan.price.toStringAsFixed(0)}/mo', 
+                        plan.features,
+                        isRecommended: plan.isPopular,
+                      )).toList(),
+                    ),
+                  ),
             ),
           ],
         ),
@@ -247,12 +354,12 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-              child: Text(tr('recommended'), style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+              child: const Text('RECOMMENDED', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
             ),
           Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isRecommended ? Colors.white : (isDark ? Colors.white : Colors.black))),
           const SizedBox(height: 8),
           Text(price, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: isRecommended ? Colors.white : Theme.of(context).primaryColor)),
-          const Divider(height: 32, color: Colors.grey),
+          const Divider(height: 32),
           Expanded(
             child: ListView(
               shrinkWrap: true,
@@ -270,21 +377,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/subscription/upgrade', arguments: {'title': title, 'price': price});
               },
-              style: ElevatedButton.styleFrom(backgroundColor: isRecommended ? Colors.white : Theme.of(context).primaryColor, foregroundColor: isRecommended ? Theme.of(context).primaryColor : Colors.white),
-              child: Text(tr('select_plan')),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isRecommended ? Colors.white : Theme.of(context).primaryColor, 
+                foregroundColor: isRecommended ? Theme.of(context).primaryColor : Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 0,
+              ),
+              child: const Text('Select Plan'),
             ),
           ),
         ],
       ),
     );
-  }
-
-  void _changeLanguage() {
-    DialogHelper.showLanguageBottomSheet(context, _languageService);
-  }
-
-  void _changeTheme() {
-    DialogHelper.showThemeBottomSheet(context, _themeService);
   }
 
   Future<void> _rateApp() async {
@@ -300,17 +404,70 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  void _navigateToNotifications() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Navigate to Notification Settings')),
+  void _showReportProblemDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Report a Problem'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Please describe the problem you encountered:'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              maxLines: 4,
+              decoration: InputDecoration(
+                hintText: 'Enter details here...',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report submitted. Thank you!')));
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
     );
   }
 
-  void _navigateToStorage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Navigate to Storage Usage')),
+  void _showPrivacyPolicy() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Privacy & Security'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: const SingleChildScrollView(child: Text('Privacy policy content goes here...')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ],
+      ),
+    );
+  }
+
+  void _showAppRules() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('App Rules'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: const SingleChildScrollView(child: Text('App rules content goes here...')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ],
+      ),
     );
   }
 }
-
-

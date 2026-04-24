@@ -1,5 +1,6 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class CliqPaymentPage extends StatelessWidget {
   final String scheduleType;
@@ -28,7 +29,7 @@ class CliqPaymentPage extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: onPaymentComplete,
-              child: Text('complete_payment'.tr()),
+              child: Text(AppLocalizations.of(context)!.completePayment),
             ),
           ],
         ),

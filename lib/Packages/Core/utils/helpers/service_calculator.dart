@@ -1,4 +1,4 @@
-import 'package:na3eeman/Models/shop/shop_service_model.dart';
+import 'package:na3eeman/Models/salon/salon_service_model.dart';
 
 import '../../../../Helpers/service_models_helper.dart';
 
@@ -111,7 +111,7 @@ class ServiceCalculator {
     }
   }
 
-  static int getTotalDurationInMinutes(List<ShopService> services) {
+  static int getTotalDurationInMinutes(List<SalonService> services) {
     int totalMinutes = 0;
     for (var service in services) totalMinutes += parseDuration(service.duration);
     return totalMinutes;

@@ -1,6 +1,6 @@
 enum ReportType {
   user,
-  shop,
+  salon,
   content,
   staff,
   financial,

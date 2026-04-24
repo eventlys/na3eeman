@@ -1,3 +1,5 @@
+import '../../Services/enums/points_types.dart';
+
 class PointsModel {
   final String id;
   final int userId;
@@ -39,44 +41,6 @@ class PointsModel {
       'created_at': createdAt.toIso8601String(),
       'metadata': metadata,
     };
-  }
-}
-
-enum PointsType {
-  appointmentComplete('appointment_complete'),
-  reviewWrite('review_write'),
-  referral('referral'),
-  rewardRedeem('reward_redeem'),
-  other('other');
-
-  final String value;
-
-  const PointsType(this.value);
-}
-
-class PointsTypeExtension {
-  static PointsType fromString(String value) {
-    for (PointsType type in PointsType.values) {
-      if (type.value == value) {
-        return type;
-      }
-    }
-    return PointsType.other;
-  }
-
-  static String toDisplayString(PointsType type) {
-    switch (type) {
-      case PointsType.appointmentComplete:
-        return 'Appointment Completed';
-      case PointsType.reviewWrite:
-        return 'Review Written';
-      case PointsType.referral:
-        return 'Customer Referral';
-      case PointsType.rewardRedeem:
-        return 'Reward Redeemed';
-      case PointsType.other:
-        return 'Other';
-    }
   }
 }
 

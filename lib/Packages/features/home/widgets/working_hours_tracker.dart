@@ -54,7 +54,7 @@ class WorkingHoursTracker extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Shop Status',
+                  'Salon Status',
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,

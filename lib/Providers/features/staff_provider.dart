@@ -1,10 +1,11 @@
 // import 'package:flutter/material.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/auth/barber_profile.dart';
-import '../../Models/shop/staff_member_model.dart';
-import '../../Models/shop/barber_model.dart';
+import '../../Models/salon/staff_member_model.dart';
+import '../../Models/salon/barber_model.dart';
 import '../../Services/enums/staff_role.dart';
 import '../../core/enums/app_enums.dart';
 import '../../Services/enums/gender.dart';
@@ -25,7 +26,7 @@ class StaffProvider extends BaseProvider {
     return _staff
         .where(
           (member) =>
-              member.shopId == _authProvider?.ownerProfile?.barberProfileId,
+              member.salonId == _authProvider?.ownerProfile?.barberProfileId,
         )
         .toList();
   }
@@ -67,7 +68,7 @@ class StaffProvider extends BaseProvider {
         role: StaffRole.employee,
         joinDate: DateTime.now().subtract(const Duration(days: 365)),
         profileImage: 'https://example.com/mike.jpg',
-        shopId: 1,
+        salonId: 1,
         isActive: true,
         hourlyRate: 25.0,
         specialties: ['Haircuts', 'Beard Trims', 'Shaves'],
@@ -114,7 +115,7 @@ class StaffProvider extends BaseProvider {
         servicesCount: {'Haircut': 80, 'Beard Trim': 45, 'Shave': 25},
         lastActive: DateTime.now().subtract(const Duration(hours: 2)),
         hourlyRate: 25.0,
-        shopId: 1,
+        salonId: 1,
       ),
     ];
   }

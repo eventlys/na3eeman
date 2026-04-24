@@ -1,8 +1,8 @@
 // import 'package:flutter/material.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
-import '../../Models/shop/cart_item_model.dart';
-import '../../Models/shop/shop_service_model.dart';
+import '../../Models/salon/cart_item_model.dart';
+import '../../Models/salon/salon_service_model.dart';
 
 class CartProvider extends BaseProvider {
   final List<CartItem> _items = [];
@@ -57,7 +57,7 @@ class CartProvider extends BaseProvider {
     notifyListeners();
   }
 
-  void addService(ShopService service) {
+  void addService(SalonService service) {
     final cartItem = CartItem(
       id: '${service.type}_${service.id}',
       name: service.name,

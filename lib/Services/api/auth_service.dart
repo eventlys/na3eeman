@@ -246,6 +246,10 @@ class AuthService {
     return await _authRepository.updateProfile(profileData);
   }
 
+  Future<void> updateOnlineStatus(bool isOnline) async {
+    await _authRepository.updateProfile({'is_online': isOnline});
+  }
+
   Future<void> logout() async {
     try {
       final refreshToken = await getRefreshToken();

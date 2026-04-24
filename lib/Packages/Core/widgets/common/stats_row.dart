@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class AppointmentStatsRow extends StatelessWidget {
       completedCount: completedCount,
       pendingCount: pendingCount,
       darkMode: darkMode,
+      context: context,
     );
   }
 
@@ -40,6 +42,7 @@ class AppointmentStatsRow extends StatelessWidget {
     required int completedCount,
     required int pendingCount,
     required bool darkMode,
+    required BuildContext context,
   }) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -47,7 +50,7 @@ class AppointmentStatsRow extends StatelessWidget {
         children: [
           Expanded(
             child: _buildStatCard(
-              title: 'completed'.tr().tr(),
+              title: AppLocalizations.of(context)!.completed,
               count: completedCount,
               color: darkMode ? AppColor.darkSuccess : AppColor.lightSuccess,
               icon: Icons.check_circle,
@@ -57,7 +60,7 @@ class AppointmentStatsRow extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: _buildStatCard(
-              title: 'pending'.tr().tr(),
+              title: AppLocalizations.of(context)!.pending,
               count: pendingCount,
               color: darkMode ? AppColor.darkWarning : AppColor.lightWarning,
               icon: Icons.pending_actions,

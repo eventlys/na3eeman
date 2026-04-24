@@ -52,9 +52,9 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                   ),
                   
                   const SizedBox(height: 32),
-                  _buildSectionHeader('Top Performing Shops'),
+                  _buildSectionHeader('Top Performing Salons'),
                   const SizedBox(height: 16),
-                  _buildTopShopsList(provider.usageStats?['top_shops'] ?? []),
+                  _buildTopSalonsList(provider.usageStats?['top_salons'] ?? []),
                   
                   const SizedBox(height: 32),
                   _buildSectionHeader('Appointment Status'),
@@ -175,10 +175,10 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
     );
   }
 
-  Widget _buildTopShopsList(List<dynamic> shops) {
+  Widget _buildTopSalonsList(List<dynamic> salons) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
-      children: shops.map((shop) {
+      children: salons.map((salon) {
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(16),
@@ -191,15 +191,15 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
             children: [
               CircleAvatar(
                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                 child: Text(shop['shop_name'][0], style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+                 child: Text(salon['salon_name'][0], style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(shop['shop_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text('${shop['app_count']} appointments', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                    Text(salon['salon_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${salon['app_count']} appointments', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
                   ],
                 ),
               ),

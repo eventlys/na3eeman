@@ -86,7 +86,7 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
     );
   }
 
-  Widget _buildUpgradeLog(String shop, String change, String time, BuildContext context) {
+  Widget _buildUpgradeLog(String salon, String change, String time, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -102,7 +102,7 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(shop, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(salon, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(change, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
               ],
             ),

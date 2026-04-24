@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_roles.dart';
@@ -76,11 +77,11 @@ class AppDrawer extends StatelessWidget {
     if (role == UserRole.superAdmin) {
       sections.addAll([
         _DrawerSection(
-          title: 'god_mode'.tr(),
+          title: AppLocalizations.of(context)!.godMode,
           items: [
             _DrawerItem(
               icon: Icons.dashboard_outlined,
-              label: 'overview'.tr(),
+              label: AppLocalizations.of(context)!.overview,
               route: '/admin',
               currentRoute: currentRoute,
               primary: primary,
@@ -88,7 +89,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.people_outline_rounded,
-              label: 'user_management'.tr(),
+              label: AppLocalizations.of(context)!.userManagement,
               route: '/admin/users',
               currentRoute: currentRoute,
               primary: primary,
@@ -96,7 +97,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.account_balance_outlined,
-              label: 'financial_reports'.tr(),
+              label: AppLocalizations.of(context)!.financialReports,
               route: '/admin/finance',
               currentRoute: currentRoute,
               primary: primary,
@@ -104,7 +105,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.analytics_outlined,
-              label: 'analytics'.tr(),
+              label: AppLocalizations.of(context)!.analytics,
               route: '/admin/analytics',
               currentRoute: currentRoute,
               primary: primary,
@@ -112,7 +113,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.gavel_outlined,
-              label: 'compliance'.tr(),
+              label: AppLocalizations.of(context)!.compliance,
               route: '/admin/compliance',
               currentRoute: currentRoute,
               primary: primary,
@@ -120,7 +121,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.monitor_heart_outlined,
-              label: 'system_health'.tr(),
+              label: AppLocalizations.of(context)!.systemHealth,
               route: '/admin/system',
               currentRoute: currentRoute,
               primary: primary,
@@ -133,15 +134,17 @@ class AppDrawer extends StatelessWidget {
 
     // Owner + Manager sections
     if (role == UserRole.owner ||
+        role == UserRole.ownerEmployee ||
+        role == UserRole.ownerOwner ||
         role == UserRole.manager ||
         role == UserRole.superAdmin) {
       sections.addAll([
         _DrawerSection(
-          title: 'shop_management'.tr(),
+          title: AppLocalizations.of(context)!.salonManagement,
           items: [
             _DrawerItem(
               icon: Icons.storefront_outlined,
-              label: 'my_shop'.tr(),
+              label: AppLocalizations.of(context)!.mySalon,
               route: '/owner',
               currentRoute: currentRoute,
               primary: primary,
@@ -149,7 +152,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.group_outlined,
-              label: 'staff'.tr(),
+              label: AppLocalizations.of(context)!.staff,
               route: '/staff',
               currentRoute: currentRoute,
               primary: primary,
@@ -157,7 +160,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _DrawerItem(
               icon: Icons.bar_chart_outlined,
-              label: 'reports'.tr(),
+              label: AppLocalizations.of(context)!.reports,
               route: '/report',
               currentRoute: currentRoute,
               primary: primary,
@@ -171,11 +174,11 @@ class AppDrawer extends StatelessWidget {
     // Common links
     sections.addAll([
       _DrawerSection(
-        title: 'account'.tr().tr(),
+        title: AppLocalizations.of(context)!.account,
         items: [
           _DrawerItem(
             icon: Icons.person_outline_rounded,
-            label: 'profile'.tr(),
+            label: AppLocalizations.of(context)!.profile,
             route: '/profile',
             currentRoute: currentRoute,
             primary: primary,
@@ -183,7 +186,7 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerItem(
             icon: Icons.settings_outlined,
-            label: 'settings'.tr(),
+            label: AppLocalizations.of(context)!.settings,
             route: '/settings',
             currentRoute: currentRoute,
             primary: primary,
@@ -191,7 +194,7 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerItem(
             icon: Icons.star_outline_rounded,
-            label: 'subscription'.tr(),
+            label: AppLocalizations.of(context)!.subscription,
             route: '/subscription/upgrade',
             currentRoute: currentRoute,
             primary: primary,
@@ -199,7 +202,7 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerItem(
             icon: Icons.flag_outlined,
-            label: 'report_issue'.tr(),
+            label: AppLocalizations.of(context)!.reportIssue,
             route: '/disputes',
             currentRoute: currentRoute,
             primary: primary,
@@ -413,7 +416,7 @@ class _DrawerFooter extends StatelessWidget {
           size: 22,
           color: AppColor.error.withOpacity(0.8),
         ),
-        title: Text('log_out'.tr(),
+        title: Text(AppLocalizations.of(context)!.logOut,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,

@@ -28,7 +28,7 @@ class FilterService {
   // Default filter configurations
   Map<String, dynamic> getDefaultFilters(FilterType type) {
     switch (type) {
-      case FilterType.shop:
+      case FilterType.salon:
         return {
           'rating': null,
           'price_range': null,
@@ -43,7 +43,7 @@ class FilterService {
         return {
           'status': null,
           'date_range': null,
-          'shop_id': null,
+          'salon_id': null,
           'barber_id': null,
           'sort_by': 'date',
           'sort_order': 'desc',
@@ -77,8 +77,8 @@ class FilterService {
 
     // Type-specific filtering
     switch (type) {
-      case FilterType.shop:
-        filteredItems = _applyShopFilters(filteredItems, filters);
+      case FilterType.salon:
+        filteredItems = _applySalonFilters(filteredItems, filters);
         break;
       case FilterType.appointment:
         filteredItems = _applyAppointmentFilters(filteredItems, filters);
@@ -95,7 +95,7 @@ class FilterService {
     return filteredItems;
   }
 
-  List<dynamic> _applyShopFilters(List<dynamic> items, Map<String, dynamic> filters) {
+  List<dynamic> _applySalonFilters(List<dynamic> items, Map<String, dynamic> filters) {
     var filteredItems = items;
 
     if (filters['price_range'] != null) {
@@ -112,17 +112,17 @@ class FilterService {
     if (filters['services'] != null && (filters['services'] as List).isNotEmpty) {
       final requiredServices = filters['services'] as List<String>;
       filteredItems = filteredItems.where((item) {
-        final shopServices = (item['services'] ?? []) as List;
+        final salonServices = (item['services'] ?? []) as List;
         return requiredServices.every((requiredService) =>
-          shopServices.any((shopService) =>
-            _containsIgnoreCase(shopService.toString(), requiredService)
+          salonServices.any((salonService) =>
+            _containsIgnoreCase(salonService.toString(), requiredService)
           )
         );
       }).toList();
     }
 
     if (filters['availability'] == true) {
-      filteredItems = filteredItems.where((item) => _isShopOpenNow(item)).toList();
+      filteredItems = filteredItems.where((item) => _isSalonOpenNow(item)).toList();
     }
 
     if (filters['category'] != null) {
@@ -158,11 +158,11 @@ class FilterService {
       }
     }
 
-    if (filters['shop_id'] != null) {
-      final shopId = filters['shop_id'] as int;
+    if (filters['salon_id'] != null) {
+      final salonId = filters['salon_id'] as int;
       filteredItems = filteredItems.where((item) {
-        final itemShopId = (item['shop'] ?? item['shop_id']) as int;
-        return itemShopId == shopId;
+        final itemSalonId = (item['salon'] ?? item['salon_id']) as int;
+        return itemSalonId == salonId;
       }).toList();
     }
 
@@ -226,11 +226,11 @@ class FilterService {
 
   dynamic _getSortValue(dynamic item, String sortBy, FilterType type) {
     switch (type) {
-      case FilterType.shop:
+      case FilterType.salon:
         switch (sortBy) {
           case 'rating': return item['avgRating'] ?? 0.0;
           case 'distance': return item['distance'] ?? double.infinity;
-          case 'name': return (item['shopName'] ?? item['name'] ?? '').toString().toLowerCase();
+          case 'name': return (item['salonName'] ?? item['name'] ?? '').toString().toLowerCase();
           case 'price': return item['averagePrice'] ?? 0.0;
           default: return 0;
         }
@@ -260,7 +260,7 @@ class FilterService {
 
   String _getDefaultSortBy(FilterType type) {
     switch (type) {
-      case FilterType.shop: return 'rating';
+      case FilterType.salon: return 'rating';
       case FilterType.appointment: return 'date';
       case FilterType.staff: return 'name';
     }
@@ -268,15 +268,15 @@ class FilterService {
 
   String _getDefaultSortOrder(FilterType type) {
     switch (type) {
-      case FilterType.shop: return 'desc';
+      case FilterType.salon: return 'desc';
       case FilterType.appointment: return 'desc';
       case FilterType.staff: return 'asc';
     }
   }
 
-  bool _isShopOpenNow(Map<String, dynamic> shop) {
+  bool _isSalonOpenNow(Map<String, dynamic> salon) {
     try {
-      final workingHours = shop['workingHours'] as String?;
+      final workingHours = salon['workingHours'] as String?;
       if (workingHours == null) return true;
 
       final now = DateTime.now();
@@ -291,7 +291,7 @@ class FilterService {
 
       return true;
     } catch (e) {
-      AppLogger.error('Error checking shop availability', error: e);
+      AppLogger.error('Error checking salon availability', error: e);
       return true;
     }
   }
@@ -319,8 +319,8 @@ class FilterService {
     final filters = <String, List<dynamic>>{};
 
     switch (type) {
-      case FilterType.shop:
-        _extractShopFilters(filters, items);
+      case FilterType.salon:
+        _extractSalonFilters(filters, items);
         break;
       case FilterType.appointment:
         _extractAppointmentFilters(filters, items);
@@ -333,7 +333,7 @@ class FilterService {
     return filters;
   }
 
-  void _extractShopFilters(Map<String, List<dynamic>> filters, List<dynamic> items) {
+  void _extractSalonFilters(Map<String, List<dynamic>> filters, List<dynamic> items) {
     final ratings = items.map((item) => (item['avgRating'] ?? 0.0) as double).toSet().toList();
     ratings.sort();
     filters['ratings'] = ratings;
@@ -364,8 +364,8 @@ class FilterService {
         .where((status) => status.isNotEmpty).toSet().toList();
     filters['statuses'] = statuses..sort();
 
-    final shopIds = items.map((item) => (item['shop'] ?? item['shop_id']) as int).toSet().toList();
-    filters['shop_ids'] = shopIds..sort();
+    final salonIds = items.map((item) => (item['salon'] ?? item['salon_id']) as int).toSet().toList();
+    filters['salon_ids'] = salonIds..sort();
 
     final barberIds = items.map((item) => (item['barber'] ?? item['barber_id']) as int).toSet().toList();
     filters['barber_ids'] = barberIds..sort();
@@ -391,10 +391,10 @@ class FilterService {
   }
 }
 
-enum FilterType { shop, appointment, staff }
+enum FilterType { salon, appointment, staff }
 
 class SortOptions {
-  static const List<Map<String, dynamic>> shopSortOptions = [
+  static const List<Map<String, dynamic>> salonSortOptions = [
     {'key': 'rating_desc', 'name': 'Highest Rating', 'sort_by': 'rating', 'sort_order': 'desc'},
     {'key': 'rating_asc', 'name': 'Lowest Rating', 'sort_by': 'rating', 'sort_order': 'asc'},
     {'key': 'name_asc', 'name': 'Name A-Z', 'sort_by': 'name', 'sort_order': 'asc'},
@@ -421,7 +421,7 @@ class FilterStateManager with ChangeNotifier {
   Map<String, dynamic> _currentFilters = {};
   List<dynamic> _allItems = [];
   List<dynamic> _filteredItems = [];
-  FilterType _filterType = FilterType.shop;
+  FilterType _filterType = FilterType.salon;
 
   Map<String, dynamic> get currentFilters => Map.from(_currentFilters);
   List<dynamic> get filteredItems => List.from(_filteredItems);
@@ -518,11 +518,11 @@ class SearchService {
     final fields = <String>[];
 
     switch (type) {
-      case SearchIndexType.shops:
+      case SearchIndexType.salons:
         fields.addAll([
-          item['shopName'] ?? item['name'] ?? '',
+          item['salonName'] ?? item['name'] ?? '',
           item['location'] ?? '',
-          item['shopDescription'] ?? item['description'] ?? '',
+          item['salonDescription'] ?? item['description'] ?? '',
         ]);
         fields.addAll((item['services'] ?? []).map((service) => service.toString()));
         break;
@@ -538,7 +538,7 @@ class SearchService {
       case SearchIndexType.appointments:
         fields.addAll([
           item['customerName'] ?? '',
-          item['shopName'] ?? '',
+          item['salonName'] ?? '',
           item['status'] ?? '',
         ]);
         fields.addAll((item['services'] ?? []).map((service) => service.toString()));
@@ -559,7 +559,7 @@ class SearchService {
 
   List<String> getSearchSuggestions(String query, {int maxSuggestions = 5}) {
     final suggestions = <String>{};
-    final searchData = _searchIndex['shops'] ?? [];
+    final searchData = _searchIndex['salons'] ?? [];
 
     if (query.isEmpty) {
       return _historyManager.getSearchHistory().take(maxSuggestions).toList();
@@ -574,11 +574,11 @@ class SearchService {
     suggestions.addAll(historyMatches);
 
     // Data matches
-    for (final shop in searchData) {
-      _addSuggestion(suggestions, shop['shopName'] ?? '', queryLower, maxSuggestions);
-      _addSuggestion(suggestions, shop['location'] ?? '', queryLower, maxSuggestions);
+    for (final salon in searchData) {
+      _addSuggestion(suggestions, salon['salonName'] ?? '', queryLower, maxSuggestions);
+      _addSuggestion(suggestions, salon['location'] ?? '', queryLower, maxSuggestions);
 
-      final services = shop['services'] ?? [];
+      final services = salon['services'] ?? [];
       for (final service in services) {
         _addSuggestion(suggestions, service.toString(), queryLower, maxSuggestions);
       }
@@ -614,7 +614,7 @@ class SearchService {
   void clearSearchHistory() => _historyManager.clearHistory();
 }
 
-enum SearchIndexType { shops, services, appointments, staff }
+enum SearchIndexType { salons, services, appointments, staff }
 
 class DebouncedSearch {
   final Duration delay;
@@ -660,7 +660,7 @@ class SocialSharingService {
   SocialSharingService._internal();
 
   Future<void> shareApp() async {
-    const shareText = 'Check out Na3eeman - The best barber shop app! '
+    const shareText = 'Check out Na3eeman - The best barber salon app! '
         'Find the perfect barber, book appointments, and earn loyalty points. '
         'Download now and get your perfect haircut! ✂️';
     const shareUrl = 'https://na3eeman.com/download';
@@ -668,13 +668,13 @@ class SocialSharingService {
     await _shareContent('$shareText\n\n$shareUrl', 'App shared successfully', 'Failed to share app');
   }
 
-  Future<void> shareShop(String shopName, String shopId) async {
-    final shareText = 'Check out $shopName on Na3eeman! '
+  Future<void> shareSalon(String salonName, String salonId) async {
+    final shareText = 'Check out $salonName on Na3eeman! '
         'They provide excellent haircut services with professional barbers. '
         'Book your appointment now! 💈';
-    final shareUrl = 'https://na3eeman.com/shop/$shopId';
+    final shareUrl = 'https://na3eeman.com/salon/$salonId';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Shop shared: $shopName', 'Failed to share shop');
+    await _shareContent('$shareText\n\n$shareUrl', 'Salon shared: $salonName', 'Failed to share salon');
   }
 
   Future<void> shareAppointment(String appointmentId) async {
@@ -711,7 +711,7 @@ class SocialSharingService {
 
   Future<void> inviteFriends(String referralCode) async {
     final inviteText = '''
-Join me on Na3eeman - The ultimate barber shop experience! ✂️
+Join me on Na3eeman - The ultimate barber salon experience! ✂️
 
 🌟 Why you'll love it:
 • Find the best barbers in your area
@@ -739,14 +739,14 @@ Download now: https://na3eeman.com/download
     await _shareContent('$shareText\n\n$shareUrl', 'Loyalty achievement shared: $points points', 'Failed to share loyalty achievement');
   }
 
-  Future<void> shareReview(String shopName, int rating) async {
+  Future<void> shareReview(String salonName, int rating) async {
     final stars = '⭐' * rating;
-    final shareText = 'I just rated $shopName $rating stars on Na3eeman! $stars\n\n'
-        'The app makes it so easy to find and review great barber shops. '
+    final shareText = 'I just rated $salonName $rating stars on Na3eeman! $stars\n\n'
+        'The app makes it so easy to find and review great barber salons. '
         'Check it out if you\'re looking for a fresh cut! 💈';
     const shareUrl = 'https://na3eeman.com';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Review shared for: $shopName', 'Failed to share review');
+    await _shareContent('$shareText\n\n$shareUrl', 'Review shared for: $salonName', 'Failed to share review');
   }
 
   Future<void> sharePromoCode(String promoCode, String description) async {

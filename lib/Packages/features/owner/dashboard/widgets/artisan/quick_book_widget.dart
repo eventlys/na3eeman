@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -40,14 +41,14 @@ class QuickBookWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('quick_book'.tr(),
+                Text(AppLocalizations.of(context)!.quickBook,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text('add_a_new_appointment'.tr(),
+                Text(AppLocalizations.of(context)!.addANewAppointment,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 13,

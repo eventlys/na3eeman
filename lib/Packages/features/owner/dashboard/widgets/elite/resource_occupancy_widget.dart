@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
@@ -27,14 +28,14 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
   Future<void> _fetchOccupancy() async {
     if (!mounted) return;
     final owner = context.read<OwnerProvider>();
-    final shopId = owner.activeShopId;
-    if (shopId == null) {
-      if (mounted) setState(() { _isLoading = false; _error = 'No shop selected'; });
+    final salonId = owner.activeSalonId;
+    if (salonId == null) {
+      if (mounted) setState(() { _isLoading = false; _error = 'No salon selected'; });
       return;
     }
 
     try {
-      final response = await _apiService.get('/shops/$shopId/resource_occupancy/');
+      final response = await _apiService.get('/salons/$salonId/resource_occupancy/');
       final data = response['results'] as List;
       if (mounted) {
         setState(() {
@@ -67,7 +68,7 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
             Icon(Icons.meeting_room_rounded,
                 size: 18, color: theme.primaryColor),
             const SizedBox(width: 8),
-            Text('resource_occupancy'.tr(),
+            Text(AppLocalizations.of(context)!.resourceOccupancy,
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
           ],

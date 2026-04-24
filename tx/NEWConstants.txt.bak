@@ -1,0 +1,990 @@
+import 'package:flutter/material.dart';
+
+enum UserGender { male, female, nonBinary }
+
+class AppColor {
+  static const Color primary = Color(0xFF806C99);
+  static const Color secondary = Color(0xFFC25858);
+
+  static const Color lightMaleBG = Color(0xFF9D8BB0);
+  static const Color lightFemaleBG = Color(0xFF92A0A6);
+  static const Color lightNonBinaryBG = Color(0xFFA68B6C);
+  static const Color lightPrimary = Color(0xFF806C99);
+  static const Color lightSecondary = Color(0xFFD17A7A);
+  static const Color lightAccent = Color(0xFFF18F01);
+  static const Color lightBackground = Color(0xFFF8F9FA);
+  static const Color lightCard = Color(0xFFFFFFFF);
+  static const Color lightText = Color(0xFF2B2D42);
+  static const Color lightTextSecondary = Color(0xFF6B7280);
+  static const Color lightTextHint = Color(0xFF9CA3AF);
+  static const Color lightSuccess = Color(0xFF4CAF50);
+  static const Color lightWarning = Color(0xFFFF9800);
+  static const Color lightError = Color(0xFFF44336);
+  static const Color lightInfo = Color(0xFF2196F3);
+
+  // Staff Management Specific Colors - Light Theme
+  static const Color lightBarber = Color(0xFF6D28D9);
+  static const Color lightManager = Color(0xFF059669);
+  static const Color lightAssistant = Color(0xFFDC2626);
+  static const Color lightReceptionist = Color(0xFF7C3AED);
+
+  // Dark Theme Colors
+  static const Color darkMaleBG = Color(0xFF5A4A6B);
+  static const Color darkFemaleBG = Color(0xFF4A5568);
+  static const Color darkNonBinaryBG = Color(0xFF6B5A4A);
+  static const Color darkPrimary = Color(0xFF2E86AB);
+  static const Color darkSecondary = Color(0xFFA93D3D);
+  static const Color darkAccent = Color(0xFFF6AD55);
+  static const Color darkBackground = Color(0xFF1A202C);
+  static const Color darkCard = Color(0xFF2D3748);
+  static const Color darkText = Color(0xFFE2E8F0);
+  static const Color darkTextSecondary = Color(0xFFA0AEC0);
+  static const Color darkTextHint = Color(0xFF718096);
+  static const Color darkSuccess = Color(0xFF48BB78);
+  static const Color darkWarning = Color(0xFFED8936);
+  static const Color darkError = Color(0xFFF56565);
+  static const Color darkInfo = Color(0xFF4299E1);
+
+  // Staff Management Specific Colors - Dark Theme
+  static const Color darkBarber = Color(0xFF7C3AED);
+  static const Color darkManager = Color(0xFF059669);
+  static const Color darkAssistant = Color(0xFFE53E3E);
+  static const Color darkReceptionist = Color(0xFF805AD5);
+  static const Color trans = Color(0x00ffffff);
+
+  static const Color light = Color(0xffffffff);
+  static const Color dark = Color(0xff000000);
+
+  // Gender-specific accent colors
+  static const Color maleAccent = Color(0xFF6D28D9);
+  static const Color femaleAccent = Color(0xFFDB2777);
+  static const Color nonBinaryAccent = Color(0xFFF59E0B);
+
+  // Gender-specific background colors
+  static const Color maleBackground = Color(0xFFE0E7FF);
+  static const Color femaleBackground = Color(0xFFFCE7F3);
+  static const Color nonBinaryBackground = Color(0xFFFEF3C7);
+
+  // Gender-specific dark background colors
+  static const Color darkMaleBackground = Color(0xFF312E81);
+  static const Color darkFemaleBackground = Color(0xFF831843);
+  static const Color darkNonBinaryBackground = Color(0xFF78350F);
+
+  static const Color darkWithOpacity = Color(0x1A000000);
+
+}
+
+import 'dart:ui';
+
+class AppConstants {
+  // App Information
+  static const String appName = 'Na3eeman';
+  static const String appTagline = 'Premium Barber Experience';
+  static const String appVersion = '1.0.0';
+  static const String appBuildNumber = '1';
+  
+  // Store Links
+  static const String appStoreLink = 'https://apps.apple.com/app/idYOUR_APP_ID';
+  static const String playStoreLink = 'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
+
+  // API Constants
+  static const String baseUrl = 'https://api.na3eeman.com';
+  static const int apiTimeout = 30000; // 30 seconds
+  static const int maxRetryAttempts = 3;
+
+  // API Endpoints - Updated to match your backend
+  // Authentication Endpoints
+  static const String registerEndpoint = '/usr/auth/register/';
+  static const String loginEndpoint = '/usr/auth/login/';
+  static const String logoutEndpoint = '/usr/auth/logout/';
+  static const String verifyEmailEndpoint = '/usr/auth/verify-email/';
+  static const String verifyPhoneEndpoint = '/usr/auth/verify-phone/';
+  static const String googleAuthEndpoint = '/usr/auth/google/';
+  static const String appleAuthEndpoint = '/usr/auth/apple/';
+  static const String refreshTokenEndpoint = '/usr/auth/token/refresh/';
+  static const String verifyTokenEndpoint = '/usr/auth/token/verify/';
+
+  // User Profile Endpoints
+  static const String userProfileEndpoint = '/usr/prof/';
+  static const String updateProfileEndpoint = '/usr/prof/update/';
+  static const String changePasswordEndpoint = '/usr/prof/change-password/';
+  static const String updateProfilePictureEndpoint = '/usr/prof/picture/';
+  static const String updateLocationEndpoint = '/usr/prof/location/';
+  static const String continueProfileEndpoint = '/usr/prof/continue/';
+  static const String deleteProfileEndpoint = '/usr/prof/delete/';
+
+  // User Management Endpoints
+  static const String checkUsernameEndpoint = '/usr/check/username/';
+  static const String checkEmailEndpoint = '/usr/check/email/';
+  static const String whoamiEndpoint = '/usr/whoami/';
+  static const String userProfilesEndpoint = '/usr/profiles/';
+  static const String userProfileByIdEndpoint = '/usr/profiles/{id}/';
+  static const String userByIdEndpoint = '/usr/users/{id}/';
+  static const String changeUserRoleEndpoint = '/usr/users/change-role/';
+  static const String barbersEndpoint = '/usr/barbers/';
+  static const String customersEndpoint = '/usr/customers/';
+
+  // Salon Endpoints
+  static const String salonsEndpoint = '/salon/salons';
+  static const String salonAppointmentsEndpoint = '/salon/appointments';
+  static const String salonReviewsEndpoint = '/salon/reviews';
+  static const String salonSubscriptionsEndpoint = '/salon/subscriptions';
+  static const String salonStylesEndpoint = '/salon/styles';
+  static const String salonOptionsEndpoint = '/salon/options';
+  static const String salonPackagesEndpoint = '/salon/packages';
+  static const String salonProductsEndpoint = '/salon/products';
+  static const String salonInventoryEndpoint = '/salon/inventory';
+  static const String salonBarbersEndpoint = '/salon/barbers';
+
+  // Loyalty Endpoints
+  static const String loyaltyBalanceEndpoint = '/loyalty/balance';
+  static const String loyaltyAdminAdjustEndpoint = '/loyalty/admin-adjust';
+  static const String loyaltyRedeemFreeCutEndpoint = '/loyalty/redeem-free-cut';
+  static const String loyaltyAdminAdjustPointsEndpoint = '/loyalty/admin/adjust-points';
+
+  // Health Check
+  static const String healthEndpoint = '/usr/health/';
+
+  // Timeouts
+  static const int connectTimeout = 30000; // 30 seconds
+  static const int receiveTimeout = 30000; // 30 seconds
+
+  // Pagination
+  static const int defaultPageSize = 20;
+  static const int maxPageSize = 100;
+
+  // Animation Durations
+  static const Duration animationDurationShort = Duration(milliseconds: 200);
+  static const Duration animationDurationMedium = Duration(milliseconds: 350);
+  static const Duration animationDurationLong = Duration(milliseconds: 500);
+
+  // Debounce Timers
+  static const Duration searchDebounceDuration = Duration(milliseconds: 500);
+  static const Duration buttonDebounceDuration = Duration(milliseconds: 300);
+
+  // Storage Keys
+  static const String authTokenKey = 'auth_token';
+  static const String refreshTokenKey = 'refresh_token';
+  static const String userDataKey = 'user_data';
+  static const String appSettingsKey = 'app_settings';
+  static const String languageKey = 'app_language';
+  static const String themeKey = 'app_theme';
+
+  // Validation Rules
+  static const int minPasswordLength = 6;
+  static const int maxPasswordLength = 128;
+  static const int minNameLength = 2;
+  static const int maxNameLength = 50;
+  static const int maxEmailLength = 254;
+  static const int maxPhoneLength = 15;
+
+  // Date Formats
+  static const String dateFormat = 'yyyy-MM-dd';
+  static const String timeFormat = 'HH:mm';
+  static const String dateTimeFormat = 'yyyy-MM-dd HH:mm';
+  static const String displayDateFormat = 'MMM dd, yyyy';
+  static const String displayTimeFormat = 'hh:mm a';
+
+  // Layout Constraints
+  static const double mobileBreakpoint = 600;
+  static const double tabletBreakpoint = 900;
+  static const double desktopBreakpoint = 1200;
+
+  static const double defaultPadding = 16.0;
+  static const double defaultMargin = 16.0;
+  static const double defaultBorderRadius = 8.0;
+  static const double defaultElevation = 2.0;
+
+  // Sidebar
+  static const double sidebarWidth = 280.0;
+  static const double sidebarAnimationDuration = 400;
+
+  // Salon Constants
+  static const double minSalonRating = 1.0;
+  static const double maxSalonRating = 5.0;
+  static const int maxGalleryImages = 10;
+  static const int maxServicesPerSalon = 20;
+
+  // Staff Management Constants
+  static const List<String> barberSpecialties = [
+    'Haircut',
+    'Beard Trim',
+    'Shave',
+    'Hair Color',
+    'Styling',
+    'Fade',
+    'Kids Cut',
+    'Senior Cut'
+  ];
+
+  static const Map<String, double> servicePrices = {
+    'Haircut': 25.00,
+    'Beard Trim': 15.00,
+    'Shave': 20.00,
+    'Hair Color': 60.00,
+    'Styling': 35.00,
+  };
+
+  // Appointment Constants
+  static const int appointmentReminderMinutes = 30;
+  static const int maxAppointmentDuration = 240; // 4 hours in minutes
+  static const int minAppointmentAdvanceDays = 0;
+  static const int maxAppointmentAdvanceDays = 90;
+
+  // Payment Constants
+  static const double minPaymentAmount = 0.01;
+  static const double maxPaymentAmount = 10000.0;
+  static const int currencyDecimalPlaces = 2;
+
+  // Points System
+  static const int pointsForInvite = 50;
+  static const int pointsForRating = 10;
+  static const int pointsForAppointment = 25;
+  static const int pointsForFeedback = 15;
+
+  // Cache Durations
+  static const Duration salonCacheDuration = Duration(minutes: 30);
+  static const Duration userCacheDuration = Duration(hours: 1);
+  static const Duration configCacheDuration = Duration(hours: 24);
+  static const int cacheTimeout = 300;
+
+  // File Size Limits (in bytes)
+  static const int maxImageSize = 5 * 1024 * 1024; // 5MB
+  static const int maxFileSize = 10 * 1024 * 1024; // 10MB
+
+  // Other Constants
+  static const int otpLength = 6;
+  static const int otpTimeoutSeconds = 300; // 5 minutes
+  static const int resendOtpCooldown = 30; // 30 seconds
+}
+class AppImages {
+  // Main Images
+  static const String logo = 'assets/images/Layer.png';
+  static const String appLogo = 'assets/images/app_logo.png';
+  static const String placeholderImage = 'assets/images/placeholder.jpg';
+  static const String defaultProfile = 'assets/images/default_profile.png';
+  static const String defaultSalon = 'assets/images/default_salon.jpg';
+
+  // Salon Images
+  static const String salon1 = 'assets/images/salon1.jpg';
+  static const String salon2 = 'assets/images/salon2.jpg';
+  static const String salon3 = 'assets/images/salon3.jpg';
+  static const String salon4 = 'assets/images/salon4.jpg';
+  static const String salon5 = 'assets/images/salon5.jpg';
+  static const String salon6 = 'assets/images/salon6.jpg';
+  static const String salon7 = 'assets/images/salon7.jpg';
+  static const String salon8 = 'assets/images/salon8.jpg';
+  static const String salon9 = 'assets/images/salon9.jpg';
+  static const String salon10 = 'assets/images/salon10.jpg';
+
+  // Mock Images for Development
+  static const String mockAvatar1 = 'assets/images/mock_avatar1.png';
+  static const String mockAvatar2 = 'assets/images/mock_avatar2.png';
+  static const String mockAvatar3 = 'assets/images/mock_avatar3.png';
+}
+class AppPaths {
+  // Asset Base Paths
+  static const String imagesPath = 'assets/images/';
+  static const String iconsPath = 'assets/icons/';
+  static const String animationsPath = 'assets/animations/';
+
+  // Icon Paths
+  static const String homeIcon = '${iconsPath}home.png';
+  static const String profileIcon = '${iconsPath}profile.png';
+  static const String settingsIcon = '${iconsPath}settings.png';
+  static const String heartIcon = '${iconsPath}heart.png';
+  static const String heartFilledIcon = '${iconsPath}heart_filled.png';
+  static const String locationIcon = '${iconsPath}location.png';
+  static const String starIcon = '${iconsPath}star.png';
+  static const String lockIcon = '${iconsPath}lock.png';
+  static const String secureIcon = '${iconsPath}secure.png';
+  static const String mailIcon = '${iconsPath}mail.png';
+  static const String reportIcon = '${iconsPath}report.png';
+  static const String fileStarIcon = '${iconsPath}file_star.png';
+  static const String exitIcon = '${iconsPath}exit.png';
+  static const String plusIcon = '${iconsPath}plus.png';
+
+  // Staff Management Icons
+  static const String barberIcon = '${iconsPath}barber.svg';
+  static const String chartIcon = '${iconsPath}chart.svg';
+  static const String reportIconSvg = '${iconsPath}report.svg';
+  static const String branchIcon = '${iconsPath}branch.svg';
+  static const String staffIcon = '${iconsPath}staff.svg';
+  static const String payrollIcon = '${iconsPath}payroll.svg';
+  static const String attendanceIcon = '${iconsPath}attendance.svg';
+
+  // Animation Paths
+  static const String loadingAnimation = '${animationsPath}loading.json';
+  static const String successAnimation = '${animationsPath}success.json';
+  static const String errorAnimation = '${animationsPath}error.json';
+  static const String emptyAnimation = '${animationsPath}empty.json';
+
+  // API Endpoint Paths
+  static const String apiBase = '/api/v1';
+
+  static const String login = '$apiBase/auth/login';
+  static const String register = '$apiBase/auth/register';
+  static const String logout = '$apiBase/auth/logout';
+  static const String refreshToken = '$apiBase/auth/refresh';
+  static const String forgotPassword = '$apiBase/auth/forgot-password';
+  static const String resetPassword = '$apiBase/auth/reset-password';
+  static const String verifyOtp = '$apiBase/auth/verify-otp';
+
+  static const String userProfile = '$apiBase/user/profile';
+  static const String updateProfile = '$apiBase/user/update';
+  static const String changePassword = '$apiBase/user/change-password';
+
+  static const String salons = '$apiBase/salons';
+  static String salonById(String id) => '$salons/$id';
+  static String salonServices(String salonId) => '$salons/$salonId/services';
+  static String salonGallery(String salonId) => '$salons/$salonId/gallery';
+  static String salonReviews(String salonId) => '$salons/$salonId/reviews';
+
+  static const String appointments = '$apiBase/appointments';
+  static String appointmentById(String id) => '$appointments/$id';
+  static String cancelAppointment(String id) => '$appointments/$id/cancel';
+  static String rescheduleAppointment(String id) => '$appointments/$id/reschedule';
+
+  static const String payments = '$apiBase/payments';
+  static String paymentStatus(String id) => '$payments/$id/status';
+
+  static const String inventory = '$apiBase/inventory';
+  static String inventoryItem(String id) => '$inventory/$id';
+
+  static const String reports = '$apiBase/reports';
+  static const String analytics = '$apiBase/analytics';
+
+  // Local Storage Paths
+  static const String appDocumentsDir = 'na3eeman';
+  static const String cacheDir = 'cache';
+  static const String tempDir = 'temp';
+  static const String backupDir = 'backup';
+
+  // Route Paths
+  static const String splashRoute = '/splash';
+  static const String loginRoute = '/login';
+  static const String registerRoute = '/register';
+  static const String homeRoute = '/home';
+  static const String profileRoute = '/profile';
+  static const String settingsRoute = '/settings';
+  static const String salonDetailsRoute = '/salon-details';
+  static const String appointmentBookingRoute = '/appointment-booking';
+  static const String paymentRoute = '/payment';
+  static const String orderHistoryRoute = '/order-history';
+  static const String favoritesRoute = '/favorites';
+}
+
+// Helper extensions for path operations
+extension PathExtensions on String {
+  String get asImagePath => '${AppPaths.imagesPath}$this';
+  String get asIconPath => '${AppPaths.iconsPath}$this';
+  String get asAnimationPath => '${AppPaths.animationsPath}$this';
+}
+class AppStrings {
+  // App Name & Basic Info
+  static const String appName = 'Na3eeman';
+  static const String appTagline = 'Premium Barber Experience';
+  static const String appDescription = 'Book appointments with the best barbers in town';
+
+  // Common Actions
+  static const String save = 'Save';
+  static const String cancel = 'Cancel';
+  static const String delete = 'Delete';
+  static const String edit = 'Edit';
+  static const String update = 'Update';
+  static const String confirm = 'Confirm';
+  static const String continueText = 'Continue';
+  static const String back = 'Back';
+  static const String next = 'Next';
+  static const String submit = 'Submit';
+  static const String search = 'Search';
+  static const String filter = 'Filter';
+  static const String sort = 'Sort';
+  static const String apply = 'Apply';
+  static const String done = 'Done';
+  static const String close = 'Close';
+  static const String ok = 'OK';
+  static const String yes = 'Yes';
+  static const String no = 'No';
+
+  // Authentication
+  static const String login = 'Login';
+  static const String logout = 'Logout';
+  static const String register = 'Register';
+  static const String signUp = 'Sign Up';
+  static const String email = 'Email';
+  static const String password = 'Password';
+  static const String confirmPassword = 'Confirm Password';
+  static const String forgotPassword = 'Forgot Password?';
+  static const String resetPassword = 'Reset Password';
+  static const String changePassword = 'Change Password';
+  static const String currentPassword = 'Current Password';
+  static const String newPassword = 'New Password';
+  static const String rememberMe = 'Remember Me';
+  static const String dontHaveAccount = "Don't have an account?";
+  static const String alreadyHaveAccount = 'Already have an account?';
+  static const String orLoginWith = 'Or login with';
+
+  // Validation Messages
+  static const String requiredField = 'This field is required';
+  static const String invalidEmail = 'Please enter a valid email address';
+  static const String invalidPhone = 'Please enter a valid phone number';
+  static const String passwordTooShort = 'Password must be at least 6 characters';
+  static const String passwordsDontMatch = 'Passwords do not match';
+  static const String invalidOtp = 'Please enter a valid OTP';
+
+  // Error Messages
+  static const String errorTitle = 'Error';
+  static const String successTitle = 'Success';
+  static const String warningTitle = 'Warning';
+  static const String infoTitle = 'Information';
+
+  static const String networkError = 'Network error. Please check your connection';
+  static const String serverError = 'Server error. Please try again later';
+  static const String unknownError = 'An unknown error occurred';
+  static const String timeoutError = 'Request timeout. Please try again';
+  static const String unauthorizedError = 'Unauthorized access';
+
+  // Success Messages
+  static const String loginSuccess = 'Login successful';
+  static const String registerSuccess = 'Registration successful';
+  static const String passwordResetSuccess = 'Password reset successfully';
+  static const String profileUpdateSuccess = 'Profile updated successfully';
+  static const String appointmentBookedSuccess = 'Appointment booked successfully';
+  static const String paymentSuccess = 'Payment successful';
+
+  // Navigation & Main Sections
+  static const String home = 'Home';
+  static const String profile = 'Profile';
+  static const String settings = 'Settings';
+  static const String appointments = 'Appointments';
+  static const String history = 'History';
+  static const String favorites = 'Favorites';
+  static const String notifications = 'Notifications';
+  static const String help = 'Help';
+  static const String about = 'About';
+  static const String dashboard = 'Dashboard';
+  static const String subscription = 'Subscription';
+  static const String inventory = 'Inventory';
+  static const String profitReports = 'Profit Reports';
+  static const String offers = 'Offers & Ads';
+  static const String branches = 'Branch Management';
+
+  // Staff Management
+  static const String staffManagement = 'Staff Management';
+  static const String barbers = 'Barbers';
+  static const String performance = 'Performance';
+  static const String staffReports = 'Staff Reports';
+  static const String assignManager = 'Assign Manager';
+  static const String staff = 'Staff';
+  static const String payroll = 'Payroll';
+  static const String attendance = 'Attendance';
+
+  // Salon Related
+  static const String salons = 'Salons';
+  static const String services = 'Services';
+  static const String gallery = 'Gallery';
+  static const String reviews = 'Reviews';
+  static const String rating = 'Rating';
+  static const String workingHours = 'Working Hours';
+  static const String location = 'Location';
+  static const String contact = 'Contact';
+  static const String bookAppointment = 'Book Appointment';
+  static const String selectService = 'Select Service';
+  static const String selectBarber = 'Select Barber';
+  static const String selectDateTime = 'Select Date & Time';
+
+  // Appointment Related
+  static const String appointmentDetails = 'Appointment Details';
+  static const String appointmentTime = 'Appointment Time';
+  static const String appointmentDate = 'Appointment Date';
+  static const String appointmentStatus = 'Status';
+  static const String totalAmount = 'Total Amount';
+  static const String serviceDuration = 'Duration';
+  static const String cancelAppointment = 'Cancel Appointment';
+  static const String rescheduleAppointment = 'Reschedule Appointment';
+
+  // Payment Related
+  static const String payment = 'Payment';
+  static const String paymentMethod = 'Payment Method';
+  static const String cash = 'Cash';
+  static const String card = 'Card';
+  static const String digitalWallet = 'Digital Wallet';
+  static const String payNow = 'Pay Now';
+  static const String total = 'Total';
+  static const String subtotal = 'Subtotal';
+  static const String tax = 'Tax';
+  static const String discount = 'Discount';
+
+  // Status Messages
+  static const String loading = 'Loading...';
+  static const String processing = 'Processing...';
+  static const String pleaseWait = 'Please wait...';
+  static const String noInternet = 'No internet connection';
+  static const String tryAgain = 'Try Again';
+  static const String retry = 'Retry';
+
+  // Empty States
+  static const String noSalonsFound = 'No salons found';
+  static const String noAppointmentsFound = 'No appointments found';
+  static const String noFavoritesFound = 'No favorites yet';
+  static const String noNotifications = 'No notifications';
+  static const String noResultsFound = 'No results found';
+
+  // Dialog Titles
+  static const String confirmation = 'Confirmation';
+  static const String areYouSure = 'Are you sure?';
+  static const String logoutConfirmation = 'Are you sure you want to logout?';
+  static const String deleteConfirmation = 'Are you sure you want to delete?';
+
+  // Settings
+  static const String language = 'Language';
+  static const String theme = 'Theme';
+  static const String notificationsSettings = 'Notifications';
+  static const String privacy = 'Privacy';
+  static const String security = 'Security';
+  static const String helpSupport = 'Help & Support';
+  static const String termsConditions = 'Terms & Conditions';
+  static const String privacyPolicy = 'Privacy Policy';
+
+  // User Profile
+  static const String myProfile = 'My Profile';
+  static const String personalInfo = 'Personal Information';
+  static const String contactInfo = 'Contact Information';
+  static const String preferences = 'Preferences';
+  static const String membership = 'Membership';
+
+  // Time-related
+  static const String today = 'Today';
+  static const String tomorrow = 'Tomorrow';
+  static const String yesterday = 'Yesterday';
+  static const String thisWeek = 'This Week';
+  static const String thisMonth = 'This Month';
+  static const String upcoming = 'Upcoming';
+  static const String past = 'Past';
+
+  // Days of Week
+  static const String monday = 'Monday';
+  static const String tuesday = 'Tuesday';
+  static const String wednesday = 'Wednesday';
+  static const String thursday = 'Thursday';
+  static const String friday = 'Friday';
+  static const String saturday = 'Saturday';
+  static const String sunday = 'Sunday';
+
+  // Months
+  static const String january = 'January';
+  static const String february = 'February';
+  static const String march = 'March';
+  static const String april = 'April';
+  static const String may = 'May';
+  static const String june = 'June';
+  static const String july = 'July';
+  static const String august = 'August';
+  static const String september = 'September';
+  static const String october = 'October';
+  static const String november = 'November';
+  static const String december = 'December';
+
+  // NEW STRINGS FOR BACKGROUND COMPONENTS
+  static const String getStarted = 'Get Started';
+  static const String thirdPage = 'Premium Features';
+  static const String explore = 'Explore';
+  static const String discover = 'Discover';
+
+  // Background related
+  static const String floatingElements = 'Floating Elements';
+  static const String animatedBackground = 'Animated Background';
+
+  // Page Titles
+  static const String welcome = 'Welcome';
+  static const String features = 'Features';
+  static const String benefits = 'Benefits';
+
+  // Action Buttons
+  static const String learnMore = 'Learn More';
+  static const String seeMore = 'See More';
+  static const String viewAll = 'View All';
+  static const String bookNow = 'Book Now';
+  static const String schedule = 'Schedule';
+
+  // Status
+  static const String available = 'Available';
+  static const String unavailable = 'Unavailable';
+  static const String booked = 'Booked';
+  static const String completed = 'Completed';
+  static const String cancelled = 'Cancelled';
+  static const String pending = 'Pending';
+}
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app_color.dart';
+
+class AppStyle {
+  // * * * * * * * * * * * * *** font type *** * * * * * * * * * * *
+  static TextStyle _fontType({TextStyle? style}) {
+    return GoogleFonts.bebasNeue(textStyle: style);
+  }
+
+  static TextStyle styleHeadline1Light = _fontType();
+}
+
+class AppTextStyles {
+  // Light Theme Text Styles
+  static TextStyle lightH1 = const TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.bold,
+    height: 1.2,
+    letterSpacing: -0.5,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightH2 = const TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    height: 1.3,
+    letterSpacing: -0.3,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightH3 = const TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: 1.3,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightH4 = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    height: 1.4,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightH5 = const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightH6 = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    color: AppColor.lightText,
+  );
+
+  // Body Text - Light Theme
+  static TextStyle lightBodyLarge = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightBodyMedium = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightBodySmall = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    color: AppColor.lightTextSecondary,
+  );
+
+  // Caption - Light Theme
+  static TextStyle lightCaption = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+    height: 1.4,
+    color: AppColor.lightTextHint,
+  );
+
+  static TextStyle lightOverline = const TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    letterSpacing: 1.5,
+    color: AppColor.lightTextSecondary,
+  );
+
+  // Button Text - Light Theme
+  static TextStyle lightButtonLarge = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: 0.5,
+    color: AppColor.lightCard,
+  );
+
+  static TextStyle lightButtonMedium = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: 0.3,
+    color: AppColor.lightCard,
+  );
+
+  static TextStyle lightButtonSmall = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: 0.2,
+    color: AppColor.lightCard,
+  );
+
+  // Special Text Styles - Light Theme
+  static TextStyle lightAppBarTitle = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    height: 1.2,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightCardTitle = const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    height: 1.3,
+    color: AppColor.lightText,
+  );
+
+  static TextStyle lightPriceText = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: AppColor.lightPrimary,
+    height: 1.2,
+  );
+
+  static TextStyle lightRatingText = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColor.lightWarning,
+    height: 1.3,
+  );
+
+  // Dark Theme Text Styles
+  static TextStyle darkH1 = const TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.bold,
+    height: 1.2,
+    letterSpacing: -0.5,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkH2 = const TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    height: 1.3,
+    letterSpacing: -0.3,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkH3 = const TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: 1.3,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkH4 = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    height: 1.4,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkH5 = const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkH6 = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    color: AppColor.darkText,
+  );
+
+  // Body Text - Dark Theme
+  static TextStyle darkBodyLarge = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkBodyMedium = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkBodySmall = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    color: AppColor.darkTextSecondary,
+  );
+
+  // Caption - Dark Theme
+  static TextStyle darkCaption = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+    height: 1.4,
+    color: AppColor.darkTextHint,
+  );
+
+  static TextStyle darkOverline = const TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    letterSpacing: 1.5,
+    color: AppColor.darkTextSecondary,
+  );
+
+  // Button Text - Dark Theme
+  static TextStyle darkButtonLarge = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: 0.5,
+    color: AppColor.darkCard,
+  );
+
+  static TextStyle darkButtonMedium = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: 0.3,
+    color: AppColor.darkCard,
+  );
+
+  static TextStyle darkButtonSmall = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: 0.2,
+    color: AppColor.darkCard,
+  );
+
+  // Special Text Styles - Dark Theme
+  static TextStyle darkAppBarTitle = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    height: 1.2,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkCardTitle = const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    height: 1.3,
+    color: AppColor.darkText,
+  );
+
+  static TextStyle darkPriceText = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: AppColor.darkPrimary,
+    height: 1.2,
+  );
+
+  static TextStyle darkRatingText = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColor.darkWarning,
+    height: 1.3,
+  );
+}
+
+// Extension for easy context access with theme awareness
+extension AppTextStylesExtension on BuildContext {
+  // Light theme getters
+  TextStyle get lightH1 => AppTextStyles.lightH1;
+  TextStyle get lightH2 => AppTextStyles.lightH2;
+  TextStyle get lightH3 => AppTextStyles.lightH3;
+  TextStyle get lightH4 => AppTextStyles.lightH4;
+  TextStyle get lightH5 => AppTextStyles.lightH5;
+  TextStyle get lightH6 => AppTextStyles.lightH6;
+  TextStyle get lightBodyLarge => AppTextStyles.lightBodyLarge;
+  TextStyle get lightBodyMedium => AppTextStyles.lightBodyMedium;
+  TextStyle get lightBodySmall => AppTextStyles.lightBodySmall;
+  TextStyle get lightButtonLarge => AppTextStyles.lightButtonLarge;
+  TextStyle get lightButtonMedium => AppTextStyles.lightButtonMedium;
+  TextStyle get lightButtonSmall => AppTextStyles.lightButtonSmall;
+
+  // Dark theme getters
+  TextStyle get darkH1 => AppTextStyles.darkH1;
+  TextStyle get darkH2 => AppTextStyles.darkH2;
+  TextStyle get darkH3 => AppTextStyles.darkH3;
+  TextStyle get darkH4 => AppTextStyles.darkH4;
+  TextStyle get darkH5 => AppTextStyles.darkH5;
+  TextStyle get darkH6 => AppTextStyles.darkH6;
+  TextStyle get darkBodyLarge => AppTextStyles.darkBodyLarge;
+  TextStyle get darkBodyMedium => AppTextStyles.darkBodyMedium;
+  TextStyle get darkBodySmall => AppTextStyles.darkBodySmall;
+  TextStyle get darkButtonLarge => AppTextStyles.darkButtonLarge;
+  TextStyle get darkButtonMedium => AppTextStyles.darkButtonMedium;
+  TextStyle get darkButtonSmall => AppTextStyles.darkButtonSmall;
+
+  // Theme-aware getters (automatically chooses based on current theme)
+  TextStyle get h1 => _isDarkMode ? darkH1 : lightH1;
+  TextStyle get h2 => _isDarkMode ? darkH2 : lightH2;
+  TextStyle get h3 => _isDarkMode ? darkH3 : lightH3;
+  TextStyle get h4 => _isDarkMode ? darkH4 : lightH4;
+  TextStyle get h5 => _isDarkMode ? darkH5 : lightH5;
+  TextStyle get h6 => _isDarkMode ? darkH6 : lightH6;
+  TextStyle get bodyLarge => _isDarkMode ? darkBodyLarge : lightBodyLarge;
+  TextStyle get bodyMedium => _isDarkMode ? darkBodyMedium : lightBodyMedium;
+  TextStyle get bodySmall => _isDarkMode ? darkBodySmall : lightBodySmall;
+  TextStyle get buttonLarge => _isDarkMode ? darkButtonLarge : lightButtonLarge;
+  TextStyle get buttonMedium => _isDarkMode ? darkButtonMedium : lightButtonMedium;
+  TextStyle get buttonSmall => _isDarkMode ? darkButtonSmall : lightButtonSmall;
+  TextStyle get caption => _isDarkMode ? AppTextStyles.darkCaption : AppTextStyles.lightCaption;
+  TextStyle get overline => _isDarkMode ? AppTextStyles.darkOverline : AppTextStyles.lightOverline;
+  TextStyle get appBarTitle => _isDarkMode ? AppTextStyles.darkAppBarTitle : AppTextStyles.lightAppBarTitle;
+  TextStyle get cardTitle => _isDarkMode ? AppTextStyles.darkCardTitle : AppTextStyles.lightCardTitle;
+  TextStyle get priceText => _isDarkMode ? AppTextStyles.darkPriceText : AppTextStyles.lightPriceText;
+  TextStyle get ratingText => _isDarkMode ? AppTextStyles.darkRatingText : AppTextStyles.lightRatingText;
+
+  bool get _isDarkMode {
+    final brightness = MediaQuery.of(this).platformBrightness;
+    return brightness == Brightness.dark;
+  }
+}
+import 'dart:ui';
+
+class AppConstants {
+  static const String appName = 'My App';
+  static const String appStoreLink = 'https://apps.apple.com/app/idYOUR_APP_ID';
+  static const String playStoreLink = 'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
+
+  // Staff Management Constants
+  static const List<String> barberSpecialties = [
+    'Haircut',
+    'Beard Trim',
+    'Shave',
+    'Hair Color',
+    'Styling',
+    'Fade',
+    'Kids Cut',
+    'Senior Cut'
+  ];
+
+  static const Map<String, double> servicePrices = {
+    'Haircut': 25.00,
+    'Beard Trim': 15.00,
+    'Shave': 20.00,
+    'Hair Color': 60.00,
+    'Styling': 35.00,
+  };
+}
+

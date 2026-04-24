@@ -48,8 +48,8 @@ class OwnerProvider extends BaseProvider {
   /// True if the subscription (or trial) is currently active.
   bool get isSubscriptionActive => _profile?.isSubscriptionActive ?? false;
 
-  /// The ID of the shop currently being managed.
-  int? get activeShopId => _profile?.shopId;
+  /// The ID of the salon currently being managed.
+  int? get activeSalonId => _profile?.salonId;
 
   bool get isTrial => _profile?.isTrial ?? false;
   int? get daysRemaining => _profile?.daysRemaining;
@@ -209,16 +209,16 @@ class OwnerProvider extends BaseProvider {
   // ---------------------------------------------------------------------------
 
   Future<void> loadDashboardAnalytics() async {
-    if (activeShopId == null || _auth == null) return;
+    if (activeSalonId == null || _auth == null) return;
     
     _isAnalyticsLoading = true;
     notifyListeners();
     
     try {
       final results = await Future.wait([
-        _apiService.getTeamLeaderboard(activeShopId!),
-        _apiService.getRetailSnapshot(activeShopId!),
-        _apiService.getDailyEarnings(activeShopId!),
+        _apiService.getTeamLeaderboard(activeSalonId!),
+        _apiService.getRetailSnapshot(activeSalonId!),
+        _apiService.getDailyEarnings(activeSalonId!),
       ]);
       
       _leaderboard = results[0] as List<dynamic>;

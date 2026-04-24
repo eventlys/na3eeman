@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/owner_provider.dart';
@@ -90,7 +91,7 @@ class UpgradePromptCard extends StatelessWidget {
           FilledButton.tonal(
             onPressed: () =>
                 Navigator.pushNamed(context, '/subscription/upgrade'),
-            child: Text('upgrade_plan'.tr()),
+            child: Text(AppLocalizations.of(context)!.upgradePlan),
           ),
         ],
       ),

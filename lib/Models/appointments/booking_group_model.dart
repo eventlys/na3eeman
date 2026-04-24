@@ -5,7 +5,7 @@ class BookingGroup {
   final DateTime createdAt;
   final bool isRecurring;
   final List<AppointmentReference> appointments;
-  final int? shopId;
+  final int? salonId;
 
   BookingGroup({
     required this.id,
@@ -14,7 +14,7 @@ class BookingGroup {
     required this.createdAt,
     required this.isRecurring,
     required this.appointments,
-    this.shopId,
+    this.salonId,
   });
 
   factory BookingGroup.fromJson(Map<String, dynamic> json) {
@@ -27,7 +27,7 @@ class BookingGroup {
       appointments: List<AppointmentReference>.from(
         (json['appointments'] ?? []).map((x) => AppointmentReference.fromJson(x))
       ),
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
     );
   }
 
@@ -39,7 +39,7 @@ class BookingGroup {
       'created_at': createdAt.toIso8601String(),
       'is_recurring': isRecurring,
       'appointments': appointments.map((x) => x.toJson()).toList(),
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 

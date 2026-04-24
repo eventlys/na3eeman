@@ -1,7 +1,7 @@
 export 'base_provider.dart';
 export 'features/app_state_provider.dart';
 export 'features/auth_provider.dart';
-export 'features/shop_provider.dart';
+export 'features/salon_provider.dart';
 export 'features/appointment_provider.dart';
 export 'features/cart_provider.dart';
 export 'features/staff_provider.dart';
@@ -16,3 +16,5 @@ export 'features/offers_provider.dart';
 export 'features/service_provider.dart';
 export 'features/performance_provider.dart';
 export 'features/admin_analytics_provider.dart';
+export 'features/admin_service_provider.dart';
+export 'locale_provider.dart';

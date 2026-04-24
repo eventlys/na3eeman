@@ -113,7 +113,7 @@ class ValidationHelper {
   }
 
   // Business validation
-  static bool isValidShopName(String name) {
+  static bool isValidSalonName(String name) {
     return name.length >= 2 && name.length <= 100;
   }
 

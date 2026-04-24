@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -8,8 +9,8 @@ class LogoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('logout'.tr().tr())),
-      body: Center(child: Text('logout_page_coming_soon'.tr())),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.logout)),
+      body: Center(child: Text(AppLocalizations.of(context)!.logoutPageComingSoon)),
     );
   }
 }

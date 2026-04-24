@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import '../../../../Helpers/profile_helper_functions.dart';
@@ -130,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('profile'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.profile, style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -175,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: _toggleEdit,
-                      child: Text('cancel'.tr(), style: TextStyle(color: AppColors.almostBlack400)),
+                      child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: AppColors.almostBlack400)),
                     ),
                   ],
                 ],

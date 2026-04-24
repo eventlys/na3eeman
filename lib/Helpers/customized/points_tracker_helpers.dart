@@ -10,8 +10,8 @@ class PointsTrackerHelpers {
       case PointsType.inviteFriend:
       case PointsType.referral:
         return AppColor.lightAccent;
-      case PointsType.rateShop:
-      case PointsType.shopFeedback:
+      case PointsType.rateSalon:
+      case PointsType.salonFeedback:
       case PointsType.reviewWrite:
         return AppColor.lightInfo;
       case PointsType.arriveOnTime:
@@ -24,6 +24,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return AppColor.primary;
       case PointsType.other:
+      default:
         return AppColor.lightTextSecondary;
     }
   }
@@ -33,8 +34,8 @@ class PointsTrackerHelpers {
       case PointsType.inviteFriend:
       case PointsType.referral:
         return AppColor.darkAccent;
-      case PointsType.rateShop:
-      case PointsType.shopFeedback:
+      case PointsType.rateSalon:
+      case PointsType.salonFeedback:
       case PointsType.reviewWrite:
         return AppColor.darkInfo;
       case PointsType.arriveOnTime:
@@ -47,6 +48,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return AppColor.primary;
       case PointsType.other:
+      default:
         return AppColor.darkTextSecondary;
     }
   }
@@ -56,12 +58,12 @@ class PointsTrackerHelpers {
       case PointsType.inviteFriend:
       case PointsType.referral:
         return Icons.person_add_alt_1_rounded;
-      case PointsType.rateShop:
+      case PointsType.rateSalon:
       case PointsType.reviewWrite:
         return Icons.star_rate_rounded;
       case PointsType.arriveOnTime:
         return Icons.access_time_rounded;
-      case PointsType.shopFeedback:
+      case PointsType.salonFeedback:
       case PointsType.appFeedback:
         return Icons.feedback_rounded;
       case PointsType.rateApp:
@@ -72,6 +74,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return Icons.card_giftcard_rounded;
       case PointsType.other:
+      default:
         return Icons.more_horiz_rounded;
     }
   }
@@ -80,12 +83,12 @@ class PointsTrackerHelpers {
     switch (type) {
       case PointsType.inviteFriend:
         return 'Invite friends to join the app';
-      case PointsType.rateShop:
-        return 'Rate your experience at shops';
+      case PointsType.rateSalon:
+        return 'Rate your experience at salons';
       case PointsType.arriveOnTime:
         return 'Be punctual for appointments';
-      case PointsType.shopFeedback:
-        return 'Provide feedback for shops';
+      case PointsType.salonFeedback:
+        return 'Provide feedback for salons';
       case PointsType.rateApp:
         return 'Rate our application';
       case PointsType.appFeedback:
@@ -101,6 +104,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return 'Redeem your points for rewards';
       case PointsType.other:
+      default:
         return 'Various activities';
     }
   }
@@ -109,12 +113,12 @@ class PointsTrackerHelpers {
     switch (type) {
       case PointsType.inviteFriend:
         return 'Invite Friend';
-      case PointsType.rateShop:
-        return 'Rate Shop';
+      case PointsType.rateSalon:
+        return 'Rate Salon';
       case PointsType.arriveOnTime:
         return 'Arrive On Time';
-      case PointsType.shopFeedback:
-        return 'Shop Feedback';
+      case PointsType.salonFeedback:
+        return 'Salon Feedback';
       case PointsType.rateApp:
         return 'Rate App';
       case PointsType.appFeedback:
@@ -130,6 +134,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return 'Redeem Reward';
       case PointsType.other:
+      default:
         return 'Other Activity';
     }
   }
@@ -142,9 +147,9 @@ class PointsTrackerHelpers {
         return '+100';
       case PointsType.appointmentComplete:
         return '+50';
-      case PointsType.rateShop:
+      case PointsType.rateSalon:
       case PointsType.reviewWrite:
-      case PointsType.shopFeedback:
+      case PointsType.salonFeedback:
         return '+25';
       case PointsType.arriveOnTime:
       case PointsType.rateApp:
@@ -154,6 +159,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return 'Redeem';
       case PointsType.other:
+      default:
         return '+10';
     }
   }
@@ -166,9 +172,9 @@ class PointsTrackerHelpers {
         return 100;
       case PointsType.appointmentComplete:
         return 50;
-      case PointsType.rateShop:
+      case PointsType.rateSalon:
       case PointsType.reviewWrite:
-      case PointsType.shopFeedback:
+      case PointsType.salonFeedback:
         return 25;
       case PointsType.arriveOnTime:
       case PointsType.rateApp:
@@ -178,6 +184,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return 0; // Redeeming costs points
       case PointsType.other:
+      default:
         return 10;
     }
   }
@@ -338,12 +345,12 @@ class PointsTrackerHelpers {
     switch (type) {
       case PointsType.inviteFriend:
         return 'Invited a friend to join';
-      case PointsType.rateShop:
-        return 'Rated a shop experience';
+      case PointsType.rateSalon:
+        return 'Rated a salon experience';
       case PointsType.arriveOnTime:
         return 'Arrived on time for appointment';
-      case PointsType.shopFeedback:
-        return 'Provided shop feedback';
+      case PointsType.salonFeedback:
+        return 'Provided salon feedback';
       case PointsType.rateApp:
         return 'Rated the application';
       case PointsType.appFeedback:
@@ -359,6 +366,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return 'Redeemed reward';
       case PointsType.other:
+      default:
         return 'Other activity';
     }
   }
@@ -405,9 +413,9 @@ class PointsTrackerHelpers {
       case PointsType.inviteFriend:
       case PointsType.referral:
         return 'Referral';
-      case PointsType.rateShop:
+      case PointsType.rateSalon:
       case PointsType.reviewWrite:
-      case PointsType.shopFeedback:
+      case PointsType.salonFeedback:
         return 'Reviews & Feedback';
       case PointsType.arriveOnTime:
       case PointsType.makeAppointment:
@@ -419,6 +427,7 @@ class PointsTrackerHelpers {
       case PointsType.rewardRedeem:
         return 'Rewards';
       case PointsType.other:
+      default:
         return 'Other';
     }
   }

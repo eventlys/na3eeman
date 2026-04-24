@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../core/enums/app_enums.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 
 class RoleBasedWidget extends StatelessWidget {
   final List<UserRole> allowedRoles;

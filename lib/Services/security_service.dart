@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:safe_device/safe_device.dart';
+import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
+import 'package:local_auth/local_auth.dart';
+
 import '../../Helpers/logger.dart';
 
 class SecurityService {
@@ -52,6 +56,8 @@ class SecurityService {
     try {
       return await _auth.authenticate(
         localizedReason: reason,
+        persistAcrossBackgrounding: true,
+        biometricOnly: true,
       );
     } on PlatformException catch (e) {
       AppLogger.error('Biometric authentication failed', error: e);
@@ -91,6 +97,7 @@ class SecurityService {
 
       final success = await _auth.authenticate(
         localizedReason: reason,
+        persistAcrossBackgrounding: true,
       );
 
       return success ? BiometricResult.success : BiometricResult.failed;
@@ -103,179 +110,7 @@ class SecurityService {
     }
   }
 
-  // Network Security Methods
-  Future<HttpClientResponse> _secureRequest(
-    String url,
-    String method, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
-    if (!isValidUrl(url)) {
-      throw ArgumentError('Invalid URL: $url');
-    }
-
-    HttpClient client;
-    try {
-      client = HttpClient()
-        ..connectionTimeout = const Duration(seconds: _timeoutSeconds)
-        ..badCertificateCallback = _verifyCertificate
-        ..userAgent = 'Na3eeman/1.0.0';
-
-      final uri = Uri.parse(url);
-      final request = await _createRequest(client, uri, method);
-
-      _addSecurityHeaders(request);
-      await _addAuthHeaders(request);
-
-      // Add custom headers
-      headers?.forEach((key, value) {
-        request.headers.set(key, value);
-      });
-
-      // Handle request body for methods that support it
-      if (body != null && _isBodySupportedMethod(method)) {
-        await _writeRequestBody(request, body, url, method);
-      } else {
-        AppLogger.debug('Secure $method request: $url');
-      }
-
-      return await request.close();
-    } catch (error) {
-      AppLogger.error('Secure $method failed: $error');
-      rethrow;
-    }
-  }
-
-  Future<HttpClientRequest> _createRequest(
-    HttpClient client,
-    Uri uri,
-    String method
-  ) async {
-    switch (method.toUpperCase()) {
-      case 'GET':
-        return await client.getUrl(uri);
-      case 'POST':
-        return await client.postUrl(uri);
-      case 'PUT':
-        return await client.putUrl(uri);
-      case 'PATCH':
-        return await client.patchUrl(uri);
-      case 'DELETE':
-        return await client.deleteUrl(uri);
-      default:
-        throw ArgumentError('Unsupported HTTP method: $method');
-    }
-  }
-
-  bool _isBodySupportedMethod(String method) {
-    return ['POST', 'PUT', 'PATCH'].contains(method.toUpperCase());
-  }
-
-  Future<void> _writeRequestBody(
-    HttpClientRequest request,
-    dynamic body,
-    String url,
-    String method,
-  ) async {
-    // Set content type if not provided
-    final contentType = request.headers.value('Content-Type');
-    if (contentType == null || !contentType.contains('application/json')) {
-      request.headers.set('Content-Type', 'application/json; charset=utf-8');
-    }
-
-    final bodyString = body is String ? body : json.encode(body);
-    request.write(bodyString);
-
-    AppLogger.debug('Secure $method request: $url - Body: $bodyString');
-  }
-
-  Future<HttpClientResponse> secureGet(String url, {Map<String, String>? headers}) {
-    return _secureRequest(url, 'GET', headers: headers);
-  }
-
-  Future<HttpClientResponse> securePost(
-    String url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) {
-    return _secureRequest(url, 'POST', headers: headers, body: body);
-  }
-
-  Future<HttpClientResponse> securePut(
-    String url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) {
-    return _secureRequest(url, 'PUT', headers: headers, body: body);
-  }
-
-  Future<HttpClientResponse> securePatch(
-    String url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) {
-    return _secureRequest(url, 'PATCH', headers: headers, body: body);
-  }
-
-  Future<HttpClientResponse> secureDelete(
-    String url, {
-    Map<String, String>? headers,
-  }) {
-    return _secureRequest(url, 'DELETE', headers: headers);
-  }
-
-  void _addSecurityHeaders(HttpClientRequest request) {
-    request.headers.set('X-Content-Type-Options', 'nosniff');
-    request.headers.set('X-Frame-Options', 'DENY');
-    request.headers.set('X-XSS-Protection', '1; mode=block');
-    request.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    request.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  }
-
-  Future<void> _addAuthHeaders(HttpClientRequest request) async {
-    try {
-      final token = await _getAuthToken();
-      if (token != null && token.isNotEmpty) {
-        request.headers.set('Authorization', 'Bearer $token');
-      }
-    } catch (e) {
-      AppLogger.error('Failed to add auth headers: $e');
-    }
-  }
-
-  Future<String?> _getAuthToken() async {
-    // Implement token retrieval from your auth service
-    return null;
-  }
-
-  bool _verifyCertificate(X509Certificate cert, String host, int port) {
-    // In production, implement proper certificate pinning
-    // For development, you might want to return true
-    if (const bool.fromEnvironment('DEBUG', defaultValue: false)) {
-      return true; // Allow all certificates in debug mode
-    }
-
-    // Production certificate validation
-    return _validateCertificate(cert, host);
-  }
-
-  bool _validateCertificate(X509Certificate cert, String host) {
-    // Implement proper certificate validation
-    try {
-      // Add domain-specific validation
-      final allowedDomains = ['your-api-domain.com', 'api.na3eeman.com'];
-      if (!allowedDomains.any((domain) => host.contains(domain))) {
-        AppLogger.error('Certificate host mismatch: $host');
-        return false;
-      }
-
-      return true;
-    } catch (e) {
-      AppLogger.error('Certificate validation failed: $e');
-      return false;
-    }
-  }
-
+  // Network Security Methods - Used by ApiService
   static Map<String, String> getSecurityHeaders() {
     return {
       'Content-Type': 'application/json; charset=utf-8',
@@ -287,57 +122,42 @@ class SecurityService {
     };
   }
 
-  // Method to validate URL before making request
-  bool isValidUrl(String url) {
-    try {
-      final uri = Uri.parse(url);
-      return uri.isAbsolute &&
-             (uri.scheme == 'http' || uri.scheme == 'https') &&
-             uri.host.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // Method to sanitize request data
-  Map<String, dynamic> sanitizeRequestData(Map<String, dynamic> data) {
-    final sanitized = Map<String, dynamic>.from(data);
-
-    // Remove sensitive fields
-    const sensitiveFields = ['password', 'token', 'secret', 'credit_card', 'cvc'];
-    for (final field in sensitiveFields) {
-      if (sanitized.containsKey(field)) {
-        sanitized[field] = '***REDACTED***';
-      }
-    }
-
-    return sanitized;
-  }
-
   // Security Scanning Methods
   Future<SecurityScanResult> performSecurityScan() async {
     try {
       AppLogger.debug('Starting comprehensive security scan');
 
+      // Check current debug mode
+      final bool isDebug = const bool.fromEnvironment('dart.vm.product') == false;
+
       final results = await Future.wait([
-        _checkRootedDevice(),
-        _checkScreenRecording(),
-        _checkInsecureConnections(),
-        _checkBiometricSecurity(),
-        _checkAppIntegrity(),
+        SafeDevice.isJailBroken,
+        SafeDevice.isRealDevice,
+        SafeDevice.isOnExternalStorage,
+        SafeDevice.isDevelopmentModeEnable,
       ]);
 
-      final isSecure = results.every((result) => result);
+      final bool isJailBroken = results[0];
+      final bool isRealDevice = results[1];
+      final bool isOnExternalStorage = results[2];
+      final bool isDevMode = results[3];
+
+      // Screen recording check (iOS only, for Android use FlutterWindowManager)
+      bool screenRecordingDetected = false;
+      if (Platform.isIOS) {
+        // iOS specific check if needed
+      }
+
+      final isSecure = !isJailBroken && (isRealDevice || isDebug);
 
       AppLogger.debug('Security scan completed: ${isSecure ? 'Secure' : 'Issues found'}');
 
       return SecurityScanResult(
         isSecure: isSecure,
-        rootedDevice: !results[0],
-        screenRecordingDetected: !results[1],
-        insecureConnections: !results[2],
-        biometricIssues: !results[3],
-        appIntegrityCompromised: !results[4],
+        rootedDevice: isJailBroken,
+        screenRecordingDetected: screenRecordingDetected,
+        isEmulator: !isRealDevice,
+        devModeEnabled: isDevMode,
       );
     } catch (e) {
       AppLogger.error('Security scan failed: $e');
@@ -348,127 +168,26 @@ class SecurityService {
     }
   }
 
-  Future<bool> _checkRootedDevice() async {
-    try {
-      if (await _isAndroidRooted() || await _isIosJailbroken()) {
-        AppLogger.debug('Rooted/jailbroken device detected');
-        return false;
-      }
-
-      return true;
-    } catch (e) {
-      AppLogger.error('Root check failed: $e');
-      return false;
-    }
-  }
-
-  Future<bool> _isAndroidRooted() async {
-    try {
-      final androidInfo = await _deviceInfo.androidInfo;
-
-      // Check for root indicators
-      final rootIndicators = [
-        androidInfo.isPhysicalDevice != true,
-        _checkBuildTags(androidInfo.version.securityPatch),
-      ];
-
-      return rootIndicators.any((indicator) => indicator == true);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _isIosJailbroken() async {
-    try {
-      final iosInfo = await _deviceInfo.iosInfo;
-
-      // Check for jailbreak indicators
-      final jailbreakIndicators = [
-        !iosInfo.isPhysicalDevice,
-        iosInfo.model.toLowerCase().contains('simulator'),
-      ];
-
-      return jailbreakIndicators.any((indicator) => indicator == true);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  bool _checkBuildTags(String? securityPatch) {
-    if (securityPatch == null) return true;
-
-    // Check if security patch is outdated or suspicious
-    final patchDate = DateTime.tryParse(securityPatch);
-    if (patchDate == null) return true;
-
-    final sixMonthsAgo = DateTime.now().subtract(const Duration(days: 180));
-    return patchDate.isBefore(sixMonthsAgo);
-  }
-
-  Future<bool> _checkScreenRecording() async {
-    try {
-      // On iOS, we can check if screen is being recorded
-      return true; // Assume secure for now
-    } catch (e) {
-      AppLogger.error('Screen recording check failed: $e');
-      return false;
-    }
-  }
-
-  Future<bool> _checkInsecureConnections() async {
-    try {
-      // Check for HTTP vs HTTPS usage
-      return true; // Assume secure for now
-    } catch (e) {
-      AppLogger.error('Insecure connections check failed: $e');
-      return false;
-    }
-  }
-
-  Future<bool> _checkBiometricSecurity() async {
-    try {
-      final hasBiometrics = await hasEnrolledBiometrics();
-      final isAvailable = await isBiometricAvailable();
-
-      return hasBiometrics && isAvailable;
-    } catch (e) {
-      AppLogger.error('Biometric security check failed: $e');
-      return false;
-    }
-  }
-
-  Future<bool> _checkAppIntegrity() async {
-    try {
-      // Check if app has been tampered with
-      if (const bool.fromEnvironment('DEBUG', defaultValue: false)) {
-        AppLogger.debug('App is in debug mode');
-        return false;
-      }
-
-      return true;
-    } catch (e) {
-      AppLogger.error('App integrity check failed: $e');
-      return false;
-    }
-  }
-
   Future<void> preventScreenshots() async {
-    try {
-      // Prevent screenshots on sensitive screens
-      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-      AppLogger.debug('Screenshot prevention enabled');
-    } catch (e) {
-      AppLogger.error('Failed to prevent screenshots: $e');
+    if (Platform.isAndroid) {
+      try {
+        await FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+        AppLogger.debug('Screenshot prevention enabled (Android)');
+      } catch (e) {
+        AppLogger.error('Failed to prevent screenshots: $e');
+      }
     }
+    // Note: iOS handles FLAG_SECURE equivalent differently (mostly system managed)
   }
 
   Future<void> allowScreenshots() async {
-    try {
-      // Allow screenshots again
-      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      AppLogger.debug('Screenshot prevention disabled');
-    } catch (e) {
-      AppLogger.error('Failed to allow screenshots: $e');
+    if (Platform.isAndroid) {
+      try {
+        await FlutterWindowManagerPlus.clearFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+        AppLogger.debug('Screenshot prevention disabled (Android)');
+      } catch (e) {
+        AppLogger.error('Failed to allow screenshots: $e');
+      }
     }
   }
 
@@ -478,10 +197,8 @@ class SecurityService {
     return {
       'overall_secure': scanResult.isSecure,
       'rooted_device': scanResult.rootedDevice,
-      'screen_recording': scanResult.screenRecordingDetected,
-      'insecure_connections': scanResult.insecureConnections,
-      'biometric_issues': scanResult.biometricIssues,
-      'app_integrity': !scanResult.appIntegrityCompromised,
+      'is_emulator': scanResult.isEmulator,
+      'dev_mode': scanResult.devModeEnabled,
       'recommendations': _getSecurityRecommendations(scanResult),
     };
   }
@@ -490,23 +207,15 @@ class SecurityService {
     final recommendations = <String>[];
 
     if (result.rootedDevice) {
-      recommendations.add('Device appears to be rooted/jailbroken. Consider using a secure device.');
+      recommendations.add('Device appears to be rooted/jailbroken. This app may not function properly for security reasons.');
     }
 
-    if (result.screenRecordingDetected) {
-      recommendations.add('Screen recording detected. Avoid showing sensitive information.');
+    if (result.isEmulator && const bool.fromEnvironment('dart.vm.product')) {
+      recommendations.add('App is running on an emulator in production mode. This is restricted.');
     }
 
-    if (result.insecureConnections) {
-      recommendations.add('Insecure network connections detected. Use secure networks only.');
-    }
-
-    if (result.biometricIssues) {
-      recommendations.add('Biometric authentication not properly configured.');
-    }
-
-    if (result.appIntegrityCompromised) {
-      recommendations.add('App integrity may be compromised. Reinstall from official store.');
+    if (result.devModeEnabled) {
+      recommendations.add('Developer mode is enabled. Consider disabling it for better security.');
     }
 
     return recommendations;
@@ -516,13 +225,31 @@ class SecurityService {
   Future<bool> isEnvironmentSecure() async {
     try {
       final scanResult = await performSecurityScan();
-      return scanResult.isSecure &&
-             !scanResult.rootedDevice &&
-             !scanResult.appIntegrityCompromised;
+      final bool isDebug = const bool.fromEnvironment('dart.vm.product') == false;
+      
+      return scanResult.isSecure && (isDebug || !scanResult.rootedDevice);
     } catch (e) {
       AppLogger.error('Environment security check failed: $e');
       return false;
     }
+  }
+
+  // Secure Network Methods for low-level requests
+  final HttpClient _httpClient = HttpClient();
+
+  Future<HttpClientResponse> secureGet(String url, {Map<String, String>? headers}) async {
+    final request = await _httpClient.getUrl(Uri.parse(url));
+    headers?.forEach((key, value) => request.headers.add(key, value));
+    return await request.close();
+  }
+
+  Future<HttpClientResponse> securePost(String url, {Map<String, String>? headers, String? body}) async {
+    final request = await _httpClient.postUrl(Uri.parse(url));
+    headers?.forEach((key, value) => request.headers.add(key, value));
+    if (body != null) {
+      request.write(body);
+    }
+    return await request.close();
   }
 }
 
@@ -537,18 +264,16 @@ class SecurityScanResult {
   final bool isSecure;
   final bool rootedDevice;
   final bool screenRecordingDetected;
-  final bool insecureConnections;
-  final bool biometricIssues;
-  final bool appIntegrityCompromised;
+  final bool isEmulator;
+  final bool devModeEnabled;
   final String? scanError;
 
   const SecurityScanResult({
     required this.isSecure,
     this.rootedDevice = false,
     this.screenRecordingDetected = false,
-    this.insecureConnections = false,
-    this.biometricIssues = false,
-    this.appIntegrityCompromised = false,
+    this.isEmulator = false,
+    this.devModeEnabled = false,
     this.scanError,
   });
 }

@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -5,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
 
 /// Daily earnings breakdown: cash vs card (Artisan tier).
-/// Fetches real data from GET /shops/shops/{id}/daily_earnings/
+/// Fetches real data from GET /salons/salons/{id}/daily_earnings/
 class DailyEarningsWidget extends StatelessWidget {
   const DailyEarningsWidget({super.key});
 
@@ -89,11 +90,11 @@ class DailyEarningsWidget extends StatelessWidget {
         const SizedBox(height: 14),
         Row(
           children: [
-            _Legend(color: theme.primaryColor, label: 'cash'.tr(), amount: cash),
+            _Legend(color: theme.primaryColor, label: AppLocalizations.of(context)!.cash, amount: cash),
             const SizedBox(width: 24),
             _Legend(
                 color: theme.colorScheme.secondary,
-                label: 'card'.tr(),
+                label: AppLocalizations.of(context)!.card,
                 amount: card),
           ],
         ),

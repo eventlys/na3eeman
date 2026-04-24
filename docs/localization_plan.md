@@ -20,7 +20,7 @@ Since there are hundreds of strings, extraction will be staggered starting from 
 1. **Core Navigation & App Layouts:** Sidebar, generic headers, common buttons.
 2. **Dashboards (Admin & Intern):** Metrics, KPIs, Section headers.
 3. **Authentication:** Login, Signup, OTP.
-4. **Shops & Appointments:** Shop lists, map views, appointment details.
+4. **Salons & Appointments:** Salon lists, map views, appointment details.
 5. **Backend Responses:** Inspect DRF error messages and make them translatable (Django `ugettext_lazy` / `gettext_lazy`).
 
 ### Phase C: RTL and UI Refactoring

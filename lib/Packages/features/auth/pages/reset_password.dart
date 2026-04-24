@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -234,7 +235,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               controller: _passwordController,
               obscureText: !_passwordVisible,
               decoration: InputDecoration(
-                labelText: 'new_password'.tr(),
+                labelText: AppLocalizations.of(context)!.newPassword,
                 prefixIcon: Image.asset(
                   AppImages.lock,
                   width: 20,
@@ -295,7 +296,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               controller: _confirmPasswordController,
               obscureText: !_confirmPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'confirm_password'.tr(),
+                labelText: AppLocalizations.of(context)!.confirmPassword,
                 prefixIcon: Image.asset(
                   AppImages.secure,
                   width: 20,

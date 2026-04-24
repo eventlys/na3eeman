@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 // import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
@@ -59,12 +60,12 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('cancel'.tr()),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(
           onPressed: _handleSubmit,
           style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-          child: Text('confirm'.tr(), style: TextStyle(color: Colors.white)),
+          child: Text(AppLocalizations.of(context)!.confirm, style: TextStyle(color: Colors.white)),
         ),
       ],
     );

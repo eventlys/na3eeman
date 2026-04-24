@@ -1,6 +1,7 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import '../../../../../Providers/features/offers_provider.dart';
 import '../../../../../Providers/features/owner_provider.dart';
 import '../../../../../core/theme/colors.dart';
@@ -19,9 +20,9 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final shopId = context.read<OwnerProvider>().activeShopId;
-      if (shopId != null) {
-        context.read<OffersProvider>().loadCampaigns(shopId);
+      final salonId = context.read<OwnerProvider>().activeSalonId;
+      if (salonId != null) {
+        context.read<OffersProvider>().loadCampaigns(salonId);
       }
     });
   }
@@ -35,13 +36,13 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('active_campaigns'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.activeCampaigns, style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline_rounded),
             onPressed: () => CampaignManagement.showCampaignModal(context, onRefresh: () {
-               if (owner.activeShopId != null) {
-                 offersProvider.loadCampaigns(owner.activeShopId!);
+               if (owner.activeSalonId != null) {
+                 offersProvider.loadCampaigns(owner.activeSalonId!);
                }
             }),
           ),
@@ -49,8 +50,8 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          if (owner.activeShopId != null) {
-            await offersProvider.loadCampaigns(owner.activeShopId!);
+          if (owner.activeSalonId != null) {
+            await offersProvider.loadCampaigns(owner.activeSalonId!);
           }
         },
         child: offersProvider.isLoading 
@@ -68,13 +69,13 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
           children: [
             Icon(Icons.campaign_outlined, size: 64, color: AppColors.almostBlack200),
             const SizedBox(height: 16),
-            Text('no_active_campaigns'.tr(), style: TextStyle(color: AppColors.almostBlack300)),
+            Text(AppLocalizations.of(context)!.noActiveCampaigns, style: TextStyle(color: AppColors.almostBlack300)),
             const SizedBox(height: 24),
             PrimaryButton(
-              text: 'create_promotion'.tr(),
+              text: AppLocalizations.of(context)!.createPromotion,
               onPressed: () => CampaignManagement.showCampaignModal(context, onRefresh: () {
-                 if (owner.activeShopId != null) {
-                   provider.loadCampaigns(owner.activeShopId!);
+                 if (owner.activeSalonId != null) {
+                   provider.loadCampaigns(owner.activeSalonId!);
                  }
               }),
             ),
@@ -87,7 +88,7 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
       padding: const EdgeInsets.all(20),
       children: [
         if (provider.offers.isNotEmpty) ...[
-          _SectionHeader(title: 'offers'.tr().toUpperCase()),
+          _SectionHeader(title: AppLocalizations.of(context)!.offers.toUpperCase()),
           const SizedBox(height: 12),
           ...provider.offers.map((offer) => _CampaignItem(
             title: offer.title,
@@ -95,12 +96,12 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
             status: 'Active',
             statusColor: AppColors.success,
             actionText: offer.validityPeriod,
-            onDelete: () => _confirmDeleteOffer(context, provider, owner.activeShopId!, offer.id),
+            onDelete: () => _confirmDeleteOffer(context, provider, owner.activeSalonId!, offer.id),
           )),
           const SizedBox(height: 24),
         ],
         if (provider.adCampaigns.isNotEmpty) ...[
-          _SectionHeader(title: 'ads'.tr().toUpperCase()),
+          _SectionHeader(title: AppLocalizations.of(context)!.ads.toUpperCase()),
           const SizedBox(height: 12),
           ...provider.adCampaigns.map((ad) => _CampaignItem(
             title: ad.name,
@@ -108,14 +109,14 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
             status: 'Running',
             statusColor: AppColors.blue,
             actionText: '${ad.durationDays} Days Left',
-            onDelete: () => _confirmDeleteAd(context, provider, owner.activeShopId!, ad.id),
+            onDelete: () => _confirmDeleteAd(context, provider, owner.activeSalonId!, ad.id),
           )),
         ],
       ],
     );
   }
 
-  void _confirmDeleteOffer(BuildContext context, OffersProvider provider, int shopId, int id) {
+  void _confirmDeleteOffer(BuildContext context, OffersProvider provider, int salonId, int id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -126,7 +127,7 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await provider.deleteOffer(shopId, id);
+              await provider.deleteOffer(salonId, id);
             },
             child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -135,7 +136,7 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
     );
   }
 
-  void _confirmDeleteAd(BuildContext context, OffersProvider provider, int shopId, int id) {
+  void _confirmDeleteAd(BuildContext context, OffersProvider provider, int salonId, int id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -146,7 +147,7 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await provider.deleteAdCampaign(shopId, id);
+              await provider.deleteAdCampaign(salonId, id);
             },
             child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),

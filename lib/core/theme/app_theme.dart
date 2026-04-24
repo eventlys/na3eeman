@@ -85,7 +85,7 @@ class AppTheme {
       extensions: <ThemeExtension<dynamic>>[
         GradientBackgroundColors(
           startColor: isDark ? AppColors.almostBlack : mainColor,
-          endColor: isDark ? AppColors.almostBlack700 : AppColors.cream200,
+          endColor: isDark ? AppColors.almostBlack700 : AppColors.cream,
         ),
       ],
     );

@@ -18,8 +18,8 @@ This workflow describes how to test different subscription tiers and owner accou
 
 3. **Choose a Mock Profile**
    - Select one of the variants:
-     - **Male Shop Owner (Empire)**: High-tier enterprise features.
-     - **Female Shop Owner (Elite)**: Premium features.
+     - **Male Salon Owner (Empire)**: High-tier enterprise features.
+     - **Female Salon Owner (Elite)**: Premium features.
      - **Male Freelancer (Artisan)**: Free/Basic features.
      - **Expired Subscription**: Test the renewal banner and gated access UI.
 

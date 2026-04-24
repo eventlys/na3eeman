@@ -98,8 +98,8 @@ class AppStrings {
   static const String payroll = 'Payroll';
   static const String attendance = 'Attendance';
 
-  // Shop Related
-  static const String shops = 'Shops';
+  // Salon Related
+  static const String salons = 'Salons';
   static const String services = 'Services';
   static const String gallery = 'Gallery';
   static const String reviews = 'Reviews';
@@ -143,7 +143,7 @@ class AppStrings {
   static const String retry = 'Retry';
 
   // Empty States
-  static const String noShopsFound = 'No shops found';
+  static const String noSalonsFound = 'No salons found';
   static const String noAppointmentsFound = 'No appointments found';
   static const String noFavoritesFound = 'No favorites yet';
   static const String noNotifications = 'No notifications';

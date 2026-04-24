@@ -1,52 +1,2156 @@
 {
   "@@locale": "ar",
-  "app_name": "نعيمن",
-  "admin_portal": "لوحة الإدارة (وضع التحكم الكامل)",
-  "total_users": "إجمالي المستخدمين",
-  "active_shops": "المتاجر المفتوحة",
-  "appointments": "المواعيد",
-  "revenue": "الإيرادات",
-  "system_health": "حالة النظام",
-  "view_api_logs": "عرض سجلات API",
-  "api_status": "واجهة برمجة التطبيقات (API)",
-  "cache_status": "خدمة التخزين المؤقت (Redis)",
-  "db_status": "قاعدة البيانات (PostgreSQL)",
-  "admin_modules": "أقسام الإدارة",
+  "serviceRequests": "طلبات الخدمة",
+  "@serviceRequests": {
+    "description": "Translation for service_requests"
+  },
+  "appName": "نعيمن",
+  "@appName": {
+    "description": "Translation for app_name"
+  },
+  "userName": "اسم المستخدم",
+  "@userName": {
+    "description": "Translation for user_name"
+  },
+  "password": "كلمة المرور",
+  "@password": {
+    "description": "Translation for password"
+  },
+  "login": "تسجيل الدخول",
+  "@login": {
+    "description": "Translation for login"
+  },
+  "logout": "تسجيل الخروج",
+  "@logout": {
+    "description": "Translation for logout"
+  },
+  "profile": "الملف الشخصي",
+  "@profile": {
+    "description": "Translation for profile"
+  },
   "settings": "الإعدادات",
+  "@settings": {
+    "description": "Translation for settings"
+  },
+  "search": "بحث",
+  "@search": {
+    "description": "Translation for search"
+  },
+  "catigories": "خدماتنا",
+  "@catigories": {
+    "description": "Translation for catigories"
+  },
+  "specialOffers": "العروض المميزة",
+  "@specialOffers": {
+    "description": "Translation for special_offers"
+  },
+  "serviceHair": "عناية بالشعر",
+  "@serviceHair": {
+    "description": "Translation for service_hair"
+  },
+  "serviceBeauty": "تجميل",
+  "@serviceBeauty": {
+    "description": "Translation for service_beauty"
+  },
+  "serviceBrides": "عرايس",
+  "@serviceBrides": {
+    "description": "Translation for service_brides"
+  },
+  "serviceNails": "أظافر",
+  "@serviceNails": {
+    "description": "Translation for service_nails"
+  },
+  "serviceSpa": "سبا",
+  "@serviceSpa": {
+    "description": "Translation for service_spa"
+  },
+  "serviceLaser": "ليزر",
+  "@serviceLaser": {
+    "description": "Translation for service_laser"
+  },
+  "serviceSkinCare": "عناية بالبشرة",
+  "@serviceSkinCare": {
+    "description": "Translation for service_skin_care"
+  },
+  "serviceGrooming": "عناية للرجال",
+  "@serviceGrooming": {
+    "description": "Translation for service_grooming"
+  },
+  "adminPortal": "لوحة الإدارة (وضع التحكم الكامل)",
+  "@adminPortal": {
+    "description": "Translation for admin_portal"
+  },
+  "totalUsers": "إجمالي المستخدمين",
+  "@totalUsers": {
+    "description": "Translation for total_users"
+  },
+  "activeSalons": "المتاجر المفتوحة",
+  "@activeSalons": {
+    "description": "Translation for active_salons"
+  },
+  "appointments": "المواعيد",
+  "@appointments": {
+    "description": "Translation for appointments"
+  },
+  "revenue": "الإيرادات",
+  "@revenue": {
+    "description": "Translation for revenue"
+  },
+  "systemHealth": "حالة النظام",
+  "@systemHealth": {
+    "description": "Translation for system_health"
+  },
+  "viewApiLogs": "عرض سجلات API",
+  "@viewApiLogs": {
+    "description": "Translation for view_api_logs"
+  },
+  "apiStatus": "واجهة برمجة التطبيقات (API)",
+  "@apiStatus": {
+    "description": "Translation for api_status"
+  },
+  "cacheStatus": "خدمة التخزين المؤقت (Redis)",
+  "@cacheStatus": {
+    "description": "Translation for cache_status"
+  },
+  "dbStatus": "قاعدة البيانات (PostgreSQL)",
+  "@dbStatus": {
+    "description": "Translation for db_status"
+  },
+  "adminModules": "أقسام الإدارة",
+  "@adminModules": {
+    "description": "Translation for admin_modules"
+  },
   "insights": "تحليلات ورؤى",
-  "analyze_trends": "تحليل الاتجاهات",
-  "users": "المستخدمين",
-  "finance": "المالية",
-  "analytics": "التحليلات",
-  "compliance": "الامتثال",
-  "intern_portal": "بوابة المتدربين",
-  "learning_journey": "رحلة التعلم برعاية",
-  "explore_mentors": "تصفح المشرفين أدناه",
-  "active_assignments": "المهام النشطة",
-  "daily_tasks": "المهام اليومية",
-  "add_task": "إضافة مهمة",
-  "weekly_training": "التدريب الأسبوعي",
-  "monthly_targets": "الأهداف الشهرية",
-  "show_pct": "عرض %",
-  "show_num": "عرض #",
-  "task_completion": "إكمال المهام",
-  "tasks_done_today": "تم إكمال {completed} من {total} مهام اليوم",
-  "show_more": "عرض المزيد",
-  "no_employees": "لا يوجد موظفين في هذا المتجر",
+  "@insights": {
+    "description": "Translation for insights"
+  },
+  "analyzeTrends": "تحليل الاتجاهات",
+  "@analyzeTrends": {
+    "description": "Translation for analyze_trends"
+  },
+  "internPortal": "بوابة المتدربين",
+  "@internPortal": {
+    "description": "Translation for intern_portal"
+  },
+  "learningJourney": "رحلة التعلم برعاية",
+  "@learningJourney": {
+    "description": "Translation for learning_journey"
+  },
+  "exploreMentors": "تصفح المشرفين أدناه",
+  "@exploreMentors": {
+    "description": "Translation for explore_mentors"
+  },
+  "activeAssignments": "المهام النشطة",
+  "@activeAssignments": {
+    "description": "Translation for active_assignments"
+  },
+  "dailyTasks": "المهام اليومية",
+  "@dailyTasks": {
+    "description": "Translation for daily_tasks"
+  },
+  "addTask": "إضافة مهمة",
+  "@addTask": {
+    "description": "Translation for add_task"
+  },
+  "weeklyTraining": "التدريب الأسبوعي",
+  "@weeklyTraining": {
+    "description": "Translation for weekly_training"
+  },
+  "monthlyTargets": "الأهداف الشهرية",
+  "@monthlyTargets": {
+    "description": "Translation for monthly_targets"
+  },
+  "showPct": "عرض %",
+  "@showPct": {
+    "description": "Translation for show_pct"
+  },
+  "showNum": "عرض #",
+  "@showNum": {
+    "description": "Translation for show_num"
+  },
+  "taskCompletion": "إكمال المهام",
+  "@taskCompletion": {
+    "description": "Translation for task_completion"
+  },
+  "tasksDoneToday": "تم إكمال {value} من {value} مهام اليوم",
+  "@tasksDoneToday": {
+    "description": "Translation for tasks_done_today"
+  },
+  "showMore": "عرض المزيد",
+  "@showMore": {
+    "description": "Translation for show_more"
+  },
+  "noEmployees": "لا يوجد موظفين في هذا المتجر",
+  "@noEmployees": {
+    "description": "Translation for no_employees"
+  },
   "shadowing": "متابعة تدريبية",
+  "@shadowing": {
+    "description": "Translation for shadowing"
+  },
   "attach": "إلحاق",
-  "finish_tasks": "أكمل المهام أولاً",
-  "refresh": "تحديث",
-  "loading": "جاري التحميل...",
-  "growth_insight": "نما نمو المستخدمين بنسبة 12% هذا الأسبوع مقارنة بالشهر الماضي.",
-  "top_categories_insight": "الفئات الأعلى: محلات الحلاقة (65%)، السبا (20%).",
-  "admin_panel": "لوحة الإدارة",
-  "shop_dashboard": "لوحة المتجر",
-  "my_schedule": "جدولي",
+  "@attach": {
+    "description": "Translation for attach"
+  },
+  "finishTasks": "أكمل المهام أولاً",
+  "@finishTasks": {
+    "description": "Translation for finish_tasks"
+  },
+  "attachSuccess": "تم الإلحاق بنجاح بـ {value}",
+  "@attachSuccess": {
+    "description": "Translation for attach_success"
+  },
+  "attachError": "فشل تحديث المشرف: {value}",
+  "@attachError": {
+    "description": "Translation for attach_error"
+  },
+  "finance": "المالية",
+  "@finance": {
+    "description": "Translation for finance"
+  },
+  "analytics": "التحليلات",
+  "@analytics": {
+    "description": "Translation for analytics"
+  },
+  "compliance": "الامتثال",
+  "@compliance": {
+    "description": "Translation for compliance"
+  },
+  "users": "المستخدمين",
+  "@users": {
+    "description": "Translation for users"
+  },
+  "growthInsight": "نما نمو المستخدمين بنسبة 12% هذا الأسبوع مقارنة بالشهر الماضي.",
+  "@growthInsight": {
+    "description": "Translation for growth_insight"
+  },
+  "topCategoriesInsight": "الفئات الأعلى: محلات الحلاقة (65%)، السبا (20%).",
+  "@topCategoriesInsight": {
+    "description": "Translation for top_categories_insight"
+  },
+  "adminPanel": "لوحة الإدارة",
+  "@adminPanel": {
+    "description": "Translation for admin_panel"
+  },
+  "salonDashboard": "لوحة المتجر",
+  "@salonDashboard": {
+    "description": "Translation for salon_dashboard"
+  },
+  "mySchedule": "جدولي",
+  "@mySchedule": {
+    "description": "Translation for my_schedule"
+  },
   "offers": "العروض",
+  "@offers": {
+    "description": "Translation for offers"
+  },
   "ads": "الإعلانات",
+  "@ads": {
+    "description": "Translation for ads"
+  },
   "feedback": "آراء العملاء",
-  "tell_others": "أخبر الآخرين عنا",
-  "share_link": "شارك رابط المتجر",
-  "privacy_policy": "سياسة الخصوصية"
+  "@feedback": {
+    "description": "Translation for feedback"
+  },
+  "tellOthers": "أخبر الآخرين عنا",
+  "@tellOthers": {
+    "description": "Translation for tell_others"
+  },
+  "shareLink": "شارك رابط المتجر",
+  "@shareLink": {
+    "description": "Translation for share_link"
+  },
+  "privacyPolicy": "سياسة الخصوصية",
+  "@privacyPolicy": {
+    "description": "Translation for privacy_policy"
+  },
+  "salonLinkCopied": "تم نسخ رابط المتجر بنجاح!",
+  "@salonLinkCopied": {
+    "description": "Translation for salon_link_copied"
+  },
+  "feedbackDisplay": "عرض التقييمات...",
+  "@feedbackDisplay": {
+    "description": "Translation for feedback_display"
+  },
+  "cancel": "إلغاء",
+  "@cancel": {
+    "description": "Translation for cancel"
+  },
+  "tryAgain": "حاول مرة أخرى",
+  "@tryAgain": {
+    "description": "Translation for try_again"
+  },
+  "confirm": "تأكيد",
+  "@confirm": {
+    "description": "Translation for confirm"
+  },
+  "close": "إغلاق",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "create": "إنشاء",
+  "@create": {
+    "description": "Translation for create"
+  },
+  "changeProfilePicture": "تغيير صورة الملف الشخصي",
+  "@changeProfilePicture": {
+    "description": "Translation for change_profile_picture"
+  },
+  "viewAll": "عرض الكل",
+  "@viewAll": {
+    "description": "Translation for view_all"
+  },
+  "seeAll": "عرض الكل",
+  "@seeAll": {
+    "description": "Translation for see_all"
+  },
+  "systemHealthTitle": "حالة النظام",
+  "@systemHealthTitle": {
+    "description": "Translation for system_health_title"
+  },
+  "sendFeedback": "إرسال تعليقات",
+  "@sendFeedback": {
+    "description": "Translation for send_feedback"
+  },
+  "retry": "إعادة المحاولة",
+  "@retry": {
+    "description": "Translation for retry"
+  },
+  "delete": "حذف",
+  "@delete": {
+    "description": "Translation for delete"
+  },
+  "gallery": "معرض الصور",
+  "@gallery": {
+    "description": "Translation for gallery"
+  },
+  "camera": "الكاميرا",
+  "@camera": {
+    "description": "Translation for camera"
+  },
+  "redeem": "استبدال",
+  "@redeem": {
+    "description": "Translation for redeem"
+  },
+  "history": "السجل",
+  "@history": {
+    "description": "Translation for history"
+  },
+  "completePayment": "إتمام الدفع",
+  "@completePayment": {
+    "description": "Translation for complete_payment"
+  },
+  "changePassword": "تغيير كلمة المرور",
+  "@changePassword": {
+    "description": "Translation for change_password"
+  },
+  "reportSuccess": "تم إنشاء التقرير بنجاح!",
+  "@reportSuccess": {
+    "description": "Translation for report_success"
+  },
+  "offerSuccess": "تم إنشاء العرض بنجاح!",
+  "@offerSuccess": {
+    "description": "Translation for offer_success"
+  },
+  "manageSalon": "إدارة ملف المتجر",
+  "@manageSalon": {
+    "description": "Translation for manage_salon"
+  },
+  "launch": "إطلاق",
+  "@launch": {
+    "description": "Translation for launch"
+  },
+  "includeOptions": "تضمين الخيارات:",
+  "@includeOptions": {
+    "description": "Translation for include_options"
+  },
+  "createPromotion": "إنشاء ترويج",
+  "@createPromotion": {
+    "description": "Translation for create_promotion"
+  },
+  "createOffer": "إنشاء عرض جديد",
+  "@createOffer": {
+    "description": "Translation for create_offer"
+  },
+  "createAd": "إنشاء حملة إعلانية",
+  "@createAd": {
+    "description": "Translation for create_ad"
+  },
+  "exploreSalons": "استكشف المتاجر",
+  "@exploreSalons": {
+    "description": "Translation for explore_salons"
+  },
+  "bookAppointment": "حجز موعد",
+  "@bookAppointment": {
+    "description": "Translation for book_appointment"
+  },
+  "subscriptionPlans": "خطط الاشتراك",
+  "@subscriptionPlans": {
+    "description": "Translation for subscription_plans"
+  },
+  "selectPlan": "اختر الخطة",
+  "@selectPlan": {
+    "description": "Translation for select_plan"
+  },
+  "recommended": "موصى به",
+  "@recommended": {
+    "description": "Translation for recommended"
+  },
+  "appointmentHistory": "سجل المواعيد",
+  "@appointmentHistory": {
+    "description": "Translation for appointment_history"
+  },
+  "reportOptions": "خيارات التقرير",
+  "@reportOptions": {
+    "description": "Translation for report_options"
+  },
+  "generate": "توليد",
+  "@generate": {
+    "description": "Translation for generate"
+  },
+  "share": "مشاركة",
+  "@share": {
+    "description": "Translation for share"
+  },
+  "reportProblem": "الإبلاغ عن مشكلة",
+  "@reportProblem": {
+    "description": "Translation for report_problem"
+  },
+  "bugReport": "الإبلاغ عن خطأ",
+  "@bugReport": {
+    "description": "Translation for bug_report"
+  },
+  "usageAbuse": "إساءة الاستخدام",
+  "@usageAbuse": {
+    "description": "Translation for usage_abuse"
+  },
+  "featureRequest": "طلب ميزة",
+  "@featureRequest": {
+    "description": "Translation for feature_request"
+  },
+  "other": "أخرى",
+  "@other": {
+    "description": "Translation for other"
+  },
+  "email": "البريد الإلكتروني",
+  "@email": {
+    "description": "Translation for email"
+  },
+  "signUp": "إنشاء حساب",
+  "@signUp": {
+    "description": "Translation for sign_up"
+  },
+  "fullName": "الاسم الكامل",
+  "@fullName": {
+    "description": "Translation for full_name"
+  },
+  "phoneNumber": "رقم الهاتف",
+  "@phoneNumber": {
+    "description": "Translation for phone_number"
+  },
+  "forgotPassword": "هل نسيت كلمة المرور؟",
+  "@forgotPassword": {
+    "description": "Translation for forgot_password"
+  },
+  "welcomeBack": "مرحباً بعودتك!",
+  "@welcomeBack": {
+    "description": "Translation for welcome_back"
+  },
+  "signInToContinue": "تسجيل الدخول للمتابعة",
+  "@signInToContinue": {
+    "description": "Translation for sign_in_to_continue"
+  },
+  "signIn": "تسجيل الدخول",
+  "@signIn": {
+    "description": "Translation for sign_in"
+  },
+  "createAnAccount": "إنشاء حساب جديد",
+  "@createAnAccount": {
+    "description": "Translation for create_an_account"
+  },
+  "male": "ذكر",
+  "@male": {
+    "description": "Translation for male"
+  },
+  "female": "أنثى",
+  "@female": {
+    "description": "Translation for female"
+  },
+  "gender": "الجنس",
+  "@gender": {
+    "description": "Translation for gender"
+  },
+  "emailIsRequired": "البريد الإلكتروني مطلوب",
+  "@emailIsRequired": {
+    "description": "Translation for email_is_required"
+  },
+  "passwordIsRequired": "كلمة المرور مطلوبة",
+  "@passwordIsRequired": {
+    "description": "Translation for password_is_required"
+  },
+  "error": "خطأ",
+  "@error": {
+    "description": "Translation for error"
+  },
+  "success": "نجاح",
+  "@success": {
+    "description": "Translation for success"
+  },
+  "ok": "حسناً",
+  "@ok": {
+    "description": "Translation for ok"
+  },
+  "yes": "نعم",
+  "@yes": {
+    "description": "Translation for yes"
+  },
+  "no": "لا",
+  "@no": {
+    "description": "Translation for no"
+  },
+  "done": "تم",
+  "@done": {
+    "description": "Translation for done"
+  },
+  "next": "التالي",
+  "@next": {
+    "description": "Translation for next"
+  },
+  "back": "رجوع",
+  "@back": {
+    "description": "Translation for back"
+  },
+  "save": "حفظ",
+  "@save": {
+    "description": "Translation for save"
+  },
+  "update": "تحديث",
+  "@update": {
+    "description": "Translation for update"
+  },
+  "continueKey": "استمرار",
+  "@continueKey": {
+    "description": "Translation for continue"
+  },
+  "favorites": "المفضلة",
+  "@favorites": {
+    "description": "Translation for favorites"
+  },
+  "home": "الرئيسية",
+  "@home": {
+    "description": "Translation for home"
+  },
+  "notifications": "الإشعارات",
+  "@notifications": {
+    "description": "Translation for notifications"
+  },
+  "messages": "الرسائل",
+  "@messages": {
+    "description": "Translation for messages"
+  },
+  "date": "التاريخ",
+  "@date": {
+    "description": "Translation for date"
+  },
+  "time": "الوقت",
+  "@time": {
+    "description": "Translation for time"
+  },
+  "price": "السعر",
+  "@price": {
+    "description": "Translation for price"
+  },
+  "status": "الحالة",
+  "@status": {
+    "description": "Translation for status"
+  },
+  "available": "متاح",
+  "@available": {
+    "description": "Translation for available"
+  },
+  "busy": "مشغول",
+  "@busy": {
+    "description": "Translation for busy"
+  },
+  "bookNow": "احجز الان",
+  "@bookNow": {
+    "description": "Translation for book_now"
+  },
+  "booking": "حجز",
+  "@booking": {
+    "description": "Translation for booking"
+  },
+  "select": "اختر",
+  "@select": {
+    "description": "Translation for select"
+  },
+  "selected": "تم الاختيار",
+  "@selected": {
+    "description": "Translation for selected"
+  },
+  "submit": "إرسال",
+  "@submit": {
+    "description": "Translation for submit"
+  },
+  "total": "الإجمالي",
+  "@total": {
+    "description": "Translation for total"
+  },
+  "dashboard": "لوحة التحكم",
+  "@dashboard": {
+    "description": "Translation for dashboard"
+  },
+  "receptionistDesk": "مكتب الاستقبال",
+  "@receptionistDesk": {
+    "description": "Translation for receptionist_desk"
+  },
+  "staffActions": "إجراءات الموظفين",
+  "@staffActions": {
+    "description": "Translation for staff_actions"
+  },
+  "pendingPayments": "مدفوعات قيد الانتظار",
+  "@pendingPayments": {
+    "description": "Translation for pending_payments"
+  },
+  "salonManagement": "إدارة المتجر",
+  "@salonManagement": {
+    "description": "Translation for salon_management"
+  },
+  "support": "الدعم",
+  "@support": {
+    "description": "Translation for support"
+  },
+  "active": "نشط",
+  "@active": {
+    "description": "Translation for active"
+  },
+  "inactive": "غير نشط",
+  "@inactive": {
+    "description": "Translation for inactive"
+  },
+  "loading": "جاري التحميل...",
+  "@loading": {
+    "description": "Translation for loading"
+  },
+  "noDataFound": "لا توجد بيانات",
+  "@noDataFound": {
+    "description": "Translation for no_data_found"
+  },
+  "pleaseWait": "يرجى الانتظار...",
+  "@pleaseWait": {
+    "description": "Translation for please_wait"
+  },
+  "paymentSuccessful": "تم الدفع بنجاح",
+  "@paymentSuccessful": {
+    "description": "Translation for payment_successful"
+  },
+  "paymentFailed": "فشل الدفع",
+  "@paymentFailed": {
+    "description": "Translation for payment_failed"
+  },
+  "welcome": "مرحباً",
+  "@welcome": {
+    "description": "Translation for welcome"
+  },
+  "donTHaveAnAccountSignUp": "ليس لديك حساب؟ أنشئ حساب",
+  "@donTHaveAnAccountSignUp": {
+    "description": "Translation for don_t_have_an_account_sign_up"
+  },
+  "alreadyHaveAnAccountLogin": "لديك حساب بالفعل؟ سجل دخول",
+  "@alreadyHaveAnAccountLogin": {
+    "description": "Translation for already_have_an_account_login"
+  },
+  "logoutPageComingSoon": "صفحة تسجيل الخروج - قريباً",
+  "@logoutPageComingSoon": {
+    "description": "Translation for logout_page_coming_soon"
+  },
+  "systemAlerts": "تنبيهات النظام",
+  "@systemAlerts": {
+    "description": "Translation for system_alerts"
+  },
+  "completed": "مكتمل",
+  "@completed": {
+    "description": "Translation for completed"
+  },
+  "branchManagement": "إدارة الفروع",
+  "@branchManagement": {
+    "description": "Translation for branch_management"
+  },
+  "inventoryManagement": "إدارة المخزون",
+  "@inventoryManagement": {
+    "description": "Translation for inventory_management"
+  },
+  "servicesPrices": "الخدمات والأسعار",
+  "@servicesPrices": {
+    "description": "Translation for services_prices"
+  },
+  "emailAddress": "البريد الإلكتروني",
+  "@emailAddress": {
+    "description": "Translation for email_address"
+  },
+  "subject": "الموضوع",
+  "@subject": {
+    "description": "Translation for subject"
+  },
+  "noSubscriptionsAvailable": "لا توجد اشتراكات متاحة",
+  "@noSubscriptionsAvailable": {
+    "description": "Translation for no_subscriptions_available"
+  },
+  "pending": "قيد الانتظار",
+  "@pending": {
+    "description": "Translation for pending"
+  },
+  "generatingReport": "جاري إنشاء التقرير...",
+  "@generatingReport": {
+    "description": "Translation for generating_report"
+  },
+  "lowStockAlerts": "تنبيهات نقص المخزون",
+  "@lowStockAlerts": {
+    "description": "Translation for low_stock_alerts"
+  },
+  "quickActions": "إجراءات سريعة",
+  "@quickActions": {
+    "description": "Translation for quick_actions"
+  },
+  "activeCampaigns": "الحملات النشطة",
+  "@activeCampaigns": {
+    "description": "Translation for active_campaigns"
+  },
+  "toolsInventory": "الأدوات والمخزون",
+  "@toolsInventory": {
+    "description": "Translation for tools_inventory"
+  },
+  "validityPeriod": "فترة الصلاحية:",
+  "@validityPeriod": {
+    "description": "Translation for validity_period"
+  },
+  "adCampaignLaunched": "تم إطلاق الحملة الإعلانية!",
+  "@adCampaignLaunched": {
+    "description": "Translation for ad_campaign_launched"
+  },
+  "assignManager": "تعيين مدير",
+  "@assignManager": {
+    "description": "Translation for assign_manager"
+  },
+  "edit": "تعديل",
+  "@edit": {
+    "description": "Translation for edit"
+  },
+  "workingHours": "ساعات العمل",
+  "@workingHours": {
+    "description": "Translation for working_hours"
+  },
+  "lowStockAlert": "تنبيه انخفاض المخزون",
+  "@lowStockAlert": {
+    "description": "Translation for low_stock_alert"
+  },
+  "role": "الصلاحية",
+  "@role": {
+    "description": "Translation for role"
+  },
+  "barber": "حلاق",
+  "@barber": {
+    "description": "Translation for barber"
+  },
+  "monthly": "شهرياً",
+  "@monthly": {
+    "description": "Translation for monthly"
+  },
+  "addFirstBranch": "إضافة أول فرع",
+  "@addFirstBranch": {
+    "description": "Translation for add_first_branch"
+  },
+  "additionalServices": "خدمات إضافية:",
+  "@additionalServices": {
+    "description": "Translation for additional_services"
+  },
+  "addItem": "إضافة عنصر",
+  "@addItem": {
+    "description": "Translation for add_item"
+  },
+  "newPassword": "كلمة مرور جديدة",
+  "@newPassword": {
+    "description": "Translation for new_password"
+  },
+  "confirmPassword": "تأكيد كلمة المرور",
+  "@confirmPassword": {
+    "description": "Translation for confirm_password"
+  },
+  "issueType": "نوع المشكلة",
+  "@issueType": {
+    "description": "Translation for issue_type"
+  },
+  "appFeedback": "ملاحظات حول التطبيق",
+  "@appFeedback": {
+    "description": "Translation for app_feedback"
+  },
+  "rating": "التقييم:",
+  "@rating": {
+    "description": "Translation for rating"
+  },
+  "today": "اليوم\\",
+  "@today": {
+    "description": "Translation for today"
+  },
+  "reportIssue": "الإبلاغ عن مشكلة",
+  "@reportIssue": {
+    "description": "Translation for report_issue"
+  },
+  "errorDetails": "تفاصيل الخطأ",
+  "@errorDetails": {
+    "description": "Translation for error_details"
+  },
+  "stackTrace": "تتبع المشكلة:",
+  "@stackTrace": {
+    "description": "Translation for stack_trace"
+  },
+  "builderError": "خطأ في البناء",
+  "@builderError": {
+    "description": "Translation for builder_error"
+  },
+  "oopsSomethingWentWrong": "عفواً! حدث خطأ ما",
+  "@oopsSomethingWentWrong": {
+    "description": "Translation for oops_something_went_wrong"
+  },
+  "logOut": "تسجيل الخروج",
+  "@logOut": {
+    "description": "Translation for log_out"
+  },
+  "godMode": "وضع المطور",
+  "@godMode": {
+    "description": "Translation for god_mode"
+  },
+  "account": "الحساب",
+  "@account": {
+    "description": "Translation for account"
+  },
+  "failedToLoadSubscriptions": "فشل تحميل الاشتراكات",
+  "@failedToLoadSubscriptions": {
+    "description": "Translation for failed_to_load_subscriptions"
+  },
+  "thereAreNoSubscriptionPlansAvailableAtTheM": "لا تتوفر خطط اشتراك في الوقت الحالي.",
+  "@thereAreNoSubscriptionPlansAvailableAtTheM": {
+    "description": "Translation for there_are_no_subscription_plans_available_at_the_m"
+  },
+  "subscribeToTheSalon": "اشترك في المتجر",
+  "@subscribeToTheSalon": {
+    "description": "Translation for subscribe_to_the_salon"
+  },
+  "itemRestockedTo10Units": "تم إعادة تزويد العنصر إلى 10 وحدات",
+  "@itemRestockedTo10Units": {
+    "description": "Translation for item_restocked_to_10_units"
+  },
+  "popular": "شائع",
+  "@popular": {
+    "description": "Translation for popular"
+  },
+  "refresh": "تحديث",
+  "@refresh": {
+    "description": "Translation for refresh"
+  },
+  "noFavoritesYet": "لا توجد مفضلة بعد",
+  "@noFavoritesYet": {
+    "description": "Translation for no_favorites_yet"
+  },
+  "itemsYouAddToYourFavoritesWillAppearHere": "العناصر التي تضيفها إلى المفضلة ستظهر هنا",
+  "@itemsYouAddToYourFavoritesWillAppearHere": {
+    "description": "Translation for items_you_add_to_your_favorites_will_appear_here"
+  },
+  "browseProducts": "تصفح المنتجات",
+  "@browseProducts": {
+    "description": "Translation for browse_products"
+  },
+  "downloadReport": "تنزيل التقرير",
+  "@downloadReport": {
+    "description": "Translation for download_report"
+  },
+  "fileFormatPdf": "تنسيق الملف: PDF",
+  "@fileFormatPdf": {
+    "description": "Translation for file_format_pdf"
+  },
+  "reportDetails": "تفاصيل التقرير",
+  "@reportDetails": {
+    "description": "Translation for report_details"
+  },
+  "download": "تنزيل",
+  "@download": {
+    "description": "Translation for download"
+  },
+  "reportType": "نوع التقرير",
+  "@reportType": {
+    "description": "Translation for report_type"
+  },
+  "timePeriod": "الفترة الزمنية",
+  "@timePeriod": {
+    "description": "Translation for time_period"
+  },
+  "fileName": "اسم الملف",
+  "@fileName": {
+    "description": "Translation for file_name"
+  },
+  "enterFileName": "أدخل اسم الملف",
+  "@enterFileName": {
+    "description": "Translation for enter_file_name"
+  },
+  "hello": "مرحباً",
+  "@hello": {
+    "description": "Translation for hello"
+  },
+  "gold": "ذهبي",
+  "@gold": {
+    "description": "Translation for gold"
+  },
+  "selectDate": "اختر التاريخ",
+  "@selectDate": {
+    "description": "Translation for select_date"
+  },
+  "availableTimes": "الأوقات المتاحة",
+  "@availableTimes": {
+    "description": "Translation for available_times"
+  },
+  "selectADateFirstToSeeAvailableTimes": "اختر التاريخ أولاً لرؤية الأوقات المتاحة",
+  "@selectADateFirstToSeeAvailableTimes": {
+    "description": "Translation for select_a_date_first_to_see_available_times"
+  },
+  "pendingConfirmations": "تأكيدات معلقة",
+  "@pendingConfirmations": {
+    "description": "Translation for pending_confirmations"
+  },
+  "weeklyEarningsTrend": "اتجاه الأرباح الأسبوعية",
+  "@weeklyEarningsTrend": {
+    "description": "Translation for weekly_earnings_trend"
+  },
+  "noEarningsDataAvailable": "لا تتوفر بيانات أرباح",
+  "@noEarningsDataAvailable": {
+    "description": "Translation for no_earnings_data_available"
+  },
+  "upgradeToUnlock": "قم بالترقية للفتح",
+  "@upgradeToUnlock": {
+    "description": "Translation for upgrade_to_unlock"
+  },
+  "upgradeNow": "الترقية الآن",
+  "@upgradeNow": {
+    "description": "Translation for upgrade_now"
+  },
+  "viewPlans": "عرض الخطط",
+  "@viewPlans": {
+    "description": "Translation for view_plans"
+  },
+  "subscription": "اشتراك",
+  "@subscription": {
+    "description": "Translation for subscription"
+  },
+  "noFeaturesAvailable": "لا توجد ميزات متاحة",
+  "@noFeaturesAvailable": {
+    "description": "Translation for no_features_available"
+  },
+  "unableToLoadSubscription": "غير قادر على تحميل الاشتراك",
+  "@unableToLoadSubscription": {
+    "description": "Translation for unable_to_load_subscription"
+  },
+  "noActiveSubscription": "لا يوجد اشتراك نشط",
+  "@noActiveSubscription": {
+    "description": "Translation for no_active_subscription"
+  },
+  "connectionError": "خطأ في الاتصال",
+  "@connectionError": {
+    "description": "Translation for connection_error"
+  },
+  "pullDownToRefresh": "اسحب للأسفل للتحديث",
+  "@pullDownToRefresh": {
+    "description": "Translation for pull_down_to_refresh"
+  },
+  "refreshFailed": "فشل التحديث!",
+  "@refreshFailed": {
+    "description": "Translation for refresh_failed"
+  },
+  "releaseToRefresh": "أفلت للتحديث",
+  "@releaseToRefresh": {
+    "description": "Translation for release_to_refresh"
+  },
+  "refreshCompleted": "اكتمل التحديث",
+  "@refreshCompleted": {
+    "description": "Translation for refresh_completed"
+  },
+  "pullUpToLoadMore": "اسحب للأعلى للتحميل أكثر",
+  "@pullUpToLoadMore": {
+    "description": "Translation for pull_up_to_load_more"
+  },
+  "loadFailed": "فشل التحميل!",
+  "@loadFailed": {
+    "description": "Translation for load_failed"
+  },
+  "releaseToLoadMore": "أفلت للتحميل أكثر",
+  "@releaseToLoadMore": {
+    "description": "Translation for release_to_load_more"
+  },
+  "noMoreData": "لا توجد بيانات أخرى",
+  "@noMoreData": {
+    "description": "Translation for no_more_data"
+  },
+  "deleteProfile": "حذف الملف الشخصي",
+  "@deleteProfile": {
+    "description": "Translation for delete_profile"
+  },
+  "areYouSureYouWantToDeleteYourProfileThis": "هل أنت متأكد أنك تريد حذف ملفك الشخصي؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@areYouSureYouWantToDeleteYourProfileThis": {
+    "description": "Translation for are_you_sure_you_want_to_delete_your_profile_this_"
+  },
+  "profileDeleted": "تم حذف الملف الشخصي",
+  "@profileDeleted": {
+    "description": "Translation for profile_deleted"
+  },
+  "chooseAnOption": "اختر خياراً",
+  "@chooseAnOption": {
+    "description": "Translation for choose_an_option"
+  },
+  "alreadyHaveAnAccountLogIn": "لديك حساب بالفعل؟ سجل دخولك",
+  "@alreadyHaveAnAccountLogIn": {
+    "description": "Translation for already_have_an_account_log_in"
+  },
+  "welcomeToNa3Eeman": "مرحباً بك في نعيمًا",
+  "@welcomeToNa3Eeman": {
+    "description": "Translation for welcome_to_na3eeman"
+  },
+  "yourPremiumBarberBookingExperienceBookManage": "تجربتك المميزة في حجز الحلاقين.\nاحجز وأدِر واكتشف أفضل الحلاقين بالقرب منك.",
+  "@yourPremiumBarberBookingExperienceBookManage": {
+    "description": "Translation for your_premium_barber_booking_experience_book_manage"
+  },
+  "personaliseYourTheme": "تخصيص المظهر الخاص بك",
+  "@personaliseYourTheme": {
+    "description": "Translation for personalise_your_theme"
+  },
+  "weLlTailorTheAppColoursToYourPreference": "سنقوم بتعديل ألوان التطبيق وفقاً لتفضيلاتك.",
+  "@weLlTailorTheAppColoursToYourPreference": {
+    "description": "Translation for we_ll_tailor_the_app_colours_to_your_preference"
+  },
+  "preferNotToSay": "أفضل عدم القول",
+  "@preferNotToSay": {
+    "description": "Translation for prefer_not_to_say"
+  },
+  "howWillYouUseNa3Eeman": "كيف ستستخدم نعيمًا؟",
+  "@howWillYouUseNa3Eeman": {
+    "description": "Translation for how_will_you_use_na3eeman"
+  },
+  "devAccountSwitcher": "مبدل حسابات المطورين",
+  "@devAccountSwitcher": {
+    "description": "Translation for dev_account_switcher"
+  },
+  "retailSnapshot": "لمحة عن التجزئة",
+  "@retailSnapshot": {
+    "description": "Translation for retail_snapshot"
+  },
+  "teamLeaderboard": "لوحة صدارة الفريق",
+  "@teamLeaderboard": {
+    "description": "Translation for team_leaderboard"
+  },
+  "reorderNow": "إعادة الطلب الآن",
+  "@reorderNow": {
+    "description": "Translation for reorder_now"
+  },
+  "viewMode": "وضع العرض",
+  "@viewMode": {
+    "description": "Translation for view_mode"
+  },
+  "unifiedPL": "الأرباح والخسائر الموحدة",
+  "@unifiedPL": {
+    "description": "Translation for unified_p_l"
+  },
+  "globalStockValue": "قيمة المخزون العالمية",
+  "@globalStockValue": {
+    "description": "Translation for global_stock_value"
+  },
+  "key83VsLastMonth": "+8.3% مقارنة بالشهر الماضي",
+  "@key83VsLastMonth": {
+    "description": "Translation for 8_3_vs_last_month"
+  },
+  "branchComparison": "مقارنة الفروع",
+  "@branchComparison": {
+    "description": "Translation for branch_comparison"
+  },
+  "interBranchTransfers": "التحويلات بين الفروع",
+  "@interBranchTransfers": {
+    "description": "Translation for inter_branch_transfers"
+  },
+  "newTransfer": "تحويل جديد",
+  "@newTransfer": {
+    "description": "Translation for new_transfer"
+  },
+  "commissionCalculator": "حاسبة العمولات",
+  "@commissionCalculator": {
+    "description": "Translation for commission_calculator"
+  },
+  "resourceOccupancy": "إشغال الموارد",
+  "@resourceOccupancy": {
+    "description": "Translation for resource_occupancy"
+  },
+  "complianceTracker": "متتبع الامتثال",
+  "@complianceTracker": {
+    "description": "Translation for compliance_tracker"
+  },
+  "consumableWaste": "النفايات الاستهلاكية",
+  "@consumableWaste": {
+    "description": "Translation for consumable_waste"
+  },
+  "upgradePlan": "ترقية الخطة",
+  "@upgradePlan": {
+    "description": "Translation for upgrade_plan"
+  },
+  "kitMaintenance": "صيانة المعدات",
+  "@kitMaintenance": {
+    "description": "Translation for kit_maintenance"
+  },
+  "quickBook": "حجز سريع",
+  "@quickBook": {
+    "description": "Translation for quick_book"
+  },
+  "addANewAppointment": "إضافة موعد جديد",
+  "@addANewAppointment": {
+    "description": "Translation for add_a_new_appointment"
+  },
+  "now": "الآن",
+  "@now": {
+    "description": "Translation for now"
+  },
+  "todaySEarnings": "أرباح اليوم",
+  "@todaySEarnings": {
+    "description": "Translation for today_s_earnings"
+  },
+  "onYourPlan": "في خطتك",
+  "@onYourPlan": {
+    "description": "Translation for on_your_plan"
+  },
+  "trial": "تجريبي",
+  "@trial": {
+    "description": "Translation for trial"
+  },
+  "internActivity": "نشاط المتدربين",
+  "@internActivity": {
+    "description": "Translation for intern_activity"
+  },
+  "assignDailyTip": "تخصيص البقشيش اليومي",
+  "@assignDailyTip": {
+    "description": "Translation for assign_daily_tip"
+  },
+  "selectIntern": "اختر المتدرب",
+  "@selectIntern": {
+    "description": "Translation for select_intern"
+  },
+  "optionalNote": "ملاحظة اختيارية",
+  "@optionalNote": {
+    "description": "Translation for optional_note"
+  },
+  "subscriptionDetails": "تفاصيل الاشتراك",
+  "@subscriptionDetails": {
+    "description": "Translation for subscription_details"
+  },
+  "planFeatures": "ميزات الخطة",
+  "@planFeatures": {
+    "description": "Translation for plan_features"
+  },
+  "reviewPlan": "مراجعة الخطة",
+  "@reviewPlan": {
+    "description": "Translation for review_plan"
+  },
+  "planConfirmedSelection": "الخطة المختارة والمؤكدة",
+  "@planConfirmedSelection": {
+    "description": "Translation for plan_confirmed_selection"
+  },
+  "totalCharges": "إجمالي الرسوم",
+  "@totalCharges": {
+    "description": "Translation for total_charges"
+  },
+  "paymentInstructions": "تعليمات الدفع",
+  "@paymentInstructions": {
+    "description": "Translation for payment_instructions"
+  },
+  "pleaseProceedWithYourPrimaryLinkedAccountBa": "يرجى المتابعة باستخدام رصيد حسابك الأساسي المرتبط، أو اختيار بطاقة ائتمان بديلة مهيأة في لوحات الإعدادات لإتمام مزامنة الفاتورة.",
+  "@pleaseProceedWithYourPrimaryLinkedAccountBa": {
+    "description": "Translation for please_proceed_with_your_primary_linked_account_ba"
+  },
+  "multiBranchSupportSetupRequiredAdminActionA": "إعداد دعم الفروع المتعددة يتطلب موافقة من الإدارة.",
+  "@multiBranchSupportSetupRequiredAdminActionA": {
+    "description": "Translation for multi_branch_support_setup_required_admin_action_a"
+  },
+  "processingPaymentMockStep": "جاري معالجة الدفع التجريبي...",
+  "@processingPaymentMockStep": {
+    "description": "Translation for processing_payment_mock_step"
+  },
+  "proceedToPay": "المتابعة للدفع",
+  "@proceedToPay": {
+    "description": "Translation for proceed_to_pay"
+  },
+  "adminAlertedRegardingMultiBranchAccess": "تم إشعار الإدارة بشأن وصول الفروع المتعددة...",
+  "@adminAlertedRegardingMultiBranchAccess": {
+    "description": "Translation for admin_alerted_regarding_multi_branch_access"
+  },
+  "contactAdmin": "اتصل بالمسؤول",
+  "@contactAdmin": {
+    "description": "Translation for contact_admin"
+  },
+  "activeOffers": "العروض النشطة",
+  "@activeOffers": {
+    "description": "Translation for active_offers"
+  },
+  "noOffersAvailableAtThisMoment": "لا توجد عروض متاحة في الوقت الحالي",
+  "@noOffersAvailableAtThisMoment": {
+    "description": "Translation for no_offers_available_at_this_moment"
+  },
+  "productsPrices": "المنتجات والأسعار",
+  "@productsPrices": {
+    "description": "Translation for products_prices"
+  },
+  "showcase": "العرض",
+  "@showcase": {
+    "description": "Translation for showcase"
+  },
+  "manageAllYourBranchesViewPerformanceMetrics": "قم بإدارة جميع فروعك، واعرض مقاييس الأداء، وتعامل مع الإعدادات الخاصة بكل فرع من هذه الصفحة.",
+  "@manageAllYourBranchesViewPerformanceMetrics": {
+    "description": "Translation for manage_all_your_branches_view_performance_metrics_"
+  },
+  "salonDetails": "تفاصيل المتجر",
+  "@salonDetails": {
+    "description": "Translation for salon_details"
+  },
+  "location": "الموقع",
+  "@location": {
+    "description": "Translation for location"
+  },
+  "phone": "الهاتف",
+  "@phone": {
+    "description": "Translation for phone"
+  },
+  "employeeDetails": "تفاصيل الموظف",
+  "@employeeDetails": {
+    "description": "Translation for employee_details"
+  },
+  "performanceRating": "الأداء والتقييم",
+  "@performanceRating": {
+    "description": "Translation for performance_rating"
+  },
+  "removeFromSalon": "إزالة من المتجر",
+  "@removeFromSalon": {
+    "description": "Translation for remove_from_salon"
+  },
+  "employeeDetachedSuccessfully": "تم فصل الموظف بنجاح.",
+  "@employeeDetachedSuccessfully": {
+    "description": "Translation for employee_detached_successfully"
+  },
+  "addEmployee": "إضافة موظف",
+  "@addEmployee": {
+    "description": "Translation for add_employee"
+  },
+  "add": "إضافة",
+  "@add": {
+    "description": "Translation for add"
+  },
+  "employeeManagement": "إدارة الموظفين",
+  "@employeeManagement": {
+    "description": "Translation for employee_management"
+  },
+  "na3eeman": "نعيمًا",
+  "@na3eeman": {
+    "description": "Translation for na3eeman"
+  },
+  "upgrade": "ترقية",
+  "@upgrade": {
+    "description": "Translation for upgrade"
+  },
+  "staffPerformanceReport": "تقرير أداء الموظفين",
+  "@staffPerformanceReport": {
+    "description": "Translation for staff_performance_report"
+  },
+  "areYouSureYouWantToLogout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "@areYouSureYouWantToLogout": {
+    "description": "Translation for are_you_sure_you_want_to_logout"
+  },
+  "confirmBooking": "تأكيد الحجز",
+  "@confirmBooking": {
+    "description": "Translation for confirm_booking"
+  },
+  "securityPolicy": "سياسة الأمان",
+  "@securityPolicy": {
+    "description": "Translation for security_policy"
+  },
+  "applicationRules": "قواعد التطبيق",
+  "@applicationRules": {
+    "description": "Translation for application_rules"
+  },
+  "inviteFriends": "دعوة الأصدقاء",
+  "@inviteFriends": {
+    "description": "Translation for invite_friends"
+  },
+  "contactUs": "اتصل بنا",
+  "@contactUs": {
+    "description": "Translation for contact_us"
+  },
+  "reportSalon": "الإبلاغ عن المشغل",
+  "@reportSalon": {
+    "description": "Translation for report_salon"
+  },
+  "reportAProblem": "الإبلاغ عن مشكلة",
+  "@reportAProblem": {
+    "description": "Translation for report_a_problem"
+  },
+  "userReports": "تقارير المستخدمين",
+  "@userReports": {
+    "description": "Translation for user_reports"
+  },
+  "userManagement": "إدارة المستخدمين",
+  "@userManagement": {
+    "description": "Translation for user_management"
+  },
+  "staff": "الموظفين",
+  "@staff": {
+    "description": "Translation for staff"
+  },
+  "reports": "التقارير",
+  "@reports": {
+    "description": "Translation for reports"
+  },
+  "bookings": "الحجوزات",
+  "@bookings": {
+    "description": "Translation for bookings"
+  },
+  "i": "أنا\\",
+  "@i": {
+    "description": "Translation for i"
+  },
+  "cash": "نقدي",
+  "@cash": {
+    "description": "Translation for cash"
+  },
+  "employee": "موظف",
+  "@employee": {
+    "description": "Translation for employee"
+  },
+  "customerFeedback": "ملاحظات العملاء",
+  "@customerFeedback": {
+    "description": "Translation for customer_feedback"
+  },
+  "backToLogin": "العودة لتسجيل الدخول",
+  "@backToLogin": {
+    "description": "Translation for back_to_login"
+  },
+  "admin": "مسؤول",
+  "@admin": {
+    "description": "Translation for admin"
+  },
+  "verifyOtp": "التحقق من رمز OTP",
+  "@verifyOtp": {
+    "description": "Translation for verify_otp"
+  },
+  "submitReport": "إرسال التقرير",
+  "@submitReport": {
+    "description": "Translation for submit_report"
+  },
+  "confirmPay": "تأكيد ودفع",
+  "@confirmPay": {
+    "description": "Translation for confirm_pay"
+  },
+  "salonName": "اسم المتجر",
+  "@salonName": {
+    "description": "Translation for salon_name"
+  },
+  "description": "الوصف",
+  "@description": {
+    "description": "Translation for description"
+  },
+  "thisIsANotificationMessageMockupDetails": "هذه تفاصيل رسالة إشعار تجريبية.",
+  "@thisIsANotificationMessageMockupDetails": {
+    "description": "Translation for this_is_a_notification_message_mockup_details"
+  },
+  "key2HAgo": "منذ ساعتين",
+  "@key2HAgo": {
+    "description": "Translation for 2h_ago"
+  },
+  "upgradeSubscription": "ترقية الاشتراك",
+  "@upgradeSubscription": {
+    "description": "Translation for upgrade_subscription"
+  },
+  "enterprisePlan": "خطة الشركات",
+  "@enterprisePlan": {
+    "description": "Translation for enterprise_plan"
+  },
+  "premiumPlan": "الخطة المميزة",
+  "@premiumPlan": {
+    "description": "Translation for premium_plan"
+  },
+  "debugMenu": "قائمة المطور",
+  "@debugMenu": {
+    "description": "Translation for debug_menu"
+  },
+  "debug": "تصحيح",
+  "@debug": {
+    "description": "Translation for debug"
+  },
+  "debugBanner": "شريط التصحيح",
+  "@debugBanner": {
+    "description": "Translation for debug_banner"
+  },
+  "performanceOverlay": "عرض الأداء",
+  "@performanceOverlay": {
+    "description": "Translation for performance_overlay"
+  },
+  "slowAnimations": "الرسوم المتحركة البطيئة",
+  "@slowAnimations": {
+    "description": "Translation for slow_animations"
+  },
+  "debugLogging": "تسجيل التصحيح",
+  "@debugLogging": {
+    "description": "Translation for debug_logging"
+  },
+  "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
+  "@profileUpdatedSuccessfully": {
+    "description": "Translation for profile_updated_successfully"
+  },
+  "profileDeletedSuccessfully": "تم حذف الملف الشخصي بنجاح",
+  "@profileDeletedSuccessfully": {
+    "description": "Translation for profile_deleted_successfully"
+  },
+  "chooseFromGallery": "الاستعراض من المعرض",
+  "@chooseFromGallery": {
+    "description": "Translation for choose_from_gallery"
+  },
+  "takeAPhoto": "التقاط صورة",
+  "@takeAPhoto": {
+    "description": "Translation for take_a_photo"
+  },
+  "selectLanguage": "اختر اللغة",
+  "@selectLanguage": {
+    "description": "Translation for select_language"
+  },
+  "english": "الإنجليزية",
+  "@english": {
+    "description": "Translation for english"
+  },
+  "selectTheme": "اختر المظهر",
+  "@selectTheme": {
+    "description": "Translation for select_theme"
+  },
+  "lightMode": "الوضع النهاري",
+  "@lightMode": {
+    "description": "Translation for light_mode"
+  },
+  "darkMode": "الوضع الليلي",
+  "@darkMode": {
+    "description": "Translation for dark_mode"
+  },
+  "summerGlowPackage": "باقة الصيف المتوهجة ☀️",
+  "@summerGlowPackage": {
+    "description": "Translation for summer_glow_package"
+  },
+  "completeBridalGlow": "تجهيز العروس الكامل 💅",
+  "@completeBridalGlow": {
+    "description": "Translation for complete_bridal_glow"
+  },
+  "homePage": "الصفحة الرئيسية",
+  "@homePage": {
+    "description": "Translation for home_page"
+  },
+  "homePageContent": "محتوى الصفحة الرئيسية",
+  "@homePageContent": {
+    "description": "Translation for home_page_content"
+  },
+  "appointmentReminder": "تذكير بالموعد",
+  "@appointmentReminder": {
+    "description": "Translation for appointment_reminder"
+  },
+  "payNow": "ادفع الآن",
+  "@payNow": {
+    "description": "Translation for pay_now"
+  },
+  "awesome": "رائع!",
+  "@awesome": {
+    "description": "Translation for awesome"
+  },
+  "yourFeedbackMatters": "ملاحظاتك تهمنا",
+  "@yourFeedbackMatters": {
+    "description": "Translation for your_feedback_matters"
+  },
+  "loyaltyPointsEarned": "كسبت نقاط ولاء!",
+  "@loyaltyPointsEarned": {
+    "description": "Translation for loyalty_points_earned"
+  },
+  "testExampleCom": "test@example.com",
+  "@testExampleCom": {
+    "description": "Translation for test_example_com"
+  },
+  "test123": "Test123!",
+  "@test123": {
+    "description": "Translation for test123"
+  },
+  "overview": "نظرة عامة",
+  "@overview": {
+    "description": "Translation for overview"
+  },
+  "financialReports": "التقارير المالية",
+  "@financialReports": {
+    "description": "Translation for financial_reports"
+  },
+  "mySalon": "متجري",
+  "@mySalon": {
+    "description": "Translation for my_salon"
+  },
+  "salons": "المتاجر",
+  "@salons": {
+    "description": "Translation for salons"
+  },
+  "favourites": "المفضلة",
+  "@favourites": {
+    "description": "Translation for favourites"
+  },
+  "average": "المتوسط",
+  "@average": {
+    "description": "Translation for average"
+  },
+  "card": "بطاقة",
+  "@card": {
+    "description": "Translation for card"
+  },
+  "assignTip": "تخصيص الإكرامية",
+  "@assignTip": {
+    "description": "Translation for assign_tip"
+  },
+  "name": "الاسم",
+  "@name": {
+    "description": "Translation for name"
+  },
+  "johnDoe": "محمد أحمد",
+  "@johnDoe": {
+    "description": "Translation for john_doe"
+  },
+  "financialPerformance": "الأداء المالي",
+  "@financialPerformance": {
+    "description": "Translation for financial_performance"
+  },
+  "salonBranches": "فروع المتجر",
+  "@salonBranches": {
+    "description": "Translation for salon_branches"
+  },
+  "noBranchesAvailable": "لا توجد فروع متاحة",
+  "@noBranchesAvailable": {
+    "description": "Translation for no_branches_available"
+  },
+  "addYourFirstBranchToGetStarted": "أضف فرعك الأول للبدء",
+  "@addYourFirstBranchToGetStarted": {
+    "description": "Translation for add_your_first_branch_to_get_started"
+  },
+  "deleteItem": "حذف العنصر",
+  "@deleteItem": {
+    "description": "Translation for delete_item"
+  },
+  "inventoryManagementIsOnlyAvailableForOwners": "إدارة المخزون متاحة فقط لأصحاب المتاجر",
+  "@inventoryManagementIsOnlyAvailableForOwners": {
+    "description": "Translation for inventory_management_is_only_available_for_owners"
+  },
+  "initializingSalonDetails": "جاري تهيئة تفاصيل المتجر...",
+  "@initializingSalonDetails": {
+    "description": "Translation for initializing_salon_details"
+  },
+  "failedToLoadInventory": "فشل في تحميل المخزون",
+  "@failedToLoadInventory": {
+    "description": "Translation for failed_to_load_inventory"
+  },
+  "noItemsInInventory": "لا توجد عناصر في المخزون",
+  "@noItemsInInventory": {
+    "description": "Translation for no_items_in_inventory"
+  },
+  "unableToLoadServicesPleaseTryAgain": "غير قادر على تحميل الخدمات. يرجى المحاولة مرة أخرى.",
+  "@unableToLoadServicesPleaseTryAgain": {
+    "description": "Translation for unable_to_load_services_please_try_again"
+  },
+  "noServicesAvailable": "لا توجد خدمات متاحة",
+  "@noServicesAvailable": {
+    "description": "Translation for no_services_available"
+  },
+  "manageInventory": "إدارة المخزون",
+  "@manageInventory": {
+    "description": "Translation for manage_inventory"
+  },
+  "customerReviews": "آراء العملاء",
+  "@customerReviews": {
+    "description": "Translation for customer_reviews"
+  },
+  "addYourReview": "أضف تقييمك",
+  "@addYourReview": {
+    "description": "Translation for add_your_review"
+  },
+  "submitReview": "إرسال التقييم",
+  "@submitReview": {
+    "description": "Translation for submit_review"
+  },
+  "writeYourReviewHere": "اكتب تقييمك هنا...",
+  "@writeYourReviewHere": {
+    "description": "Translation for write_your_review_here"
+  },
+  "ourBarbers": "حلاقونا",
+  "@ourBarbers": {
+    "description": "Translation for our_barbers"
+  },
+  "couldNotLaunchMaps": "تعذر فتح الخرائط",
+  "@couldNotLaunchMaps": {
+    "description": "Translation for could_not_launch_maps"
+  },
+  "addAdditionalServices": "إضافة خدمات إضافية",
+  "@addAdditionalServices": {
+    "description": "Translation for add_additional_services"
+  },
+  "serviceDetails": "تفاصيل الخدمة",
+  "@serviceDetails": {
+    "description": "Translation for service_details"
+  },
+  "mainService": "الخدمة الأساسية",
+  "@mainService": {
+    "description": "Translation for main_service"
+  },
+  "totalDuration": "المدة الإجمالية:",
+  "@totalDuration": {
+    "description": "Translation for total_duration"
+  },
+  "totalPrice": "السعر الإجمالي:",
+  "@totalPrice": {
+    "description": "Translation for total_price"
+  },
+  "addMoreServices": "إضافة المزيد من الخدمات",
+  "@addMoreServices": {
+    "description": "Translation for add_more_services"
+  },
+  "noServiceSelected": "لم يتم تحديد أي خدمة",
+  "@noServiceSelected": {
+    "description": "Translation for no_service_selected"
+  },
+  "pleaseSelectAMainServiceToContinue": "يرجى تحديد خدمة أساسية للمتابعة",
+  "@pleaseSelectAMainServiceToContinue": {
+    "description": "Translation for please_select_a_main_service_to_continue"
+  },
+  "addNewItem": "إضافة عنصر جديد",
+  "@addNewItem": {
+    "description": "Translation for add_new_item"
+  },
+  "itemName": "اسم العنصر",
+  "@itemName": {
+    "description": "Translation for item_name"
+  },
+  "initialCount": "الرصيد الافتتاحي",
+  "@initialCount": {
+    "description": "Translation for initial_count"
+  },
+  "descriptionOptional": "الوصف (اختياري)",
+  "@descriptionOptional": {
+    "description": "Translation for description_optional"
+  },
+  "addedToFavorites": "تمت الإضافة للمفضلة",
+  "@addedToFavorites": {
+    "description": "Translation for added_to_favorites"
+  },
+  "shareDialogOpened": "تم فتح نافذة المشاركة",
+  "@shareDialogOpened": {
+    "description": "Translation for share_dialog_opened"
+  },
+  "packages": "الباقات",
+  "@packages": {
+    "description": "Translation for packages"
+  },
+  "packagesAndBundlesComingSoon": "الباقات والعروض قريباً!",
+  "@packagesAndBundlesComingSoon": {
+    "description": "Translation for packages_and_bundles_coming_soon"
+  },
+  "products": "المنتجات",
+  "@products": {
+    "description": "Translation for products"
+  },
+  "salonProductsCatalogComingSoon": "تشكيلة منتجات المتجر قريباً!",
+  "@salonProductsCatalogComingSoon": {
+    "description": "Translation for salon_products_catalog_coming_soon"
+  },
+  "offersGroups": "العروض والمجموعات",
+  "@offersGroups": {
+    "description": "Translation for offers_groups"
+  },
+  "exclusiveOffersComingSoon": "عروض حصرية قريباً!",
+  "@exclusiveOffersComingSoon": {
+    "description": "Translation for exclusive_offers_coming_soon"
+  },
+  "salonFeedback": "آراء المتجر",
+  "@salonFeedback": {
+    "description": "Translation for salon_feedback"
+  },
+  "key485": "4.8 / 5",
+  "@key485": {
+    "description": "Translation for 4_8_5"
+  },
+  "key120Reviews": "(120 تقييم)",
+  "@key120Reviews": {
+    "description": "Translation for 120_reviews"
+  },
+  "ahmedM": "أحمد م.",
+  "@ahmedM": {
+    "description": "Translation for ahmed_m"
+  },
+  "greatServiceCompletelyTransformedMyLookHighl": "خدمة ممتازة! غيّر مظهري تمامًا. أنصح به بشدة!",
+  "@greatServiceCompletelyTransformedMyLookHighl": {
+    "description": "Translation for great_service_completely_transformed_my_look_highl"
+  },
+  "feedbackEntryDialog": "نافذة إدخال التعليقات",
+  "@feedbackEntryDialog": {
+    "description": "Translation for feedback_entry_dialog"
+  },
+  "addYourFeedback": "أضف تعليقك",
+  "@addYourFeedback": {
+    "description": "Translation for add_your_feedback"
+  },
+  "aboutThisOffer": "حوال هذا العرض",
+  "@aboutThisOffer": {
+    "description": "Translation for about_this_offer"
+  },
+  "includedServices": "الخدمات المشمولة",
+  "@includedServices": {
+    "description": "Translation for included_services"
+  },
+  "bookThisOffer": "احجز هذا العرض",
+  "@bookThisOffer": {
+    "description": "Translation for book_this_offer"
+  },
+  "selectDateTime": "اختر التاريخ والوقت",
+  "@selectDateTime": {
+    "description": "Translation for select_date_time"
+  },
+  "availableSlots": "المواعيد المتاحة",
+  "@availableSlots": {
+    "description": "Translation for available_slots"
+  },
+  "bookingRequestSentSuccessfully": "تم إرسال طلب الحجز بنجاح!",
+  "@bookingRequestSentSuccessfully": {
+    "description": "Translation for booking_request_sent_successfully"
+  },
+  "scheduleType": "نوع الجدول",
+  "@scheduleType": {
+    "description": "Translation for schedule_type"
+  },
+  "pleaseSelectBothDateAndTime": "يرجى تحديد التاريخ والوقت",
+  "@pleaseSelectBothDateAndTime": {
+    "description": "Translation for please_select_both_date_and_time"
+  },
+  "confirmSchedule": "تأكيد الجدول",
+  "@confirmSchedule": {
+    "description": "Translation for confirm_schedule"
+  },
+  "selectedServices": "الخدمات المحددة",
+  "@selectedServices": {
+    "description": "Translation for selected_services"
+  },
+  "oneTimeOnly": "مرة واحدة فقط",
+  "@oneTimeOnly": {
+    "description": "Translation for one_time_only"
+  },
+  "scheduleThisAppointmentOnce": "جدولة هذا الموعد مرة واحدة",
+  "@scheduleThisAppointmentOnce": {
+    "description": "Translation for schedule_this_appointment_once"
+  },
+  "biWeekly": "كل أسبوعين",
+  "@biWeekly": {
+    "description": "Translation for bi_weekly"
+  },
+  "repeatEvery2Weeks": "تكرار كل أسبوعين",
+  "@repeatEvery2Weeks": {
+    "description": "Translation for repeat_every_2_weeks"
+  },
+  "repeatEveryMonth": "كرر كل شهر",
+  "@repeatEveryMonth": {
+    "description": "Translation for repeat_every_month"
+  },
+  "bookAHaircut": "احجز حلاقة",
+  "@bookAHaircut": {
+    "description": "Translation for book_a_haircut"
+  },
+  "ownerDashboard": "لوحة المالك",
+  "@ownerDashboard": {
+    "description": "Translation for owner_dashboard"
+  },
+  "newAction": "إجراء جديد",
+  "@newAction": {
+    "description": "Translation for new_action"
+  },
+  "noReviewsFound": "لا توجد تقييمات.",
+  "@noReviewsFound": {
+    "description": "Translation for no_reviews_found"
+  },
+  "feedbackReviews": "مراجعات التعليقات",
+  "@feedbackReviews": {
+    "description": "Translation for feedback_reviews"
+  },
+  "youDoNotHavePermissionToAddBranches": "ليس لديك إذن لإضافة فروع",
+  "@youDoNotHavePermissionToAddBranches": {
+    "description": "Translation for you_do_not_have_permission_to_add_branches"
+  },
+  "addNewBranchFunctionalityComingSoon": "إضافة ميزة فروع جديدة - قريباً",
+  "@addNewBranchFunctionalityComingSoon": {
+    "description": "Translation for add_new_branch_functionality_coming_soon"
+  },
+  "youDoNotHavePermissionToAssignManagers": "ليس لديك إذن لتعيين المديرين",
+  "@youDoNotHavePermissionToAssignManagers": {
+    "description": "Translation for you_do_not_have_permission_to_assign_managers"
+  },
+  "assign": "تعيين",
+  "@assign": {
+    "description": "Translation for assign"
+  },
+  "branches": "الفروع",
+  "@branches": {
+    "description": "Translation for branches"
+  },
+  "failedToLoadBranches": "فشل في تحميل الفروع",
+  "@failedToLoadBranches": {
+    "description": "Translation for failed_to_load_branches"
+  },
+  "noBranchesFound": "لم يتم العثور على فروع",
+  "@noBranchesFound": {
+    "description": "Translation for no_branches_found"
+  },
+  "loadingBranches": "جاري تحميل الفروع...",
+  "@loadingBranches": {
+    "description": "Translation for loading_branches"
+  },
+  "discoverSalons": "اكتشف المتاجر",
+  "@discoverSalons": {
+    "description": "Translation for discover_salons"
+  },
+  "noSalonsFoundNearby": "لم يتم العثور على متاجر قريبة",
+  "@noSalonsFoundNearby": {
+    "description": "Translation for no_salons_found_nearby"
+  },
+  "searchByNameOrLocation": "البحث بالاسم أو الموقع...",
+  "@searchByNameOrLocation": {
+    "description": "Translation for search_by_name_or_location"
+  },
+  "passwordChangedSuccessfully": "تم تغيير كلمة المرور بنجاح",
+  "@passwordChangedSuccessfully": {
+    "description": "Translation for password_changed_successfully"
+  },
+  "currentPassword": "كلمة المرور الحالية",
+  "@currentPassword": {
+    "description": "Translation for current_password"
+  },
+  "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+  "@confirmNewPassword": {
+    "description": "Translation for confirm_new_password"
+  },
+  "checkYourSpamOrJunkFolderIfYouDonTSeeTh": "تحقق من مجلد الرسائل غير المرغوب فيها إذا لم ترَ البريد الإلكتروني.",
+  "@checkYourSpamOrJunkFolderIfYouDonTSeeTh": {
+    "description": "Translation for check_your_spam_or_junk_folder_if_you_don_t_see_th"
+  },
+  "enterYourEmailAddressAndWeLlSendYouAOne": "أدخل عنوان بريدك الإلكتروني وسنرسل لك رمز OTP لإعادة تعيين كلمة المرور.",
+  "@enterYourEmailAddressAndWeLlSendYouAOne": {
+    "description": "Translation for enter_your_email_address_and_we_ll_send_you_a_one_"
+  },
+  "sendOtp": "إرسال الرمز",
+  "@sendOtp": {
+    "description": "Translation for send_otp"
+  },
+  "professionalGroomingServices": "خدمات العناية الشخصية الاحترافية",
+  "@professionalGroomingServices": {
+    "description": "Translation for professional_grooming_services"
+  },
+  "rememberMe": "تذكرني",
+  "@rememberMe": {
+    "description": "Translation for remember_me"
+  },
+  "or": "أو",
+  "@or": {
+    "description": "Translation for or"
+  },
+  "donTHaveAnAccount": "ليس لديك حساب؟",
+  "@donTHaveAnAccount": {
+    "description": "Translation for don_t_have_an_account"
+  },
+  "quickAccessFastLogin": "دخول سريع",
+  "@quickAccessFastLogin": {
+    "description": "Translation for quick_access_fast_login"
+  },
+  "fastLoginAs": "دخول سريع كـ",
+  "@fastLoginAs": {
+    "description": "Translation for fast_login_as"
+  },
+  "mockOwnerVariantsLocalState": "خيارات تجريبية للمالك",
+  "@mockOwnerVariantsLocalState": {
+    "description": "Translation for mock_owner_variants_local_state"
+  },
+  "noPermissionMessage": "ليس لديك صلاحية لعرض هذه الصفحة.",
+  "@noPermissionMessage": {
+    "description": "Manually added: noPermissionMessage"
+  },
+  "backToHome": "العودة للرئيسية",
+  "@backToHome": {
+    "description": "Manually added: backToHome"
+  },
+  "noDataAvailable": "لا توجد بيانات متاحة",
+  "@noDataAvailable": {
+    "description": "Manually added: noDataAvailable"
+  },
+  "reorderItem": "إعادة طلب {name}",
+  "@reorderItem": {
+    "description": "Manually added: reorderItem"
+  },
+  "currentStock": "المخزون الحالي: {qty}",
+  "@currentStock": {
+    "description": "Manually added: currentStock"
+  },
+  "removePermanently": "حذف نهائياً",
+  "@removePermanently": {
+    "description": "Manually added: removePermanently"
+  },
+  "addStock": "إضافة مخزون",
+  "@addStock": {
+    "description": "Manually added: addStock"
+  },
+  "allStockNominal": "جميع مستويات المخزون طبيعية.",
+  "@allStockNominal": {
+    "description": "Manually added: allStockNominal"
+  },
+  "itemsCount": "{count} عناصر",
+  "@itemsCount": {
+    "description": "Manually added: itemsCount"
+  },
+  "unitsInStock": "{qty} وحدة في المخزون",
+  "@unitsInStock": {
+    "description": "Manually added: unitsInStock"
+  },
+  "switchedTo": "تم التبديل إلى {label}",
+  "@switchedTo": {
+    "description": "Manually added: switchedTo"
+  },
+  "noAppointmentsScheduled": "لا توجد مواعيد مجدولة لليوم.",
+  "@noAppointmentsScheduled": {
+    "description": "Manually added: noAppointmentsScheduled"
+  },
+  "noSalesToday": "لا توجد مبيعات اليوم",
+  "@noSalesToday": {
+    "description": "Manually added: noSalesToday"
+  },
+  "failedToUpdateProfile": "فشل تحديث الملف الشخصي: {error}",
+  "@failedToUpdateProfile": {
+    "description": "Manually added: failedToUpdateProfile"
+  },
+  "failedToDeleteProfile": "فشل حذف الملف الشخصي: {error}",
+  "@failedToDeleteProfile": {
+    "description": "Manually added: failedToDeleteProfile"
+  },
+  "navigationError": "خطأ في التنقل: {error}",
+  "@navigationError": {
+    "description": "Manually added: navigationError"
+  },
+  "reportGenerationFailed": "فشل إنشاء التقرير: {error}",
+  "@reportGenerationFailed": {
+    "description": "Manually added: reportGenerationFailed"
+  },
+  "subscriptionSuccess": "تم الاشتراك بنجاح في {name}!",
+  "@subscriptionSuccess": {
+    "description": "Manually added: subscriptionSuccess"
+  },
+  "itemRestocked": "تمت إعادة تعبئة {count} وحدات",
+  "@itemRestocked": {
+    "description": "Manually added: itemRestocked"
+  },
+  "selectedItem": "تم اختيار: {name}",
+  "@selectedItem": {
+    "description": "Manually added: selectedItem"
+  },
+  "staffCreatedSuccessfully": "تم إنشاء الموظف بنجاح!",
+  "createStaff": "إنشاء موظف",
+  "salon": "المحل",
+  "firstName": "الاسم الأول",
+  "lastName": "اسم العائلة",
+  "username": "اسم المستخدم",
+  "temporaryPassword": "كلمة المرور المؤقتة",
+  "createStaffMember": "إنشاء عضو موظف",
+  "createStaffMembers": "إنشاء أعضاء موظفين",
+  "management": "الإدارة",
+  "shareApp": "مشاركة التطبيق",
+  "shareSalonLink": "مشاركة رابط المحل",
+  "appRules": "قواعد التطبيق",
+  "faqs": "الأسئلة الشائعة",
+  "userGuides": "أدلة المستخدم",
+  "noActiveCampaigns": "لا توجد حملات نشطة",
+  "managementDashboard": "لوحة تحكم الإدارة",
+  "editSalon": "تعديل المحل",
+  "bookForCustomer": "حجز للزبون",
+  "searchAppointments": "البحث عن المواعيد",
+  "performanceAnalytics": "تحليلات الأداء",
+  "bookingsSummary": "ملخص الحجوزات",
+  "thisWeek": "هذا الأسبوع",
+  "thisMonth": "هذا الشهر",
+  "viewHistory": "عرض السجل",
+  "todaySchedule": "جدول اليوم",
+  "specialization": "التخصص",
+  "bio": "السيرة الذاتية",
+  "markAllRead": "تحديد الكل كمقروء",
+  "noItemsFound": "لم يتم العثور على عناصر",
+  "thereAreNoItemsToDisplayAtTheMoment": "لا توجد عناصر لعرضها في الوقت الحالي.",
+  "yourFavoriteItemsWillAppearHere": "ستظهر عناصرك المفضلة هنا.",
+  "noResultsFound": "لم يتم العثور على نتائج",
+  "tryAdjustingYourSearchTerms": "حاول تعديل مصطلحات البحث.",
+  "somethingWentWrong": "حدث خطأ ما",
+  "pleaseTryAgainLater": "رجاءا حاول مرة أخرى لاحقا.",
+  "noInternetConnection": "لا يوجد اتصال بالإنترنت",
+  "pleaseCheckYourConnectionAndTryAgain": "يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+  "pleaseWaitWhileWeLoadYourContent": "يرجى الانتظار بينما نقوم بتحميل المحتوى الخاص بك.",
+  "noPreferences": "لا يوجد تفضيل",
+  "selectProfessionalPerService": "اختر محترفا لكل خدمة",
+  "individualSelection": "اختيار فردي",
+  "availableDates": "التواريخ المتاحة",
+  "availableHours": "الأوقات المتاحة",
+  "selectForService": "اختر الطاقم لـ {service}",
+  "searchSalon": "ابحث عن صالون...",
+  "yourLastVisit": "آخر زيارة لك",
+  "showOnMap": "عرض على الخريطة",
+
+  "dataManagement": "إدارة البيانات",
+  "@dataManagement": { "description": "Data export and import section title" },
+  "exportData": "تصدير البيانات",
+  "@exportData": { "description": "Export data action" },
+  "importData": "استيراد البيانات",
+  "@importData": { "description": "Import data action" },
+  "exportFormat": "صيغة التصدير",
+  "@exportFormat": { "description": "Format selector label" },
+  "exportDataset": "مجموعة البيانات",
+  "@exportDataset": { "description": "Dataset selector label" },
+  "dateRange": "الفترة الزمنية (اختياري)",
+  "@dateRange": { "description": "Date range filter label" },
+  "allTime": "كل الأوقات (بدون تصفية)",
+  "@allTime": { "description": "No date filter applied" },
+  "conflictMode": "وضع التعارض",
+  "@conflictMode": { "description": "How to handle import conflicts" },
+  "skipExisting": "تخطي السجلات الموجودة",
+  "@skipExisting": { "description": "Import skips existing records" },
+  "skipExistingDesc": "بيانات جديدة فقط — تبقى السجلات الموجودة دون تغيير",
+  "@skipExistingDesc": { "description": "Skip mode description" },
+  "overwriteExisting": "الكتابة فوق السجلات الموجودة",
+  "@overwriteExisting": { "description": "Import overwrites existing records" },
+  "overwriteExistingDesc": "يُحدّث حقول السجلات الموجودة بالقيم المستوردة",
+  "@overwriteExistingDesc": { "description": "Overwrite mode description" },
+  "selectJsonFile": "اضغط لاختيار ملف تصدير نعيمًا",
+  "@selectJsonFile": { "description": "File picker prompt" },
+  "jsonOnlySupported": "يُدعم فقط ملفات .json المُصدَّرة من نعيمًا",
+  "@jsonOnlySupported": { "description": "File type restriction note" },
+  "importWarning": "استورد فقط الملفات التي سبق تصديرها من نعيمًا. استيراد ملفات من مصادر أخرى قد يسبب أخطاء.",
+  "@importWarning": { "description": "Import safety warning" },
+  "importResult": "نتيجة الاستيراد",
+  "@importResult": { "description": "Import result section header" },
+  "exportReady": "التصدير جاهز",
+  "@exportReady": { "description": "Export success message" },
+  "exporting": "جاري التصدير…",
+  "@exporting": { "description": "Export in progress" },
+  "importing": "جاري الاستيراد…",
+  "@importing": { "description": "Import in progress" },
+
+  "cofounder": "المؤسس المشارك",
+  "@cofounder": { "description": "Co-founder role name" },
+  "cofounderRole": "المؤسس المشارك — صلاحيات المالك الكاملة وإدارة البيانات",
+  "@cofounderRole": { "description": "Co-founder role description" },
+
+  "appRulesTitle": "قواعد وسياسات التطبيق",
+  "@appRulesTitle": { "description": "App rules popup title" },
+  "userGuideTitle": "دليل المستخدم",
+  "@userGuideTitle": { "description": "User guide popup title" },
+  "rulesForYourRole": "قواعد خاصة بدورك",
+  "@rulesForYourRole": { "description": "Role-specific rules subtitle" },
+
+  "rulesCustomer": "١. احجز المواعيد خلال ساعات عمل المحل فقط.\n٢. ألغِ الحجز قبل ساعتين على الأقل لتجنب تسجيل غيابك.\n٣. احترم المصففين والموظفين — يُؤدي التحرش إلى تعليق الحساب.\n٤. يجب أن تكون التقييمات صادقة ومبنية على تجربتك الشخصية.\n٥. لا تشارك بيانات حسابك مع الآخرين.\n٦. نقاط الولاء غير قابلة للتحويل وتنتهي صلاحيتها بعد ١٢ شهراً من الخمول.",
+  "@rulesCustomer": { "description": "Rules for customers" },
+
+  "rulesEmployee": "١. احضر قبل ١٥ دقيقة على الأقل من موعدك الأول.\n٢. ضع نفسك كغير متاح في التطبيق إذا لم تتمكن من الخدمة ذلك اليوم.\n٣. يجب إجراء جميع تحديثات المواعيد عبر التطبيق — لا عبر المكالمات الهاتفية.\n٤. حدّث أدواتك ومخزونك بعد كل خدمة.\n٥. تُحسب الأرباح والعمولات تلقائياً؛ تُحسم النزاعات عبر صاحب العمل.\n٦. لا تقبل الدفع النقدي خارج نظام الدفع في التطبيق.",
+  "@rulesEmployee": { "description": "Rules for employees/barbers" },
+
+  "rulesOwner": "١. حافظ على تحديث ملف محلك والخدمات والأسعار.\n٢. ردّ على النزاعات خلال ٤٨ ساعة أو سيُغلق النظام النزاع لصالح العميل.\n٣. عمليات التصدير للاستخدام التجاري فقط — لا تشارك الملفات المُصدَّرة.\n٤. حسابات الموظفين التي تنشئها تقع على مسؤوليتك.\n٥. يتجدد الاشتراك تلقائياً؛ ألغِه قبل ٧ أيام على الأقل من التجديد لتجنب الرسوم.\n٦. يجب أن تلتزم الحملات التسويقية باللوائح الأردنية للإعلان.",
+  "@rulesOwner": { "description": "Rules for salon owners" },
+
+  "rulesReceptionist": "١. يمكنك إنشاء المواعيد أو إعادة جدولتها أو إلغاؤها نيابةً عن العملاء.\n٢. لا تصل إلى التقارير المالية — هذه وظيفة خاصة بالمالك.\n٣. تُسجَّل عمليات التصدير التي تُجريها وتظهر للمالك.\n٤. لا تعدّل عمولات الموظفين أو إعدادات الرواتب.\n٥. بلّغ المالك فوراً عن أي مشكلة في النظام.\n٦. يجب أن تظل بيانات العملاء سرية تماماً.",
+  "@rulesReceptionist": { "description": "Rules for receptionists" },
+
+  "rulesIntern": "١. احضر جميع المناوبات وجلسات التدريب المقررة.\n٢. أنهِ مهامك اليومية قبل نهاية دوامك.\n٣. يمكنك مراقبة الموظفين ذوي الخبرة لكن يُمنع تقديم الخدمات بمفردك.\n٤. أبلغ مشرفك عن تقدمك وأي صعوبات.\n٥. لا تصل إلى البيانات المالية أو سجلات الدفع للعملاء.\n٦. تعامل مع جميع معلومات العملاء بسرية تامة.",
+  "@rulesIntern": { "description": "Rules for interns" },
+
+  "rulesCofounder": "١. للمؤسس المشارك صلاحيات مطابقة للمالك الأساسي.\n٢. تُطبَّق جميع قواعد المالك — التصدير للاستخدام التجاري فقط.\n٣. تُعالَج النزاعات بين المؤسسين خارج التطبيق.\n٤. يمكن للمالك الأساسي إلغاء حسابات المؤسس المشارك في أي وقت.\n٥. يجب التنسيق مع المالك قبل إجراء تغييرات في الاشتراك أو الفواتير.\n٦. يتحمل المؤسس المشارك المسؤولية المتساوية عن الامتثال وسلوك الموظفين.",
+  "@rulesCofounder": { "description": "Rules for co-founders" },
+
+  "guideCustomer": "البدء:\n• ابحث عن المحلات حسب الفئة أو الموقع من الشاشة الرئيسية.\n• اضغط على محل لعرض الخدمات والموظفين والمواعيد المتاحة.\n• اختر خدمة، وحدد موظفاً (اختياري)، ثم اختر التاريخ والوقت.\n• ادفع نقداً في الصالون أو عبر نظام الدفع في التطبيق.\n• اكسب نقاط ولاء مع كل موعد مكتمل — استبدلها بخدمات مجانية.\n• قيّم تجربتك بعد كل زيارة لمساعدة الآخرين.",
+  "@guideCustomer": { "description": "User guide for customers" },
+
+  "guideEmployee": "البدء:\n• تعرض لوحة التحكم مواعيد اليوم وجدولك اليومي.\n• اضغط على موعد لرؤية تفاصيل العميل ومتطلبات الخدمة.\n• ضع الموعد قيد التنفيذ أو مكتملاً عند الانتهاء.\n• حدّث أدواتك ومخزونك بعد كل خدمة.\n• راجع أرباحك وتفاصيل العمولة في قسم الإحصائيات.\n• تواصل مع مالك المحل لتغييرات الراتب أو الجدول.",
+  "@guideEmployee": { "description": "User guide for employees" },
+
+  "guideOwner": "البدء:\n• أعدّ ملف محلك: الاسم والصور والموقع وساعات العمل.\n• أضف خدماتك مع الأسعار والمدد الزمنية.\n• ادعُ الموظفين بإنشاء حسابات من قسم الموظفين.\n• فعّل خطة اشتراكك لفتح جميع الميزات.\n• راقب الإيرادات والمواعيد وأداء الموظفين من لوحة التحكم.\n• أنشئ عروضاً وحملات من قسم التسويق.\n• صدّر بياناتك من صفحة إدارة البيانات في أي وقت.",
+  "@guideOwner": { "description": "User guide for owners" },
+
+  "guideReceptionist": "البدء:\n• استخدم مكتب الاستقبال لعرض وإدارة جميع مواعيد اليوم.\n• أنشئ مواعيد للزبائن الحاضرين مباشرة من التقويم.\n• ابحث عن العملاء بالاسم أو الهاتف لعرض سجل حجوزاتهم.\n• معالجة المدفوعات وتأشير المواعيد كمكتملة.\n• استخدم صفحة إدارة البيانات لتصدير تقارير المواعيد أو العملاء.\n• صعّد أي مشكلات إلى مالك المحل.",
+  "@guideReceptionist": { "description": "User guide for receptionists" },
+
+  "guideIntern": "البدء:\n• راجع قسم المهام اليومية كل صباح قبل دوامك.\n• راقب مشرفك ودوّن ملاحظاتك في قسم النشاط.\n• ضع علامة مكتمل على المهام عند الانتهاء — يتابع مالكك تقدمك.\n• اسأل مشرفك قبل محاولة تقديم أي خدمة للعملاء بمفردك.\n• يُحدد مالك المحل جدولك — راجعه في الليلة السابقة.\n• أكمل أهداف التدريب الشهرية لفتح مسؤوليات أعلى.",
+  "@guideIntern": { "description": "User guide for interns" },
+
+  "guideCofounder": "البدء:\n• لديك صلاحية الوصول لكل ما يستطيع المالك فعله — استخدمها بمسؤولية.\n• تُظهر لوحة التحكم الإيرادات والمواعيد ونشاط الموظفين في الوقت الفعلي.\n• استخدم صفحة إدارة البيانات لتصدير أو استعادة بيانات المحل.\n• نسّق مع المالك الأساسي قبل إجراء تغييرات في الاشتراك أو الفوترة.\n• إدارة الموظفين: يمكنك إنشاء حسابات الموظفين وتعديلها أو تعطيلها.\n• التسويق: إطلاق الحملات والعروض من قسم التسويق.",
+  "@guideCofounder": { "description": "User guide for co-founders" },
+
+  "platformMonitoring": "مراقبة المنصة",
+  "@platformMonitoring": { "description": "Admin monitoring section title" },
+  "realtimeMetrics": "مقاييس فورية",
+  "@realtimeMetrics": { "description": "Real-time metrics section" },
+  "activeUsers": "المستخدمون النشطون",
+  "@activeUsers": { "description": "Currently active users count" },
+  "conversionRate": "معدل التحويل",
+  "@conversionRate": { "description": "Booking conversion rate" },
+  "churnRate": "معدل الاستنزاف",
+  "@churnRate": { "description": "User churn rate" },
+  "avgSessionTime": "متوسط الجلسة",
+  "@avgSessionTime": { "description": "Average session duration" },
+  "retentionRate": "معدل الاحتفاظ",
+  "@retentionRate": { "description": "User retention rate" },
+  "topFeatures": "أكثر الميزات استخداماً",
+  "@topFeatures": { "description": "Most used features" },
+  "revenueByTier": "الإيرادات حسب الخطة",
+  "@revenueByTier": { "description": "Revenue breakdown by subscription tier" },
+  "userRequests": "طلبات المستخدمين",
+  "@userRequests": { "description": "User service requests page title" },
+  "filterByAge": "تصفية حسب العمر",
+  "@filterByAge": { "description": "Request age filter label" },
+  "filterByRole": "تصفية حسب الدور",
+  "@filterByRole": { "description": "User role filter label" },
+  "filterBySubscription": "تصفية حسب الخطة",
+  "@filterBySubscription": { "description": "Subscription tier filter label" },
+  "allRequests": "كل الطلبات",
+  "@allRequests": { "description": "Show all requests" },
+  "todayRequests": "اليوم",
+  "@todayRequests": { "description": "Requests from today" },
+  "requestType": "نوع الطلب",
+  "@requestType": { "description": "Type of service request" },
+  "requestStatus": "حالة الطلب",
+  "@requestStatus": { "description": "Status of a service request" },
+  "noRequests": "لا توجد طلبات",
+  "@noRequests": { "description": "Empty state for requests list" },
+  "markResolved": "تمييز كمحلول",
+  "@markResolved": { "description": "Mark request as resolved" },
+  "viewDetails": "عرض التفاصيل",
+  "@viewDetails": { "description": "View request details" },
+  "requestDetailTitle": "تفاصيل الطلب",
+  "@requestDetailTitle": { "description": "Request detail page title" },
+  "submittedBy": "مُقدَّم من",
+  "@submittedBy": { "description": "Who submitted the request" },
+  "submittedAt": "مُقدَّم في",
+  "@submittedAt": { "description": "When the request was submitted" },
+  "requestResolved": "تم تمييز الطلب كمحلول",
+  "@requestResolved": { "description": "Request resolved snackbar" },
+
+  "helpUsImprove": "ساعدنا في التحسين",
+  "@helpUsImprove": { "description": "Feedback section title" },
+  "loginWithBiometrics": "تسجيل الدخول ببصمة الوجه أو الإصبع",
+  "@loginWithBiometrics": { "description": "Biometric login label" },
+  "noTargets": "لا توجد أهداف محددة لهذا الشهر",
+  "@noTargets": { "description": "Empty targets message" },
+  "requestNewService": "اطلب خدمة جديدة",
+  "@requestNewService": { "description": "Request new service label" },
+  "searchServicesSalons": "ابحث في الخدمات والمحلات",
+  "@searchServicesSalons": { "description": "Search bar hint for customers" },
+  "submitSuggestion": "إرسال الاقتراح",
+  "@submitSuggestion": { "description": "Submit suggestion button" }
 }

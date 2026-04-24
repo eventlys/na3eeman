@@ -133,7 +133,7 @@ class PermissionHelper {
   String getPermissionDescription(Permission permission) {
     switch (permission) {
       case Permission.location:
-        return 'Location access is needed to find nearby barber shops and provide accurate service recommendations.';
+        return 'Location access is needed to find nearby barber salons and provide accurate service recommendations.';
       case Permission.camera:
         return 'Camera access is needed to take photos for reviews and profile pictures.';
       case Permission.storage:

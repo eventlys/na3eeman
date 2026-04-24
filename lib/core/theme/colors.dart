@@ -15,6 +15,7 @@ class AppColors {
   static const Color blue700 = Color(0xFF0E366F);
   static const Color blue800 = Color(0xFF09244D);
   static const Color blue900 = Color(0xFF051226);
+  static const Color blueBastil = Color(0xFF2B66BA); // ~10% lighter version of 0xFF144EA0
 
   // Secondary Pink
   static const Color pink = Color(0xFFD097AE);
@@ -28,6 +29,7 @@ class AppColors {
   static const Color pink700 = Color(0xFF8E6777);
   static const Color pink800 = Color(0xFF5E4550);
   static const Color pink900 = Color(0xFF2F2228);
+  static const Color pinkBastil = Color(0xFFD9A9BD); // ~10% lighter version of 0xFFD097AE
 
   // Cream (Background / Light Mode Surface)
   static const Color cream = Color(0xFFfbfaf5);
@@ -77,4 +79,8 @@ class AppColors {
   // Transparent
   static const Color transparent = Colors.transparent;
   static const Color white = Colors.white;
+
+  // Aliases
+  static const Color primary = blue;
+  static const Color creamyBackground = cream;
 }

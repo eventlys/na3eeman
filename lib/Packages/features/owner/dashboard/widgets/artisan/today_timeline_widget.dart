@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -56,7 +57,7 @@ class TodayTimelineWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Center(
-                child: Text('No appointments scheduled for today.',
+                child: Text(AppLocalizations.of(context)!.noAppointmentsScheduled,
                     style: TextStyle(color: theme.hintColor, fontSize: 12))),
           ),
         ...todayAppointments.map((appt) {
@@ -150,7 +151,7 @@ class _SlotTile extends StatelessWidget {
                 color: theme.primaryColor,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text('now'.tr(),
+              child: Text(AppLocalizations.of(context)!.now,
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 11,

@@ -61,7 +61,7 @@ translations = {
     "Receptionist Desk": "مكتب الاستقبال",
     "Staff Actions": "إجراءات الموظفين",
     "Pending Payments": "مدفوعات قيد الانتظار",
-    "Shop Management": "إدارة المتجر",
+    "Salon Management": "إدارة المتجر",
     "Support": "الدعم",
     "Active": "نشط",
     "Inactive": "غير نشط",

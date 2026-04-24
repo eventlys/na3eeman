@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,7 @@ import '../../Core/constants/app_color.dart';
 import '../../Core/constants/app_images.dart';
 import '../../Core/themes/app_scaffold.dart';
 import 'report_download_dialog.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
@@ -24,7 +25,7 @@ class _ReportsPageState extends State<ReportsPage> {
   @override
   Widget build(BuildContext context) {
     return GlassPage(
-      title: 'reports'.tr(),
+      title: AppLocalizations.of(context)!.reports,
       showBackButton: true,
       user: Provider.of<AuthProvider>(context, listen: false).user,
       glassExpandedHeight: 180,
@@ -102,7 +103,7 @@ class _ReportsPageState extends State<ReportsPage> {
         (context, index) {
           final reports = [
             _ReportItem(
-              title: 'staff_performance_report'.tr(),
+              title: AppLocalizations.of(context)!.staffPerformanceReport,
               description: 'Detailed analysis of barber performance',
               icon: AppImages.file_star,
               color: AppColor.lightInfo,
@@ -224,18 +225,18 @@ class _ReportsPageState extends State<ReportsPage> {
       if (updatedRequest != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('generating_report'.tr()),
+            content: Text(AppLocalizations.of(context)!.generatingReport),
             backgroundColor: AppColor.primary,
           ),
         );
 
-        // Get shop ID from auth provider or context
+        // Get salon ID from auth provider or context
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final shopId = authProvider.user?.shopId;
-        if (shopId == null) {
+        final salonId = authProvider.user?.salonId;
+        if (salonId == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Shop associated with operations not found.'),
+              content: Text('Salon associated with operations not found.'),
               backgroundColor: AppColor.lightError,
             ),
           );
@@ -245,12 +246,12 @@ class _ReportsPageState extends State<ReportsPage> {
         // Use BusinessService to generate the report
         await _businessService.generateStaffReport(
           updatedRequest,
-          shopId: shopId,
+          salonId: salonId,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('report_success'.tr()),
+            content: Text(AppLocalizations.of(context)!.reportSuccess),
             backgroundColor: AppColor.lightSuccess,
           ),
         );

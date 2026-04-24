@@ -5,7 +5,7 @@ class ProfitData {
   final double expenses;
   final double tips;
   final int appointments;
-  final int shopId;
+  final int salonId;
 
   ProfitData({
     required this.date,
@@ -14,7 +14,7 @@ class ProfitData {
     required this.expenses,
     this.tips = 0.0,
     this.appointments = 0,
-    required this.shopId,
+    required this.salonId,
   });
 
   factory ProfitData.fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class ProfitData {
       expenses: (json['expenses'] is double ? json['expenses'] : double.tryParse(json['expenses']?.toString() ?? '0.0')) ?? 0.0,
       tips: (json['tips'] as num?)?.toDouble() ?? 0.0,
       appointments: json['appointments'] as int? ?? 0,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
     );
   }
 
@@ -37,7 +37,7 @@ class ProfitData {
       'expenses': expenses,
       'tips': tips,
       'appointments': appointments,
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 

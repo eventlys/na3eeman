@@ -55,7 +55,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   Widget build(BuildContext context) {
     final appStateProvider = Provider.of<AppStateProvider>(context);
 
-    final navItems = NavigationConfig.getNavItems(appStateProvider, widget.currentRoute);
+    final navItems = NavigationConfig.getNavItems(appStateProvider, widget.currentRoute, context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),

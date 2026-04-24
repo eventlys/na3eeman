@@ -102,12 +102,12 @@ abstract class AuthRepositoryInterface {
   Future<bool> isLoggedIn();
 }
 
-abstract class ShopRepositoryInterface {
-  Future<List<dynamic>> getShops({int page, int limit});
-  Future<Map<String, dynamic>> getShopDetails(String shopId);
-  Future<List<dynamic>> searchShops(String query);
-  Future<List<dynamic>> getFavoriteShops();
-  Future<bool> toggleFavorite(String shopId);
+abstract class SalonRepositoryInterface {
+  Future<List<dynamic>> getSalons({int page, int limit});
+  Future<Map<String, dynamic>> getSalonDetails(String salonId);
+  Future<List<dynamic>> searchSalons(String query);
+  Future<List<dynamic>> getFavoriteSalons();
+  Future<bool> toggleFavorite(String salonId);
 }
 
 abstract class AppointmentRepositoryInterface {

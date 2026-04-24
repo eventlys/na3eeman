@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +6,7 @@ import '../../../../../../Providers/features/inventory_provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
 
 /// Global stock value across all branches (Empire tier).
-/// Uses real inventory data from InventoryProvider for the current shop
+/// Uses real inventory data from InventoryProvider for the current salon
 /// until a multi-branch aggregation endpoint is implemented.
 class GlobalStockValueWidget extends StatelessWidget {
   const GlobalStockValueWidget({super.key});
@@ -16,9 +17,9 @@ class GlobalStockValueWidget extends StatelessWidget {
     final inventory = context.watch<InventoryProvider>();
     final owner = context.watch<OwnerProvider>();
 
-    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeShopId != null) {
+    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        inventory.loadInventory(owner.activeShopId!);
+        inventory.loadInventory(owner.activeSalonId!);
       });
     }
 
@@ -52,7 +53,7 @@ class GlobalStockValueWidget extends StatelessWidget {
             children: [
               Icon(Icons.inventory_rounded, size: 18, color: theme.primaryColor),
               const SizedBox(width: 8),
-              Text('global_stock_value'.tr(),
+              Text(AppLocalizations.of(context)!.globalStockValue,
                   style: theme.textTheme.labelMedium
                       ?.copyWith(color: theme.hintColor)),
               const Spacer(),

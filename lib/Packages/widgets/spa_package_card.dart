@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Models/shop_extensions.dart';
+import '../../Models/salon_extensions.dart';
 import '../../Services/translation_service.dart';
 
 /// Spa Package Card for Men's Spas and Turkish Baths

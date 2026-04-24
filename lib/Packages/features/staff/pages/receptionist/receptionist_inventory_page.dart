@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
@@ -26,7 +27,7 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage> w
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('inventory_management'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.inventoryManagement, style: TextStyle(fontWeight: FontWeight.bold)),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -48,7 +49,7 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage> w
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddInventoryItemModal(context),
         icon: const Icon(Icons.add),
-        label: Text('add_item'.tr()),
+        label: Text(AppLocalizations.of(context)!.addItem),
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
@@ -118,10 +119,10 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage> w
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton.icon(icon: Icon(Icons.edit, size: 16), label: Text('edit'.tr()), onPressed: () {}),
+              TextButton.icon(icon: Icon(Icons.edit, size: 16), label: Text(AppLocalizations.of(context)!.edit), onPressed: () {}),
               TextButton.icon(
                 icon: const Icon(Icons.delete, size: 16, color: AppColors.error), 
-                label: Text('delete'.tr(), style: TextStyle(color: AppColors.error)), 
+                label: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: AppColors.error)), 
                 onPressed: () {},
               ),
             ],

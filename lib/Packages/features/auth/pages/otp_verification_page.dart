@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -128,7 +129,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return AuthScaffold(
-      title: 'verify_otp'.tr(),
+      title: AppLocalizations.of(context)!.verifyOtp,
       subtitle: 'We sent a 6-digit OTP to your registered email',
       showBackButton: true,
       child: Column(
@@ -197,7 +198,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
           // Verify Button
           PrimaryButton(
-            text: 'verify_otp'.tr(),
+            text: AppLocalizations.of(context)!.verifyOtp,
             onPressed: _verifyOtp,
             isLoading: _isLoading,
           ),

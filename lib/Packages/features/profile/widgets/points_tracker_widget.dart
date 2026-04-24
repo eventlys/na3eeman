@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -107,7 +108,7 @@ class PointsTrackerWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('quick_actions'.tr(),
+        Text(AppLocalizations.of(context)!.quickActions,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.grey.shade800,
@@ -224,7 +225,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ],
       ),
@@ -237,7 +238,7 @@ class PointsTrackerWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('app_feedback'.tr()),
+        title: Text(AppLocalizations.of(context)!.appFeedback),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -256,7 +257,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -277,7 +278,7 @@ class PointsTrackerWidget extends StatelessWidget {
                 }
               }
             },
-            child: Text('submit'.tr()),
+            child: Text(AppLocalizations.of(context)!.submit),
           ),
         ],
       ),
@@ -308,7 +309,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () async {

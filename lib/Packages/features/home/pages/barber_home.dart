@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -12,10 +13,10 @@ import '../../../Core/widgets/common/pending_confirmations.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../../appointments/widgets/appointments_list.dart';
-import '../../shop/widgets/branches_overview.dart';
+import '../../salon/widgets/branches_overview.dart';
 import '../widgets/status_row.dart';
 import '../widgets/working_hours_tracker.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class BarberHomePage extends StatefulWidget {
   const BarberHomePage({super.key});
@@ -30,7 +31,7 @@ class _BarberHomePageState extends State<BarberHomePage>
   final ScrollController _scrollController = ScrollController();
 
   late AuthProvider _authProvider;
-  late ShopProvider _shopProvider;
+  late SalonProvider _salonProvider;
   late AppointmentProvider _appointmentProvider;
   final ApiService _apiService = ApiService();
 
@@ -62,7 +63,7 @@ class _BarberHomePageState extends State<BarberHomePage>
     if (!_initialized) {
       _initialized = true;
       _authProvider = Provider.of<AuthProvider>(context, listen: false);
-      _shopProvider = Provider.of<ShopProvider>(context, listen: false);
+      _salonProvider = Provider.of<SalonProvider>(context, listen: false);
       _appointmentProvider =
           Provider.of<AppointmentProvider>(context, listen: false);
       _loadAllData();
@@ -78,12 +79,12 @@ class _BarberHomePageState extends State<BarberHomePage>
     try {
       // Load providers first (they have their own fallbacks / mock data)
       await Future.wait([
-        _shopProvider.loadShopData(),
+        _salonProvider.loadSalonData(),
         _appointmentProvider.loadAppointments(),
       ]);
 
-      final shopId = _shopProvider.branches.isNotEmpty
-          ? (_shopProvider.branches.first.id as int? ?? 0)
+      final salonId = _salonProvider.branches.isNotEmpty
+          ? (_salonProvider.branches.first.id as int? ?? 0)
           : 0;
 
       // Fetch optional API data with individual error handling so one
@@ -104,22 +105,21 @@ class _BarberHomePageState extends State<BarberHomePage>
       Map<String, dynamic>? workingHours;
       List<dynamic> pendingConfirmations = [];
 
-      if (shopId > 0) {
+      if (salonId > 0) {
         try {
-          workingHours = await _apiService.fetchTodayWorkingHours(shopId);
+          workingHours = await _apiService.fetchTodayWorkingHours(salonId);
         } catch (_) {
           // Backend endpoint may not exist yet; gracefully ignore
         }
         try {
-          final raw = await _apiService.fetchPendingConfirmations(shopId);
-          pendingConfirmations =
-              raw['results'] ?? raw['data'] ?? [];
+          final raw = await _apiService.fetchPendingConfirmations(salonId);
+          pendingConfirmations = raw;
         } catch (_) {}
       }
 
       setState(() {
         _homeData = homeData;
-        _branches = _shopProvider.branches;
+        _branches = _salonProvider.branches;
         _pendingConfirmations = pendingConfirmations;
         _workingHours = workingHours;
         _isLoading = false;
@@ -242,7 +242,7 @@ class _BarberHomePageState extends State<BarberHomePage>
           ),
           const SizedBox(height: 16),
           PrimaryButton(
-            text: 'retry'.tr(),
+            text: AppLocalizations.of(context)!.retry,
             onPressed: _loadAllData,
             variant: ButtonVariant.filled,
           ),
@@ -311,7 +311,7 @@ class _BarberHomePageState extends State<BarberHomePage>
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text('today_s_earnings'.tr(),
+            child: Text(AppLocalizations.of(context)!.todaySEarnings,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),

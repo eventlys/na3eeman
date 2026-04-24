@@ -1,8 +1,9 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Providers/main_providers.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -73,7 +74,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   List<dynamic> _filterStaffAppointments(AppointmentProvider provider, AuthProvider authProvider) {
-    // For barbers/owners, show appointments assigned to them or in their shop
+    // For barbers/owners, show appointments assigned to them or in their salon
     final user = authProvider.user;
     if (user == null) return [];
 
@@ -83,7 +84,7 @@ class _HistoryPageState extends State<HistoryPage> {
         return barberId == user.id;
       }).toList();
     } else if (authProvider.isOwner) {
-      // Owners can see all appointments in their shop(s)
+      // Owners can see all appointments in their salon(s)
       return provider.appointments;
     }
 
@@ -196,12 +197,12 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  int _getAppointmentShopId(dynamic appointment) {
+  int _getAppointmentSalonId(dynamic appointment) {
     if (appointment is Map) {
-      return appointment['shopId'] ?? appointment['shop'] ?? 0;
+      return appointment['salonId'] ?? appointment['salon'] ?? 0;
     }
     try {
-      return appointment.shopId as int;
+      return appointment.salonId as int;
     } catch (e) {
       return 0;
     }
@@ -213,7 +214,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('appointment_history'.tr()),
+        title: Text(AppLocalizations.of(context)!.appointmentHistory),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -297,7 +298,7 @@ class _HistoryPageState extends State<HistoryPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadAppointments,
-              child: Text('try_again'.tr()),
+              child: Text(AppLocalizations.of(context)!.tryAgain),
             ),
           ],
         ),
@@ -355,7 +356,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final endTime = _getAppointmentEndTime(appointment);
     final services = _getAppointmentServices(appointment);
     final appointmentId = _getAppointmentId(appointment);
-    final shopId = _getAppointmentShopId(appointment);
+    final salonId = _getAppointmentSalonId(appointment);
     final customerId = _getAppointmentCustomerId(appointment);
     final barberId = _getAppointmentBarberId(appointment);
 
@@ -412,8 +413,8 @@ class _HistoryPageState extends State<HistoryPage> {
             ],
 
             // Role-specific information
-            if (authProvider.isCustomer) ..._buildCustomerInfo(shopId, barberId),
-            if (authProvider.isBarber || authProvider.isOwner) ..._buildStaffInfo(customerId, shopId),
+            if (authProvider.isCustomer) ..._buildCustomerInfo(salonId, barberId),
+            if (authProvider.isBarber || authProvider.isOwner) ..._buildStaffInfo(customerId, salonId),
 
             // Appointment ID
             Text(
@@ -430,14 +431,14 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  List<Widget> _buildCustomerInfo(int shopId, int? barberId) {
+  List<Widget> _buildCustomerInfo(int salonId, int? barberId) {
     return [
       const Row(
         children: [
           Icon(Icons.store, size: 16, color: Colors.grey),
           SizedBox(width: 8),
           Text(
-            'Shop Information',
+            'Salon Information',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -447,7 +448,7 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       const SizedBox(height: 4),
       Text(
-        'Shop ID: $shopId',
+        'Salon ID: $salonId',
         style: const TextStyle(fontSize: 14),
       ),
       if (barberId != null) ...[
@@ -460,7 +461,7 @@ class _HistoryPageState extends State<HistoryPage> {
     ];
   }
 
-  List<Widget> _buildStaffInfo(int customerId, int shopId) {
+  List<Widget> _buildStaffInfo(int customerId, int salonId) {
     return [
       const Row(
         children: [
@@ -481,7 +482,7 @@ class _HistoryPageState extends State<HistoryPage> {
         style: const TextStyle(fontSize: 14),
       ),
       Text(
-        'Shop ID: $shopId',
+        'Salon ID: $salonId',
         style: const TextStyle(fontSize: 14),
       ),
       const SizedBox(height: 8),

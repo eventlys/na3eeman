@@ -12,15 +12,15 @@ import '../Helpers/error_handler.dart';
 import '../Helpers/config.dart';
 import '../Helpers/gallery_helper.dart';
 import '../Models/appointments/booking_group_model.dart';
-import '../Models/appointments/shop_appointments_model.dart';
+import '../Models/appointments/salon_appointments_model.dart';
 import '../Models/appointments/soonest_appointment_model.dart';
 import '../Models/commerce/payment_method.dart';
 import '../Models/inventory/inventory_item.dart';
 import '../Models/loyalty/points_model.dart';
 import '../Models/reports/earnings_model.dart';
 import '../Models/reports/profit_data.dart';
-import '../Models/shop/review_model.dart';
-import '../Models/shop/shops_model.dart' hide Review;
+import '../Models/salon/review_model.dart';
+import '../Models/salon/salons_model.dart' hide Review;
 import '../Models/staff/barber.dart';
 import '../Models/staff/staff_member.dart';
 import '../Models/subscriptions/subscription.dart';
@@ -32,6 +32,7 @@ import 'enums/appointment_status.dart';
 import 'enums/attendee_type.dart';
 import '../Helpers/logger.dart';
 import '../Packages/Core/utils/formatters.dart';
+import 'enums/points_types.dart';
 
 // Services
 import '../Services/api/api_service.dart';
@@ -147,12 +148,17 @@ class ReportService {
     }
   }
 
-  Future<ReportResult> generateStaffReport(StaffReportRequest request) async {
+  Future<ReportResult> generateStaffReport(StaffReportRequest request, {int? salonId}) async {
     try {
+      final activeSalonId = salonId;
+      if (activeSalonId == null) {
+        throw Exception('No active salon ID provided for report generation');
+      }
+
       // Use the BusinessService method for staff reports
       await _businessService.generateStaffReport(
         request,
-        shopId: 1, // You'll need to get this from context/auth
+        salonId: activeSalonId,
       );
 
       return ReportResult(
@@ -216,11 +222,11 @@ class BusinessService {
 
   // ============ APPOINTMENT SERVICES ============
 
-  Future<List<ShopAppointment>> getAppointments({
+  Future<List<SalonAppointment>> getAppointments({
     int page = 1,
     int limit = 20,
     String? status,
-    int? shopId,
+    int? salonId,
     int? customerId,
   })
   async {
@@ -231,7 +237,7 @@ class BusinessService {
       };
 
       if (status != null) queryParams['status'] = status;
-      if (shopId != null) queryParams['shop'] = shopId.toString();
+      if (salonId != null) queryParams['salon'] = salonId.toString();
       if (customerId != null) queryParams['customer'] = customerId.toString();
 
       final response = await _apiService.get(
@@ -240,29 +246,29 @@ class BusinessService {
       );
 
       final List<dynamic> data = response['data'] ?? [];
-      return data.map((json) => ShopAppointment.fromJson(json)).toList();
+      return data.map((json) => SalonAppointment.fromJson(json)).toList();
     } catch (e) {
       AppLogger.error('Error fetching appointments: $e');
       return _getMockAppointments();
     }
   }
 
-  Future<ShopAppointment> createAppointment(Map<String, dynamic> appointmentData) async {
+  Future<SalonAppointment> createAppointment(Map<String, dynamic> appointmentData) async {
     try {
       final response = await _apiService.post(
         '/appointments',
         data: appointmentData,
       );
-      return ShopAppointment.fromJson(response['data']);
+      return SalonAppointment.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Error creating appointment: $e');
       rethrow;
     }
   }
 
-  Future<ShopAppointment> bookAppointment({
+  Future<SalonAppointment> bookAppointment({
     required int customerId,
-    required int shopId,
+    required int salonId,
     required int? barberId,
     required DateTime startTime,
     required DateTime endTime,
@@ -277,7 +283,7 @@ class BusinessService {
     try {
       final appointmentData = {
         'customer': customerId,
-        'shop': shopId,
+        'salon': salonId,
         'barber': barberId,
         'start_time': startTime.toIso8601String(),
         'end_time': endTime.toIso8601String(),
@@ -293,7 +299,7 @@ class BusinessService {
         '/appointments/book',
         data: appointmentData,
       );
-      return ShopAppointment.fromJson(response['data']);
+      return SalonAppointment.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Error booking appointment: $e');
       rethrow;
@@ -301,14 +307,14 @@ class BusinessService {
   }
 
   // Add this method to your BusinessService class
-  Future<void> generateStaffReport(StaffReportRequest request, {required int shopId}) async {
+  Future<void> generateStaffReport(StaffReportRequest request, {required int salonId}) async {
     try {
-      AppLogger.debug('Generating staff report: ${request.reportType} for shop: $shopId');
+      AppLogger.debug('Generating staff report: ${request.reportType} for salon: $salonId');
 
       switch (request.reportType) {
         case StaffReportType.performance:
           final barbers = await getBarbers(
-            shopId: shopId,
+            salonId: salonId,
             includePerformance: true,
           );
           await generateStaffPerformanceReport(barbers, request);
@@ -316,7 +322,7 @@ class BusinessService {
 
         case StaffReportType.attendance:
           final appointments = await getAppointments(
-            shopId: shopId,
+            salonId: salonId,
             status: 'completed',
           );
           await generateAppointmentReport(
@@ -328,7 +334,7 @@ class BusinessService {
 
         case StaffReportType.payroll:
           final barbers = await getBarbers(
-            shopId: shopId,
+            salonId: salonId,
             includePerformance: true,
           );
           final earningsData = barbers.map((barber) => EarningsData(
@@ -336,7 +342,7 @@ class BusinessService {
             amount: barber.totalEarnings,
             appointments: barber.totalAppointments,
             tips: 0.0,
-            shopId: shopId, // Add the required shopId
+            salonId: salonId, // Add the required salonId
             barberId: barber.userId, // Add barberId
           )).toList();
 
@@ -353,7 +359,7 @@ class BusinessService {
         case StaffReportType.annually:
           // Generate summary report for the time period
           final barbers = await getBarbers(
-            shopId: shopId,
+            salonId: salonId,
             includePerformance: true,
           );
           await generateStaffPerformanceReport(barbers, request);
@@ -393,7 +399,7 @@ class BusinessService {
     }
   }
 
-  Future<ShopAppointment> rescheduleAppointment(
+  Future<SalonAppointment> rescheduleAppointment(
     String appointmentId,
     DateTime newStartTime,
     DateTime newEndTime,
@@ -407,7 +413,7 @@ class BusinessService {
           'new_end_time': newEndTime.toIso8601String(),
         },
       );
-      return ShopAppointment.fromJson(response['data']);
+      return SalonAppointment.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Error rescheduling appointment: $e');
       rethrow;
@@ -432,17 +438,17 @@ class BusinessService {
     }
   }
 
-  Future<ShopAppointment> createFreeAppointment(int customerId, {int? shopId})
+  Future<SalonAppointment> createFreeAppointment(int customerId, {int? salonId})
   async {
     try {
       final data = {'customer': customerId};
-      if (shopId != null) data['shop'] = shopId;
+      if (salonId != null) data['salon'] = salonId;
 
       final response = await _apiService.post(
         '/appointments/free',
         data: data,
       );
-      return ShopAppointment.fromJson(response['data']);
+      return SalonAppointment.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Error creating free appointment: $e');
       rethrow;
@@ -481,14 +487,14 @@ class BusinessService {
   Future<BookingGroup> createBookingGroup({
     required int organizerId,
     required bool isRecurring,
-    int? shopId,
+    int? salonId,
   })
   async {
     try {
       _logger.logRequest('POST', '$_baseUrl/booking-groups/', {
         'organizer': organizerId,
         'is_recurring': isRecurring,
-        'shop': shopId,
+        'salon': salonId,
       });
 
       final response = await _networkSecurity.securePost(
@@ -497,7 +503,7 @@ class BusinessService {
         body: json.encode({
           'organizer': organizerId,
           'is_recurring': isRecurring,
-          'shop': shopId,
+          'salon': salonId,
         }),
       );
 
@@ -667,7 +673,7 @@ class BusinessService {
   }
 
   static Future<void> generateAppointmentReport(
-    List<ShopAppointment> appointments,
+    List<SalonAppointment> appointments,
     String period,
     String fileName,
   )
@@ -684,6 +690,8 @@ class BusinessService {
     PointsType.reviewWrite: 25,
     PointsType.referral: 100,
     PointsType.rewardRedeem: 0,
+    PointsType.signup: 100,
+    PointsType.milestoneReached: 200,
     PointsType.other: 10,
   };
 
@@ -742,7 +750,7 @@ class BusinessService {
 
   Future<Review> createReview({
     required int customerId,
-    required int shopId,
+    required int salonId,
     required int rating,
     required String comment,
     int? appointmentId,
@@ -752,7 +760,7 @@ class BusinessService {
     try {
       _logger.logRequest('POST', '$_baseUrl/reviews/', {
         'customer': customerId,
-        'shop': shopId,
+        'salon': salonId,
         'rating': rating,
         'comment': comment,
         'appointment': appointmentId,
@@ -764,7 +772,7 @@ class BusinessService {
         headers: await _getAuthHeaders(),
         body: json.encode({
           'customer': customerId,
-          'shop': shopId,
+          'salon': salonId,
           'rating': rating,
           'comment': comment,
           'appointment': appointmentId,
@@ -788,20 +796,20 @@ class BusinessService {
     }
   }
 
-  Future<List<Review>> getShopReviews(int shopId) async {
+  Future<List<Review>> getSalonReviews(int salonId) async {
     try {
-      final response = await _apiService.get('/shops/$shopId/reviews');
+      final response = await _apiService.get('/salons/$salonId/reviews');
       final List<dynamic> data = response['data'] ?? [];
       return data.map((json) => Review.fromJson(json)).toList();
     } catch (e) {
-      AppLogger.error('Error fetching shop reviews: $e');
+      AppLogger.error('Error fetching salon reviews: $e');
       return [];
     }
   }
 
-  // ============ SHOP SERVICES ============
+  // ============ SALON SERVICES ============
 
-  Future<List<Shop>> getShops({
+  Future<List<Salon>> getSalons({
     int page = 1,
     int limit = 20,
     String? search,
@@ -828,42 +836,42 @@ class BusinessService {
       if (radius != null) queryParams['radius'] = radius.toString();
 
       final response = await _apiService.get(
-        '/shops',
+        '/salons',
         queryParams: queryParams,
       );
 
       final List<dynamic> data = response['data'] ?? [];
-      return data.map((json) => Shop.fromJson(json)).toList();
+      return data.map((json) => Salon.fromJson(json)).toList();
     } catch (e) {
-      AppLogger.error('Error fetching shops: $e');
+      AppLogger.error('Error fetching salons: $e');
       return [];
     }
   }
 
-  Future<Shop> getShopDetails(int shopId) async {
+  Future<Salon> getSalonDetails(int salonId) async {
     try {
-      final response = await _apiService.get('/shops/$shopId');
-      return Shop.fromJson(response['data']);
+      final response = await _apiService.get('/salons/$salonId');
+      return Salon.fromJson(response['data']);
     } catch (e) {
-      AppLogger.error('Error fetching shop details: $e');
+      AppLogger.error('Error fetching salon details: $e');
       rethrow;
     }
   }
 
-  Future<List<Barber>> getShopBarbers(int shopId) async {
+  Future<List<Barber>> getSalonBarbers(int salonId) async {
     try {
-      final response = await _apiService.get('/shops/$shopId/barbers');
+      final response = await _apiService.get('/salons/$salonId/barbers');
       final List<dynamic> data = response['data'] ?? [];
       return data.map((item) => Barber.fromJson(item)).toList();
     } catch (e) {
-      AppLogger.error('Error fetching shop barbers: $e');
+      AppLogger.error('Error fetching salon barbers: $e');
       return [];
     }
   }
 
   Future<double> calculateAppointmentTotal(String appointmentId) async {
     try {
-      final response = await _apiService.get('/shops/calculate-total/$appointmentId');
+      final response = await _apiService.get('/salons/calculate-total/$appointmentId');
       return (response['data']['total'] as num).toDouble();
     } catch (e) {
       AppLogger.error('Error calculating appointment total: $e');
@@ -875,7 +883,7 @@ class BusinessService {
 
   Future<List<StaffMember>> getStaffMembers({
     String? branchId,
-    int? shopId,
+    int? salonId,
     StaffRole? role,
     bool? isActive,
     int page = 1,
@@ -889,7 +897,7 @@ class BusinessService {
       };
 
       if (branchId != null) queryParams['branch_id'] = branchId;
-      if (shopId != null) queryParams['shop'] = shopId.toString();
+      if (salonId != null) queryParams['salon'] = salonId.toString();
       if (role != null) queryParams['role'] = role.value;
       if (isActive != null) queryParams['is_active'] = isActive.toString();
 
@@ -908,7 +916,7 @@ class BusinessService {
 
   Future<List<Barber>> getBarbers({
     String? branchId,
-    int? shopId,
+    int? salonId,
     bool? includePerformance,
   })
   async {
@@ -916,7 +924,7 @@ class BusinessService {
       final Map<String, dynamic> queryParams = {};
 
       if (branchId != null) queryParams['branch_id'] = branchId;
-      if (shopId != null) queryParams['shop'] = shopId.toString();
+      if (salonId != null) queryParams['salon'] = salonId.toString();
       if (includePerformance != null) queryParams['include_performance'] = includePerformance.toString();
 
       final response = await _apiService.get(
@@ -928,7 +936,7 @@ class BusinessService {
       return data.map((item) => Barber.fromJson(item)).toList();
     } catch (e) {
       AppLogger.error('Error fetching barbers: $e');
-      final staff = await getStaffMembers(shopId: shopId);
+      final staff = await getStaffMembers(salonId: salonId);
       return _convertStaffToBarbers(staff.where((member) => member.role == StaffRole.barber).toList());
     }
   }
@@ -1029,19 +1037,24 @@ class BusinessService {
         return 'Customer referred';
       case PointsType.rewardRedeem:
         return 'Reward redeemed';
+      case PointsType.signup:
+        return 'Welcome bonus awarded';
+      case PointsType.milestoneReached:
+        return 'Loyalty milestone reached';
       case PointsType.other:
+      default:
         return 'Points awarded';
     }
   }
 
   // ============ MOCK DATA METHODS ============
 
-  List<ShopAppointment> _getMockAppointments() {
+  List<SalonAppointment> _getMockAppointments() {
     return [
-      ShopAppointment(
+      SalonAppointment(
         id: '1',
         customerId: 1,
-        shopId: 1,
+        salonId: 1,
         barberId: 1,
         startTime: DateTime.now().add(Duration(hours: 2)),
         endTime: DateTime.now().add(Duration(hours: 2, minutes: 30)),
@@ -1065,7 +1078,7 @@ class BusinessService {
       InventoryItem(
         id: '1',
         productId: 1,
-        shopId: 1,
+        salonId: 1,
         quantityInStock: 5,
         lastUpdated: DateTime.now(),
         productName: 'Professional Shampoo',
@@ -1075,7 +1088,7 @@ class BusinessService {
       InventoryItem(
         id: '2',
         productId: 2,
-        shopId: 1,
+        salonId: 1,
         quantityInStock: 2,
         lastUpdated: DateTime.now(),
         productName: 'Conditioner',
@@ -1095,7 +1108,7 @@ class BusinessService {
         phone: '+1234567890',
         role: StaffRole.barber,
         joinDate: DateTime(2023, 1, 15),
-        shopId: 1,
+        salonId: 1,
         hourlyRate: 25.0,
         specialties: ['Haircut', 'Beard Trim', 'Styling'],
         isActive: true,
@@ -1114,7 +1127,7 @@ class BusinessService {
         email: staffMember.email,
         joinDate: staffMember.joinDate,
         profileImage: staffMember.profileImage,
-        shopId: staffMember.shopId,
+        salonId: staffMember.salonId,
         isActive: staffMember.isActive,
         hourlyRate: staffMember.hourlyRate,
         barberProfile: null,
@@ -1268,7 +1281,7 @@ class BusinessService {
     );
   }
 
-  static pw.Page _buildAppointmentReportPage(List<ShopAppointment> appointments, String period) {
+  static pw.Page _buildAppointmentReportPage(List<SalonAppointment> appointments, String period) {
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -1401,7 +1414,7 @@ class BusinessService {
     );
   }
 
-  static pw.Widget _buildAppointmentTable(List<ShopAppointment> appointments) {
+  static pw.Widget _buildAppointmentTable(List<SalonAppointment> appointments) {
     return pw.Table(
       border: pw.TableBorder.all(),
       children: [
@@ -1499,7 +1512,7 @@ class BusinessService {
     );
   }
 
-  static pw.Widget _buildAppointmentSummary(List<ShopAppointment> appointments) {
+  static pw.Widget _buildAppointmentSummary(List<SalonAppointment> appointments) {
     final completed = appointments.where((a) => a.status == AppointmentStatus.completed).length;
     final cancelled = appointments.where((a) => a.status == AppointmentStatus.cancelled).length;
     final scheduled = appointments.where((a) => a.status == AppointmentStatus.scheduled).length;
@@ -1561,13 +1574,13 @@ class InventoryService {
 
   InventoryService(this._apiService);
 
-  Future<List<dynamic>> getLowStockItems({int? shopId}) async {
+  Future<List<dynamic>> getLowStockItems({int? salonId}) async {
     try {
-      if (shopId == null) {
-        throw Exception('Shop ID is required to fetch inventory items.');
+      if (salonId == null) {
+        throw Exception('Salon ID is required to fetch inventory items.');
       }
       final Map<String, dynamic> queryParams = {};
-      final String endpoint = '/shops/shops/$shopId/inventory/';
+      final String endpoint = '/salons/salons/$salonId/inventory/';
       queryParams['low_stock_only'] = 'true'; // Map to general endpoint list filter
 
       final response = await _apiService.get(
@@ -1578,7 +1591,7 @@ class InventoryService {
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
       
       print('--- getLowStockItems ---');
-      print('shopId: $shopId');
+      print('salonId: $salonId');
       print('Items count: ${data.length}');
       if (data.isNotEmpty) print('First item: ${data.first}');
       print('--------------------------');
@@ -1591,15 +1604,15 @@ class InventoryService {
   }
 
   Future<List<dynamic>> getInventoryItems({
-    int? shopId,
+    int? salonId,
     bool? lowStockOnly,
     String? category,
     int page = 1,
     int limit = 20,
   }) async {
     try {
-      if (shopId == null) {
-        throw Exception('Shop ID is required to fetch inventory items.');
+      if (salonId == null) {
+        throw Exception('Salon ID is required to fetch inventory items.');
       }
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -1609,7 +1622,7 @@ class InventoryService {
       if (lowStockOnly != null) queryParams['low_stock_only'] = lowStockOnly.toString();
       if (category != null) queryParams['category'] = category;
 
-      final String endpoint = '/shops/shops/$shopId/inventory/';
+      final String endpoint = '/salons/salons/$salonId/inventory/';
 
       final response = await _apiService.get(
         endpoint,
@@ -1619,7 +1632,7 @@ class InventoryService {
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
       
       print('--- getInventoryItems ---');
-      print('shopId: $shopId, lowStock: $lowStockOnly, category: $category');
+      print('salonId: $salonId, lowStock: $lowStockOnly, category: $category');
       print('Items count: ${data.length}');
       if (data.isNotEmpty) print('First item: ${data.first}');
       print('--------------------------');
@@ -1633,13 +1646,13 @@ class InventoryService {
 
   Future<dynamic> updateItemQuantity({
     required String itemId,
-    required int shopId,
+    required int salonId,
     required int newQuantity,
     String? reason,
   }) async {
     try {
       final response = await _apiService.patch(
-        '/shops/shops/$shopId/inventory/$itemId/',
+        '/salons/salons/$salonId/inventory/$itemId/',
         data: {
           'quantity_in_stock': newQuantity,
           if (reason != null) 'notes': reason, // Map reason to notes if needed
@@ -1654,13 +1667,13 @@ class InventoryService {
 
   Future<dynamic> addInventoryItem({
     required int productId,
-    required int shopId,
+    required int salonId,
     required int initialQuantity,
     String? notes,
   }) async {
     try {
       final response = await _apiService.post(
-        '/shops/shops/$shopId/inventory/',
+        '/salons/salons/$salonId/inventory/',
         data: {
           'product': productId,
           'quantity_in_stock': initialQuantity,
@@ -1674,19 +1687,19 @@ class InventoryService {
     }
   }
 
-  Future<void> deleteInventoryItem({required String itemId, required int shopId}) async {
+  Future<void> deleteInventoryItem({required String itemId, required int salonId}) async {
     try {
-      await _apiService.delete('/shops/shops/$shopId/inventory/$itemId/');
+      await _apiService.delete('/salons/salons/$salonId/inventory/$itemId/');
     } catch (e) {
       AppLogger.error('Error deleting inventory item: $e');
       throw ErrorHandler.handleException(e);
     }
   }
 
-  Future<Map<String, dynamic>> getInventoryAlerts({int? shopId}) async {
+  Future<Map<String, dynamic>> getInventoryAlerts({int? salonId}) async {
     try {
       final Map<String, dynamic> queryParams = {};
-      if (shopId != null) queryParams['shop'] = shopId.toString();
+      if (salonId != null) queryParams['salon'] = salonId.toString();
 
       final response = await _apiService.get(
         '/inventory/alerts',
@@ -1748,10 +1761,10 @@ class InventoryService {
     }
   }
 
-  Future<Map<String, dynamic>> getInventoryStats({int? shopId}) async {
+  Future<Map<String, dynamic>> getInventoryStats({int? salonId}) async {
     try {
       final Map<String, dynamic> queryParams = {};
-      if (shopId != null) queryParams['shop'] = shopId.toString();
+      if (salonId != null) queryParams['salon'] = salonId.toString();
 
       final response = await _apiService.get(
         '/inventory/stats',
@@ -1779,28 +1792,30 @@ class InventoryService {
 class OffersService {
   final ApiService _apiService = ApiService();
 
-  Future<List<dynamic>> getShopOffers(int shopId) async {
-    return _apiService.getShopOffers(shopId);
+  Future<List<dynamic>> getSalonOffers(int salonId) async {
+    return _apiService.getSalonOffers(salonId);
   }
 
-  Future<Map<String, dynamic>> createOffer(int shopId, Map<String, dynamic> offerData) async {
-    return _apiService.createOffer(shopId, offerData);
+  Future<Map<String, dynamic>> createOffer(int salonId, Map<String, dynamic> offerData) async {
+    final response = await _apiService.createOffer(salonId, offerData);
+    return response is Map<String, dynamic> ? response : (response as Map).cast<String, dynamic>();
   }
 
-  Future<void> deleteOffer(int shopId, int offerId) async {
-    await _apiService.deleteOffer(shopId, offerId);
+  Future<void> deleteOffer(int salonId, int offerId) async {
+    await _apiService.deleteOffer(salonId, offerId);
   }
 
-  Future<List<dynamic>> getShopAdCampaigns(int shopId) async {
-    return _apiService.getShopAdCampaigns(shopId);
+  Future<List<dynamic>> getSalonAdCampaigns(int salonId) async {
+    return _apiService.getSalonAdCampaigns(salonId);
   }
 
-  Future<Map<String, dynamic>> createAdCampaign(int shopId, Map<String, dynamic> data) async {
-    return _apiService.createAdCampaign(shopId, data);
+  Future<Map<String, dynamic>> createAdCampaign(int salonId, Map<String, dynamic> data) async {
+    final response = await _apiService.createAdCampaign(salonId, data);
+    return response is Map<String, dynamic> ? response : (response as Map).cast<String, dynamic>();
   }
 
-  Future<void> deleteAdCampaign(int shopId, int campaignId) async {
-    await _apiService.deleteAdCampaign(shopId, campaignId);
+  Future<void> deleteAdCampaign(int salonId, int campaignId) async {
+    await _apiService.deleteAdCampaign(salonId, campaignId);
   }
 }
 
@@ -1901,22 +1916,22 @@ class ProfitService {
   }
 }
 
-class ShopGalleryService {
+class SalonGalleryService {
   // In a real app, this would fetch from your API
-  Future<List<String>> getShopGalleryImages(String shopId, {int limit = 4}) async {
+  Future<List<String>> getSalonGalleryImages(String salonId, {int limit = 4}) async {
     try {
       // Simulate API call delay
       await Future.delayed(const Duration(milliseconds: 300));
 
       // For demo purposes, return placeholder images
       // In production, this would fetch from your backend
-      return ImageHelper.getShopGalleryImages(shopId, count: limit);
+      return ImageHelper.getSalonGalleryImages(salonId, count: limit);
     } catch (e) {
       throw AppError('Failed to load gallery images: ${ErrorHandler.handleError(e)}');
     }
   }
 
-  Future<List<String>> getShopGalleryImagesFromUrls(List<String> imageUrls, {int limit = 4}) async {
+  Future<List<String>> getSalonGalleryImagesFromUrls(List<String> imageUrls, {int limit = 4}) async {
     try {
       if (imageUrls.isEmpty) {
         return [];

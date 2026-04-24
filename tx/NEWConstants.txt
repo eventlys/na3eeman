@@ -124,17 +124,17 @@ class AppConstants {
   static const String barbersEndpoint = '/usr/barbers/';
   static const String customersEndpoint = '/usr/customers/';
 
-  // Shop Endpoints
-  static const String shopsEndpoint = '/shop/shops';
-  static const String shopAppointmentsEndpoint = '/shop/appointments';
-  static const String shopReviewsEndpoint = '/shop/reviews';
-  static const String shopSubscriptionsEndpoint = '/shop/subscriptions';
-  static const String shopStylesEndpoint = '/shop/styles';
-  static const String shopOptionsEndpoint = '/shop/options';
-  static const String shopPackagesEndpoint = '/shop/packages';
-  static const String shopProductsEndpoint = '/shop/products';
-  static const String shopInventoryEndpoint = '/shop/inventory';
-  static const String shopBarbersEndpoint = '/shop/barbers';
+  // Salon Endpoints
+  static const String salonsEndpoint = '/salon/salons';
+  static const String salonAppointmentsEndpoint = '/salon/appointments';
+  static const String salonReviewsEndpoint = '/salon/reviews';
+  static const String salonSubscriptionsEndpoint = '/salon/subscriptions';
+  static const String salonStylesEndpoint = '/salon/styles';
+  static const String salonOptionsEndpoint = '/salon/options';
+  static const String salonPackagesEndpoint = '/salon/packages';
+  static const String salonProductsEndpoint = '/salon/products';
+  static const String salonInventoryEndpoint = '/salon/inventory';
+  static const String salonBarbersEndpoint = '/salon/barbers';
 
   // Loyalty Endpoints
   static const String loyaltyBalanceEndpoint = '/loyalty/balance';
@@ -199,11 +199,11 @@ class AppConstants {
   static const double sidebarWidth = 280.0;
   static const double sidebarAnimationDuration = 400;
 
-  // Shop Constants
-  static const double minShopRating = 1.0;
-  static const double maxShopRating = 5.0;
+  // Salon Constants
+  static const double minSalonRating = 1.0;
+  static const double maxSalonRating = 5.0;
   static const int maxGalleryImages = 10;
-  static const int maxServicesPerShop = 20;
+  static const int maxServicesPerSalon = 20;
 
   // Staff Management Constants
   static const List<String> barberSpecialties = [
@@ -243,7 +243,7 @@ class AppConstants {
   static const int pointsForFeedback = 15;
 
   // Cache Durations
-  static const Duration shopCacheDuration = Duration(minutes: 30);
+  static const Duration salonCacheDuration = Duration(minutes: 30);
   static const Duration userCacheDuration = Duration(hours: 1);
   static const Duration configCacheDuration = Duration(hours: 24);
   static const int cacheTimeout = 300;
@@ -263,19 +263,19 @@ class AppImages {
   static const String appLogo = 'assets/images/app_logo.png';
   static const String placeholderImage = 'assets/images/placeholder.jpg';
   static const String defaultProfile = 'assets/images/default_profile.png';
-  static const String defaultShop = 'assets/images/default_shop.jpg';
+  static const String defaultSalon = 'assets/images/default_salon.jpg';
 
-  // Shop Images
-  static const String shop1 = 'assets/images/shop1.jpg';
-  static const String shop2 = 'assets/images/shop2.jpg';
-  static const String shop3 = 'assets/images/shop3.jpg';
-  static const String shop4 = 'assets/images/shop4.jpg';
-  static const String shop5 = 'assets/images/shop5.jpg';
-  static const String shop6 = 'assets/images/shop6.jpg';
-  static const String shop7 = 'assets/images/shop7.jpg';
-  static const String shop8 = 'assets/images/shop8.jpg';
-  static const String shop9 = 'assets/images/shop9.jpg';
-  static const String shop10 = 'assets/images/shop10.jpg';
+  // Salon Images
+  static const String salon1 = 'assets/images/salon1.jpg';
+  static const String salon2 = 'assets/images/salon2.jpg';
+  static const String salon3 = 'assets/images/salon3.jpg';
+  static const String salon4 = 'assets/images/salon4.jpg';
+  static const String salon5 = 'assets/images/salon5.jpg';
+  static const String salon6 = 'assets/images/salon6.jpg';
+  static const String salon7 = 'assets/images/salon7.jpg';
+  static const String salon8 = 'assets/images/salon8.jpg';
+  static const String salon9 = 'assets/images/salon9.jpg';
+  static const String salon10 = 'assets/images/salon10.jpg';
 
   // Mock Images for Development
   static const String mockAvatar1 = 'assets/images/mock_avatar1.png';
@@ -334,11 +334,11 @@ class AppPaths {
   static const String updateProfile = '$apiBase/user/update';
   static const String changePassword = '$apiBase/user/change-password';
 
-  static const String shops = '$apiBase/shops';
-  static String shopById(String id) => '$shops/$id';
-  static String shopServices(String shopId) => '$shops/$shopId/services';
-  static String shopGallery(String shopId) => '$shops/$shopId/gallery';
-  static String shopReviews(String shopId) => '$shops/$shopId/reviews';
+  static const String salons = '$apiBase/salons';
+  static String salonById(String id) => '$salons/$id';
+  static String salonServices(String salonId) => '$salons/$salonId/services';
+  static String salonGallery(String salonId) => '$salons/$salonId/gallery';
+  static String salonReviews(String salonId) => '$salons/$salonId/reviews';
 
   static const String appointments = '$apiBase/appointments';
   static String appointmentById(String id) => '$appointments/$id';
@@ -367,7 +367,7 @@ class AppPaths {
   static const String homeRoute = '/home';
   static const String profileRoute = '/profile';
   static const String settingsRoute = '/settings';
-  static const String shopDetailsRoute = '/shop-details';
+  static const String salonDetailsRoute = '/salon-details';
   static const String appointmentBookingRoute = '/appointment-booking';
   static const String paymentRoute = '/payment';
   static const String orderHistoryRoute = '/order-history';
@@ -480,8 +480,8 @@ class AppStrings {
   static const String payroll = 'Payroll';
   static const String attendance = 'Attendance';
 
-  // Shop Related
-  static const String shops = 'Shops';
+  // Salon Related
+  static const String salons = 'Salons';
   static const String services = 'Services';
   static const String gallery = 'Gallery';
   static const String reviews = 'Reviews';
@@ -525,7 +525,7 @@ class AppStrings {
   static const String retry = 'Retry';
 
   // Empty States
-  static const String noShopsFound = 'No shops found';
+  static const String noSalonsFound = 'No salons found';
   static const String noAppointmentsFound = 'No appointments found';
   static const String noFavoritesFound = 'No favorites yet';
   static const String noNotifications = 'No notifications';

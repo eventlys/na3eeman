@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Models/shop_extensions.dart';
+import '../../Models/salon_extensions.dart';
 
 /// Spa Amenities Grid Widget
 /// Displays amenities with emoji icons and labels

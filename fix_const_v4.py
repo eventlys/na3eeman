@@ -4,10 +4,10 @@ from pathlib import Path
 files = [
     "lib/Packages/Core/widgets/navigation/app_bottom_nav.dart",
     "lib/Packages/features/navigation/overlays/report_problem_overlay.dart",
-    "lib/Packages/features/navigation/overlays/report_shop_overlay.dart",
-    "lib/Packages/features/shop/overlays/Inventory_add_item_dialog.dart",
-    "lib/Packages/features/shop/pages/shop_details.dart",
-    "lib/Packages/features/shop/pages/shop_schedule_page.dart",
+    "lib/Packages/features/navigation/overlays/report_salon_overlay.dart",
+    "lib/Packages/features/salon/overlays/Inventory_add_item_dialog.dart",
+    "lib/Packages/features/salon/pages/salon_details.dart",
+    "lib/Packages/features/salon/pages/salon_schedule_page.dart",
     "lib/Packages/features/staff/pages/receptionist/receptionist_feedback_page.dart",
     "lib/app/app.dart"
 ]

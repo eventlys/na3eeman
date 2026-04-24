@@ -282,7 +282,7 @@ class _ModerationTogglesState extends State<_ModerationToggles> {
                 : AppColor.lightDivider,
           ),
           _Toggle(
-            'Require admin approval for new shops',
+            'Require admin approval for new salons',
             _requireApproval,
             (v) => setState(() => _requireApproval = v),
           ),

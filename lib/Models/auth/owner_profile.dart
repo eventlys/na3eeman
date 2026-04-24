@@ -24,7 +24,7 @@ class OwnerProfile {
   final DateTime? subscriptionEndDate;
   final bool isTrial;
   final DateTime? trialEndsAt;
-  final int? shopId;
+  final int? salonId;
 
   const OwnerProfile({
     required this.id,
@@ -41,7 +41,7 @@ class OwnerProfile {
     this.subscriptionEndDate,
     this.isTrial = false,
     this.trialEndsAt,
-    this.shopId,
+    this.salonId,
   });
 
   // ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ class OwnerProfile {
       trialEndsAt: json['trial_ends_at'] != null
           ? DateTime.parse(json['trial_ends_at'] as String)
           : null,
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
     );
   }
 
@@ -139,7 +139,7 @@ class OwnerProfile {
       'subscription_end_date': subscriptionEndDate?.toIso8601String(),
       'is_trial': isTrial,
       'trial_ends_at': trialEndsAt?.toIso8601String(),
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 
@@ -158,7 +158,7 @@ class OwnerProfile {
     DateTime? subscriptionEndDate,
     bool? isTrial,
     DateTime? trialEndsAt,
-    int? shopId,
+    int? salonId,
   }) {
     return OwnerProfile(
       id: id ?? this.id,
@@ -176,7 +176,7 @@ class OwnerProfile {
       subscriptionEndDate: subscriptionEndDate ?? this.subscriptionEndDate,
       isTrial: isTrial ?? this.isTrial,
       trialEndsAt: trialEndsAt ?? this.trialEndsAt,
-      shopId: shopId ?? this.shopId,
+      salonId: salonId ?? this.salonId,
     );
   }
 

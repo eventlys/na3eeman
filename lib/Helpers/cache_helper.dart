@@ -5,10 +5,10 @@ import 'logger.dart';
 // Predefined cache keys - moved outside CacheHelper
 class CacheKeys {
   static const String userProfile = 'user_profile';
-  static const String shopsList = 'shops_list';
+  static const String salonsList = 'salons_list';
   static const String appointments = 'user_appointments';
   static const String loyaltyBalance = 'loyalty_balance';
-  static const String shopDetailsPrefix = 'shop_details_';
+  static const String salonDetailsPrefix = 'salon_details_';
   static const String barberDetailsPrefix = 'barber_details_';
   static const String serviceListPrefix = 'services_';
 }
@@ -199,32 +199,32 @@ class CacheHelper {
     return retrieve(CacheKeys.userProfile);
   }
 
-  // Store shops list
-  Future<void> storeShopsList(List<dynamic> shops) async {
+  // Store salons list
+  Future<void> storeSalonsList(List<dynamic> salons) async {
     await store(
-      CacheKeys.shopsList,
-      shops,
+      CacheKeys.salonsList,
+      salons,
       duration: CacheDurations.medium,
     );
   }
 
-  // Retrieve shops list
-  List<dynamic>? retrieveShopsList() {
-    return retrieve(CacheKeys.shopsList);
+  // Retrieve salons list
+  List<dynamic>? retrieveSalonsList() {
+    return retrieve(CacheKeys.salonsList);
   }
 
-  // Store shop details
-  Future<void> storeShopDetails(int shopId, Map<String, dynamic> details) async {
+  // Store salon details
+  Future<void> storeSalonDetails(int salonId, Map<String, dynamic> details) async {
     await store(
-      '${CacheKeys.shopDetailsPrefix}$shopId',
+      '${CacheKeys.salonDetailsPrefix}$salonId',
       details,
       duration: CacheDurations.medium,
     );
   }
 
-  // Retrieve shop details
-  Map<String, dynamic>? retrieveShopDetails(int shopId) {
-    return retrieve('${CacheKeys.shopDetailsPrefix}$shopId');
+  // Retrieve salon details
+  Map<String, dynamic>? retrieveSalonDetails(int salonId) {
+    return retrieve('${CacheKeys.salonDetailsPrefix}$salonId');
   }
 
   // Store appointments

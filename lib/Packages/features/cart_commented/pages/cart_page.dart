@@ -1,3 +1,4 @@
+// import 'package:na3eeman/l10n/app_localizations.dart';
 // import 'package:flutter/material.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import '../../../Helpers/customized/cart_helpers.dart';
@@ -68,7 +69,7 @@
 //         actions: [
 //           TextButton(
 //             onPressed: () => Navigator.pop(context),
-//             child: Text('cancel'.tr()),
+//             child: Text(AppLocalizations.of(context)!.cancel),
 //           ),
 //           ElevatedButton(
 //             onPressed: () {
@@ -80,7 +81,7 @@
 //                 const SnackBar(content: Text('Order placed successfully!')),
 //               );
 //             },
-//             child: Text('confirm'.tr()),
+//             child: Text(AppLocalizations.of(context)!.confirm),
 //           ),
 //         ],
 //       ),
@@ -100,7 +101,7 @@
 //         body: CustomScrollView(
 //           slivers: [
 //             GlassSliverAppBar(
-//               title: 'Shopping Cart',
+//               title: 'Salonping Cart',
 //               backgroundColor: Colors.transparent,
 //             ),
 //             SliverToBoxAdapter(
@@ -120,7 +121,7 @@
 //                           child: Column(
 //                             mainAxisAlignment: MainAxisAlignment.center,
 //                             children: [
-//                               Icon(Icons.shopping_cart_outlined,
+//                               Icon(Icons.salonping_cart_outlined,
 //                                   size: 64, color: Colors.grey),
 //                               SizedBox(height: 16),
 //                               Text(

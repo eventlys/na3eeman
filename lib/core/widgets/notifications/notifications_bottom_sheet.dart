@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../theme/colors.dart';
@@ -42,11 +43,11 @@ class _NotificationsContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('notifications'.tr(), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
               if (provider.unreadCount > 0)
                 TextButton(
                   onPressed: () => provider.markAllRead(),
-                  child: Text('mark_all_read'.tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
+                  child: Text(AppLocalizations.of(context)!.markAllRead, style: TextStyle(color: Theme.of(context).primaryColor)),
                 ),
             ],
           ),

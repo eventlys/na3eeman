@@ -27,7 +27,7 @@ class ApiInterceptorService {
       timeWindow: const Duration(minutes: 1),
       maxRequests: 3,
     ),
-    '/shops': RateLimiter(
+    '/salons': RateLimiter(
       timeWindow: const Duration(seconds: 10),
       maxRequests: 30,
     ),

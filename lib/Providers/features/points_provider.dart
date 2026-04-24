@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+// import '../../Models/loyalty/points_model.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/storage_service.dart';
-import '../../core/enums/app_enums.dart';
+import '../../Services/enums/points_types.dart';
 
 class PointsProvider with ChangeNotifier {
   final ApiService _loyaltyService;
@@ -13,12 +14,15 @@ class PointsProvider with ChangeNotifier {
   int get currentBalance => _currentBalance;
   bool get isLoading => _isLoading;
 
-  Future<void> loadBalance(int customerId) async {
+  Future<void> loadBalance([int? customerId]) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final balance = await _loyaltyService.getLoyaltyBalance(customerId);
+      final targetCustomerId = customerId ?? (await UnifiedStorageService().getUserProfile())?.id;
+      if (targetCustomerId == null) return;
+
+      final balance = await _loyaltyService.getLoyaltyBalance(targetCustomerId);
       _currentBalance = balance.points;
     } catch (error) {
       // Handle error appropriately
@@ -72,21 +76,21 @@ class PointsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> submitShopFeedback({
+  Future<void> submitSalonFeedback({
     required int customerId,
-    required String shopName,
+    required String salonName,
     String? review,
     double? rating,
   }) async {
     final metadata = {
-      'shop_name': shopName,
+      'salon_name': salonName,
       if (review != null) 'review': review,
       if (rating != null) 'rating': rating,
     };
 
     await addPoints(
       customerId: customerId,
-      type: PointsType.shopFeedback,
+      type: PointsType.salonFeedback,
       metadata: metadata,
     );
   }
@@ -127,64 +131,64 @@ class PointsProvider with ChangeNotifier {
     );
   }
 
+  Future<bool> redeemPointsForPayment(int customerId, double amountJod) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _loyaltyService.redeemPoints(customerId, amountJod);
+      _currentBalance = response['points'] as int? ?? _currentBalance;
+      return true;
+    } catch (error) {
+      debugPrint('Error redeeming points: $error');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  int calculatePointsValue(double jod) => (jod * 1000).toInt();
+
   int _getPointsValue(PointsType type) {
     switch (type) {
-      case PointsType.inviteFriend:
-      case PointsType.referral:
-        return 100;
-      case PointsType.booking:
-      case PointsType.purchase:
-      case PointsType.appointmentComplete:
-        return 50;
-      case PointsType.loyalty:
-      case PointsType.rateShop:
-      case PointsType.reviewWrite:
-      case PointsType.shopFeedback:
-        return 25;
-      case PointsType.arriveOnTime:
-      case PointsType.rateApp:
-      case PointsType.appFeedback:
-      case PointsType.makeAppointment:
-        return 10;
-      case PointsType.rewardRedeem:
-        return 0; // Redeeming costs points, doesn't add
-      case PointsType.other:
-        return 10;
+      case PointsType.invite: return 100;
+      case PointsType.referral: return 50;
+      case PointsType.gifting: return 30;
+      case PointsType.appointmentComplete: return 25;
+      case PointsType.arriveOnTime: return 15;
+      case PointsType.tip: return 100; // per 1 JOS
+      case PointsType.lateArrival: return -10;
+      case PointsType.delay5Min: return -10;
+      case PointsType.delay10Min: return -20;
+      case PointsType.delay15Min: return -30;
+      case PointsType.signup: return 100;
+      case PointsType.milestoneReached: return 200;
+      default: return 0;
     }
   }
 
   String _getSourceString(PointsType type) {
     switch (type) {
-      case PointsType.inviteFriend:
-        return 'invite_friend';
-      case PointsType.rateShop:
-        return 'rate_shop';
-      case PointsType.arriveOnTime:
-        return 'arrive_on_time';
-      case PointsType.booking:
-        return 'booking';
-      case PointsType.loyalty:
-        return 'loyalty';
-      case PointsType.purchase:
-        return 'purchase';
-      case PointsType.shopFeedback:
-        return 'shop_feedback';
-      case PointsType.rateApp:
-        return 'rate_app';
-      case PointsType.appFeedback:
-        return 'app_feedback';
-      case PointsType.makeAppointment:
-        return 'make_appointment';
-      case PointsType.appointmentComplete:
-        return 'appointment_complete';
-      case PointsType.reviewWrite:
-        return 'review_write';
-      case PointsType.referral:
-        return 'referral';
-      case PointsType.rewardRedeem:
-        return 'reward_redeem';
-      case PointsType.other:
-        return 'other';
+      case PointsType.invite: return 'INVITE';
+      case PointsType.review: return 'REVIEW_SALON';
+      case PointsType.gifting: return 'GIFT';
+      case PointsType.rateSalon: return 'REVIEW_SALON';
+      case PointsType.rateApp: return 'RATING_APP';
+      case PointsType.employeeFeedback: return 'EMPLOYEE_REVIEW_GOOD';
+      case PointsType.appointmentComplete: return 'APPOINTMENT';
+      case PointsType.arriveOnTime: return 'EARLY';
+      case PointsType.lateArrival: return 'LATE';
+      case PointsType.delay5Min: return 'DELAY_REQUEST';
+      case PointsType.delay10Min: return 'DELAY_REQUEST';
+      case PointsType.delay15Min: return 'DELAY_REQUEST';
+      case PointsType.referral: return 'INVITE';
+      case PointsType.booking: return 'APPOINTMENT';
+      case PointsType.redeem: return 'PAYMENT_REDEEM';
+      case PointsType.tip: return 'TIP';
+      case PointsType.signup: return 'SIGNUP';
+      case PointsType.milestoneReached: return 'MILESTONE';
+      case PointsType.other: return 'ADMIN';
+      default: return 'ADMIN';
     }
   }
 }

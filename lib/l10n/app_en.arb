@@ -1,62 +1,2228 @@
 {
   "@@locale": "en",
-  "app_name": "Na3eeman",
-  "admin_portal": "Admin (God Mode)",
-  "total_users": "Total Users",
-  "active_shops": "Active Shops",
-  "appointments": "Appointments",
-  "revenue": "Revenue",
-  "system_health": "System Health",
-  "view_api_logs": "View API Logs",
-  "api_status": "Backend API",
-  "cache_status": "Cache Service (Redis)",
-  "db_status": "DB (PostgreSQL)",
-  "admin_modules": "Admin Modules",
+  "serviceRequests": "Service Requests",
+  "@serviceRequests": {
+    "description": "Translation for service_requests"
+  },
+  "appName": "Na3eeman",
+  "@appName": {
+    "description": "Translation for app_name"
+  },
+  "userName": "User Name",
+  "@userName": {
+    "description": "Translation for user_name"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Translation for password"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Translation for login"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Translation for logout"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Translation for profile"
+  },
   "settings": "Settings",
+  "@settings": {
+    "description": "Translation for settings"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Translation for search"
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Translation for refresh"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Translation for loading"
+  },
+  "catigories": "Catigories",
+  "@catigories": {
+    "description": "Translation for catigories"
+  },
+  "specialOffers": "Special Offers",
+  "@specialOffers": {
+    "description": "Translation for special_offers"
+  },
+  "serviceHair": "Hair",
+  "@serviceHair": {
+    "description": "Translation for service_hair"
+  },
+  "serviceBeauty": "Beauty",
+  "@serviceBeauty": {
+    "description": "Translation for service_beauty"
+  },
+  "serviceBrides": "Brides",
+  "@serviceBrides": {
+    "description": "Translation for service_brides"
+  },
+  "serviceNails": "Nails",
+  "@serviceNails": {
+    "description": "Translation for service_nails"
+  },
+  "serviceSpa": "Spa",
+  "@serviceSpa": {
+    "description": "Translation for service_spa"
+  },
+  "serviceLaser": "Laser",
+  "@serviceLaser": {
+    "description": "Translation for service_laser"
+  },
+  "serviceSkinCare": "Skin Care",
+  "@serviceSkinCare": {
+    "description": "Translation for service_skin_care"
+  },
+  "serviceGrooming": "Grooming",
+  "@serviceGrooming": {
+    "description": "Translation for service_grooming"
+  },
+  "adminPortal": "Admin (God Mode)",
+  "@adminPortal": {
+    "description": "Translation for admin_portal"
+  },
+  "totalUsers": "Total Users",
+  "@totalUsers": {
+    "description": "Translation for total_users"
+  },
+  "activeSalons": "Active Salons",
+  "@activeSalons": {
+    "description": "Translation for active_salons"
+  },
+  "appointments": "Appointments",
+  "@appointments": {
+    "description": "Translation for appointments"
+  },
+  "revenue": "Revenue",
+  "@revenue": {
+    "description": "Translation for revenue"
+  },
+  "systemHealth": "System Health",
+  "@systemHealth": {
+    "description": "Translation for system_health"
+  },
+  "viewApiLogs": "View API Logs",
+  "@viewApiLogs": {
+    "description": "Translation for view_api_logs"
+  },
+  "apiStatus": "Backend API",
+  "@apiStatus": {
+    "description": "Translation for api_status"
+  },
+  "cacheStatus": "Cache Service (Redis)",
+  "@cacheStatus": {
+    "description": "Translation for cache_status"
+  },
+  "dbStatus": "DB (PostgreSQL)",
+  "@dbStatus": {
+    "description": "Translation for db_status"
+  },
+  "adminModules": "Admin Modules",
+  "@adminModules": {
+    "description": "Translation for admin_modules"
+  },
   "insights": "Insights",
-  "analyze_trends": "Analyze Trends",
-  "users": "Users",
+  "@insights": {
+    "description": "Translation for insights"
+  },
+  "analyzeTrends": "Analyze Trends",
+  "@analyzeTrends": {
+    "description": "Translation for analyze_trends"
+  },
+  "internPortal": "Intern Portal",
+  "@internPortal": {
+    "description": "Translation for intern_portal"
+  },
+  "learningJourney": "Learning Journey Under",
+  "@learningJourney": {
+    "description": "Translation for learning_journey"
+  },
+  "exploreMentors": "Explore Mentors Below",
+  "@exploreMentors": {
+    "description": "Translation for explore_mentors"
+  },
+  "activeAssignments": "Active Assignments",
+  "@activeAssignments": {
+    "description": "Translation for active_assignments"
+  },
+  "dailyTasks": "Daily Tasks",
+  "@dailyTasks": {
+    "description": "Translation for daily_tasks"
+  },
+  "addTask": "Add Task",
+  "@addTask": {
+    "description": "Translation for add_task"
+  },
+  "weeklyTraining": "Weekly Training",
+  "@weeklyTraining": {
+    "description": "Translation for weekly_training"
+  },
+  "monthlyTargets": "Monthly Targets",
+  "@monthlyTargets": {
+    "description": "Translation for monthly_targets"
+  },
+  "showPct": "Show %",
+  "@showPct": {
+    "description": "Translation for show_pct"
+  },
+  "showNum": "Show #",
+  "@showNum": {
+    "description": "Translation for show_num"
+  },
+  "taskCompletion": "Task Completion",
+  "@taskCompletion": {
+    "description": "Translation for task_completion"
+  },
+  "tasksDoneToday": "{value} of {value} tasks done for today",
+  "@tasksDoneToday": {
+    "description": "Translation for tasks_done_today"
+  },
+  "showMore": "Show more",
+  "@showMore": {
+    "description": "Translation for show_more"
+  },
+  "noEmployees": "No employees found in the salon",
+  "@noEmployees": {
+    "description": "Translation for no_employees"
+  },
+  "noTargets": "No targets set for this month",
+  "@noTargets": {
+    "description": "Translation for no_targets"
+  },
+  "shadowing": "SHADOWING",
+  "@shadowing": {
+    "description": "Translation for shadowing"
+  },
+  "attach": "Attach",
+  "@attach": {
+    "description": "Translation for attach"
+  },
+  "finishTasks": "Finish Tasks",
+  "@finishTasks": {
+    "description": "Translation for finish_tasks"
+  },
+  "attachSuccess": "Successfully attached to {value}",
+  "@attachSuccess": {
+    "description": "Translation for attach_success"
+  },
+  "attachError": "Failed to update mentor: {value}",
+  "@attachError": {
+    "description": "Translation for attach_error"
+  },
   "finance": "Finance",
+  "@finance": {
+    "description": "Translation for finance"
+  },
   "analytics": "Analytics",
+  "@analytics": {
+    "description": "Translation for analytics"
+  },
   "compliance": "Compliance",
-  "intern_portal": "Intern Portal",
-  "learning_journey": "Learning Journey Under",
-  "explore_mentors": "Explore Mentors Below",
-  "active_assignments": "Active Assignments",
-  "daily_tasks": "Daily Tasks",
-  "add_task": "Add Task",
-  "weekly_training": "Weekly Training",
-  "monthly_targets": "Monthly Targets",
-  "show_pct": "Show %",
-  "show_num": "Show #",
-  "task_completion": "Task Completion",
-  "tasks_done_today": "{completed} of {total} tasks done for today",
-  "@tasks_done_today": {
+  "@compliance": {
+    "description": "Translation for compliance"
+  },
+  "users": "Users",
+  "@users": {
+    "description": "Translation for users"
+  },
+  "growthInsight": "User growth is up 12% this week compared to last month.",
+  "@growthInsight": {
+    "description": "Translation for growth_insight"
+  },
+  "topCategoriesInsight": "Top categories: Barbersalons (65%), Spas (20%).",
+  "@topCategoriesInsight": {
+    "description": "Translation for top_categories_insight"
+  },
+  "adminPanel": "Admin Panel",
+  "@adminPanel": {
+    "description": "Translation for admin_panel"
+  },
+  "salonDashboard": "Salon Dashboard",
+  "@salonDashboard": {
+    "description": "Translation for salon_dashboard"
+  },
+  "mySchedule": "My Schedule",
+  "@mySchedule": {
+    "description": "Translation for my_schedule"
+  },
+  "offers": "Offers",
+  "@offers": {
+    "description": "Translation for offers"
+  },
+  "ads": "Ads",
+  "@ads": {
+    "description": "Translation for ads"
+  },
+  "feedback": "Feedback",
+  "@feedback": {
+    "description": "Translation for feedback"
+  },
+  "tellOthers": "Tell others about us",
+  "@tellOthers": {
+    "description": "Translation for tell_others"
+  },
+  "shareLink": "Share Salon Link",
+  "@shareLink": {
+    "description": "Translation for share_link"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Translation for privacy_policy"
+  },
+  "salonLinkCopied": "Salon Link Copied to Clipboard!",
+  "@salonLinkCopied": {
+    "description": "Translation for salon_link_copied"
+  },
+  "feedbackDisplay": "Feedback display...",
+  "@feedbackDisplay": {
+    "description": "Translation for feedback_display"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Translation for cancel"
+  },
+  "tryAgain": "Try Again",
+  "@tryAgain": {
+    "description": "Translation for try_again"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Translation for confirm"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "create": "Create",
+  "@create": {
+    "description": "Translation for create"
+  },
+  "changeProfilePicture": "Change Profile Picture",
+  "@changeProfilePicture": {
+    "description": "Translation for change_profile_picture"
+  },
+  "viewAll": "View All",
+  "@viewAll": {
+    "description": "Translation for view_all"
+  },
+  "seeAll": "See All",
+  "@seeAll": {
+    "description": "Translation for see_all"
+  },
+  "systemHealthTitle": "System Health",
+  "@systemHealthTitle": {
+    "description": "Translation for system_health_title"
+  },
+  "sendFeedback": "Send Feedback",
+  "@sendFeedback": {
+    "description": "Translation for send_feedback"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Translation for retry"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Translation for delete"
+  },
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Translation for gallery"
+  },
+  "camera": "Camera",
+  "@camera": {
+    "description": "Translation for camera"
+  },
+  "redeem": "Redeem",
+  "@redeem": {
+    "description": "Translation for redeem"
+  },
+  "history": "History",
+  "@history": {
+    "description": "Translation for history"
+  },
+  "completePayment": "Complete Payment",
+  "@completePayment": {
+    "description": "Translation for complete_payment"
+  },
+  "changePassword": "Change Password",
+  "@changePassword": {
+    "description": "Translation for change_password"
+  },
+  "reportSuccess": "Report generated successfully!",
+  "@reportSuccess": {
+    "description": "Translation for report_success"
+  },
+  "offerSuccess": "Offer created successfully!",
+  "@offerSuccess": {
+    "description": "Translation for offer_success"
+  },
+  "manageSalon": "Manage Salon Profile",
+  "@manageSalon": {
+    "description": "Translation for manage_salon"
+  },
+  "launch": "Launch",
+  "@launch": {
+    "description": "Translation for launch"
+  },
+  "includeOptions": "Include Options:",
+  "@includeOptions": {
+    "description": "Translation for include_options"
+  },
+  "createPromotion": "Create Promotion",
+  "@createPromotion": {
+    "description": "Translation for create_promotion"
+  },
+  "createOffer": "Create New Offer",
+  "@createOffer": {
+    "description": "Translation for create_offer"
+  },
+  "createAd": "Create Ad Campaign",
+  "@createAd": {
+    "description": "Translation for create_ad"
+  },
+  "exploreSalons": "Explore Salons",
+  "@exploreSalons": {
+    "description": "Translation for explore_salons"
+  },
+  "bookAppointment": "Book Appointment",
+  "@bookAppointment": {
+    "description": "Translation for book_appointment"
+  },
+  "subscriptionPlans": "Subscription Plans",
+  "@subscriptionPlans": {
+    "description": "Translation for subscription_plans"
+  },
+  "selectPlan": "Select Plan",
+  "@selectPlan": {
+    "description": "Translation for select_plan"
+  },
+  "recommended": "RECOMMENDED",
+  "@recommended": {
+    "description": "Translation for recommended"
+  },
+  "appointmentHistory": "Appointment History",
+  "@appointmentHistory": {
+    "description": "Translation for appointment_history"
+  },
+  "reportOptions": "Report Options",
+  "@reportOptions": {
+    "description": "Translation for report_options"
+  },
+  "generate": "Generate",
+  "@generate": {
+    "description": "Translation for generate"
+  },
+  "share": "Share",
+  "@share": {
+    "description": "Translation for share"
+  },
+  "reportProblem": "Report a Problem",
+  "@reportProblem": {
+    "description": "Translation for report_problem"
+  },
+  "bugReport": "Bug Report",
+  "@bugReport": {
+    "description": "Translation for bug_report"
+  },
+  "usageAbuse": "Usage Abuse",
+  "@usageAbuse": {
+    "description": "Translation for usage_abuse"
+  },
+  "featureRequest": "Feature Request",
+  "@featureRequest": {
+    "description": "Translation for feature_request"
+  },
+  "other": "Other",
+  "@other": {
+    "description": "Translation for other"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Translation for email"
+  },
+  "signUp": "Sign Up",
+  "@signUp": {
+    "description": "Translation for sign_up"
+  },
+  "fullName": "Full Name",
+  "@fullName": {
+    "description": "Translation for full_name"
+  },
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Translation for phone_number"
+  },
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Translation for forgot_password"
+  },
+  "welcomeBack": "Welcome Back!",
+  "@welcomeBack": {
+    "description": "Translation for welcome_back"
+  },
+  "signInToContinue": "Sign in to continue",
+  "@signInToContinue": {
+    "description": "Translation for sign_in_to_continue"
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Translation for sign_in"
+  },
+  "createAnAccount": "Create an Account",
+  "@createAnAccount": {
+    "description": "Translation for create_an_account"
+  },
+  "male": "Male",
+  "@male": {
+    "description": "Translation for male"
+  },
+  "female": "Female",
+  "@female": {
+    "description": "Translation for female"
+  },
+  "gender": "Gender",
+  "@gender": {
+    "description": "Translation for gender"
+  },
+  "emailIsRequired": "Email is required",
+  "@emailIsRequired": {
+    "description": "Translation for email_is_required"
+  },
+  "passwordIsRequired": "Password is required",
+  "@passwordIsRequired": {
+    "description": "Translation for password_is_required"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Translation for error"
+  },
+  "success": "Success",
+  "@success": {
+    "description": "Translation for success"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Translation for ok"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Translation for yes"
+  },
+  "no": "No",
+  "@no": {
+    "description": "Translation for no"
+  },
+  "done": "Done",
+  "@done": {
+    "description": "Translation for done"
+  },
+  "next": "Next",
+  "@next": {
+    "description": "Translation for next"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Translation for back"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Translation for save"
+  },
+  "update": "Update",
+  "@update": {
+    "description": "Translation for update"
+  },
+  "continueKey": "Continue",
+  "@continueKey": {
+    "description": "Translation for continue"
+  },
+  "favorites": "Favorites",
+  "@favorites": {
+    "description": "Translation for favorites"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Translation for home"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Translation for notifications"
+  },
+  "messages": "Messages",
+  "@messages": {
+    "description": "Translation for messages"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "Translation for date"
+  },
+  "time": "Time",
+  "@time": {
+    "description": "Translation for time"
+  },
+  "price": "Price",
+  "@price": {
+    "description": "Translation for price"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Translation for status"
+  },
+  "available": "Available",
+  "@available": {
+    "description": "Translation for available"
+  },
+  "busy": "Busy",
+  "@busy": {
+    "description": "Translation for busy"
+  },
+  "bookNow": "Book Now",
+  "@bookNow": {
+    "description": "Translation for book_now"
+  },
+  "booking": "Booking",
+  "@booking": {
+    "description": "Translation for booking"
+  },
+  "select": "Select",
+  "@select": {
+    "description": "Translation for select"
+  },
+  "selected": "Selected",
+  "@selected": {
+    "description": "Translation for selected"
+  },
+  "submit": "Submit",
+  "@submit": {
+    "description": "Translation for submit"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Translation for total"
+  },
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Translation for dashboard"
+  },
+  "receptionistDesk": "Receptionist Desk",
+  "@receptionistDesk": {
+    "description": "Translation for receptionist_desk"
+  },
+  "staffActions": "Staff Actions",
+  "@staffActions": {
+    "description": "Translation for staff_actions"
+  },
+  "pendingPayments": "Pending Payments",
+  "@pendingPayments": {
+    "description": "Translation for pending_payments"
+  },
+  "salonManagement": "Salon Management",
+  "@salonManagement": {
+    "description": "Translation for salon_management"
+  },
+  "support": "Support",
+  "@support": {
+    "description": "Translation for support"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Translation for active"
+  },
+  "inactive": "Inactive",
+  "@inactive": {
+    "description": "Translation for inactive"
+  },
+  "noDataFound": "No data found",
+  "@noDataFound": {
+    "description": "Translation for no_data_found"
+  },
+  "pleaseWait": "Please wait...",
+  "@pleaseWait": {
+    "description": "Translation for please_wait"
+  },
+  "paymentSuccessful": "Payment successful",
+  "@paymentSuccessful": {
+    "description": "Translation for payment_successful"
+  },
+  "paymentFailed": "Payment failed",
+  "@paymentFailed": {
+    "description": "Translation for payment_failed"
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Translation for welcome"
+  },
+  "donTHaveAnAccountSignUp": "Don't have an account? Sign up",
+  "@donTHaveAnAccountSignUp": {
+    "description": "Translation for don_t_have_an_account_sign_up"
+  },
+  "alreadyHaveAnAccountLogin": "Already have an account? Login",
+  "@alreadyHaveAnAccountLogin": {
+    "description": "Translation for already_have_an_account_login"
+  },
+  "logoutPageComingSoon": "Logout Page - Coming Soon",
+  "@logoutPageComingSoon": {
+    "description": "Translation for logout_page_coming_soon"
+  },
+  "systemAlerts": "System Alerts",
+  "@systemAlerts": {
+    "description": "Translation for system_alerts"
+  },
+  "completed": "Completed",
+  "@completed": {
+    "description": "Translation for completed"
+  },
+  "branchManagement": "Branch Management",
+  "@branchManagement": {
+    "description": "Translation for branch_management"
+  },
+  "inventoryManagement": "Inventory Management",
+  "@inventoryManagement": {
+    "description": "Translation for inventory_management"
+  },
+  "servicesPrices": "Services & Prices",
+  "@servicesPrices": {
+    "description": "Translation for services_prices"
+  },
+  "emailAddress": "Email Address",
+  "@emailAddress": {
+    "description": "Translation for email_address"
+  },
+  "subject": "Subject",
+  "@subject": {
+    "description": "Translation for subject"
+  },
+  "noSubscriptionsAvailable": "No Subscriptions Available",
+  "@noSubscriptionsAvailable": {
+    "description": "Translation for no_subscriptions_available"
+  },
+  "pending": "Pending",
+  "@pending": {
+    "description": "Translation for pending"
+  },
+  "generatingReport": "Generating report...",
+  "@generatingReport": {
+    "description": "Translation for generating_report"
+  },
+  "lowStockAlerts": "Low Stock Alerts",
+  "@lowStockAlerts": {
+    "description": "Translation for low_stock_alerts"
+  },
+  "quickActions": "Quick Actions",
+  "@quickActions": {
+    "description": "Translation for quick_actions"
+  },
+  "activeCampaigns": "Active Campaigns",
+  "@activeCampaigns": {
+    "description": "Translation for active_campaigns"
+  },
+  "toolsInventory": "Tools & Inventory",
+  "@toolsInventory": {
+    "description": "Translation for tools_inventory"
+  },
+  "validityPeriod": "Validity Period:",
+  "@validityPeriod": {
+    "description": "Translation for validity_period"
+  },
+  "adCampaignLaunched": "Ad Campaign launched!",
+  "@adCampaignLaunched": {
+    "description": "Translation for ad_campaign_launched"
+  },
+  "assignManager": "Assign Manager",
+  "@assignManager": {
+    "description": "Translation for assign_manager"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Translation for edit"
+  },
+  "workingHours": "Working Hours",
+  "@workingHours": {
+    "description": "Translation for working_hours"
+  },
+  "lowStockAlert": "Low Stock Alert",
+  "@lowStockAlert": {
+    "description": "Translation for low_stock_alert"
+  },
+  "role": "Role",
+  "@role": {
+    "description": "Translation for role"
+  },
+  "barber": "Barber",
+  "@barber": {
+    "description": "Translation for barber"
+  },
+  "monthly": "Monthly",
+  "@monthly": {
+    "description": "Translation for monthly"
+  },
+  "addFirstBranch": "Add First Branch",
+  "@addFirstBranch": {
+    "description": "Translation for add_first_branch"
+  },
+  "additionalServices": "Additional Services:",
+  "@additionalServices": {
+    "description": "Translation for additional_services"
+  },
+  "addItem": "Add Item",
+  "@addItem": {
+    "description": "Translation for add_item"
+  },
+  "newPassword": "New Password",
+  "@newPassword": {
+    "description": "Translation for new_password"
+  },
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Translation for confirm_password"
+  },
+  "issueType": "Issue Type",
+  "@issueType": {
+    "description": "Translation for issue_type"
+  },
+  "appFeedback": "App Feedback",
+  "@appFeedback": {
+    "description": "Translation for app_feedback"
+  },
+  "rating": "Rating:",
+  "@rating": {
+    "description": "Translation for rating"
+  },
+  "today": "Today\\",
+  "@today": {
+    "description": "Translation for today"
+  },
+  "reportIssue": "Report Issue",
+  "@reportIssue": {
+    "description": "Translation for report_issue"
+  },
+  "errorDetails": "Error Details",
+  "@errorDetails": {
+    "description": "Translation for error_details"
+  },
+  "stackTrace": "Stack Trace:",
+  "@stackTrace": {
+    "description": "Translation for stack_trace"
+  },
+  "builderError": "Builder Error",
+  "@builderError": {
+    "description": "Translation for builder_error"
+  },
+  "oopsSomethingWentWrong": "Oops! Something went wrong",
+  "@oopsSomethingWentWrong": {
+    "description": "Translation for oops_something_went_wrong"
+  },
+  "logOut": "Log Out",
+  "@logOut": {
+    "description": "Translation for log_out"
+  },
+  "godMode": "God Mode",
+  "@godMode": {
+    "description": "Translation for god_mode"
+  },
+  "account": "Account",
+  "@account": {
+    "description": "Translation for account"
+  },
+  "failedToLoadSubscriptions": "Failed to load subscriptions",
+  "@failedToLoadSubscriptions": {
+    "description": "Translation for failed_to_load_subscriptions"
+  },
+  "thereAreNoSubscriptionPlansAvailableAtTheM": "There are no subscription plans available at the moment.",
+  "@thereAreNoSubscriptionPlansAvailableAtTheM": {
+    "description": "Translation for there_are_no_subscription_plans_available_at_the_m"
+  },
+  "subscribeToTheSalon": "Subscribe to the Salon",
+  "@subscribeToTheSalon": {
+    "description": "Translation for subscribe_to_the_salon"
+  },
+  "itemRestockedTo10Units": "Item restocked to 10 units",
+  "@itemRestockedTo10Units": {
+    "description": "Translation for item_restocked_to_10_units"
+  },
+  "popular": "Popular",
+  "@popular": {
+    "description": "Translation for popular"
+  },
+  "noFavoritesYet": "No Favorites Yet",
+  "@noFavoritesYet": {
+    "description": "Translation for no_favorites_yet"
+  },
+  "itemsYouAddToYourFavoritesWillAppearHere": "Items you add to your favorites will appear here",
+  "@itemsYouAddToYourFavoritesWillAppearHere": {
+    "description": "Translation for items_you_add_to_your_favorites_will_appear_here"
+  },
+  "browseProducts": "Browse Products",
+  "@browseProducts": {
+    "description": "Translation for browse_products"
+  },
+  "downloadReport": "Download Report",
+  "@downloadReport": {
+    "description": "Translation for download_report"
+  },
+  "fileFormatPdf": "File Format: PDF",
+  "@fileFormatPdf": {
+    "description": "Translation for file_format_pdf"
+  },
+  "reportDetails": "Report Details",
+  "@reportDetails": {
+    "description": "Translation for report_details"
+  },
+  "download": "Download",
+  "@download": {
+    "description": "Translation for download"
+  },
+  "reportType": "Report Type",
+  "@reportType": {
+    "description": "Translation for report_type"
+  },
+  "timePeriod": "Time Period",
+  "@timePeriod": {
+    "description": "Translation for time_period"
+  },
+  "fileName": "File Name",
+  "@fileName": {
+    "description": "Translation for file_name"
+  },
+  "enterFileName": "Enter file name",
+  "@enterFileName": {
+    "description": "Translation for enter_file_name"
+  },
+  "hello": "Hello",
+  "@hello": {
+    "description": "Translation for hello"
+  },
+  "gold": "Gold",
+  "@gold": {
+    "description": "Translation for gold"
+  },
+  "selectDate": "Select Date",
+  "@selectDate": {
+    "description": "Translation for select_date"
+  },
+  "availableTimes": "Available Times",
+  "@availableTimes": {
+    "description": "Translation for available_times"
+  },
+  "selectADateFirstToSeeAvailableTimes": "Select a date first to see available times",
+  "@selectADateFirstToSeeAvailableTimes": {
+    "description": "Translation for select_a_date_first_to_see_available_times"
+  },
+  "pendingConfirmations": "Pending Confirmations",
+  "@pendingConfirmations": {
+    "description": "Translation for pending_confirmations"
+  },
+  "weeklyEarningsTrend": "Weekly Earnings Trend",
+  "@weeklyEarningsTrend": {
+    "description": "Translation for weekly_earnings_trend"
+  },
+  "noEarningsDataAvailable": "No earnings data available",
+  "@noEarningsDataAvailable": {
+    "description": "Translation for no_earnings_data_available"
+  },
+  "upgradeToUnlock": "Upgrade to unlock",
+  "@upgradeToUnlock": {
+    "description": "Translation for upgrade_to_unlock"
+  },
+  "upgradeNow": "Upgrade Now",
+  "@upgradeNow": {
+    "description": "Translation for upgrade_now"
+  },
+  "viewPlans": "View Plans",
+  "@viewPlans": {
+    "description": "Translation for view_plans"
+  },
+  "subscription": "Subscription",
+  "@subscription": {
+    "description": "Translation for subscription"
+  },
+  "noFeaturesAvailable": "No features available",
+  "@noFeaturesAvailable": {
+    "description": "Translation for no_features_available"
+  },
+  "unableToLoadSubscription": "Unable to Load Subscription",
+  "@unableToLoadSubscription": {
+    "description": "Translation for unable_to_load_subscription"
+  },
+  "noActiveSubscription": "No Active Subscription",
+  "@noActiveSubscription": {
+    "description": "Translation for no_active_subscription"
+  },
+  "connectionError": "Connection Error",
+  "@connectionError": {
+    "description": "Translation for connection_error"
+  },
+  "pullDownToRefresh": "Pull down to refresh",
+  "@pullDownToRefresh": {
+    "description": "Translation for pull_down_to_refresh"
+  },
+  "refreshFailed": "Refresh failed!",
+  "@refreshFailed": {
+    "description": "Translation for refresh_failed"
+  },
+  "releaseToRefresh": "Release to refresh",
+  "@releaseToRefresh": {
+    "description": "Translation for release_to_refresh"
+  },
+  "refreshCompleted": "Refresh completed",
+  "@refreshCompleted": {
+    "description": "Translation for refresh_completed"
+  },
+  "pullUpToLoadMore": "Pull up to load more",
+  "@pullUpToLoadMore": {
+    "description": "Translation for pull_up_to_load_more"
+  },
+  "loadFailed": "Load failed!",
+  "@loadFailed": {
+    "description": "Translation for load_failed"
+  },
+  "releaseToLoadMore": "Release to load more",
+  "@releaseToLoadMore": {
+    "description": "Translation for release_to_load_more"
+  },
+  "noMoreData": "No more data",
+  "@noMoreData": {
+    "description": "Translation for no_more_data"
+  },
+  "deleteProfile": "Delete Profile",
+  "@deleteProfile": {
+    "description": "Translation for delete_profile"
+  },
+  "areYouSureYouWantToDeleteYourProfileThis": "Are you sure you want to delete your profile? This action cannot be undone.",
+  "@areYouSureYouWantToDeleteYourProfileThis": {
+    "description": "Translation for are_you_sure_you_want_to_delete_your_profile_this_"
+  },
+  "profileDeleted": "Profile deleted",
+  "@profileDeleted": {
+    "description": "Translation for profile_deleted"
+  },
+  "chooseAnOption": "Choose an option",
+  "@chooseAnOption": {
+    "description": "Translation for choose_an_option"
+  },
+  "alreadyHaveAnAccountLogIn": "Already have an account? Log in",
+  "@alreadyHaveAnAccountLogIn": {
+    "description": "Translation for already_have_an_account_log_in"
+  },
+  "welcomeToNa3Eeman": "Welcome to Na3eeman",
+  "@welcomeToNa3Eeman": {
+    "description": "Translation for welcome_to_na3eeman"
+  },
+  "yourPremiumBarberBookingExperienceBookManage": "Your premium barber booking experience.\nBook, manage, and discover the best barbers near you.",
+  "@yourPremiumBarberBookingExperienceBookManage": {
+    "description": "Translation for your_premium_barber_booking_experience_book_manage"
+  },
+  "personaliseYourTheme": "Personalise Your Theme",
+  "@personaliseYourTheme": {
+    "description": "Translation for personalise_your_theme"
+  },
+  "weLlTailorTheAppColoursToYourPreference": "We'll tailor the app colours to your preference.",
+  "@weLlTailorTheAppColoursToYourPreference": {
+    "description": "Translation for we_ll_tailor_the_app_colours_to_your_preference"
+  },
+  "preferNotToSay": "Prefer not to say",
+  "@preferNotToSay": {
+    "description": "Translation for prefer_not_to_say"
+  },
+  "howWillYouUseNa3Eeman": "How will you use Na3eeman?",
+  "@howWillYouUseNa3Eeman": {
+    "description": "Translation for how_will_you_use_na3eeman"
+  },
+  "devAccountSwitcher": "Dev Account Switcher",
+  "@devAccountSwitcher": {
+    "description": "Translation for dev_account_switcher"
+  },
+  "retailSnapshot": "Retail Snapshot",
+  "@retailSnapshot": {
+    "description": "Translation for retail_snapshot"
+  },
+  "teamLeaderboard": "Team Leaderboard",
+  "@teamLeaderboard": {
+    "description": "Translation for team_leaderboard"
+  },
+  "reorderNow": "Reorder Now",
+  "@reorderNow": {
+    "description": "Translation for reorder_now"
+  },
+  "viewMode": "View Mode",
+  "@viewMode": {
+    "description": "Translation for view_mode"
+  },
+  "unifiedPL": "Unified P&L",
+  "@unifiedPL": {
+    "description": "Translation for unified_p_l"
+  },
+  "globalStockValue": "Global Stock Value",
+  "@globalStockValue": {
+    "description": "Translation for global_stock_value"
+  },
+  "key83VsLastMonth": "+8.3% vs last month",
+  "@key83VsLastMonth": {
+    "description": "Translation for 8_3_vs_last_month"
+  },
+  "branchComparison": "Branch Comparison",
+  "@branchComparison": {
+    "description": "Translation for branch_comparison"
+  },
+  "interBranchTransfers": "Inter-Branch Transfers",
+  "@interBranchTransfers": {
+    "description": "Translation for inter_branch_transfers"
+  },
+  "newTransfer": "New Transfer",
+  "@newTransfer": {
+    "description": "Translation for new_transfer"
+  },
+  "commissionCalculator": "Commission Calculator",
+  "@commissionCalculator": {
+    "description": "Translation for commission_calculator"
+  },
+  "resourceOccupancy": "Resource Occupancy",
+  "@resourceOccupancy": {
+    "description": "Translation for resource_occupancy"
+  },
+  "complianceTracker": "Compliance Tracker",
+  "@complianceTracker": {
+    "description": "Translation for compliance_tracker"
+  },
+  "consumableWaste": "Consumable Waste",
+  "@consumableWaste": {
+    "description": "Translation for consumable_waste"
+  },
+  "upgradePlan": "Upgrade Plan",
+  "@upgradePlan": {
+    "description": "Translation for upgrade_plan"
+  },
+  "kitMaintenance": "Kit Maintenance",
+  "@kitMaintenance": {
+    "description": "Translation for kit_maintenance"
+  },
+  "quickBook": "Quick Book",
+  "@quickBook": {
+    "description": "Translation for quick_book"
+  },
+  "addANewAppointment": "Add a new appointment",
+  "@addANewAppointment": {
+    "description": "Translation for add_a_new_appointment"
+  },
+  "now": "Now",
+  "@now": {
+    "description": "Translation for now"
+  },
+  "todaySEarnings": "Today's Earnings",
+  "@todaySEarnings": {
+    "description": "Translation for today_s_earnings"
+  },
+  "onYourPlan": "on your plan",
+  "@onYourPlan": {
+    "description": "Translation for on_your_plan"
+  },
+  "trial": "Trial",
+  "@trial": {
+    "description": "Translation for trial"
+  },
+  "internActivity": "Intern Activity",
+  "@internActivity": {
+    "description": "Translation for intern_activity"
+  },
+  "assignDailyTip": "Assign Daily Tip",
+  "@assignDailyTip": {
+    "description": "Translation for assign_daily_tip"
+  },
+  "selectIntern": "Select Intern",
+  "@selectIntern": {
+    "description": "Translation for select_intern"
+  },
+  "optionalNote": "Optional Note",
+  "@optionalNote": {
+    "description": "Translation for optional_note"
+  },
+  "subscriptionDetails": "Subscription Details",
+  "@subscriptionDetails": {
+    "description": "Translation for subscription_details"
+  },
+  "planFeatures": "Plan Features",
+  "@planFeatures": {
+    "description": "Translation for plan_features"
+  },
+  "reviewPlan": "Review Plan",
+  "@reviewPlan": {
+    "description": "Translation for review_plan"
+  },
+  "planConfirmedSelection": "Plan Confirmed Selection",
+  "@planConfirmedSelection": {
+    "description": "Translation for plan_confirmed_selection"
+  },
+  "totalCharges": "Total Charges",
+  "@totalCharges": {
+    "description": "Translation for total_charges"
+  },
+  "paymentInstructions": "Payment Instructions",
+  "@paymentInstructions": {
+    "description": "Translation for payment_instructions"
+  },
+  "pleaseProceedWithYourPrimaryLinkedAccountBa": "Please proceed with your primary linked account balance, or choose a backup credit card setup configured inside configuration panels to finalize invoice sync.",
+  "@pleaseProceedWithYourPrimaryLinkedAccountBa": {
+    "description": "Translation for please_proceed_with_your_primary_linked_account_ba"
+  },
+  "multiBranchSupportSetupRequiredAdminActionA": "Multi-Branch support setup required admin action approval configuration setup.",
+  "@multiBranchSupportSetupRequiredAdminActionA": {
+    "description": "Translation for multi_branch_support_setup_required_admin_action_a"
+  },
+  "processingPaymentMockStep": "Processing payment mock step...",
+  "@processingPaymentMockStep": {
+    "description": "Translation for processing_payment_mock_step"
+  },
+  "proceedToPay": "Proceed to Pay",
+  "@proceedToPay": {
+    "description": "Translation for proceed_to_pay"
+  },
+  "adminAlertedRegardingMultiBranchAccess": "Admin alerted regarding multi-branch access...",
+  "@adminAlertedRegardingMultiBranchAccess": {
+    "description": "Translation for admin_alerted_regarding_multi_branch_access"
+  },
+  "contactAdmin": "Contact Admin",
+  "@contactAdmin": {
+    "description": "Translation for contact_admin"
+  },
+  "activeOffers": "Active Offers",
+  "@activeOffers": {
+    "description": "Translation for active_offers"
+  },
+  "noOffersAvailableAtThisMoment": "No offers available at this moment",
+  "@noOffersAvailableAtThisMoment": {
+    "description": "Translation for no_offers_available_at_this_moment"
+  },
+  "productsPrices": "Products & Prices",
+  "@productsPrices": {
+    "description": "Translation for products_prices"
+  },
+  "showcase": "Showcase",
+  "@showcase": {
+    "description": "Translation for showcase"
+  },
+  "manageAllYourBranchesViewPerformanceMetrics": "Manage all your branches, view performance metrics, and handle branch-specific settings from this page.",
+  "@manageAllYourBranchesViewPerformanceMetrics": {
+    "description": "Translation for manage_all_your_branches_view_performance_metrics_"
+  },
+  "salonDetails": "Salon Details",
+  "@salonDetails": {
+    "description": "Translation for salon_details"
+  },
+  "location": "Location",
+  "@location": {
+    "description": "Translation for location"
+  },
+  "phone": "Phone",
+  "@phone": {
+    "description": "Translation for phone"
+  },
+  "employeeDetails": "Employee Details",
+  "@employeeDetails": {
+    "description": "Translation for employee_details"
+  },
+  "performanceRating": "Performance & Rating",
+  "@performanceRating": {
+    "description": "Translation for performance_rating"
+  },
+  "removeFromSalon": "Remove from Salon",
+  "@removeFromSalon": {
+    "description": "Translation for remove_from_salon"
+  },
+  "employeeDetachedSuccessfully": "Employee detached successfully.",
+  "@employeeDetachedSuccessfully": {
+    "description": "Translation for employee_detached_successfully"
+  },
+  "addEmployee": "Add Employee",
+  "@addEmployee": {
+    "description": "Translation for add_employee"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Translation for add"
+  },
+  "employeeManagement": "Employee Management",
+  "@employeeManagement": {
+    "description": "Translation for employee_management"
+  },
+  "na3eeman": "NA3EEMAN",
+  "@na3eeman": {
+    "description": "Translation for na3eeman"
+  },
+  "upgrade": "Upgrade",
+  "@upgrade": {
+    "description": "Translation for upgrade"
+  },
+  "staffPerformanceReport": "Staff Performance Report",
+  "@staffPerformanceReport": {
+    "description": "Translation for staff_performance_report"
+  },
+  "areYouSureYouWantToLogout": "Are you sure you want to logout?",
+  "@areYouSureYouWantToLogout": {
+    "description": "Translation for are_you_sure_you_want_to_logout"
+  },
+  "confirmBooking": "Confirm Booking",
+  "@confirmBooking": {
+    "description": "Translation for confirm_booking"
+  },
+  "securityPolicy": "Security Policy",
+  "@securityPolicy": {
+    "description": "Translation for security_policy"
+  },
+  "applicationRules": "Application Rules",
+  "@applicationRules": {
+    "description": "Translation for application_rules"
+  },
+  "inviteFriends": "Invite Friends",
+  "@inviteFriends": {
+    "description": "Translation for invite_friends"
+  },
+  "contactUs": "Contact Us",
+  "@contactUs": {
+    "description": "Translation for contact_us"
+  },
+  "reportSalon": "Report Salon",
+  "@reportSalon": {
+    "description": "Translation for report_salon"
+  },
+  "reportAProblem": "Report A Problem",
+  "@reportAProblem": {
+    "description": "Translation for report_a_problem"
+  },
+  "userReports": "User Reports",
+  "@userReports": {
+    "description": "Translation for user_reports"
+  },
+  "userManagement": "User Management",
+  "@userManagement": {
+    "description": "Translation for user_management"
+  },
+  "staff": "Staff",
+  "@staff": {
+    "description": "Translation for staff"
+  },
+  "reports": "Reports",
+  "@reports": {
+    "description": "Translation for reports"
+  },
+  "bookings": "Bookings",
+  "@bookings": {
+    "description": "Translation for bookings"
+  },
+  "i": "I\\",
+  "@i": {
+    "description": "Translation for i"
+  },
+  "cash": "Cash",
+  "@cash": {
+    "description": "Translation for cash"
+  },
+  "employee": "Employee",
+  "@employee": {
+    "description": "Translation for employee"
+  },
+  "customerFeedback": "Customer Feedback",
+  "@customerFeedback": {
+    "description": "Translation for customer_feedback"
+  },
+  "backToLogin": "Back to Login",
+  "@backToLogin": {
+    "description": "Translation for back_to_login"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Translation for admin"
+  },
+  "verifyOtp": "Verify OTP",
+  "@verifyOtp": {
+    "description": "Translation for verify_otp"
+  },
+  "submitReport": "Submit Report",
+  "@submitReport": {
+    "description": "Translation for submit_report"
+  },
+  "confirmPay": "Confirm & Pay",
+  "@confirmPay": {
+    "description": "Translation for confirm_pay"
+  },
+  "salonName": "Salon Name",
+  "@salonName": {
+    "description": "Translation for salon_name"
+  },
+  "description": "Description",
+  "@description": {
+    "description": "Translation for description"
+  },
+  "thisIsANotificationMessageMockupDetails": "This is a notification message mockup details.",
+  "@thisIsANotificationMessageMockupDetails": {
+    "description": "Translation for this_is_a_notification_message_mockup_details"
+  },
+  "key2HAgo": "2h ago",
+  "@key2HAgo": {
+    "description": "Translation for 2h_ago"
+  },
+  "upgradeSubscription": "Upgrade Subscription",
+  "@upgradeSubscription": {
+    "description": "Translation for upgrade_subscription"
+  },
+  "enterprisePlan": "Enterprise Plan",
+  "@enterprisePlan": {
+    "description": "Translation for enterprise_plan"
+  },
+  "premiumPlan": "Premium Plan",
+  "@premiumPlan": {
+    "description": "Translation for premium_plan"
+  },
+  "debugMenu": "Debug Menu",
+  "@debugMenu": {
+    "description": "Translation for debug_menu"
+  },
+  "debug": "DEBUG",
+  "@debug": {
+    "description": "Translation for debug"
+  },
+  "debugBanner": "Debug Banner",
+  "@debugBanner": {
+    "description": "Translation for debug_banner"
+  },
+  "performanceOverlay": "Performance Overlay",
+  "@performanceOverlay": {
+    "description": "Translation for performance_overlay"
+  },
+  "slowAnimations": "Slow Animations",
+  "@slowAnimations": {
+    "description": "Translation for slow_animations"
+  },
+  "debugLogging": "Debug Logging",
+  "@debugLogging": {
+    "description": "Translation for debug_logging"
+  },
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "@profileUpdatedSuccessfully": {
+    "description": "Translation for profile_updated_successfully"
+  },
+  "profileDeletedSuccessfully": "Profile deleted successfully",
+  "@profileDeletedSuccessfully": {
+    "description": "Translation for profile_deleted_successfully"
+  },
+  "chooseFromGallery": "Choose from Gallery",
+  "@chooseFromGallery": {
+    "description": "Translation for choose_from_gallery"
+  },
+  "takeAPhoto": "Take a Photo",
+  "@takeAPhoto": {
+    "description": "Translation for take_a_photo"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Translation for select_language"
+  },
+  "english": "English",
+  "@english": {
+    "description": "Translation for english"
+  },
+  "selectTheme": "Select Theme",
+  "@selectTheme": {
+    "description": "Translation for select_theme"
+  },
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "Translation for light_mode"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Translation for dark_mode"
+  },
+  "summerGlowPackage": "Summer Glow Package ☀️",
+  "@summerGlowPackage": {
+    "description": "Translation for summer_glow_package"
+  },
+  "completeBridalGlow": "Complete Bridal Glow 💅",
+  "@completeBridalGlow": {
+    "description": "Translation for complete_bridal_glow"
+  },
+  "homePage": "Home Page",
+  "@homePage": {
+    "description": "Translation for home_page"
+  },
+  "homePageContent": "Home Page Content",
+  "@homePageContent": {
+    "description": "Translation for home_page_content"
+  },
+  "appointmentReminder": "Appointment Reminder",
+  "@appointmentReminder": {
+    "description": "Translation for appointment_reminder"
+  },
+  "payNow": "Pay Now",
+  "@payNow": {
+    "description": "Translation for pay_now"
+  },
+  "awesome": "Awesome!",
+  "@awesome": {
+    "description": "Translation for awesome"
+  },
+  "yourFeedbackMatters": "your Feedback matters",
+  "@yourFeedbackMatters": {
+    "description": "Translation for your_feedback_matters"
+  },
+  "loyaltyPointsEarned": "Loyalty Points Earned!",
+  "@loyaltyPointsEarned": {
+    "description": "Translation for loyalty_points_earned"
+  },
+  "testExampleCom": "test@example.com",
+  "@testExampleCom": {
+    "description": "Translation for test_example_com"
+  },
+  "test123": "Test123!",
+  "@test123": {
+    "description": "Translation for test123"
+  },
+  "overview": "Overview",
+  "@overview": {
+    "description": "Translation for overview"
+  },
+  "financialReports": "Financial Reports",
+  "@financialReports": {
+    "description": "Translation for financial_reports"
+  },
+  "mySalon": "My Salon",
+  "@mySalon": {
+    "description": "Translation for my_salon"
+  },
+  "salons": "Salons",
+  "@salons": {
+    "description": "Translation for salons"
+  },
+  "favourites": "Favourites",
+  "@favourites": {
+    "description": "Translation for favourites"
+  },
+  "average": "Average",
+  "@average": {
+    "description": "Translation for average"
+  },
+  "card": "Card",
+  "@card": {
+    "description": "Translation for card"
+  },
+  "assignTip": "Assign Tip",
+  "@assignTip": {
+    "description": "Translation for assign_tip"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Translation for name"
+  },
+  "johnDoe": "John Doe",
+  "@johnDoe": {
+    "description": "Translation for john_doe"
+  },
+  "financialPerformance": "Financial Performance",
+  "@financialPerformance": {
+    "description": "Translation for financial_performance"
+  },
+  "salonBranches": "Salon Branches",
+  "@salonBranches": {
+    "description": "Translation for salon_branches"
+  },
+  "noBranchesAvailable": "No Branches Available",
+  "@noBranchesAvailable": {
+    "description": "Translation for no_branches_available"
+  },
+  "addYourFirstBranchToGetStarted": "Add your first branch to get started",
+  "@addYourFirstBranchToGetStarted": {
+    "description": "Translation for add_your_first_branch_to_get_started"
+  },
+  "deleteItem": "Delete Item",
+  "@deleteItem": {
+    "description": "Translation for delete_item"
+  },
+  "inventoryManagementIsOnlyAvailableForOwners": "Inventory management is only available for owners",
+  "@inventoryManagementIsOnlyAvailableForOwners": {
+    "description": "Translation for inventory_management_is_only_available_for_owners"
+  },
+  "initializingSalonDetails": "Initializing salon details...",
+  "@initializingSalonDetails": {
+    "description": "Translation for initializing_salon_details"
+  },
+  "failedToLoadInventory": "Failed to load inventory",
+  "@failedToLoadInventory": {
+    "description": "Translation for failed_to_load_inventory"
+  },
+  "noItemsInInventory": "No items in inventory",
+  "@noItemsInInventory": {
+    "description": "Translation for no_items_in_inventory"
+  },
+  "unableToLoadServicesPleaseTryAgain": "Unable to load services. Please try again.",
+  "@unableToLoadServicesPleaseTryAgain": {
+    "description": "Translation for unable_to_load_services_please_try_again"
+  },
+  "noServicesAvailable": "No services available",
+  "@noServicesAvailable": {
+    "description": "Translation for no_services_available"
+  },
+  "manageInventory": "Manage Inventory",
+  "@manageInventory": {
+    "description": "Translation for manage_inventory"
+  },
+  "customerReviews": "Customer Reviews",
+  "@customerReviews": {
+    "description": "Translation for customer_reviews"
+  },
+  "addYourReview": "Add Your Review",
+  "@addYourReview": {
+    "description": "Translation for add_your_review"
+  },
+  "submitReview": "Submit Review",
+  "@submitReview": {
+    "description": "Translation for submit_review"
+  },
+  "writeYourReviewHere": "Write your review here...",
+  "@writeYourReviewHere": {
+    "description": "Translation for write_your_review_here"
+  },
+  "ourBarbers": "Our Barbers",
+  "@ourBarbers": {
+    "description": "Translation for our_barbers"
+  },
+  "couldNotLaunchMaps": "Could not launch maps",
+  "@couldNotLaunchMaps": {
+    "description": "Translation for could_not_launch_maps"
+  },
+  "addAdditionalServices": "Add Additional Services",
+  "@addAdditionalServices": {
+    "description": "Translation for add_additional_services"
+  },
+  "serviceDetails": "Service Details",
+  "@serviceDetails": {
+    "description": "Translation for service_details"
+  },
+  "mainService": "Main Service",
+  "@mainService": {
+    "description": "Translation for main_service"
+  },
+  "totalDuration": "Total Duration:",
+  "@totalDuration": {
+    "description": "Translation for total_duration"
+  },
+  "totalPrice": "Total Price:",
+  "@totalPrice": {
+    "description": "Translation for total_price"
+  },
+  "addMoreServices": "Add More Services",
+  "@addMoreServices": {
+    "description": "Translation for add_more_services"
+  },
+  "noServiceSelected": "No Service Selected",
+  "@noServiceSelected": {
+    "description": "Translation for no_service_selected"
+  },
+  "pleaseSelectAMainServiceToContinue": "Please select a main service to continue",
+  "@pleaseSelectAMainServiceToContinue": {
+    "description": "Translation for please_select_a_main_service_to_continue"
+  },
+  "addNewItem": "Add New Item",
+  "@addNewItem": {
+    "description": "Translation for add_new_item"
+  },
+  "itemName": "Item Name",
+  "@itemName": {
+    "description": "Translation for item_name"
+  },
+  "initialCount": "Initial Count",
+  "@initialCount": {
+    "description": "Translation for initial_count"
+  },
+  "descriptionOptional": "Description (Optional)",
+  "@descriptionOptional": {
+    "description": "Translation for description_optional"
+  },
+  "addedToFavorites": "Added to Favorites",
+  "@addedToFavorites": {
+    "description": "Translation for added_to_favorites"
+  },
+  "shareDialogOpened": "Share Dialog Opened",
+  "@shareDialogOpened": {
+    "description": "Translation for share_dialog_opened"
+  },
+  "packages": "Packages",
+  "@packages": {
+    "description": "Translation for packages"
+  },
+  "packagesAndBundlesComingSoon": "Packages and bundles coming soon!",
+  "@packagesAndBundlesComingSoon": {
+    "description": "Translation for packages_and_bundles_coming_soon"
+  },
+  "products": "Products",
+  "@products": {
+    "description": "Translation for products"
+  },
+  "salonProductsCatalogComingSoon": "Salon products catalog coming soon!",
+  "@salonProductsCatalogComingSoon": {
+    "description": "Translation for salon_products_catalog_coming_soon"
+  },
+  "offersGroups": "Offers & Groups",
+  "@offersGroups": {
+    "description": "Translation for offers_groups"
+  },
+  "exclusiveOffersComingSoon": "Exclusive offers coming soon!",
+  "@exclusiveOffersComingSoon": {
+    "description": "Translation for exclusive_offers_coming_soon"
+  },
+  "salonFeedback": "Salon Feedback",
+  "@salonFeedback": {
+    "description": "Translation for salon_feedback"
+  },
+  "key485": "4.8 / 5",
+  "@key485": {
+    "description": "Translation for 4_8_5"
+  },
+  "key120Reviews": "(120 reviews)",
+  "@key120Reviews": {
+    "description": "Translation for 120_reviews"
+  },
+  "ahmedM": "Ahmed M.",
+  "@ahmedM": {
+    "description": "Translation for ahmed_m"
+  },
+  "greatServiceCompletelyTransformedMyLookHighl": "Great service! Completely transformed my look. Highly recommended!",
+  "@greatServiceCompletelyTransformedMyLookHighl": {
+    "description": "Translation for great_service_completely_transformed_my_look_highl"
+  },
+  "feedbackEntryDialog": "Feedback Entry Dialog",
+  "@feedbackEntryDialog": {
+    "description": "Translation for feedback_entry_dialog"
+  },
+  "addYourFeedback": "Add your feedback",
+  "@addYourFeedback": {
+    "description": "Translation for add_your_feedback"
+  },
+  "aboutThisOffer": "About This Offer",
+  "@aboutThisOffer": {
+    "description": "Translation for about_this_offer"
+  },
+  "includedServices": "Included Services",
+  "@includedServices": {
+    "description": "Translation for included_services"
+  },
+  "bookThisOffer": "Book This Offer",
+  "@bookThisOffer": {
+    "description": "Translation for book_this_offer"
+  },
+  "selectDateTime": "Select Date & Time",
+  "@selectDateTime": {
+    "description": "Translation for select_date_time"
+  },
+  "availableSlots": "Available Slots",
+  "@availableSlots": {
+    "description": "Translation for available_slots"
+  },
+  "bookingRequestSentSuccessfully": "Booking request sent successfully!",
+  "@bookingRequestSentSuccessfully": {
+    "description": "Translation for booking_request_sent_successfully"
+  },
+  "scheduleType": "Schedule Type",
+  "@scheduleType": {
+    "description": "Translation for schedule_type"
+  },
+  "pleaseSelectBothDateAndTime": "Please select both date and time",
+  "@pleaseSelectBothDateAndTime": {
+    "description": "Translation for please_select_both_date_and_time"
+  },
+  "confirmSchedule": "Confirm Schedule",
+  "@confirmSchedule": {
+    "description": "Translation for confirm_schedule"
+  },
+  "selectedServices": "Selected Services",
+  "@selectedServices": {
+    "description": "Translation for selected_services"
+  },
+  "oneTimeOnly": "One Time Only",
+  "@oneTimeOnly": {
+    "description": "Translation for one_time_only"
+  },
+  "scheduleThisAppointmentOnce": "Schedule this appointment once",
+  "@scheduleThisAppointmentOnce": {
+    "description": "Translation for schedule_this_appointment_once"
+  },
+  "biWeekly": "Bi-Weekly",
+  "@biWeekly": {
+    "description": "Translation for bi_weekly"
+  },
+  "repeatEvery2Weeks": "Repeat every 2 weeks",
+  "@repeatEvery2Weeks": {
+    "description": "Translation for repeat_every_2_weeks"
+  },
+  "repeatEveryMonth": "Repeat every month",
+  "@repeatEveryMonth": {
+    "description": "Translation for repeat_every_month"
+  },
+  "bookAHaircut": "Book a haircut",
+  "@bookAHaircut": {
+    "description": "Translation for book_a_haircut"
+  },
+  "ownerDashboard": "Owner Dashboard",
+  "@ownerDashboard": {
+    "description": "Translation for owner_dashboard"
+  },
+  "newAction": "New Action",
+  "@newAction": {
+    "description": "Translation for new_action"
+  },
+  "noReviewsFound": "No reviews found.",
+  "@noReviewsFound": {
+    "description": "Translation for no_reviews_found"
+  },
+  "feedbackReviews": "Feedback Reviews",
+  "@feedbackReviews": {
+    "description": "Translation for feedback_reviews"
+  },
+  "youDoNotHavePermissionToAddBranches": "You do not have permission to add branches",
+  "@youDoNotHavePermissionToAddBranches": {
+    "description": "Translation for you_do_not_have_permission_to_add_branches"
+  },
+  "addNewBranchFunctionalityComingSoon": "Add new branch functionality - Coming soon",
+  "@addNewBranchFunctionalityComingSoon": {
+    "description": "Translation for add_new_branch_functionality_coming_soon"
+  },
+  "youDoNotHavePermissionToAssignManagers": "You do not have permission to assign managers",
+  "@youDoNotHavePermissionToAssignManagers": {
+    "description": "Translation for you_do_not_have_permission_to_assign_managers"
+  },
+  "assign": "Assign",
+  "@assign": {
+    "description": "Translation for assign"
+  },
+  "branches": "Branches",
+  "@branches": {
+    "description": "Translation for branches"
+  },
+  "failedToLoadBranches": "Failed to load branches",
+  "@failedToLoadBranches": {
+    "description": "Translation for failed_to_load_branches"
+  },
+  "noBranchesFound": "No branches found",
+  "@noBranchesFound": {
+    "description": "Translation for no_branches_found"
+  },
+  "loadingBranches": "Loading branches...",
+  "@loadingBranches": {
+    "description": "Translation for loading_branches"
+  },
+  "discoverSalons": "Discover Salons",
+  "@discoverSalons": {
+    "description": "Translation for discover_salons"
+  },
+  "noSalonsFoundNearby": "No salons found nearby",
+  "@noSalonsFoundNearby": {
+    "description": "Translation for no_salons_found_nearby"
+  },
+  "searchByNameOrLocation": "Search by name or location...",
+  "@searchByNameOrLocation": {
+    "description": "Translation for search_by_name_or_location"
+  },
+  "passwordChangedSuccessfully": "Password changed successfully",
+  "@passwordChangedSuccessfully": {
+    "description": "Translation for password_changed_successfully"
+  },
+  "currentPassword": "Current Password",
+  "@currentPassword": {
+    "description": "Translation for current_password"
+  },
+  "confirmNewPassword": "Confirm New Password",
+  "@confirmNewPassword": {
+    "description": "Translation for confirm_new_password"
+  },
+  "checkYourSpamOrJunkFolderIfYouDonTSeeTh": "Check your spam or junk folder if you don't see the email.",
+  "@checkYourSpamOrJunkFolderIfYouDonTSeeTh": {
+    "description": "Translation for check_your_spam_or_junk_folder_if_you_don_t_see_th"
+  },
+  "enterYourEmailAddressAndWeLlSendYouAOne": "Enter your email address and we'll send you a One-Time Password (OTP) to reset your password.",
+  "@enterYourEmailAddressAndWeLlSendYouAOne": {
+    "description": "Translation for enter_your_email_address_and_we_ll_send_you_a_one_"
+  },
+  "sendOtp": "Send OTP",
+  "@sendOtp": {
+    "description": "Translation for send_otp"
+  },
+  "professionalGroomingServices": "Professional Grooming Services",
+  "@professionalGroomingServices": {
+    "description": "Translation for professional_grooming_services"
+  },
+  "rememberMe": "Remember me",
+  "@rememberMe": {
+    "description": "Translation for remember_me"
+  },
+  "or": "OR",
+  "@or": {
+    "description": "Translation for or"
+  },
+  "donTHaveAnAccount": "Don't have an account?",
+  "@donTHaveAnAccount": {
+    "description": "Translation for don_t_have_an_account"
+  },
+  "quickAccessFastLogin": "Quick Access (Fast Login)",
+  "@quickAccessFastLogin": {
+    "description": "Translation for quick_access_fast_login"
+  },
+  "fastLoginAs": "Fast Login as",
+  "@fastLoginAs": {
+    "description": "Translation for fast_login_as"
+  },
+  "mockOwnerVariantsLocalState": "Mock Owner Variants (Local State)",
+  "@mockOwnerVariantsLocalState": {
+    "description": "Translation for mock_owner_variants_local_state"
+  },
+  "noPermissionMessage": "You do not have permission to view this page.",
+  "@noPermissionMessage": {
+    "description": "Manually added: noPermissionMessage"
+  },
+  "backToHome": "Back to Home",
+  "@backToHome": {
+    "description": "Manually added: backToHome"
+  },
+  "noDataAvailable": "No data available",
+  "@noDataAvailable": {
+    "description": "Manually added: noDataAvailable"
+  },
+  "reorderItem": "Reorder {name}",
+  "@reorderItem": {
+    "description": "Manually added: reorderItem"
+  },
+  "currentStock": "Current stock: {qty}",
+  "@currentStock": {
+    "description": "Manually added: currentStock"
+  },
+  "removePermanently": "Remove Permanently",
+  "@removePermanently": {
+    "description": "Manually added: removePermanently"
+  },
+  "addStock": "Add Stock",
+  "@addStock": {
+    "description": "Manually added: addStock"
+  },
+  "allStockNominal": "All stock levels are nominal.",
+  "@allStockNominal": {
+    "description": "Manually added: allStockNominal"
+  },
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "description": "Manually added: itemsCount"
+  },
+  "unitsInStock": "{qty} units in stock",
+  "@unitsInStock": {
+    "description": "Manually added: unitsInStock"
+  },
+  "switchedTo": "Switched to {label}",
+  "@switchedTo": {
+    "description": "Manually added: switchedTo"
+  },
+  "loginWithBiometrics": "Login with Biometrics",
+  "@loginWithBiometrics": {
+    "description": "Button text for biometric login"
+  },
+  "helpUsImprove": "Help us improve",
+  "@helpUsImprove": {
+    "description": "Title for the feedback section"
+  },
+  "requestNewService": "Request a new service",
+  "@requestNewService": {
+    "description": "Subtitle for the feedback section"
+  },
+  "submitSuggestion": "Submit Suggestion",
+  "@submitSuggestion": {
+    "description": "Button text for submitting feedback"
+  },
+  "searchServicesSalons": "Search in services and salons",
+  "@searchServicesSalons": {
+    "description": "Placeholder for the search bar"
+  },
+  "noAppointmentsScheduled": "No appointments scheduled for today.",
+  "@noAppointmentsScheduled": {
+    "description": "Manually added: noAppointmentsScheduled"
+  },
+  "noSalesToday": "No sales\ntoday",
+  "@noSalesToday": {
+    "description": "Manually added: noSalesToday"
+  },
+  "failedToUpdateProfile": "Failed to update profile: {error}",
+  "@failedToUpdateProfile": {
+    "description": "Manually added: failedToUpdateProfile"
+  },
+  "failedToDeleteProfile": "Failed to delete profile: {error}",
+  "@failedToDeleteProfile": {
+    "description": "Manually added: failedToDeleteProfile"
+  },
+  "navigationError": "Navigation error: {error}",
+  "@navigationError": {
+    "description": "Manually added: navigationError"
+  },
+  "reportGenerationFailed": "Failed to generate report: {error}",
+  "@reportGenerationFailed": {
+    "description": "Manually added: reportGenerationFailed"
+  },
+  "subscriptionSuccess": "Successfully subscribed to {name}!",
+  "@subscriptionSuccess": {
+    "description": "Manually added: subscriptionSuccess"
+  },
+  "itemRestocked": "Restocked to {count} units",
+  "@itemRestocked": {
+    "description": "Manually added: itemRestocked"
+  },
+  "selectedItem": "Selected: {name}",
+  "@selectedItem": {
+    "description": "Manually added: selectedItem"
+  },
+  "staffCreatedSuccessfully": "Staff created successfully!",
+  "createStaff": "Create Staff",
+  "salon": "Salon",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "username": "Username",
+  "temporaryPassword": "Temporary Password",
+  "createStaffMember": "Create Staff Member",
+  "createStaffMembers": "Create Staff Members",
+  "management": "Management",
+  "shareApp": "Share App",
+  "shareSalonLink": "Share Salon Link",
+  "appRules": "App Rules",
+  "faqs": "FAQs",
+  "userGuides": "User Guides",
+  "noActiveCampaigns": "No active campaigns",
+  "managementDashboard": "Management Dashboard",
+  "editSalon": "Edit Salon",
+  "bookForCustomer": "Book for Customer",
+  "searchAppointments": "Search Appointments",
+  "performanceAnalytics": "Performance Analytics",
+  "bookingsSummary": "Bookings Summary",
+  "thisWeek": "This Week",
+  "thisMonth": "This Month",
+  "viewHistory": "View History",
+  "todaySchedule": "Today's Schedule",
+  "specialization": "Specialization",
+  "bio": "Bio",
+  "markAllRead": "Mark all as read",
+  "noItemsFound": "No items found",
+  "thereAreNoItemsToDisplayAtTheMoment": "There are no items to display at the moment.",
+  "yourFavoriteItemsWillAppearHere": "Your favorite items will appear here.",
+  "noResultsFound": "No results found",
+  "tryAdjustingYourSearchTerms": "Try adjusting your search terms.",
+  "somethingWentWrong": "Something went wrong",
+  "pleaseTryAgainLater": "Please try again later.",
+  "noInternetConnection": "No internet connection",
+  "pleaseCheckYourConnectionAndTryAgain": "Please check your connection and try again.",
+  "pleaseWaitWhileWeLoadYourContent": "Please wait while we load your content.",
+  "noPreferences": "No Preferences",
+  "@noPreferences": {
+    "description": "Selection mode when user has no staff preference"
+  },
+  "selectProfessionalPerService": "Select Professional per Service",
+  "@selectProfessionalPerService": {
+    "description": "Selection mode when user wants to pick staff for each service"
+  },
+  "individualSelection": "Individual Selection",
+  "@individualSelection": {
+    "description": "Selection mode when user wants to pick one staff for everything"
+  },
+  "availableDates": "Available Dates",
+  "@availableDates": {
+    "description": "Header for dates selection section"
+  },
+  "availableHours": "Available Hours",
+  "@availableHours": {
+    "description": "Header for hours selection section"
+  },
+  "selectForService": "Select staff for {service}",
+  "@selectForService": {
+    "description": "Title in staff selection page for a specific service",
     "placeholders": {
-      "completed": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
+      "service": {
+        "type": "String"
       }
     }
   },
-  "show_more": "Show more",
-  "no_employees": "No employees found in the shop",
-  "shadowing": "SHADOWING",
-  "attach": "Attach",
-  "finish_tasks": "Finish Tasks",
-  "refresh": "Refresh",
-  "loading": "Loading...",
-  "growth_insight": "User growth is up 12% this week compared to last month.",
-  "top_categories_insight": "Top categories: Barbershops (65%), Spas (20%).",
-  "admin_panel": "Admin Panel",
-  "shop_dashboard": "Shop Dashboard",
-  "my_schedule": "My Schedule",
-  "offers": "Offers",
-  "ads": "Ads",
-  "feedback": "Feedback",
-  "tell_others": "Tell others about us",
-  "share_link": "Share Shop Link",
-  "privacy_policy": "Privacy Policy"
+  "searchSalon": "Search for a salon...",
+  "@searchSalon": {
+    "description": "Placeholder for salon search box"
+  },
+  "yourLastVisit": "Your Last Visit",
+  "@yourLastVisit": {
+    "description": "Title for the previous salon card"
+  },
+  "showOnMap": "Show on Map",
+  "@showOnMap": {
+    "description": "Button to open maps"
+  },
+  "noPreferences": "No Preferences",
+  "@noPreferences": {
+    "description": "Option for choosing any staff member"
+  },
+  "selectProfessionalPerService": "Select Professional per Service",
+  "@selectProfessionalPerService": {
+    "description": "Option for granular staff selection"
+  },
+  "individualSelection": "Individual Selection",
+  "@individualSelection": {
+    "description": "Option for choosing one staff for all"
+  },
+  "availableDates": "Available Dates",
+  "@availableDates": {
+    "description": "Header for dates selection"
+  },
+  "availableHours": "Available Hours",
+  "@availableHours": {
+    "description": "Header for hours selection"
+  },
+
+  "dataManagement": "Data Management",
+  "@dataManagement": { "description": "Data export and import section title" },
+  "exportData": "Export Data",
+  "@exportData": { "description": "Export data action" },
+  "importData": "Import Data",
+  "@importData": { "description": "Import data action" },
+  "exportFormat": "Export Format",
+  "@exportFormat": { "description": "Format selector label" },
+  "exportDataset": "Dataset",
+  "@exportDataset": { "description": "Dataset selector label" },
+  "dateRange": "Date Range (optional)",
+  "@dateRange": { "description": "Date range filter label" },
+  "allTime": "All time (no filter)",
+  "@allTime": { "description": "No date filter applied" },
+  "conflictMode": "Conflict Mode",
+  "@conflictMode": { "description": "How to handle import conflicts" },
+  "skipExisting": "Skip existing records",
+  "@skipExisting": { "description": "Import skips existing records" },
+  "skipExistingDesc": "New data only — keeps existing records unchanged",
+  "@skipExistingDesc": { "description": "Skip mode description" },
+  "overwriteExisting": "Overwrite existing records",
+  "@overwriteExisting": { "description": "Import overwrites existing records" },
+  "overwriteExistingDesc": "Updates fields in existing records with imported values",
+  "@overwriteExistingDesc": { "description": "Overwrite mode description" },
+  "selectJsonFile": "Tap to select Na3eeman JSON export",
+  "@selectJsonFile": { "description": "File picker prompt" },
+  "jsonOnlySupported": "Only .json exports from Na3eeman are supported",
+  "@jsonOnlySupported": { "description": "File type restriction note" },
+  "importWarning": "Only import files that were previously exported from Na3eeman. Importing files from other sources may cause errors.",
+  "@importWarning": { "description": "Import safety warning" },
+  "importResult": "Import Result",
+  "@importResult": { "description": "Import result section header" },
+  "exportReady": "Export ready",
+  "@exportReady": { "description": "Export success message" },
+  "exporting": "Exporting…",
+  "@exporting": { "description": "Export in progress" },
+  "importing": "Importing…",
+  "@importing": { "description": "Import in progress" },
+
+  "cofounder": "Co-Founder",
+  "@cofounder": { "description": "Co-founder role name" },
+  "cofounderRole": "Co-Founder — Full owner access & data management",
+  "@cofounderRole": { "description": "Co-founder role description" },
+
+  "appRulesTitle": "App Rules & Policies",
+  "@appRulesTitle": { "description": "App rules popup title" },
+  "userGuideTitle": "User Guide",
+  "@userGuideTitle": { "description": "User guide popup title" },
+  "rulesForYourRole": "Rules for your role",
+  "@rulesForYourRole": { "description": "Role-specific rules subtitle" },
+
+  "rulesCustomer": "1. Book appointments only during salon operating hours.\n2. Cancel at least 2 hours before your appointment to avoid a no-show flag.\n3. Respect stylists and staff — harassment results in account suspension.\n4. Reviews must be honest and based on your personal experience.\n5. Do not share your account credentials with others.\n6. Loyalty points are non-transferable and expire after 12 months of inactivity.",
+  "@rulesCustomer": { "description": "Rules for customers" },
+
+  "rulesEmployee": "1. Arrive at least 15 minutes before your first appointment.\n2. Mark yourself unavailable in the app if you cannot serve clients that day.\n3. All appointment updates must be done through the app — not phone calls.\n4. Keep your tools & inventory updated after every service.\n5. Earnings and commissions are calculated automatically; disputes go through your owner.\n6. Do not accept cash outside the app payment flow.",
+  "@rulesEmployee": { "description": "Rules for employees/barbers" },
+
+  "rulesOwner": "1. Keep your salon profile, services and prices up to date.\n2. Respond to disputes within 48 hours or the system will auto-resolve in the customer's favour.\n3. Data exports are for business use only — do not share exported files.\n4. Staff accounts you create are your responsibility.\n5. Subscriptions auto-renew; cancel at least 7 days before renewal to avoid charges.\n6. Marketing campaigns must comply with Jordanian advertising regulations.",
+  "@rulesOwner": { "description": "Rules for salon owners" },
+
+  "rulesReceptionist": "1. You may create, reschedule or cancel appointments on behalf of customers.\n2. Never access financial reports — that is an owner-only function.\n3. Data exports you initiate are logged and visible to the salon owner.\n4. Do not modify staff commissions or payroll settings.\n5. Report any system issues to the salon owner immediately.\n6. Customer data accessed must remain strictly confidential.",
+  "@rulesReceptionist": { "description": "Rules for receptionists" },
+
+  "rulesIntern": "1. Attend all scheduled shifts and training sessions.\n2. Complete your daily tasks before the end of your shift.\n3. You may shadow senior staff but must not perform services unsupervised.\n4. Report progress and any difficulties to your assigned mentor.\n5. Do not access customer financial data or payment records.\n6. Treat all customer information with the utmost confidentiality.",
+  "@rulesIntern": { "description": "Rules for interns" },
+
+  "rulesCofounder": "1. Co-Founders have identical access rights to the primary Owner.\n2. All Owner rules apply — data exports are for business use only.\n3. Disputes between Co-Founders and Owners are handled outside the app.\n4. Co-Founder accounts can be revoked by the primary Owner at any time.\n5. Financial decisions (subscription changes, payroll) should be coordinated with the Owner.\n6. Co-Founders are equally responsible for salon compliance and staff conduct.",
+  "@rulesCofounder": { "description": "Rules for co-founders" },
+
+  "guideCustomer": "Getting started:\n• Find salons by category or location on the Home screen.\n• Tap a salon to view services, staff, and available time slots.\n• Select a service, choose a staff member (optional), then pick a date & time.\n• Pay cash at the salon or via the in-app payment flow.\n• Earn loyalty points with every completed appointment — redeem for free services.\n• Rate your experience after every visit to help others.",
+  "@guideCustomer": { "description": "User guide for customers" },
+
+  "guideEmployee": "Getting started:\n• Your dashboard shows today's appointments and your daily schedule.\n• Tap an appointment to see customer details and service requirements.\n• Mark appointments as In-Progress or Completed when done.\n• Update your tools & inventory after each service.\n• Check your earnings and commission breakdown in the Stats section.\n• Contact your salon owner for payroll or schedule changes.",
+  "@guideEmployee": { "description": "User guide for employees" },
+
+  "guideOwner": "Getting started:\n• Set up your salon profile: name, photos, location and opening hours.\n• Add your services with prices and durations.\n• Invite staff by creating employee accounts from the Staff section.\n• Activate your subscription plan to unlock all features.\n• Monitor revenue, appointments and staff performance from the Dashboard.\n• Create offers and campaigns from the Marketing section.\n• Export your data from the Data Management page at any time.",
+  "@guideOwner": { "description": "User guide for owners" },
+
+  "guideReceptionist": "Getting started:\n• Use the Receptionist Desk to view and manage all today's appointments.\n• Create walk-in appointments for customers directly from the calendar.\n• Search for customers by name or phone to pull up their booking history.\n• Process payments and mark appointments as complete.\n• Use the Data Management page to export appointment or customer reports.\n• Escalate any issues to the salon owner.",
+  "@guideReceptionist": { "description": "User guide for receptionists" },
+
+  "guideIntern": "Getting started:\n• Check your Daily Tasks section every morning before your shift.\n• Shadow your assigned mentor and take notes in the Activity section.\n• Mark tasks as complete when done — your owner tracks your progress.\n• Ask your mentor before attempting any customer service independently.\n• Your schedule is set by the salon owner — check it the night before.\n• Complete your monthly training targets to unlock higher responsibilities.",
+  "@guideIntern": { "description": "User guide for interns" },
+
+  "guideCofounder": "Getting started:\n• You have access to everything the Owner can do — use it responsibly.\n• The Dashboard shows real-time revenue, appointments and staff activity.\n• Use the Data Management page to export or restore salon data.\n• Coordinate with the primary Owner before making subscription or billing changes.\n• Staff management: you can create, edit or deactivate staff accounts.\n• Marketing: launch campaigns and offers from the Marketing section.",
+  "@guideCofounder": { "description": "User guide for co-founders" },
+
+  "platformMonitoring": "Platform Monitoring",
+  "@platformMonitoring": { "description": "Admin monitoring section title" },
+  "realtimeMetrics": "Real-Time Metrics",
+  "@realtimeMetrics": { "description": "Real-time metrics section" },
+  "activeUsers": "Active Users",
+  "@activeUsers": { "description": "Currently active users count" },
+  "conversionRate": "Conversion Rate",
+  "@conversionRate": { "description": "Booking conversion rate" },
+  "churnRate": "Churn Rate",
+  "@churnRate": { "description": "User churn rate" },
+  "avgSessionTime": "Avg. Session",
+  "@avgSessionTime": { "description": "Average session duration" },
+  "retentionRate": "Retention Rate",
+  "@retentionRate": { "description": "User retention rate" },
+  "topFeatures": "Top Features",
+  "@topFeatures": { "description": "Most used features" },
+  "revenueByTier": "Revenue by Tier",
+  "@revenueByTier": { "description": "Revenue breakdown by subscription tier" },
+  "userRequests": "User Requests",
+  "@userRequests": { "description": "User service requests page title" },
+  "filterByAge": "Filter by Age",
+  "@filterByAge": { "description": "Request age filter label" },
+  "filterByRole": "Filter by Role",
+  "@filterByRole": { "description": "User role filter label" },
+  "filterBySubscription": "Filter by Plan",
+  "@filterBySubscription": { "description": "Subscription tier filter label" },
+  "allRequests": "All Requests",
+  "@allRequests": { "description": "Show all requests" },
+  "todayRequests": "Today",
+  "@todayRequests": { "description": "Requests from today" },
+  "thisWeek": "This Week",
+  "@thisWeek": { "description": "Requests from this week" },
+  "thisMonth": "This Month",
+  "@thisMonth": { "description": "Requests from this month" },
+  "requestType": "Request Type",
+  "@requestType": { "description": "Type of service request" },
+  "requestStatus": "Request Status",
+  "@requestStatus": { "description": "Status of a service request" },
+  "noRequests": "No requests found",
+  "@noRequests": { "description": "Empty state for requests list" },
+  "markResolved": "Mark Resolved",
+  "@markResolved": { "description": "Mark request as resolved" },
+  "viewDetails": "View Details",
+  "@viewDetails": { "description": "View request details" },
+  "requestDetailTitle": "Request Detail",
+  "@requestDetailTitle": { "description": "Request detail page title" },
+  "submittedBy": "Submitted by",
+  "@submittedBy": { "description": "Who submitted the request" },
+  "submittedAt": "Submitted at",
+  "@submittedAt": { "description": "When the request was submitted" },
+  "requestResolved": "Request marked as resolved",
+  "@requestResolved": { "description": "Request resolved snackbar" },
+
+  "managementDashboard": "Management",
+  "@managementDashboard": { "description": "Management dashboard title" },
+  "createStaffMembers": "Create Staff Members",
+  "@createStaffMembers": { "description": "Create staff members menu item" }
 }

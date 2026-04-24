@@ -1,8 +1,9 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
-import '../../../../../Providers/features/shop_provider.dart';
+import '../../../../../Providers/features/salon_provider.dart';
 import '../../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../../Models/inventory/inventory_item.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -24,14 +25,14 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
   }
 
   Future<void> _loadData() async {
-    await context.read<ShopProvider>().loadInventory();
+    await context.read<SalonProvider>().loadInventory();
     if (mounted) setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final inventory = context.watch<ShopProvider>().inventory;
+    final inventory = context.watch<SalonProvider>().inventory;
 
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +146,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                 GestureDetector(
                   onTap: () {
                     // Actual increment
-                    context.read<ShopProvider>().adjustStockOnBackend(item.id, 1);
+                    context.read<SalonProvider>().adjustStockOnBackend(item.id, 1);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Incrementing stock for ${item.productName}')));
                   },
                   child: Text(
@@ -231,7 +232,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
           ElevatedButton(
             onPressed: () {
               final name = nameController.text.trim();
@@ -240,7 +241,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
               final stock = int.tryParse(stockController.text) ?? 0;
 
               if (name.isNotEmpty && price > 0) {
-                context.read<ShopProvider>().createProductOnBackend(
+                context.read<SalonProvider>().createProductOnBackend(
                   name: name,
                   price: price,
                   description: desc,
@@ -250,7 +251,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Creating $name...')));
               }
             },
-            child: Text('create'.tr()),
+            child: Text(AppLocalizations.of(context)!.create),
           ),
         ],
       ),

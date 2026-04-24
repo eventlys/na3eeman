@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../Helpers/customized/points_tracker_helpers.dart';
 import '../../../Providers/main_providers.dart';
@@ -84,7 +85,7 @@ class PointsTrackerDialogs {
           children: [
             Icon(Icons.feedback_rounded, color: AppColor.primary),
             const SizedBox(width: 8),
-            Text('app_feedback'.tr(),
+            Text(AppLocalizations.of(context)!.appFeedback,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onSurface,
               ),
@@ -125,7 +126,7 @@ class PointsTrackerDialogs {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr(),
+            child: Text(AppLocalizations.of(context)!.cancel,
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
@@ -267,7 +268,7 @@ class PointsTrackerDialogs {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr(),
+            child: Text(AppLocalizations.of(context)!.cancel,
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),

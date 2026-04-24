@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -10,8 +11,8 @@ import '../../Core/themes/app_scaffold.dart';
 import '../../Core/themes/loading_indicator.dart';
 import '../../Core/utils/helpers/refresh_widgets.dart';
 import '../../Core/widgets/shared/error_widget.dart';
-import '../shop/widgets/barbershop_card.dart';
-import 'package:easy_localization/easy_localization.dart';
+import '../salon/widgets/barbershop_card.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -86,7 +87,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return StandardPage(
-      title: 'Favorite Shops',
+      title: 'Favorite Salons',
       showBackButton: true,
       showAppBar: true,
       floatingActionButton: FloatingActionButton(
@@ -109,16 +110,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
       user: null,
       child: Consumer<FavoritesProvider>(
         builder: (context, provider, child) {
-          if (provider.isLoading && provider.favoriteShops.isEmpty) {
+          if (provider.isLoading && provider.favoriteSalons.isEmpty) {
             return const Center(
               child: LoadingIndicator(
-                message: 'Loading favorite shops...',
+                message: 'Loading favorite salons...',
                 size: 50,
               ),
             );
           }
 
-          if (provider.error != null && provider.favoriteShops.isEmpty) {
+          if (provider.error != null && provider.favoriteSalons.isEmpty) {
             return AppErrorWidget(
               message: 'Failed to load favorites: ${provider.error}',
               onRetry: _refreshData,
@@ -126,9 +127,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
             );
           }
 
-          final List<Map<String, dynamic>> favoriteShops = provider.favoriteShops;
+          final List<Map<String, dynamic>> favoriteSalons = provider.favoriteSalons;
 
-          if (favoriteShops.isEmpty) {
+          if (favoriteSalons.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -140,14 +141,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No favorite shops yet',
+                    'No favorite salons yet',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Start adding shops to see them here!',
+                    'Start adding salons to see them here!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.5),
                     ),
@@ -161,7 +162,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       backgroundColor: AppColor.primary,
                       foregroundColor: AppColor.light,
                     ),
-                    child: Text('explore_shops'.tr()),
+                    child: Text(AppLocalizations.of(context)!.exploreSalons),
                   ),
                 ],
               ),
@@ -173,9 +174,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(16),
-              itemCount: favoriteShops.length + (_isLoadingMore ? 1 : 0),
+              itemCount: favoriteSalons.length + (_isLoadingMore ? 1 : 0),
               itemBuilder: (context, int index) {
-                if (index == favoriteShops.length) {
+                if (index == favoriteSalons.length) {
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Center(
@@ -187,25 +188,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   );
                 }
 
-                final Map<String, dynamic> shop = favoriteShops[index];
+                final Map<String, dynamic> salon = favoriteSalons[index];
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
-                  child: BarbershopCard(
-                    title: shop['shopName'] ?? 'Unknown Shop',
-                    workingHours: shop['businessHours'] ?? '9:00 AM - 6:00 PM',
+                  child: BarbersalonCard(
+                    title: salon['salonName'] ?? 'Unknown Salon',
+                    workingHours: salon['businessHours'] ?? '9:00 AM - 6:00 PM',
                     bottomLeftIconPath: AppImages.location, // Use your location icon
                     bottomRightIconPath: AppImages.star, // Use your star icon
                     middleRightIconPath: AppImages.heart, // Use your heart outline icon
                     middleRightActiveIconPath: AppImages.heart, // Use your heart filled icon
-                    profilePicture: shop['image'] ?? AppImages.shop1, // Use your default shop image
+                    profilePicture: salon['image'] ?? AppImages.salon1, // Use your default salon image
                     size: const Size(350, 115), // Adjust size as needed
                     isClickable: true,
-                    shopLocation: shop['address'] ?? '',
-                    shopRating: FavoritesHelper.parseRating(shop['rating']),
-                    onCardTap: () => _showShopDetails(shop),
+                    salonLocation: salon['address'] ?? '',
+                    salonRating: FavoritesHelper.parseRating(salon['rating']),
+                    onCardTap: () => _showSalonDetails(salon),
                     onFavoriteChanged: (isFavorite) {
                       if (!isFavorite) {
-                        _removeFromFavorites(shop);
+                        _removeFromFavorites(salon);
                       }
                       // Note: Since this is the favorites page, we only handle removal
                       // If isFavorite becomes true again, it means user toggled back
@@ -221,7 +222,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  void _showShopDetails(Map<String, dynamic> shop) {
+  void _showSalonDetails(Map<String, dynamic> salon) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showDialog(
@@ -236,11 +237,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
           children: [
             Row(
               children: [
-                if (shop['image'] != null) ...[
+                if (salon['image'] != null) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      shop['image']!,
+                      salon['image']!,
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,
@@ -250,7 +251,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 ],
                 Expanded(
                   child: Text(
-                    shop['shopName'] ?? 'Unknown Shop',
+                    salon['salonName'] ?? 'Unknown Salon',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -260,30 +261,30 @@ class _FavoritesPageState extends State<FavoritesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildDetailRow(AppImages.location, 'Address', shop['address'] ?? 'Not available', isDark),
+            _buildDetailRow(AppImages.location, 'Address', salon['address'] ?? 'Not available', isDark),
             const SizedBox(height: 12),
-            if (shop['phone'] != null) ...[
-              _buildDetailRow(AppImages.phone, 'Phone', shop['phone']!, isDark),
+            if (salon['phone'] != null) ...[
+              _buildDetailRow(AppImages.phone, 'Phone', salon['phone']!, isDark),
               const SizedBox(height: 12),
             ],
-            if (shop['rating'] != null) ...[
-              _buildDetailRow(AppImages.star, 'Rating', shop['rating'].toStringAsFixed(1), isDark),
+            if (salon['rating'] != null) ...[
+              _buildDetailRow(AppImages.star, 'Rating', salon['rating'].toStringAsFixed(1), isDark),
               const SizedBox(height: 12),
             ],
-            if (shop['totalReviews'] != null) ...[
-              _buildDetailRow(AppImages.X_view, 'Reviews', shop['totalReviews'].toString(), isDark),
+            if (salon['totalReviews'] != null) ...[
+              _buildDetailRow(AppImages.X_view, 'Reviews', salon['totalReviews'].toString(), isDark),
               const SizedBox(height: 12),
             ],
-            if (shop['services'] != null && shop['services'] is List) ...[
-              _buildDetailRow(AppImages.scissors, 'Services', (shop['services'] as List).join(', '), isDark),
+            if (salon['services'] != null && salon['services'] is List) ...[
+              _buildDetailRow(AppImages.scissors, 'Services', (salon['services'] as List).join(', '), isDark),
               const SizedBox(height: 12),
             ],
-            if (shop['businessHours'] != null) ...[
-              _buildDetailRow(AppImages.clock, 'Hours', shop['businessHours']!, isDark),
+            if (salon['businessHours'] != null) ...[
+              _buildDetailRow(AppImages.clock, 'Hours', salon['businessHours']!, isDark),
               const SizedBox(height: 12),
             ],
-            if (shop['description'] != null) ...[
-              _buildDetailRow(AppImages.info, 'Description', shop['description']!, isDark),
+            if (salon['description'] != null) ...[
+              _buildDetailRow(AppImages.info, 'Description', salon['description']!, isDark),
               const SizedBox(height: 12),
             ],
             const SizedBox(height: 24),
@@ -291,18 +292,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _bookAppointment(shop),
+                    onPressed: () => _bookAppointment(salon),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.primary,
                       foregroundColor: AppColor.light,
                     ),
-                    child: Text('book_appointment'.tr()),
+                    child: Text(AppLocalizations.of(context)!.bookAppointment),
                   ),
                 ),
                 const SizedBox(width: 12),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('close'.tr(),
+                  child: Text(AppLocalizations.of(context)!.close,
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
@@ -351,18 +352,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  void _removeFromFavorites(Map<String, dynamic> shop) async {
+  void _removeFromFavorites(Map<String, dynamic> salon) async {
     final provider = Provider.of<FavoritesProvider>(context, listen: false);
-    final shopId = shop['id'].toString();
-    final shopName = shop['shopName'] ?? 'this shop';
+    final salonId = salon['id'].toString();
+    final salonName = salon['salonName'] ?? 'this salon';
 
     try {
-      final success = await provider.removeFromFavorites(shopId);
+      final success = await provider.removeFromFavorites(salonId);
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Removed $shopName from favorites',
+              'Removed $salonName from favorites',
               style: const TextStyle(color: AppColor.light),
             ),
             backgroundColor: AppColor.primary,
@@ -388,7 +389,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     final provider = Provider.of<FavoritesProvider>(context, listen: false);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    if (provider.favoriteShops.isEmpty) {
+    if (provider.favoriteSalons.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
@@ -420,7 +421,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Are you sure you want to remove all ${provider.favoritesCount} shops from your favorites?',
+              'Are you sure you want to remove all ${provider.favoritesCount} salons from your favorites?',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.8),
               ),
@@ -431,7 +432,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('cancel'.tr(),
+                  child: Text(AppLocalizations.of(context)!.cancel,
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
@@ -484,13 +485,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  void _bookAppointment(Map<String, dynamic> shop) {
+  void _bookAppointment(Map<String, dynamic> salon) {
     Navigator.of(context).pop(); // Close the details dialog
     // Navigate to booking page or show booking dialog
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Book appointment at ${shop['shopName'] ?? 'shop'}',
+          'Book appointment at ${salon['salonName'] ?? 'salon'}',
           style: TextStyle(color: AppColor.light),
         ),
         backgroundColor: AppColor.primary,

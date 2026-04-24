@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Packages/Core/constants/app_roles.dart';
 import '../core/theme/app_theme.dart';
 import '../core/theme/colors.dart';
 import '../core/enums/app_enums.dart';
@@ -90,7 +91,7 @@ class RBACProvider extends ChangeNotifier {
   bool hasSubscription(SubscriptionTier required) => _tier.meets(required);
 
   bool get isSuperAdmin => _role == UserRole.superAdmin;
-  bool get isOwner => _role == UserRole.owner;
+  bool get isOwner => _role == UserRole.owner || _role == UserRole.ownerEmployee || _role == UserRole.ownerOwner;
   bool get isManager => _role == UserRole.manager;
   bool get isStaff => _role.isStaff;
   bool get isCustomer => _role == UserRole.customer;
@@ -99,5 +100,7 @@ class RBACProvider extends ChangeNotifier {
   bool get canAccessAdmin =>
       _role == UserRole.superAdmin ||
       _role == UserRole.owner ||
+      _role == UserRole.ownerEmployee ||
+      _role == UserRole.ownerOwner ||
       _role == UserRole.manager;
 }

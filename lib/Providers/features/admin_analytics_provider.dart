@@ -89,4 +89,26 @@ class AdminAnalyticsProvider with ChangeNotifier {
        debugPrint('FinancialAnalytics Error: $e');
     }
   }
+
+  /// Fetches user service requests with optional filters.
+  /// Returns null on error (caller falls back to mock data).
+  Future<List<dynamic>?> fetchServiceRequests({
+    String ageFilter = 'all',
+    String roleFilter = 'all',
+    String subFilter = 'all',
+  }) async {
+    try {
+      final params = <String, String>{};
+      if (ageFilter != 'all') params['age'] = ageFilter;
+      if (roleFilter != 'all') params['role'] = roleFilter;
+      if (subFilter != 'all') params['subscription'] = subFilter;
+
+      final data = await _analyticsService.getServiceRequests(params);
+      return data;
+    } catch (e) {
+      debugPrint('ServiceRequests Error: $e');
+      return null;
+    }
+  }
 }
+

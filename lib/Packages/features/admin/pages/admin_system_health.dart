@@ -1,9 +1,10 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 /// Super Admin — System Health Page.
 class AdminSystemHealthPage extends StatelessWidget {
@@ -15,7 +16,7 @@ class AdminSystemHealthPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('system_health_title'.tr()),
+        title: Text(AppLocalizations.of(context)!.systemHealthTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),

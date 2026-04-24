@@ -1,11 +1,11 @@
-import '../Models/shop/shop_service_model.dart';
+import '../Models/salon/salon_service_model.dart';
 
 // Helper class to provide service-related data structures
 class ServiceModelsHelper {
   // Service selection data structure
   static ServiceSelection createServiceSelection({
-    required ShopService mainService,
-    List<ShopService> additionalServices = const [],
+    required SalonService mainService,
+    List<SalonService> additionalServices = const [],
   }) {
     return ServiceSelection(
       mainService: mainService,
@@ -14,30 +14,30 @@ class ServiceModelsHelper {
   }
 
   // Check if service selection contains a service
-  static bool containsService(ServiceSelection selection, ShopService service) {
+  static bool containsService(ServiceSelection selection, SalonService service) {
     return selection.mainService.id == service.id || 
            selection.additionalServices.any((s) => s.id == service.id);
   }
 
   // Get all services from selection
-  static List<ShopService> getAllServices(ServiceSelection selection) {
+  static List<SalonService> getAllServices(ServiceSelection selection) {
     return [selection.mainService, ...selection.additionalServices];
   }
 }
 
 // Data structure for service management
 class ServiceSelection {
-  final ShopService mainService;
-  final List<ShopService> additionalServices;
+  final SalonService mainService;
+  final List<SalonService> additionalServices;
 
   ServiceSelection({
     required this.mainService,
     this.additionalServices = const [],
   });
 
-  List<ShopService> get allServices => [mainService, ...additionalServices];
+  List<SalonService> get allServices => [mainService, ...additionalServices];
   
-  bool containsService(ShopService service) {
+  bool containsService(SalonService service) {
     return ServiceModelsHelper.containsService(this, service);
   }
 }

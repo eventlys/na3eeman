@@ -1,7 +1,8 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Services/core/user_service.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHelperFunctions {
   static void initializeControllers({
@@ -83,19 +84,19 @@ class ProfileHelperFunctions {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('delete_profile'.tr()),
-        content: Text('are_you_sure_you_want_to_delete_your_profile_this_'.tr()),
+        title: Text(AppLocalizations.of(context)!.deleteProfile),
+        content: Text(AppLocalizations.of(context)!.areYouSureYouWantToDeleteYourProfileThis),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onConfirm();
             },
-            child: Text('delete'.tr(), style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -117,7 +118,7 @@ class ProfileHelperFunctions {
       // await ApiService.deleteProfile();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('profile_deleted'.tr())),
+        SnackBar(content: Text(AppLocalizations.of(context)!.profileDeleted)),
       );
 
       onSuccess();
@@ -141,22 +142,22 @@ class ProfileHelperFunctions {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('change_profile_picture'.tr()),
-        content: Text('choose_an_option'.tr()),
+        title: Text(AppLocalizations.of(context)!.changeProfilePicture),
+        content: Text(AppLocalizations.of(context)!.chooseAnOption),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _pickImageFromGallery();
             },
-            child: Text('gallery'.tr()),
+            child: Text(AppLocalizations.of(context)!.gallery),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _takePhoto();
             },
-            child: Text('camera'.tr()),
+            child: Text(AppLocalizations.of(context)!.camera),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+// import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../themes/app_theme.dart';
 import '../../constants/app_color.dart';
@@ -7,7 +8,7 @@ import '../../constants/app_color.dart';
 ///
 /// ```dart
 /// AppTextField(
-///   label: 'email'.tr().tr(),
+///   label: AppLocalizations.of(context)!.email,
 ///   hint: 'you@example.com',
 ///   controller: _emailCtrl,
 ///   prefixIcon: Icons.email_outlined,

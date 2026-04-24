@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -9,8 +10,8 @@ import '../../Core/themes/app_scaffold.dart';
 import '../../Core/themes/loading_indicator.dart';
 import '../../Core/utils/helpers/refresh_widgets.dart';
 import '../../Core/widgets/shared/error_widget.dart';
-import '../shop/widgets/barber_card.dart';
-import 'package:easy_localization/easy_localization.dart';
+import '../salon/widgets/barber_card.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class BarbersListPage extends StatefulWidget {
   const BarbersListPage({super.key});
@@ -249,7 +250,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text('close'.tr(),
+                child: Text(AppLocalizations.of(context)!.close,
                   style: TextStyle(
                     color: AppColor.primary,
                   ),
@@ -364,7 +365,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('cancel'.tr(),
+                  child: Text(AppLocalizations.of(context)!.cancel,
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
@@ -397,7 +398,7 @@ class _BarbersListPageState extends State<BarbersListPage> {
                       );
                     }
                   },
-                  child: Text('delete'.tr(),
+                  child: Text(AppLocalizations.of(context)!.delete,
                     style: TextStyle(
                       color: AppColor.secondary,
                       fontWeight: FontWeight.w600,

@@ -1,9 +1,10 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../../../../Helpers/error_handler.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 
 class ErrorBoundary extends StatefulWidget {
@@ -156,7 +157,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
             color: colors['secondary'],
           ),
           const SizedBox(width: 6),
-          Text('report_issue'.tr()),
+          Text(AppLocalizations.of(context)!.reportIssue),
         ],
       ),
     );
@@ -175,7 +176,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               color: _getErrorColors()['primary'],
             ),
             const SizedBox(width: 8),
-            Text('error_details'.tr()),
+            Text(AppLocalizations.of(context)!.errorDetails),
           ],
         ),
         content: SingleChildScrollView(
@@ -189,7 +190,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               ),
               const SizedBox(height: 8),
               if (stackTrace != null) ...[
-                Text('stack_trace'.tr(),
+                Text(AppLocalizations.of(context)!.stackTrace,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -204,7 +205,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('close'.tr()),
+            child: Text(AppLocalizations.of(context)!.close),
           ),
         ],
       ),
@@ -335,15 +336,15 @@ class ErrorBoundaryBuilder extends StatelessWidget {
             return builder(context);
           } catch (error, stackTrace) {
             // This won't catch errors in the widget tree, but in the builder function
-            return _buildErrorWidget(error, stackTrace);
+            return _buildErrorWidget(error, stackTrace, context);
           }
         },
       ),
     );
   }
 
-  Widget _buildErrorWidget(dynamic error, StackTrace stackTrace) {
-    final colors = _getErrorColors();
+  Widget _buildErrorWidget(dynamic error, StackTrace stackTrace, BuildContext context) {
+    final colors = _getErrorColors(context);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -362,7 +363,7 @@ class ErrorBoundaryBuilder extends StatelessWidget {
             color: colors['icon'],
           ),
           const SizedBox(height: 12),
-          Text('builder_error'.tr(),
+          Text(AppLocalizations.of(context)!.builderError,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -383,7 +384,7 @@ class ErrorBoundaryBuilder extends StatelessWidget {
     );
   }
 
-  Map<String, Color> _getErrorColors() {
+  Map<String, Color> _getErrorColors(BuildContext context) {
     final isDark = isDarkMode;
 
     if (userGender != null) {

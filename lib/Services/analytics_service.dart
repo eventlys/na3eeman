@@ -44,7 +44,7 @@ class AnalyticsService {
     await _logEvent('view_item', parameters: {
       'item_id': itemId,
       'item_name': itemName,
-      'item_category': itemCategory ?? 'shop',
+      'item_category': itemCategory ?? 'salon',
     });
   }
 
@@ -95,13 +95,13 @@ class AnalyticsService {
 
   Future<void> logAppointmentBooked({
     required int appointmentId,
-    required int shopId,
+    required int salonId,
     required double amount,
     String? bookingGroupId,
   }) async {
     await _logEvent('appointment_booked', parameters: {
       'appointment_id': appointmentId,
-      'shop_id': shopId,
+      'salon_id': salonId,
       'amount': amount,
       'booking_group_id': bookingGroupId,
     });
@@ -218,4 +218,14 @@ class AnalyticsService {
   Future<Map<String, dynamic>> getAdminSystemAnalytics() async {
     return await _apiService.get(Endpoints.adminAnalyticsSystem);
   }
+
+  /// Fetch filtered service requests for admin review.
+  Future<List<dynamic>> getServiceRequests(Map<String, String> params) async {
+    final resultMap = await _apiService.get(
+      '/admin/service-requests/',
+      queryParams: params,
+    ) as Map<String, dynamic>?;
+    return (resultMap?['results'] as List<dynamic>?) ?? [];
+  }
 }
+

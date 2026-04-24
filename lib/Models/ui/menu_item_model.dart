@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 import '../../core/enums/app_enums.dart';
 
 class MenuItem {
@@ -10,6 +11,7 @@ class MenuItem {
   final String? route;
   final bool? requiresAuth;
   final List<UserRole>? requiredRoles;
+  final List<MenuItem>? children;
 
   MenuItem({
     required this.title,
@@ -20,6 +22,7 @@ class MenuItem {
     this.route,
     this.requiresAuth = false,
     this.requiredRoles,
+    this.children,
   }) : assert(icon != null || assetIcon != null, 'Either icon or assetIcon must be provided');
 
   bool isAccessible(UserRole userRole) {
@@ -38,7 +41,7 @@ class PendingConfirmation {
   final String? notes;
   final int appointmentId;
   final int? barberId;
-  final int shopId;
+  final int salonId;
 
   PendingConfirmation({
     required this.id,
@@ -49,7 +52,7 @@ class PendingConfirmation {
     this.notes,
     required this.appointmentId,
     this.barberId,
-    required this.shopId,
+    required this.salonId,
   });
 
   factory PendingConfirmation.fromJson(Map<String, dynamic> json) {
@@ -62,7 +65,7 @@ class PendingConfirmation {
       notes: json['notes'],
       appointmentId: json['appointment'] as int,
       barberId: json['barber'] as int?,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
     );
   }
 
@@ -76,7 +79,7 @@ class PendingConfirmation {
       'notes': notes,
       'appointment': appointmentId,
       'barber': barberId,
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 }

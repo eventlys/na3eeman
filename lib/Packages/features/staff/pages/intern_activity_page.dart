@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -28,7 +29,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('intern_activity'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.internActivity, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: RefreshIndicator(
         onRefresh: () => provider.fetchInternActivity(),

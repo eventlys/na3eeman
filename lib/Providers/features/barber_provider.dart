@@ -23,7 +23,7 @@ class BarberProvider with ChangeNotifier {
   Future<void> loadBarbers({
     bool refresh = false,
     String? search,
-    int? shopId,
+    int? salonId,
     bool? isActive,
   }) async {
     try {
@@ -43,7 +43,7 @@ class BarberProvider with ChangeNotifier {
         page: _currentPage,
         limit: 20,
         search: search,
-        shopId: shopId,
+        salonId: salonId,
         isActive: isActive,
       );
 
@@ -70,13 +70,13 @@ class BarberProvider with ChangeNotifier {
 
   Future<void> refreshBarbers({
     String? search,
-    int? shopId,
+    int? salonId,
     bool? isActive,
   }) async {
     return loadBarbers(
       refresh: true,
       search: search,
-      shopId: shopId,
+      salonId: salonId,
       isActive: isActive,
     );
   }

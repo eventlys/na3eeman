@@ -1,7 +1,7 @@
 class Subscription {
   final String id;
   final int customerId;
-  final int shopId;
+  final int salonId;
   final String planName;
   final String subscriptionType; // 'MONTHLY', 'BIWEEKLY'
   final double price;
@@ -15,7 +15,7 @@ class Subscription {
   Subscription({
     required this.id,
     required this.customerId,
-    required this.shopId,
+    required this.salonId,
     required this.planName,
     required this.subscriptionType,
     required this.price,
@@ -31,7 +31,7 @@ class Subscription {
     return Subscription(
       id: json['id']?.toString() ?? '',
       customerId: json['customer'] as int,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
       planName: json['plan_name'] ?? 'Premium Plan',
       subscriptionType: json['subscription_type'] as String? ?? 'MONTHLY',
       price: (json['price'] is double ? json['price'] : double.tryParse(json['price']?.toString() ?? '0.0')) ?? 0.0,
@@ -48,7 +48,7 @@ class Subscription {
     return {
       'id': id,
       'customer': customerId,
-      'shop': shopId,
+      'salon': salonId,
       'plan_name': planName,
       'subscription_type': subscriptionType,
       'price': price,
@@ -65,7 +65,7 @@ class Subscription {
   bool get isExpired => endDate != null && DateTime.now().isAfter(endDate!);
 }
 
-class ShopSubscription {
+class SalonSubscription {
   final String id;
   final String name;
   final String description;
@@ -73,9 +73,9 @@ class ShopSubscription {
   final String duration; // 'MONTHLY', 'BIWEEKLY'
   final List<String> features;
   final bool isPopular;
-  final int? shopId;
+  final int? salonId;
 
-  const ShopSubscription({
+  const SalonSubscription({
     required this.id,
     required this.name,
     required this.description,
@@ -83,7 +83,7 @@ class ShopSubscription {
     required this.duration,
     required this.features,
     this.isPopular = false,
-    this.shopId,
+    this.salonId,
   });
 
   String get formattedPrice => '\$${price.toStringAsFixed(2)}';
@@ -99,8 +99,8 @@ class ShopSubscription {
     }
   }
 
-  factory ShopSubscription.fromJson(Map<String, dynamic> json) {
-    return ShopSubscription(
+  factory SalonSubscription.fromJson(Map<String, dynamic> json) {
+    return SalonSubscription(
       id: json['id']?.toString() ?? '',
       name: json['name'] as String,
       description: json['description'] as String,
@@ -108,11 +108,11 @@ class ShopSubscription {
       duration: json['duration'] as String? ?? 'MONTHLY',
       features: List<String>.from(json['features'] ?? []),
       isPopular: json['is_popular'] as bool? ?? false,
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
     );
   }
 
-  ShopSubscription copyWith({
+  SalonSubscription copyWith({
     String? id,
     String? name,
     String? description,
@@ -120,9 +120,9 @@ class ShopSubscription {
     String? duration,
     List<String>? features,
     bool? isPopular,
-    int? shopId,
+    int? salonId,
   }) {
-    return ShopSubscription(
+    return SalonSubscription(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -130,7 +130,7 @@ class ShopSubscription {
       duration: duration ?? this.duration,
       features: features ?? this.features,
       isPopular: isPopular ?? this.isPopular,
-      shopId: shopId ?? this.shopId,
+      salonId: salonId ?? this.salonId,
     );
   }
 }

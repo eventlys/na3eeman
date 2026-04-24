@@ -1,16 +1,15 @@
 package com.example.na3eeman
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 
 /**
  * MainActivity
  *
- * Kept minimal — all global SDK initialization (Firebase, Facebook, etc.)
- * is done in [MainApplication] so it runs before any Activity is created.
+ * Updated to FlutterFragmentActivity for local_auth (biometrics) support.
  */
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)

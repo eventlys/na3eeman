@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../Models/ui/menu_item_model.dart';
-import '../../../../Providers/features/auth_provider.dart';
-import '../../../../core/enums/app_enums.dart';
-// import '../../../../core/auth/role_permission_manager.dart';
-import '../../../../core/theme/colors.dart';
+import '../../../Providers/features/auth_provider.dart';
+import '../../../core/enums/app_enums.dart';
+// import '../../../core/auth/role_permission_manager.dart';
+import '../../../core/theme/colors.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
@@ -148,7 +148,7 @@ class Sidebar extends StatelessWidget {
           title: 'shop_dashboard'.tr(),
           assetIcon: 'assets/icons/setting.png',
           delay: 1,
-          onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.shopId ?? 1}),
+          onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.salonId ?? 1}),
           requiresAuth: true,
           requiredRoles: [UserRole.owner, UserRole.admin],
         ),
@@ -180,7 +180,7 @@ class Sidebar extends StatelessWidget {
         requiresAuth: true,
         requiredRoles: [UserRole.intern],
       ),
-      // Owner + Receptionist ONLY: Offers Section
+      // ── Owner / Cofounder features ────────────────────────────────
       MenuItem(
         title: 'active_campaigns'.tr(),
         assetIcon: 'assets/icons/plus.png',
@@ -190,17 +190,85 @@ class Sidebar extends StatelessWidget {
           Navigator.pushNamed(context, '/active_campaigns');
         },
         requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.receptionist],
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
+      ),
+      MenuItem(
+        title: 'Offers & Packages',
+        assetIcon: 'assets/icons/plus.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/offers');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+      ),
+      MenuItem(
+        title: 'Analytics',
+        assetIcon: 'assets/icons/setting.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/analytics');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+      ),
+      // ── Receptionist POS ─────────────────────────────────────────
+      MenuItem(
+        title: 'POS Terminal',
+        assetIcon: 'assets/icons/plus.png',
+        delay: 2,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/pos');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
+      ),
+      // ── Customer loyalty / referral ──────────────────────────────
+      MenuItem(
+        title: 'My Points',
+        assetIcon: 'assets/icons/plus.png',
+        delay: 3,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/loyalty/history');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.customer],
+      ),
+      MenuItem(
+        title: 'Refer a Friend',
+        assetIcon: 'assets/icons/plus.png',
+        delay: 3,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/loyalty/referral');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.customer],
+      ),
+      MenuItem(
+        title: 'Gift Cards',
+        assetIcon: 'assets/icons/plus.png',
+        delay: 3,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/gift-card');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.customer],
       ),
       MenuItem(
         title: 'feedback'.tr(),
         assetIcon: 'assets/icons/setting.png',
-        delay: 2,
+        delay: 4,
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('feedback_display'.tr())));
         },
         requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.receptionist],
+        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
       ),
       MenuItem(
         title: 'settings'.tr(),

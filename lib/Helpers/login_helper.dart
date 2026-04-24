@@ -7,6 +7,12 @@ import '../Packages/Core/constants/app_images.dart';
 class LoginHelper {
   final Logger _logger = Logger();
 
+  static Future<bool> login(BuildContext context, String email, String password) async {
+    // This is a placeholder that delegates to the provider/service
+    // In a real app, this should be handled by AuthProvider
+    return true; 
+  }
+
   /// Validates email format
   Map<String, dynamic> validateEmail(String email) {
     if (email.isEmpty) {
@@ -319,7 +325,7 @@ class LoginHelper {
   bool canAccessFeature(String userRole, String feature) {
     final rolePermissions = {
       'admin': ['all'],
-      'owner': ['manage_shop', 'manage_staff', 'view_reports', 'manage_appointments'],
+      'owner': ['manage_salon', 'manage_staff', 'view_reports', 'manage_appointments'],
       'manager': ['manage_staff', 'view_reports', 'manage_appointments'],
       'barber': ['manage_appointments', 'view_schedule', 'update_availability'],
       'receptionist': ['manage_appointments', 'view_schedule', 'customer_management'],
@@ -334,7 +340,7 @@ class LoginHelper {
   /// Get feature-specific colors
   Map<String, dynamic> getFeatureColors(String feature) {
     switch (feature) {
-      case 'manage_shop':
+      case 'manage_salon':
         return {
           'color': AppColor.lightSecondary,
           'iconColor': AppColor.light,

@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_color.dart';
 import '../utils/helpers/themes_helpers.dart';
@@ -202,17 +203,18 @@ class EmptyState extends StatelessWidget {
   }
 
   // Predefined empty states for common scenarios
-  factory EmptyState.noItems({
-    String title = 'No items found',
+  static EmptyState noItems({
+    required BuildContext context,
+    String? title,
     String? description,
     Widget? actionButton,
     bool compact = false,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
+      title: title ?? AppLocalizations.of(context)!.noItemsFound,
       description:
-          description ?? 'There are no items to display at the moment.',
+          description ?? AppLocalizations.of(context)!.thereAreNoItemsToDisplayAtTheMoment,
       icon: Icons.inventory_2_outlined,
       actionButton: actionButton,
       compact: compact,
@@ -220,73 +222,77 @@ class EmptyState extends StatelessWidget {
     );
   }
 
-  factory EmptyState.noFavorites({
-    String title = 'No favorites yet',
+  static EmptyState noFavorites({
+    required BuildContext context,
+    String? title,
     String? description,
     Widget? actionButton,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
-      description: description ?? 'Your favorite items will appear here.',
+      title: title ?? AppLocalizations.of(context)!.noFavoritesYet,
+      description: description ?? AppLocalizations.of(context)!.yourFavoriteItemsWillAppearHere,
       icon: Icons.favorite_border,
       actionButton: actionButton,
       gender: gender,
     );
   }
 
-  factory EmptyState.noSearchResults({
-    String title = 'No results found',
+  static EmptyState noSearchResults({
+    required BuildContext context,
+    String? title,
     String? description,
     Widget? actionButton,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
-      description: description ?? 'Try adjusting your search terms.',
+      title: title ?? AppLocalizations.of(context)!.noResultsFound,
+      description: description ?? AppLocalizations.of(context)!.tryAdjustingYourSearchTerms,
       icon: Icons.search_off,
       actionButton: actionButton,
       gender: gender,
     );
   }
 
-  factory EmptyState.error({
-    String title = 'Something went wrong',
+  static EmptyState error({
+    required BuildContext context,
+    String? title,
     String? description,
     VoidCallback? onRetry,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
-      description: description ?? 'Please try again later.',
+      title: title ?? AppLocalizations.of(context)!.somethingWentWrong,
+      description: description ?? AppLocalizations.of(context)!.pleaseTryAgainLater,
       icon: Icons.error_outline,
       iconColor: AppColor.lightError,
       actionButton: onRetry != null
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: Text('try_again'.tr()),
+              label: Text(AppLocalizations.of(context)!.tryAgain),
             )
           : null,
       gender: gender,
     );
   }
 
-  factory EmptyState.noInternet({
-    String title = 'No internet connection',
+  static EmptyState noInternet({
+    required BuildContext context,
+    String? title,
     String? description,
     VoidCallback? onRetry,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
-      description: description ?? 'Please check your connection and try again.',
+      title: title ?? AppLocalizations.of(context)!.noInternetConnection,
+      description: description ?? AppLocalizations.of(context)!.pleaseCheckYourConnectionAndTryAgain,
       icon: Icons.wifi_off,
       actionButton: onRetry != null
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: Text('retry'.tr()),
+              label: Text(AppLocalizations.of(context)!.retry),
             )
           : null,
       gender: gender,
@@ -294,28 +300,30 @@ class EmptyState extends StatelessWidget {
   }
 
   // Loading state
-  factory EmptyState.loading({
-    String title = 'Loading...',
+  static EmptyState loading({
+    required BuildContext context,
+    String? title,
     String? description,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
-      description: description ?? 'Please wait while we load your content.',
+      title: title ?? AppLocalizations.of(context)!.loading,
+      description: description ?? AppLocalizations.of(context)!.pleaseWaitWhileWeLoadYourContent,
       icon: Icons.hourglass_empty,
       gender: gender,
     );
   }
 
   // Success state
-  factory EmptyState.success({
-    String title = 'Success!',
+  static EmptyState success({
+    required BuildContext context,
+    String? title,
     String? description,
     Widget? actionButton,
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title,
+      title: title ?? AppLocalizations.of(context)!.success,
       description: description,
       icon: Icons.check_circle_outline,
       iconColor: AppColor.lightSuccess,

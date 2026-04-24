@@ -2,19 +2,19 @@
 import '../base_provider.dart';
 import 'auth_provider.dart';
 import '../../Models/auth/user_model.dart';
-import '../../Models/shop/appointment_model.dart';
+import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Services/enums/appointment_status.dart';
 import '../../Services/api/api_service.dart';
 
 class AppointmentProvider extends BaseProvider {
-  final List<ShopAppointment> _appointments = [];
+  final List<SalonAppointment> _appointments = [];
   AuthProvider? _authProvider;
   Map<String, dynamic>? _soonestAppointment;
   User? _user;
 
   User? get user => _user;
   // Getters
-  List<ShopAppointment> get appointments => _appointments;
+  List<SalonAppointment> get appointments => _appointments;
   Map<String, dynamic>? get soonestAppointment => _soonestAppointment;
 
   bool get hasError => error != null;
@@ -67,13 +67,13 @@ class AppointmentProvider extends BaseProvider {
 
       // Fetch from API instead of mocks
       final apiService = ApiService();
-      final response = await apiService.get('/shops/appointments/'); // Or Endpoints.appointments
+      final response = await apiService.get('/salons/appointments/'); // Or Endpoints.appointments
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
       
       _appointments.clear();
       for (var item in data) {
         try {
-          _appointments.add(ShopAppointment.fromJson(item));
+          _appointments.add(SalonAppointment.fromJson(item));
         } catch (e) {
           print('Error parsing appointment item JSON: $e');
         }
@@ -105,11 +105,11 @@ class AppointmentProvider extends BaseProvider {
         _soonestAppointment = {
           'id': a.id,
           'customerId': a.customerId,
-          'shopId': a.shopId,
+          'salonId': a.salonId,
           'barberId': a.barberId,
           'dateTime': a.startTime.toIso8601String(),
           'totalPrice': 0.0, // Should be calculated or from API
-          'shopName': 'Shop #${a.shopId}',
+          'salonName': 'Salon #${a.salonId}',
           'services': a.services,
         };
       } else {
@@ -118,6 +118,81 @@ class AppointmentProvider extends BaseProvider {
       notifyListeners();
     } catch (e) {
       print('Error loading soonest appointment: $e');
+    }
+  }
+
+  Future<void> delayAppointment(String appointmentId, int minutes) async {
+    try {
+      setLoading(true);
+      final apiService = ApiService();
+      await apiService.post('/salons/appointments/$appointmentId/delay/', data: {'minutes': minutes});
+      
+      // Update local state
+      await loadAppointments();
+      notifyListeners();
+    } catch (e) {
+      setError(e.toString());
+      rethrow;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> verifyPayment(String appointmentId) async {
+    try {
+      setLoading(true);
+      final apiService = ApiService();
+      await apiService.post('/salons/appointments/$appointmentId/verify-payment/', data: {});
+      
+      await loadAppointments();
+      notifyListeners();
+    } catch (e) {
+      setError(e.toString());
+      rethrow;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> confirmPayment(String appointmentId, {String? voucherCode}) async {
+    try {
+      setLoading(true);
+      clearError();
+      
+      final apiService = ApiService();
+      await apiService.confirmPayment(appointmentId, voucherCode: voucherCode);
+      
+      await loadAppointments();
+      notifyListeners();
+    } catch (e) {
+      setError(e.toString());
+      rethrow;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> rateCustomer({
+    required String appointmentId,
+    required double rating,
+    String? reviews,
+  }) async {
+    try {
+      setLoading(true);
+      final apiService = ApiService();
+      await apiService.post('/users/customers/rate/', data: {
+        'appointment': appointmentId,
+        'rating': rating,
+        'reviews': reviews,
+      });
+      
+      await loadAppointments();
+      notifyListeners();
+    } catch (e) {
+      setError(e.toString());
+      rethrow;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -141,10 +216,10 @@ class AppointmentProvider extends BaseProvider {
         (appt) => appt.id == appointmentId,
       );
       if (appointmentIndex != -1) {
-        final updatedAppointment = ShopAppointment(
+        final updatedAppointment = SalonAppointment(
           id: _appointments[appointmentIndex].id,
           customerId: _appointments[appointmentIndex].customerId,
-          shopId: _appointments[appointmentIndex].shopId,
+          salonId: _appointments[appointmentIndex].salonId,
           barberId: _appointments[appointmentIndex].barberId,
           startTime: newStartTime,
           endTime: newEndTime,
@@ -183,24 +258,24 @@ class AppointmentProvider extends BaseProvider {
     return {
       'id': '1',
       'customerId': _authProvider?.user?.id ?? 1,
-      'shopId': 1,
+      'salonId': 1,
       'barberId': 1,
       'dateTime': DateTime.now()
           .add(const Duration(hours: 2))
           .toIso8601String(),
       'totalPrice': 45.00,
-      'shopName': 'Premium Barber Shop',
-      'shopPhoneNumber': '+1234567890',
+      'salonName': 'Premium Barber Salon',
+      'salonPhoneNumber': '+1234567890',
       'services': ['Haircut', 'Beard Trim', 'Shave'],
     };
   }
 
   void _loadCustomerAppointments() {
     _appointments.addAll([
-      ShopAppointment(
+      SalonAppointment(
         id: '2',
         customerId: _authProvider?.user?.id ?? 1,
-        shopId: 1,
+        salonId: 1,
         barberId: 1,
         startTime: DateTime.now().add(const Duration(hours: 4)),
         endTime: DateTime.now().add(const Duration(hours: 5)),
@@ -213,10 +288,10 @@ class AppointmentProvider extends BaseProvider {
 
   void _loadBarberAppointments() {
     _appointments.addAll([
-      ShopAppointment(
+      SalonAppointment(
         id: '1',
         customerId: 1,
-        shopId: 1,
+        salonId: 1,
         barberId: _authProvider?.user?.id,
         startTime: DateTime.now().add(const Duration(hours: 2)),
         endTime: DateTime.now().add(const Duration(hours: 3)),
@@ -229,10 +304,10 @@ class AppointmentProvider extends BaseProvider {
 
   void _loadOwnerAppointments() {
     _appointments.addAll([
-      ShopAppointment(
+      SalonAppointment(
         id: '1',
         customerId: 1,
-        shopId: 1,
+        salonId: 1,
         barberId: 2,
         startTime: DateTime.now().add(const Duration(hours: 2)),
         endTime: DateTime.now().add(const Duration(hours: 3)),
@@ -243,7 +318,28 @@ class AppointmentProvider extends BaseProvider {
     ]);
   }
 
-  Future<void> createAppointment(ShopAppointment appointment) async {
+  Future<Map<String, dynamic>> bookAppointment(Map<String, dynamic> appointmentData) async {
+    try {
+      setLoading(true);
+      clearError();
+      
+      final apiService = ApiService();
+      final response = await apiService.bookAppointment(appointmentData);
+      
+      // Reload appointments to sync local state
+      await loadAppointments();
+      await loadSoonestAppointment();
+      
+      return response;
+    } catch (e) {
+      setError(e.toString());
+      rethrow;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> createAppointment(SalonAppointment appointment) async {
     try {
       setLoading(true);
       clearError();

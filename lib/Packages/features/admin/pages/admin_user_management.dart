@@ -1,10 +1,11 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 /// Super Admin — User Management Page.
 /// Lists all platform users (customers + barbers/staff) with ban/verify actions.
@@ -42,7 +43,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('user_management'.tr()),
+        title: Text(AppLocalizations.of(context)!.userManagement),
         bottom: TabBar(
           controller: _tabs,
           labelColor: primary,

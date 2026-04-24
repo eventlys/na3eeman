@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:na3eeman/l10n/app_localizations.dart';
 import '../../../Providers/main_providers.dart';
 import '../../../Services/enums/gender.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -42,14 +44,14 @@ class NavigationConfig {
     }
   }
 
-  static List<NavItem> getNavItems(AppStateProvider appStateProvider, String currentRoute) {
+  static List<NavItem> getNavItems(AppStateProvider appStateProvider, String currentRoute, BuildContext context) {
     final allItems = [
       NavItem(
         id: 'home',
         activeIconPath: 'assets/icons/home_view.png',
         inactiveIconPath: 'assets/icons/home_front.png',
         route: getHomeRoute(appStateProvider),
-        label: 'home'.tr(),
+        label: AppLocalizations.of(context)!.home,
       ),
       NavItem(
         id: 'search',
@@ -63,28 +65,28 @@ class NavigationConfig {
         activeIconPath: 'assets/icons/clock_view.png',
         inactiveIconPath: 'assets/icons/clock.png',
         route: '/history',
-        label: 'history'.tr(),
+        label: AppLocalizations.of(context)!.history,
       ),
       NavItem(
         id: 'admin',
         activeIconPath: 'assets/icons/admin_view.png',
         inactiveIconPath: 'assets/icons/admin.png',
         route: '/owner',
-        label: 'admin'.tr(),
+        label: AppLocalizations.of(context)!.admin,
       ),
       NavItem(
         id: 'staff',
         activeIconPath: 'assets/icons/staff_view.png',
         inactiveIconPath: 'assets/icons/staff.png',
         route: '/staff',
-        label: 'staff'.tr(),
+        label: AppLocalizations.of(context)!.staff,
       ),
       NavItem(
         id: 'profile',
         activeIconPath: getProfileAvatar(appStateProvider, currentRoute == '/profile'),
         inactiveIconPath: getProfileAvatar(appStateProvider, false),
         route: '/profile',
-        label: 'profile'.tr(),
+        label: AppLocalizations.of(context)!.profile,
       ),
     ];
 

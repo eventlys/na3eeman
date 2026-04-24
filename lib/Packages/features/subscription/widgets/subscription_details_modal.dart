@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/owner_provider.dart';
@@ -30,7 +31,7 @@ class SubscriptionDetailsModal extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('subscription_details'.tr(),
+              Text(AppLocalizations.of(context)!.subscriptionDetails,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : AppColors.almostBlack,
@@ -49,7 +50,7 @@ class SubscriptionDetailsModal extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Features List
-          Text('plan_features'.tr(),
+          Text(AppLocalizations.of(context)!.planFeatures,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white70 : AppColors.almostBlack400,
@@ -78,13 +79,13 @@ class SubscriptionDetailsModal extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: Text('close'.tr()),
+                  child: Text(AppLocalizations.of(context)!.close),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: PrimaryButton(
-                  text: 'upgrade_plan'.tr(),
+                  text: AppLocalizations.of(context)!.upgradePlan,
                   onPressed: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/subscription/upgrade');

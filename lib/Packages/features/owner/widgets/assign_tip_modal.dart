@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
@@ -52,14 +53,14 @@ class _AssignTipModalState extends State<AssignTipModal> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('assign_daily_tip'.tr(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.assignDailyTip, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             
             // Intern Selection
             DropdownButtonFormField<String>(
               value: selectedIntern,
               decoration: InputDecoration(
-                labelText: 'select_intern'.tr(),
+                labelText: AppLocalizations.of(context)!.selectIntern,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               items: interns.map((intern) => DropdownMenuItem(value: intern, child: Text(intern))).toList(),
@@ -84,14 +85,14 @@ class _AssignTipModalState extends State<AssignTipModal> {
             TextFormField(
               controller: _noteController,
               decoration: InputDecoration(
-                labelText: 'optional_note'.tr(),
+                labelText: AppLocalizations.of(context)!.optionalNote,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             const SizedBox(height: 32),
 
             PrimaryButton(
-              text: 'assign_tip'.tr(),
+              text: AppLocalizations.of(context)!.assignTip,
               onPressed: _handleAssign,
             ),
             const SizedBox(height: 16),

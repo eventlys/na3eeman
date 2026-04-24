@@ -6,12 +6,12 @@ class SubscriptionHelper {
   static final BusinessService _subscriptionService = BusinessService();
 
   // Get available subscription plans from the service
-  static Future<List<ShopSubscription>> getSubscriptions() async {
+  static Future<List<SalonSubscription>> getSubscriptions() async {
     try {
       final plans = await _subscriptionService.getAvailablePlans();
 
-      // Convert SubscriptionPlan to ShopSubscription
-      return plans.map((plan) => ShopSubscription(
+      // Convert SubscriptionPlan to SalonSubscription
+      return plans.map((plan) => SalonSubscription(
         id: plan.id,
         name: plan.name,
         description: plan.description,
@@ -19,7 +19,7 @@ class SubscriptionHelper {
         duration: plan.duration,
         features: plan.features,
         isPopular: plan.isPopular,
-        shopId: null, // This can be set based on your business logic
+        salonId: null, // This can be set based on your business logic
       )).toList();
 
     } catch (e) {
@@ -122,12 +122,12 @@ class SubscriptionHelper {
   }
 
   // Mock data fallback (keep your existing mock data)
-  static List<ShopSubscription> _getMockSubscriptions() {
+  static List<SalonSubscription> _getMockSubscriptions() {
     return [
-      ShopSubscription(
+      SalonSubscription(
         id: '1',
         name: 'Basic Plan',
-        description: 'Perfect for casual shoppers',
+        description: 'Perfect for casual salonpers',
         price: 9.99,
         duration: 'MONTHLY',
         features: [
@@ -136,10 +136,10 @@ class SubscriptionHelper {
           'Early access to sales',
         ],
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '2',
         name: 'Premium Plan',
-        description: 'Best value for frequent shoppers',
+        description: 'Best value for frequent salonpers',
         price: 19.99,
         duration: 'MONTHLY',
         features: [
@@ -151,7 +151,7 @@ class SubscriptionHelper {
         ],
         isPopular: true,
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '3',
         name: 'Annual Plan',
         description: 'Save big with yearly subscription',
@@ -165,7 +165,7 @@ class SubscriptionHelper {
           'Quarterly surprise boxes',
         ],
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '4',
         name: 'Family Plan',
         description: 'Share benefits with your family',
@@ -177,7 +177,7 @@ class SubscriptionHelper {
           'Separate order tracking',
         ],
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '5',
         name: 'Student Plan',
         description: 'Special discount for students',
@@ -193,13 +193,13 @@ class SubscriptionHelper {
   }
 
   // Get featured/popular subscriptions
-  static Future<List<ShopSubscription>> getFeaturedSubscriptions() async {
+  static Future<List<SalonSubscription>> getFeaturedSubscriptions() async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions.where((sub) => sub.isPopular).toList();
   }
 
   // Get subscriptions by duration type
-  static Future<List<ShopSubscription>> getSubscriptionsByDuration(String duration) async {
+  static Future<List<SalonSubscription>> getSubscriptionsByDuration(String duration) async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions
         .where((sub) => sub.duration.toUpperCase() == duration.toUpperCase())
@@ -207,7 +207,7 @@ class SubscriptionHelper {
   }
 
   // Find subscription by ID
-  static Future<ShopSubscription?> getSubscriptionById(String id) async {
+  static Future<SalonSubscription?> getSubscriptionById(String id) async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions.firstWhere(
       (sub) => sub.id == id,

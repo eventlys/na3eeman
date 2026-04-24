@@ -10,14 +10,14 @@ class InternProvider with ChangeNotifier {
   List<InternTarget> _targets = [];
   bool _isLoading = false;
   String? _assignedMentor;
-  int? _shopId;
+  int? _salonId;
   Map<String, dynamic> _activityData = {};
 
   List<InternTask> get tasks => _tasks;
   List<InternTarget> get targets => _targets;
   bool get isLoading => _isLoading;
   String? get assignedMentor => _assignedMentor;
-  int? get shopId => _shopId;
+  int? get salonId => _salonId;
   Map<String, dynamic> get activityData => _activityData;
 
   // Initialize data
@@ -34,19 +34,19 @@ class InternProvider with ChangeNotifier {
       final response = await _apiService.get(Endpoints.currentUser);
       final dynamic userData = response['user'] ?? response;
       
-      // Extract shop ID - could be 'shop' (Object/int) or 'shop_id'
-      final shopData = userData['shop'];
-      debugPrint('DEBUG: Intern profile shop data: $shopData');
+      // Extract salon ID - could be 'salon' (Object/int) or 'salon_id'
+      final salonData = userData['salon'];
+      debugPrint('DEBUG: Intern profile salon data: $salonData');
       
-      if (shopData is int) {
-        _shopId = shopData;
-      } else if (shopData is Map) {
-        _shopId = shopData['id'] ?? shopData['shop_id'];
-      } else if (shopData is String) {
-        _shopId = int.tryParse(shopData);
+      if (salonData is int) {
+        _salonId = salonData;
+      } else if (salonData is Map) {
+        _salonId = salonData['id'] ?? salonData['salon_id'];
+      } else if (salonData is String) {
+        _salonId = int.tryParse(salonData);
       }
       
-      debugPrint('DEBUG: Extracted shopId: $_shopId');
+      debugPrint('DEBUG: Extracted salonId: $_salonId');
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching intern profile: $e');
@@ -155,7 +155,7 @@ class InternProvider with ChangeNotifier {
     notifyListeners();
     try {
       final response = await _apiService.getInternActivity();
-      _activityData = response as Map<String, dynamic>;
+      _activityData = response;
     } catch (e) {
       debugPrint('Error fetching intern activity: $e');
     } finally {

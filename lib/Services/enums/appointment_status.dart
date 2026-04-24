@@ -1,4 +1,5 @@
 enum AppointmentStatus {
+  pendingPayment('PENDING_PAYMENT'),
   scheduled('SCHEDULED'),
   checkedIn('CHECKED_IN'),
   pending('PENDING'),

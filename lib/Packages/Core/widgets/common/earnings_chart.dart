@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -18,19 +19,20 @@ class EarningsChart extends StatelessWidget {
     // Handle List data (which is what your API returns)
     if (earningsData is List) {
       final List<dynamic> earningsList = earningsData as List;
-      return _buildWeeklyChart(earningsList, theme, isDark);
+      return _buildWeeklyChart(earningsList, theme, isDark, context);
     } else {
-      return _buildEmptyChart(theme, isDark);
+      return _buildEmptyChart(theme, isDark, context);
     }
   }
 
   Widget _buildWeeklyChart(
     List<dynamic> earningsList,
     ThemeData theme,
-    bool isDark
+    bool isDark,
+    BuildContext context,
   ) {
     if (earningsList.isEmpty) {
-      return _buildEmptyChart(theme, isDark);
+      return _buildEmptyChart(theme, isDark, context);
     }
 
     // Process the data
@@ -46,7 +48,7 @@ class EarningsChart extends StatelessWidget {
     }
 
     if (chartData.isEmpty) {
-      return _buildEmptyChart(theme, isDark);
+      return _buildEmptyChart(theme, isDark, context);
     }
 
     final Color cardColor = theme.cardTheme.color ?? (isDark ? AppColor.darkCard : AppColor.lightCard);
@@ -70,7 +72,7 @@ class EarningsChart extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('weekly_earnings_trend'.tr(),
+          Text(AppLocalizations.of(context)!.weeklyEarningsTrend,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: textColor,
@@ -128,7 +130,7 @@ class EarningsChart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildStats(chartData, theme, isDark),
+          _buildStats(chartData, theme, isDark, context),
         ],
       ),
     );
@@ -137,7 +139,8 @@ class EarningsChart extends StatelessWidget {
   Widget _buildStats(
     List<Map<String, dynamic>> chartData,
     ThemeData theme,
-    bool isDark
+    bool isDark,
+    BuildContext context,
   ) {
     final totalEarnings = chartData.map((e) => (e['amount'] ?? 0).toDouble()).reduce((a, b) => a + b);
     final totalAppointments = chartData.map((e) => (e['appointments'] ?? 0) as int).reduce((a, b) => a + b);
@@ -147,19 +150,19 @@ class EarningsChart extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _StatItem(
-          label: 'total'.tr(),
+          label: AppLocalizations.of(context)!.total,
           value: '\$${totalEarnings.toStringAsFixed(0)}',
           color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
           theme: theme,
         ),
         _StatItem(
-          label: 'appointments'.tr(),
+          label: AppLocalizations.of(context)!.appointments,
           value: totalAppointments.toString(),
           color: isDark ? AppColor.darkInfo : AppColor.lightInfo,
           theme: theme,
         ),
         _StatItem(
-          label: 'average'.tr(),
+          label: AppLocalizations.of(context)!.average,
           value: '\$${averagePerAppointment.toStringAsFixed(0)}',
           color: isDark ? AppColor.darkWarning : AppColor.lightWarning,
           theme: theme,
@@ -168,7 +171,7 @@ class EarningsChart extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyChart(ThemeData theme, bool isDark) {
+  Widget _buildEmptyChart(ThemeData theme, bool isDark, BuildContext context) {
     final Color cardColor = theme.cardTheme.color ?? (isDark ? AppColor.darkCard : AppColor.lightCard);
     final Color textColor = isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
 
@@ -187,7 +190,7 @@ class EarningsChart extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Text('no_earnings_data_available'.tr(),
+        child: Text(AppLocalizations.of(context)!.noEarningsDataAvailable,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: textColor,
           ),

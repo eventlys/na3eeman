@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +18,9 @@ class ConsumableWasteMeterWidget extends StatelessWidget {
     final owner = context.watch<OwnerProvider>();
 
     // Load consumables if not already loaded
-    if (!inventory.isLoading && inventory.consumables.isEmpty && owner.activeShopId != null) {
+    if (!inventory.isLoading && inventory.consumables.isEmpty && owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        inventory.loadInventory(owner.activeShopId!);
+        inventory.loadInventory(owner.activeSalonId!);
       });
     }
 
@@ -32,7 +33,7 @@ class ConsumableWasteMeterWidget extends StatelessWidget {
           children: [
             const Icon(Icons.recycling_rounded, size: 18, color: Colors.orange),
             const SizedBox(width: 8),
-            Text('consumable_waste'.tr(),
+            Text(AppLocalizations.of(context)!.consumableWaste,
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),

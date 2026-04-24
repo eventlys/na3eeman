@@ -1,7 +1,7 @@
 import 'package:na3eeman/Services/enums/gender.dart';
 import 'package:na3eeman/core/enums/app_enums.dart';
 
-import '../../Models/appointments/shop_appointments_model.dart';
+import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Services/enums/appointment_status.dart';
 import '../../Services/enums/attendee_type.dart';
@@ -63,35 +63,35 @@ class DataMappers {
     );
   }
 
-  // Shop Mappers - Using Map structure since Shop class might not exist
-  static Map<String, dynamic> shopToJson(Map<String, dynamic> shop) {
+  // Salon Mappers - Using Map structure since Salon class might not exist
+  static Map<String, dynamic> salonToJson(Map<String, dynamic> salon) {
     return {
-      'id': shop['id'],
-      'title': shop['title'],
-      'workingHours': shop['workingHours'],
-      'shopLocation': shop['shopLocation'],
-      'shopRating': shop['shopRating'],
-      'profilePicture': shop['profilePicture'],
+      'id': salon['id'],
+      'title': salon['title'],
+      'workingHours': salon['workingHours'],
+      'salonLocation': salon['salonLocation'],
+      'salonRating': salon['salonRating'],
+      'profilePicture': salon['profilePicture'],
     };
   }
 
-  static Map<String, dynamic> shopFromJson(Map<String, dynamic> json) {
+  static Map<String, dynamic> salonFromJson(Map<String, dynamic> json) {
     return {
       'id': json['id']?.toString() ?? '',
       'title': json['title']?.toString() ?? '',
       'workingHours': json['workingHours']?.toString() ?? '',
-      'shopLocation': json['shopLocation']?.toString() ?? '',
-      'shopRating': _parseRating(json['shopRating']),
+      'salonLocation': json['salonLocation']?.toString() ?? '',
+      'salonRating': _parseRating(json['salonRating']),
       'profilePicture': json['profilePicture']?.toString() ?? '',
     };
   }
 
   // Appointment Mappers
-  static Map<String, dynamic> appointmentToJson(ShopAppointment appointment) {
+  static Map<String, dynamic> appointmentToJson(SalonAppointment appointment) {
     return {
       'id': appointment.id,
       'customer': appointment.customerId,
-      'shop': appointment.shopId,
+      'salon': appointment.salonId,
       'barber': appointment.barberId,
       'start_time': appointment.startTime.toIso8601String(),
       'end_time': appointment.endTime.toIso8601String(),
@@ -109,11 +109,11 @@ class DataMappers {
     };
   }
 
-  static ShopAppointment appointmentFromJson(Map<String, dynamic> json) {
-    return ShopAppointment(
+  static SalonAppointment appointmentFromJson(Map<String, dynamic> json) {
+    return SalonAppointment(
       id: json['id']?.toString() ?? '',
       customerId: (json['customer'] as num?)?.toInt() ?? 0,
-      shopId: (json['shop'] as num?)?.toInt() ?? 0,
+      salonId: (json['salon'] as num?)?.toInt() ?? 0,
       barberId: (json['barber'] as num?)?.toInt(),
       startTime: DateTime.parse(json['start_time']?.toString() ?? DateTime.now().toIso8601String()),
       endTime: DateTime.parse(json['end_time']?.toString() ?? DateTime.now().toIso8601String()),

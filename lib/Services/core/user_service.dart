@@ -133,7 +133,7 @@ class UserService {
     }
   }
 
-  Future<List<User>> getUsers({int page = 1, int limit = 20, String? search}) async {
+  Future<List<UserSummary>> getUsers({int page = 1, int limit = 20, String? search}) async {
     final Map<String, dynamic> queryParams = {
       'page': page,
       'limit': limit,
@@ -153,7 +153,7 @@ class UserService {
     if (result['success'] == true) {
       final data = result['data'];
       if (data is List) {
-        return data.map((userJson) => User.fromJson(userJson)).toList();
+        return data.map((userJson) => UserSummary.fromJson(userJson)).toList();
       }
       return [];
     } else {
@@ -290,7 +290,7 @@ class UserProfile {
   }
 }
 
-class User {
+class UserSummary {
   final int id;
   final String name;
   final String email;
@@ -298,7 +298,7 @@ class User {
   final bool isActive;
   final DateTime createdAt;
 
-  User({
+  UserSummary({
     required this.id,
     required this.name,
     required this.email,
@@ -307,8 +307,8 @@ class User {
     required this.createdAt,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserSummary.fromJson(Map<String, dynamic> json) {
+    return UserSummary(
       id: json['id'],
       name: json['name'],
       email: json['email'],

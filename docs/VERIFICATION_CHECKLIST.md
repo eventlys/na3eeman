@@ -35,7 +35,7 @@
 - [x] `Endpoints.login` → `String` passed to `ApiService.post()` ✅
 - [x] `Endpoints.tokenRefresh` → `String` used in `_attemptTokenRefresh()` ✅
 - [x] `Endpoints.currentUser` → `String` used in `getCurrentUser()` ✅
-- [x] `Endpoints.shops` → `String` used in `getShops()` ✅
+- [x] `Endpoints.salons` → `String` used in `getSalons()` ✅
 - [x] `Endpoints.withPagination()` → returns `String` ✅
 - [x] `Endpoints.withSearch()` → returns `String` ✅
 - [x] `Endpoints.fullUrl()` → returns `String` used in URI building ✅
@@ -97,8 +97,8 @@
 
 #### Endpoints.buildUrl()
 ```dart
-// Input: '/shops/shops/', {page: 2, search: 'barber'}
-// Output: '/shops/shops/?page=2&search=barber'
+// Input: '/salons/salons/', {page: 2, search: 'barber'}
+// Output: '/salons/salons/?page=2&search=barber'
 ```
 - [x] Filters out null/empty values ✅
 - [x] URL encodes keys and values ✅
@@ -106,8 +106,8 @@
 
 #### Endpoints.withPagination()
 ```dart
-// Input: '/shops/shops/', page: 2, pageSize: 20
-// Output: '/shops/shops/?page=2&page_size=20'
+// Input: '/salons/salons/', page: 2, pageSize: 20
+// Output: '/salons/salons/?page=2&page_size=20'
 ```
 - [x] Uses `if (pageSize != null)` for optional param ✅
 - [x] Calls `buildUrl()` correctly ✅
@@ -134,7 +134,7 @@
 #### Endpoint Structure
 - [x] All endpoints use `/api/v1/` prefix (via baseUrl) ✅
 - [x] Auth endpoints: `/api/v1/auth/...` ✅
-- [x] Shop endpoints: `/api/v1/shops/...` ✅
+- [x] Salon endpoints: `/api/v1/salons/...` ✅
 - [x] Loyalty endpoints: `/api/v1/loyalty/...` ✅
 
 #### JWT Token Format

@@ -77,47 +77,48 @@ class Endpoints {
   static const String twoFASetup = '/auth/security/2fa/setup/';
   static const String twoFAVerify = '/auth/security/2fa/verify/';
 
-  // ==================== SHOPS ====================
-  static const String shops = '/shops/shops/';
-  static String shopDetails(int id) => '/shops/shops/$id/';
-  static const String shopSearch = '/shops/shops/';  // Use query params  
-  static const String nearbyShops = '/shops/shops/';  // Use query params with lat/lng
-  static const String favoriteShops = '/shops/shops/';  // Filter by favorites
-  static const String categories = '/shops/categories/';
-  static const String allOffers = '/shops/all-offers/';
-  static const String allCampaigns = '/shops/all-campaigns/';
+  // ==================== SALONS ====================
+  static const String salons = '/salons/salons/';
+  static String salonDetails(int id) => '/salons/salons/$id/';
+  static const String salonSearch = '/salons/salons/';  // Use query params  
+  static const String nearbySalons = '/salons/salons/';  // Use query params with lat/lng
+  static const String favoriteSalons = '/salons/salons/';  // Filter by favorites
+  static const String categories = '/salons/categories/';
+  static const String allOffers = '/salons/all-offers/';
+  static const String allCampaigns = '/salons/all-campaigns/';
   
-  // Shop nested resources
-  static String shopOptions(int shopId) => '/shops/shops/$shopId/options/';
-  static String shopPackages(int shopId) => '/shops/shops/$shopId/packages/';
-  static String shopProducts(int shopId) => '/shops/shops/$shopId/products/';
-  static String shopInventory(int shopId) => '/shops/shops/$shopId/inventory/';
-  static String shopBarbers(int shopId) => '/shops/shops/$shopId/barbers/';
-  static String shopReviews(int shopId) => '/shops/shops/$shopId/reviews/';
-  static String shopSchedule(int shopId) => '/shops/shops/$shopId/schedule/';  // If exists
-  static String shopServices(int shopId) => '/shops/shops/$shopId/options/';  // Same as options
+  // Salon nested resources
+  static String salonOptions(int salonId) => '/salons/salons/$salonId/options/';
+  static String salonPackages(int salonId) => '/salons/salons/$salonId/packages/';
+  static String salonProducts(int salonId) => '/salons/salons/$salonId/products/';
+  static String salonInventory(int salonId) => '/salons/salons/$salonId/inventory/';
+  static String salonBarbers(int salonId) => '/salons/salons/$salonId/barbers/';
+  static String salonReviews(int salonId) => '/salons/salons/$salonId/reviews/';
+  static String salonSchedule(int salonId) => '/salons/salons/$salonId/schedule/';  // If exists
+  static String salonServices(int salonId) => '/salons/salons/$salonId/options/';  // Same as options
 
   // ==================== APPOINTMENTS ====================
-  static const String appointments = '/shops/appointments/';
-  static String appointmentDetails(int id) => '/shops/appointments/$id/';
-  static const String appointmentBook = '/shops/appointments/';  // POST to list endpoint
-  static String appointmentCancel(int id) => '/shops/appointments/$id/cancel/';
-  static String appointmentReschedule(int id) => '/shops/appointments/$id/reschedule/';
-  static String appointmentComplete(int id) => '/shops/appointments/$id/complete/';
-  static String appointmentConfirmCashPayment(int id) => '/shops/appointments/$id/confirm_payment/';  // Fixed: backend uses confirm_payment not confirm-cash
+  static const String appointments = '/salons/appointments/';
+  static String appointmentDetails(int id) => '/salons/appointments/$id/';
+  static const String appointmentBook = '/salons/appointments/';  // POST to list endpoint
+  static String appointmentCancel(int id) => '/salons/appointments/$id/cancel/';
+  static String appointmentReschedule(int id) => '/salons/appointments/$id/reschedule/';
+  static String appointmentComplete(int id) => '/salons/appointments/$id/complete/';
+  static String appointmentConfirmCashPayment(int id) => '/salons/appointments/$id/confirm_payment/';  // Fixed: backend uses confirm_payment not confirm-cash
   
   // User appointments
-  static const String userAppointments = '/shops/appointments/';  // Filter by user
-  static const String soonestAppointment = '/shops/appointments/';  // Sort by date, limit 1
-  static const String freeAppointment = '/shops/appointments/free/';  // If endpoint exists
+  static const String userAppointments = '/salons/appointments/';  // Filter by user
+  static const String soonestAppointment = '/salons/appointments/';  // Sort by date, limit 1
+  static const String freeAppointment = '/salons/appointments/free/';  // If endpoint exists
 
   // ==================== REVIEWS ====================
-  static const String reviews = '/shops/reviews/';
-  static String reviewDetails(int id) => '/shops/reviews/$id/';
+  static const String reviews = '/salons/reviews/';
+  static String reviewDetails(int id) => '/salons/reviews/$id/';
 
   // ==================== SUBSCRIPTIONS ====================
-  static const String subscriptions = '/shops/subscriptions/';
-  static String subscriptionDetails(int id) => '/shops/subscriptions/$id/';
+  static const String subscriptions = '/salons/subscriptions/';
+  static String subscriptionDetails(int id) => '/salons/subscriptions/$id/';
+  static const String platformSubscriptionPlans = '/auth/subscription-plans/';
 
   // ==================== OWNER / SUBSCRIPTION MANAGEMENT ====================
   static const String ownerProfile = '/auth/profile/owner/';
@@ -131,14 +132,16 @@ class Endpoints {
   // static const String ownerStaffLimit = '/owners/staff/limit/';
 
   // ==================== HAIRCUT STYLES ====================
-  static const String haircutStyles = '/shops/haircut-styles/';
-  static String haircutStyleDetails(int id) => '/shops/haircut-styles/$id/';
+  static const String haircutStyles = '/salons/haircut-styles/';
+  static String haircutStyleDetails(int id) => '/salons/haircut-styles/$id/';
 
   // ==================== LOYALTY ====================
   static const String loyaltyBalance = '/loyalty/balance/';
-  static const String loyaltyTransactions = '/loyalty/transactions/';  // If exists
+  static const String loyaltyTransactions = '/loyalty/transactions/';
   static const String loyaltyRedeemFreeCut = '/loyalty/redeem-free-cut/';
-  static const String loyaltyAdminAdjustPoints = '/loyalty/admin/adjust-points/';
+  static const String loyaltyAwardPoints = '/loyalty/award-points/';
+  static const String loyaltyRedeemPoints = '/loyalty/redeem-points/';
+  static const String loyaltyAdminAdjustPoints = '/loyalty/admin-adjust/';
 
   // ==================== PAYMENTS ====================
   // Note: These endpoints may not exist yet in backend
@@ -153,11 +156,13 @@ class Endpoints {
   static const String adminAnalyticsFinancial = '/analytics/financial/';
   static const String adminAnalyticsSystem = '/analytics/system/';
   static const String analyticsEvents = '/analytics/events/';
-  static String shopRetailSnapshot(int shopId) => '/shops/shops/$shopId/retail_snapshot/';
-  static String shopTeamLeaderboard(int shopId) => '/shops/shops/$shopId/team_leaderboard/';
-  static String shopDailyEarnings(int shopId) => '/shops/shops/$shopId/daily_earnings/';
-  static String shopResourceOccupancy(int shopId) => '/shops/shops/$shopId/resource_occupancy/';
-  static String shopEmployees(int shopId) => '/shops/shops/$shopId/employees/';
+  static String salonRetailSnapshot(int salonId) => '/salons/salons/$salonId/retail_snapshot/';
+  static String salonTeamLeaderboard(int salonId) => '/salons/salons/$salonId/team_leaderboard/';
+  static String salonDailyEarnings(int salonId) => '/salons/salons/$salonId/daily_earnings/';
+  static String salonResourceOccupancy(int salonId) => '/salons/salons/$salonId/resource_occupancy/';
+  static String salonEmployees(int salonId) => '/salons/salons/$salonId/employees/';
+  static String salonPaymentConfig(int salonId) => '/salons/salons/$salonId/payment-config/';
+  static const String vouchers = '/salons/vouchers/';
 
   // Notifications
   static const String notifications = '/auth/notifications/';
@@ -165,8 +170,8 @@ class Endpoints {
   static const String notificationsMarkAllRead = '/auth/notifications/mark-all-read/';
 
   // Campaigns
-  static String shopOffers(int shopId) => '/shops/shops/$shopId/offers/';
-  static String shopAdCampaigns(int shopId) => '/shops/shops/$shopId/campaigns/';
+  static String salonOffers(int salonId) => '/salons/salons/$salonId/offers/';
+  static String salonAdCampaigns(int salonId) => '/salons/salons/$salonId/campaigns/';
 
   // ==================== UTILITY ====================
   static const String health = '/health/';
@@ -218,35 +223,39 @@ class Endpoints {
     return buildUrl(endpoint, filters);
   }
 
-  /// Get nearby shops URL
-  static String getNearbyShopsUrl({
+  /// Get nearby salons URL
+  static String getNearbySalonsUrl({
     required double latitude,
     required double longitude,
     double? radiusKm,
   }) {
-    return buildUrl(shops, {
+    return buildUrl(salons, {
       'lat': latitude,
       'lng': longitude,
       if (radiusKm != null) 'radius': radiusKm,
     });
   }
 
-  /// Get nearby shops URL with category
-  static String getNearbyShopsByCategoryUrl({
+  /// Get nearby salons URL with category
+  static String getNearbySalonsByCategoryUrl({
     required double latitude,
     required double longitude,
     required int categoryId,
     double? radiusKm,
+    bool? forGift,
+    String? giftGender,
   }) {
-    return buildUrl(shops, {
+    return buildUrl(salons, {
       'lat': latitude,
       'lng': longitude,
       'category': categoryId,
       if (radiusKm != null) 'radius': radiusKm,
+      if (forGift != null) 'for_gift': forGift,
+      if (giftGender != null) 'gift_gender': giftGender,
     });
   }
 
-  /// Replace path parameters (e.g., /shops/{id} -> /shops/123)
+  /// Replace path parameters (e.g., /salons/{id} -> /salons/123)
   static String replacePathParams(String endpoint, Map<String, dynamic> params) {
     String result = endpoint;
     params.forEach((key, value) {
@@ -272,14 +281,14 @@ class ApiEndpoints {
   static String get changePassword => Endpoints.passwordChange;
   static String get socialLogin => Endpoints.socialLogin;
   
-  static String get shops => Endpoints.shops;
-  static String get shopSearch => Endpoints.shopSearch;
-  static String get nearbyShops => Endpoints.nearbyShops;
+  static String get salons => Endpoints.salons;
+  static String get salonSearch => Endpoints.salonSearch;
+  static String get nearbySalons => Endpoints.nearbySalons;
   
   static String get appointments => Endpoints.appointments;
   static String get appointmentBook => Endpoints.appointmentBook;
   
   // Helper to replace {id} placeholder
-  static String shopDetails(int id) => Endpoints.shopDetails(id);
+  static String salonDetails(int id) => Endpoints.salonDetails(id);
   static String appointmentDetails(int id) => Endpoints.appointmentDetails(id);
 }

@@ -16,7 +16,7 @@ enum UserRole {
   /// Individual barber exposed to clients (no management scope).
   barber,
 
-  /// Shop employee working under an owner.
+  /// Salon employee working under an owner.
   employee,
 
   /// Manages scheduling & staff; limited financial access.
@@ -28,16 +28,34 @@ enum UserRole {
   /// Assistant tasks only (materials, cleaning, etc.).
   helper,
 
-  /// Full shop owner; all shop-level permissions.
+  /// Full salon owner; all salon-level permissions.
   owner,
 
+  /// Owner who also works as an employee.
+  ownerEmployee,
+
+  /// Pure business owner who doesn't work in the salon.
+  ownerOwner,
+
+  /// Administrative role for salon/platform management.
+  admin,
+
+  /// Trainee or junior staff.
+  intern,
+
   /// App-level god mode. Developer / platform administrator.
-  superAdmin;
+  superAdmin,
+
+  /// Co-Founder — shares all Owner permissions and pages.
+  cofounder;
 
   bool get isStaff =>
-      [barber, employee, manager, receptionist, helper, owner].contains(this);
+      [barber, employee, manager, receptionist, helper, owner, ownerEmployee, ownerOwner, intern, admin, cofounder].contains(this);
 
-  bool get isAdmin => this == superAdmin;
+  bool get isOwnerEquivalent =>
+      [owner, ownerEmployee, ownerOwner, cofounder].contains(this);
+
+  bool get isAdmin => this == admin || this == superAdmin;
 
   String get displayName {
     switch (this) {
@@ -55,8 +73,57 @@ enum UserRole {
         return 'Helper';
       case owner:
         return 'Owner';
+      case ownerEmployee:
+        return 'Owner (Employee)';
+      case ownerOwner:
+        return 'Owner (Manager)';
+      case admin:
+        return 'Admin';
+      case intern:
+        return 'Intern';
       case superAdmin:
         return 'Super Admin';
+      case cofounder:
+        return 'Co-Founder';
+    }
+  }
+
+  String get value => name.toUpperCase();
+}
+
+extension UserRoleExtension on UserRole {
+  static UserRole fromString(String role) {
+    switch (role.toUpperCase()) {
+      case 'CUSTOMER':
+        return UserRole.customer;
+      case 'BARBER':
+        return UserRole.barber;
+      case 'EMPLOYEE':
+        return UserRole.employee;
+      case 'MANAGER':
+        return UserRole.manager;
+      case 'RECEPTIONIST':
+        return UserRole.receptionist;
+      case 'HELPER':
+        return UserRole.helper;
+      case 'OWNER':
+        return UserRole.owner;
+      case 'OWNER_EMPLOYEE':
+        return UserRole.ownerEmployee;
+      case 'OWNER_OWNER':
+        return UserRole.ownerOwner;
+      case 'ADMIN':
+        return UserRole.admin;
+      case 'INTERN':
+        return UserRole.intern;
+      case 'SUPERADMIN':
+      case 'SUPER_ADMIN':
+        return UserRole.superAdmin;
+      case 'COFOUNDER':
+      case 'CO_FOUNDER':
+        return UserRole.cofounder;
+      default:
+        return UserRole.customer;
     }
   }
 }
@@ -65,7 +132,7 @@ enum UserRole {
 // SUBSCRIPTION TIERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Commercial subscription level of a shop or staff account.
+/// Commercial subscription level of a salon or staff account.
 enum SubscriptionTier {
   basic,
   gold,
@@ -131,7 +198,7 @@ enum AppPermission {
   setStaffRoles,
 
   // Finance
-  viewShopRevenue,
+  viewSalonRevenue,
   viewPayoutRequests,
   approvePayouts,
   viewSubscriptionRevenue,
@@ -140,8 +207,8 @@ enum AppPermission {
   viewReports,
   downloadReports,
 
-  // Shop Management
-  editShopProfile,
+  // Salon Management
+  editSalonProfile,
   manageSessions,
   manageServices,
 
@@ -155,7 +222,7 @@ enum AppPermission {
   verifyAccounts,
   resolveDisputes,
   viewSystemHealth,
-  viewAllShops,
+  viewAllSalons,
   viewGlobalRevenue,
 }
 
@@ -193,7 +260,7 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.viewCustomerList,
     AppPermission.viewStaffList,
     AppPermission.manageStaff,
-    AppPermission.viewShopRevenue,
+    AppPermission.viewSalonRevenue,
     AppPermission.viewReports,
     AppPermission.downloadReports,
     AppPermission.viewAnalytics,
@@ -211,19 +278,90 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.viewStaffList,
     AppPermission.manageStaff,
     AppPermission.setStaffRoles,
-    AppPermission.viewShopRevenue,
+    AppPermission.viewSalonRevenue,
     AppPermission.viewPayoutRequests,
     AppPermission.viewReports,
     AppPermission.downloadReports,
-    AppPermission.editShopProfile,
+    AppPermission.editSalonProfile,
     AppPermission.manageSessions,
     AppPermission.manageServices,
     AppPermission.viewAnalytics,
     AppPermission.viewPeakHours,
   },
+  UserRole.ownerEmployee: {
+    AppPermission.viewBookings,
+    AppPermission.createBooking,
+    AppPermission.cancelAnyBooking,
+    AppPermission.rescheduleBooking,
+    AppPermission.viewCustomerList,
+    AppPermission.editCustomerProfile,
+    AppPermission.viewStaffList,
+    AppPermission.manageStaff,
+    AppPermission.setStaffRoles,
+    AppPermission.viewSalonRevenue,
+    AppPermission.viewPayoutRequests,
+    AppPermission.viewReports,
+    AppPermission.downloadReports,
+    AppPermission.editSalonProfile,
+    AppPermission.manageSessions,
+    AppPermission.manageServices,
+    AppPermission.viewAnalytics,
+    AppPermission.viewPeakHours,
+  },
+  UserRole.ownerOwner: {
+    AppPermission.viewBookings,
+    AppPermission.createBooking,
+    AppPermission.cancelAnyBooking,
+    AppPermission.rescheduleBooking,
+    AppPermission.viewCustomerList,
+    AppPermission.editCustomerProfile,
+    AppPermission.viewStaffList,
+    AppPermission.manageStaff,
+    AppPermission.setStaffRoles,
+    AppPermission.viewSalonRevenue,
+    AppPermission.viewPayoutRequests,
+    AppPermission.viewReports,
+    AppPermission.downloadReports,
+    AppPermission.editSalonProfile,
+    AppPermission.manageSessions,
+    AppPermission.manageServices,
+    AppPermission.viewAnalytics,
+    AppPermission.viewPeakHours,
+  },
+  UserRole.admin: {
+    ...AppPermission.values, // Admins get everything for now
+  },
+  UserRole.intern: {
+    AppPermission.viewBookings,
+    AppPermission.viewCustomerList,
+  },
   UserRole.superAdmin: {
     // Super Admin has ALL permissions — populated dynamically
     ...AppPermission.values,
+  },
+  UserRole.cofounder: {
+    // Co-Founder has identical permissions to Owner
+    AppPermission.viewBookings,
+    AppPermission.createBooking,
+    AppPermission.cancelAnyBooking,
+    AppPermission.rescheduleBooking,
+    AppPermission.viewCustomerList,
+    AppPermission.editCustomerProfile,
+    AppPermission.banCustomer,
+    AppPermission.viewStaffList,
+    AppPermission.manageStaff,
+    AppPermission.setStaffRoles,
+    AppPermission.viewSalonRevenue,
+    AppPermission.viewPayoutRequests,
+    AppPermission.approvePayouts,
+    AppPermission.viewSubscriptionRevenue,
+    AppPermission.viewReports,
+    AppPermission.downloadReports,
+    AppPermission.editSalonProfile,
+    AppPermission.manageSessions,
+    AppPermission.manageServices,
+    AppPermission.viewAnalytics,
+    AppPermission.viewPeakHours,
   },
 };
 

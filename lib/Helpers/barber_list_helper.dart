@@ -10,7 +10,7 @@ class BarberDto {
   final bool isActive;
   final double? hourlyRate;
   final DateTime? lastActive;
-  final int? shopId;
+  final int? salonId;
 
   BarberDto({
     required this.id,
@@ -24,7 +24,7 @@ class BarberDto {
     this.isActive = true,
     this.hourlyRate,
     this.lastActive,
-    this.shopId,
+    this.salonId,
   });
 
   factory BarberDto.fromJson(Map<String, dynamic> json) {
@@ -40,7 +40,7 @@ class BarberDto {
       isActive: json['is_active'] ?? true,
       hourlyRate: (json['hourly_rate'] ?? json['rate'] ?? 0.0).toDouble(),
       lastActive: json['last_active'] != null ? DateTime.parse(json['last_active']) : null,
-      shopId: json['shop_id'],
+      salonId: json['salon_id'],
     );
   }
 
@@ -66,7 +66,7 @@ class BarberDto {
       'is_active': isActive,
       'hourly_rate': hourlyRate,
       'last_active': lastActive?.toIso8601String(),
-      'shop_id': shopId,
+      'salon_id': salonId,
     };
   }
 
@@ -82,7 +82,7 @@ class BarberDto {
     bool? isActive,
     double? hourlyRate,
     DateTime? lastActive,
-    int? shopId,
+    int? salonId,
   }) {
     return BarberDto(
       id: id ?? this.id,
@@ -96,7 +96,7 @@ class BarberDto {
       isActive: isActive ?? this.isActive,
       hourlyRate: hourlyRate ?? this.hourlyRate,
       lastActive: lastActive ?? this.lastActive,
-      shopId: shopId ?? this.shopId,
+      salonId: salonId ?? this.salonId,
     );
   }
 }

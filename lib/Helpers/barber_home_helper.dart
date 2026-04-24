@@ -28,8 +28,8 @@ class BarberHomeHelper {
     };
   }
 
-  // Check if shop is currently open
-  static bool isShopOpen(Map<String, dynamic> workingHours) {
+  // Check if salon is currently open
+  static bool isSalonOpen(Map<String, dynamic> workingHours) {
     if (workingHours['isOpen'] == false) return false;
 
     final now = DateTime.now();

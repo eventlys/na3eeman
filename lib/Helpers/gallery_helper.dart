@@ -2,14 +2,14 @@ class ImageHelper {
   static const String baseImagePath = 'assets/images';
   static const String placeholderImage = '$baseImagePath/placeholder.jpg';
 
-  static String getShopGalleryImage(String shopId, int index) {
-    return '$baseImagePath/shops/$shopId/gallery/${index + 1}.jpg';
+  static String getSalonGalleryImage(String salonId, int index) {
+    return '$baseImagePath/salons/$salonId/gallery/${index + 1}.jpg';
   }
 
-  static List<String> getShopGalleryImages(String shopId, {int count = 4}) {
+  static List<String> getSalonGalleryImages(String salonId, {int count = 4}) {
     List<String> images = [];
     for (int i = 0; i < count; i++) {
-      images.add(getShopGalleryImage(shopId, i));
+      images.add(getSalonGalleryImage(salonId, i));
     }
     return images;
   }

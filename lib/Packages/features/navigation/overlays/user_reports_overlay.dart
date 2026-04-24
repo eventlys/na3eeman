@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 // import '../../../../core/enums/app_enums.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 
 class UserReportsOverlay extends StatefulWidget {
@@ -99,7 +100,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
       },
       {
         'id': '2',
-        'reporter_name': 'Shop Owner',
+        'reporter_name': 'Salon Owner',
         'reporter_role': 'OWNER',
         'description': 'Inappropriate behavior in waiting area',
         'date': DateTime.now().subtract(const Duration(days: 5)).toIso8601String(),
@@ -284,7 +285,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _loadUserReports,
-              child: Text('retry'.tr()),
+              child: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -385,8 +386,8 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     switch (typeString.toLowerCase()) {
       case 'user':
         return ReportType.user;
-      case 'shop':
-        return ReportType.shop;
+      case 'salon':
+        return ReportType.salon;
       case 'content':
         return ReportType.content;
       case 'staff':
@@ -408,7 +409,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     switch (type) {
       case ReportType.user:
         return const Icon(Icons.person, color: Colors.blue);
-      case ReportType.shop:
+      case ReportType.salon:
         return const Icon(Icons.store, color: Colors.green);
       case ReportType.content:
         return const Icon(Icons.content_copy, color: Colors.orange);
@@ -464,8 +465,8 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     switch (type) {
       case ReportType.user:
         return 'User Report';
-      case ReportType.shop:
-        return 'Shop Report';
+      case ReportType.salon:
+        return 'Salon Report';
       case ReportType.content:
         return 'Content Report';
       case ReportType.staff:
@@ -514,7 +515,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('close'.tr()),
+            child: Text(AppLocalizations.of(context)!.close),
           ),
           if (status != 'resolved')
             ElevatedButton(

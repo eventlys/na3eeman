@@ -6,6 +6,8 @@ class BarberProfile {
   final String? contactPhone;
   final bool hasAccess;
   final double avgRating;
+  final int? yearsExperience;
+  final String? certification;
 
   const BarberProfile({
     required this.id,
@@ -15,6 +17,8 @@ class BarberProfile {
     this.contactPhone,
     this.hasAccess = false,
     this.avgRating = 0.0,
+    this.yearsExperience,
+    this.certification,
   });
 
   List<String> get specialtiesList =>
@@ -31,6 +35,8 @@ class BarberProfile {
       contactPhone: json['contact_phone'] as String?,
       hasAccess: json['has_access'] as bool? ?? false,
       avgRating: (json['avg_rating'] as num?)?.toDouble() ?? 0.0,
+      yearsExperience: json['years_experience'] as int?,
+      certification: json['certification'] as String?,
     );
   }
 
@@ -43,6 +49,8 @@ class BarberProfile {
       'contact_phone': contactPhone,
       'has_access': hasAccess,
       'avg_rating': avgRating,
+      'years_experience': yearsExperience,
+      'certification': certification,
     };
   }
 
@@ -54,6 +62,8 @@ class BarberProfile {
     String? contactPhone,
     bool? hasAccess,
     double? avgRating,
+    int? yearsExperience,
+    String? certification,
   }) {
     return BarberProfile(
       id: id ?? this.id,
@@ -63,6 +73,8 @@ class BarberProfile {
       contactPhone: contactPhone ?? this.contactPhone,
       hasAccess: hasAccess ?? this.hasAccess,
       avgRating: avgRating ?? this.avgRating,
+      yearsExperience: yearsExperience ?? this.yearsExperience,
+      certification: certification ?? this.certification,
     );
   }
 }

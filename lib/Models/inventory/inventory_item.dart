@@ -1,7 +1,7 @@
 class InventoryItem {
   final String id;
   final int productId;
-  final int shopId;
+  final int salonId;
   final int quantityInStock;
   final DateTime lastUpdated;
   final String? productName;
@@ -11,7 +11,7 @@ class InventoryItem {
   InventoryItem({
     required this.id,
     required this.productId,
-    required this.shopId,
+    required this.salonId,
     required this.quantityInStock,
     required this.lastUpdated,
     this.productName,
@@ -23,7 +23,7 @@ class InventoryItem {
     return InventoryItem(
       id: json['id']?.toString() ?? '',
       productId: json['product'] as int,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
       quantityInStock: json['quantity_in_stock'] as int? ?? 0,
       lastUpdated: DateTime.parse(json['last_updated'] as String),
       productName: json['product_name'] as String?,
@@ -36,7 +36,7 @@ class InventoryItem {
     return {
       'id': id,
       'product': productId,
-      'shop': shopId,
+      'salon': salonId,
       'quantity_in_stock': quantityInStock,
       'last_updated': lastUpdated.toIso8601String(),
     };
@@ -45,7 +45,7 @@ class InventoryItem {
   InventoryItem copyWith({
     String? id,
     int? productId,
-    int? shopId,
+    int? salonId,
     int? quantityInStock,
     DateTime? lastUpdated,
     String? productName,
@@ -55,7 +55,7 @@ class InventoryItem {
     return InventoryItem(
       id: id ?? this.id,
       productId: productId ?? this.productId,
-      shopId: shopId ?? this.shopId,
+      salonId: salonId ?? this.salonId,
       quantityInStock: quantityInStock ?? this.quantityInStock,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       productName: productName ?? this.productName,
@@ -74,7 +74,7 @@ class Product {
   final String productDescription;
   final double productPrice;
   final String? imageUrl;
-  final int? shopId;
+  final int? salonId;
   final List<int>? optionIds;
 
   Product({
@@ -83,7 +83,7 @@ class Product {
     required this.productDescription,
     required this.productPrice,
     this.imageUrl,
-    this.shopId,
+    this.salonId,
     this.optionIds,
   });
 
@@ -94,7 +94,7 @@ class Product {
       productDescription: json['product_description'] as String,
       productPrice: (json['product_price'] as num).toDouble(),
       imageUrl: json['image_url'] as String?,
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
       optionIds: json['options'] != null
           ? (json['options'] as List).cast<int>()
           : null,
@@ -108,7 +108,7 @@ class Product {
       'product_description': productDescription,
       'product_price': productPrice,
       'image_url': imageUrl,
-      'shop': shopId,
+      'salon': salonId,
       'options': optionIds,
     };
   }
@@ -120,7 +120,7 @@ class Option {
   final String optionDescription;
   final double optionPrice;
   final String optionTiming;
-  final int shopId;
+  final int salonId;
 
   Option({
     required this.id,
@@ -128,7 +128,7 @@ class Option {
     required this.optionDescription,
     required this.optionPrice,
     required this.optionTiming,
-    required this.shopId,
+    required this.salonId,
   });
 
   factory Option.fromJson(Map<String, dynamic> json) {
@@ -138,7 +138,7 @@ class Option {
       optionDescription: json['option_description'] as String,
       optionPrice: (json['option_price'] as num).toDouble(),
       optionTiming: json['option_timing'] as String,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
     );
   }
 }
@@ -148,7 +148,7 @@ class Package {
   final String packageName;
   final String packageDescription;
   final double packagePrice;
-  final int shopId;
+  final int salonId;
   final List<int>? optionIds;
 
   Package({
@@ -156,7 +156,7 @@ class Package {
     required this.packageName,
     required this.packageDescription,
     required this.packagePrice,
-    required this.shopId,
+    required this.salonId,
     this.optionIds,
   });
 
@@ -166,7 +166,7 @@ class Package {
       packageName: json['package_name'] as String,
       packageDescription: json['package_description'] as String,
       packagePrice: (json['package_price'] as num).toDouble(),
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
       optionIds: json['options'] != null
           ? (json['options'] as List).cast<int>()
           : null,

@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 
 class RatingWithPointsWidget extends StatefulWidget {
-  final Map<String, dynamic> shopData;
+  final Map<String, dynamic> salonData;
   final double initialRating;
   final Function(double)? onRatingChanged;
 
   const RatingWithPointsWidget({
     Key? key,
-    required this.shopData,
+    required this.salonData,
     this.initialRating = 0.0,
     this.onRatingChanged,
   }) : super(key: key);
@@ -57,7 +57,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Thanks for rating ${widget.shopData['title']}! +25 points'),
+            content: Text('Thanks for rating ${widget.salonData['title']}! +25 points'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
           ),
@@ -134,7 +134,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
         if (_hasAwardedPoints) ...[
           SizedBox(height: 4),
           Text(
-            'Points earned for rating this shop!',
+            'Points earned for rating this salon!',
             style: TextStyle(
               color: Colors.green,
               fontSize: 12,

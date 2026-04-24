@@ -1,9 +1,10 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:na3eeman/Providers/features/owner_provider.dart';
-import 'package:na3eeman/core/config/subscription_config.dart';
+// import 'package:na3eeman/core/config/subscription_config.dart';
 import 'package:na3eeman/core/enums/owner_enums.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/notifications/notifications_bottom_sheet.dart';
@@ -12,7 +13,7 @@ import 'package:na3eeman/core/widgets/dashboard/dashboard_widgets.dart';
 
 import 'package:na3eeman/Packages/features/navigation/sidebar.dart';
 import 'package:na3eeman/Packages/features/navigation/sidebar_controller.dart';
-import 'package:na3eeman/Packages/features/shop/pages/feedback_management_page.dart';
+import 'package:na3eeman/Packages/features/salon/pages/feedback_management_page.dart';
 import '../widgets/artisan/daily_earnings_widget.dart';
 
 // Artisan standalone
@@ -132,23 +133,21 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
 
   AppBar _buildAppBar(BuildContext context, OwnerProvider owner) {
     return AppBar(
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(owner.tierDisplayName,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          if (owner.isPractitioner)
-            Text(owner.mode.displayLabel,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: Theme.of(context).hintColor)),
-        ],
-      ),
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leading: IconButtonStyled(
-        icon: Icons.menu_rounded,
-        onPressed: _sidebarController.toggleSidebar,
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0.0),
+        child: Row(
+          children: [
+            IconButtonStyled(
+              icon: Icons.menu_rounded,
+              onPressed: _sidebarController.toggleSidebar,
+            ),
+            const SizedBox(width: 8),
+            const GlobalSearchBar(),
+          ],
+        ),
       ),
       actions: [
         const PractitionerModeToggle(),
@@ -157,18 +156,6 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
           icon: Icons.notifications_none_rounded,
           onPressed: () => NotificationsBottomSheet.show(context),
         ),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/profile'),
-          child: CircleAvatar(
-            radius: 17,
-            backgroundColor:
-                Theme.of(context).primaryColor.withOpacity(0.1),
-            child: Icon(Icons.person,
-                color: Theme.of(context).primaryColor, size: 20),
-          ),
-        ),
-        const SizedBox(width: 16),
       ],
     );
   }
@@ -231,11 +218,15 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DashboardSectionHeader(title: 'tools_inventory'.tr()),
+            DashboardSectionHeader(title: AppLocalizations.of(context)!.toolsInventory),
             const SizedBox(height: 12),
             const ToolsAndInventoryOverview(),
           ],
         ),
+      ),
+      const Padding(
+        padding: EdgeInsets.only(bottom: 24),
+        child: FeedbackSection(),
       ),
     ];
   }
@@ -262,7 +253,7 @@ class _TierHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('welcome_back'.tr(),
+              Text(AppLocalizations.of(context)!.welcomeBack,
                 style: theme.textTheme.bodyMedium
                     ?.copyWith(color: theme.hintColor),
               ),
@@ -291,7 +282,7 @@ class _TierHeader extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text('on_your_plan'.tr(),
+              Text(AppLocalizations.of(context)!.onYourPlan,
                   style: theme.textTheme.labelSmall
                       ?.copyWith(color: theme.hintColor)),
             ],
@@ -357,7 +348,7 @@ class _TrialBadge extends StatelessWidget {
           color: Colors.orange.withOpacity(0.12),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text('trial'.tr(),
+        child: Text(AppLocalizations.of(context)!.trial,
             style: TextStyle(
                 color: Colors.orange,
                 fontSize: 11,

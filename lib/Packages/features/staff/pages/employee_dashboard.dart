@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -9,6 +10,7 @@ import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../widgets/tools_inventory_overview.dart';
 import '../widgets/today_appointments_overview.dart';
+import '../widgets/time_clock_widget.dart';
 // import 'package:intl/intl.dart';
 // import '../../../../Services/api/api_service.dart';
 // import '../../../../Services/api/endpoints.dart';
@@ -52,10 +54,81 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> with SingleTicker
     // Load Inventory items
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
-    await inventoryProvider.loadInventoryItems(shopId: authProvider.user?.shopId);
+    await inventoryProvider.loadInventoryItems(salonId: authProvider.user?.salonId);
   }
 
 // Rest of body logic is simplified via TodayAppointmentsOverview Wrap
+
+  Widget _buildAIInsightsSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).primaryColor.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.psychology, color: Colors.white, size: 28),
+              const SizedBox(width: 12),
+              Text(
+                'AI Staff Assistant'.tr(),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _buildInsightItem(
+            Icons.star_rounded,
+            'Most Loyal Today',
+            'Ahmed Mohammed (15 visits)',
+          ),
+          const SizedBox(height: 16),
+          _buildInsightItem(
+            Icons.trending_up_rounded,
+            'Busiest Period',
+            '2:00 PM - 5:00 PM',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInsightItem(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: Colors.white, size: 16),
+        ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+          ],
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,28 +141,25 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> with SingleTicker
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('${user?.specialization ?? "Staff"} Dashboard', style: const TextStyle(fontWeight: FontWeight.bold)),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButtonStyled(
-          icon: Icons.menu_rounded,
-          onPressed: _toggleSidebar,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0.0),
+          child: Row(
+            children: [
+              IconButtonStyled(
+                icon: Icons.menu_rounded,
+                onPressed: _toggleSidebar,
+              ),
+            ],
+          ),
         ),
         actions: [
           IconButtonStyled(
             icon: Icons.notifications_none_rounded,
             onPressed: () => NotificationsBottomSheet.show(context),
           ),
-          const SizedBox(width: 12),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/profile'),
-            child: CircleAvatar(
-              radius: 17,
-              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
-            ),
-          ),
-          const SizedBox(width: 16),
         ],
       ),
       body: RefreshIndicator(
@@ -100,15 +170,23 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> with SingleTicker
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Header
-              Text(
-                'Hello, ${user?.firstName ?? "Member"}! 👋',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'You have $_todayAppointmentsCount appointments scheduled for today.',
-              ),
+              // // Welcome Header
+              // Text(
+              //   'Hello, ${user?.firstName ?? "Member"}! 👋',
+              //   style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              // ),
+              // const SizedBox(height: 8),
+              // Text(
+              //   'You have $_todayAppointmentsCount appointments scheduled for today.',
+              // ),
+              
+              // const SizedBox(height: 16),
+              // ── Time Clock ─────────────────────────────────────────
+              const TimeClockWidget(),
+
+              const SizedBox(height: 24),
+              
+              _buildAIInsightsSection(context),
               
               const SizedBox(height: 32),
               
@@ -123,9 +201,12 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> with SingleTicker
               const SizedBox(height: 32),
 
               // Inventory & Tools Section
-              DashboardSectionHeader(title: 'tools_inventory'.tr()),
+              DashboardSectionHeader(title: AppLocalizations.of(context)!.toolsInventory),
               const SizedBox(height: 16),
               const ToolsAndInventoryOverview(),
+
+              const SizedBox(height: 32),
+              const FeedbackSection(),
 
               const SizedBox(height: 48),
             ],

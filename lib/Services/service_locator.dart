@@ -19,12 +19,12 @@ import './ui/language_service.dart';
 
 // Repositories
 import './repositories/auth_repository.dart';
-import './repositories/shop_repository.dart';
+import './repositories/salon_repository.dart';
 // import './repositories/base_repository.dart';
 
 // Use Cases
 import './use_cases/auth_use_cases.dart';
-import './use_cases/shop_use_cases.dart';
+import './use_cases/salon_use_cases.dart';
 import './use_cases/appointment_use_cases.dart';
 
 // Utility Services
@@ -72,7 +72,7 @@ class ServiceLocator {
       serviceLocator.get<ApiService>(),
     ));
 
-    serviceLocator.registerLazySingleton(() => ShopRepository(
+    serviceLocator.registerLazySingleton(() => SalonRepository(
       serviceLocator.get<ApiService>(),
     ));
 
@@ -81,8 +81,8 @@ class ServiceLocator {
       serviceLocator.get<AuthRepository>(),
     ));
 
-    serviceLocator.registerLazySingleton(() => GetShopsUseCase(
-      serviceLocator.get<ShopRepository>(),
+    serviceLocator.registerLazySingleton(() => GetSalonsUseCase(
+      serviceLocator.get<SalonRepository>(),
     ));
 
     serviceLocator.registerLazySingleton(() => AppointmentUseCases(

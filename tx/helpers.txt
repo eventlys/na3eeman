@@ -339,10 +339,10 @@ import 'logger.dart';
 // Predefined cache keys - moved outside CacheHelper
 class CacheKeys {
   static const String userProfile = 'user_profile';
-  static const String shopsList = 'shops_list';
+  static const String salonsList = 'salons_list';
   static const String appointments = 'user_appointments';
   static const String loyaltyBalance = 'loyalty_balance';
-  static const String shopDetailsPrefix = 'shop_details_';
+  static const String salonDetailsPrefix = 'salon_details_';
   static const String barberDetailsPrefix = 'barber_details_';
   static const String serviceListPrefix = 'services_';
 }
@@ -533,32 +533,32 @@ class CacheHelper {
     return retrieve(CacheKeys.userProfile);
   }
 
-  // Store shops list
-  Future<void> storeShopsList(List<dynamic> shops) async {
+  // Store salons list
+  Future<void> storeSalonsList(List<dynamic> salons) async {
     await store(
-      CacheKeys.shopsList,
-      shops,
+      CacheKeys.salonsList,
+      salons,
       duration: CacheDurations.medium,
     );
   }
 
-  // Retrieve shops list
-  List<dynamic>? retrieveShopsList() {
-    return retrieve(CacheKeys.shopsList);
+  // Retrieve salons list
+  List<dynamic>? retrieveSalonsList() {
+    return retrieve(CacheKeys.salonsList);
   }
 
-  // Store shop details
-  Future<void> storeShopDetails(int shopId, Map<String, dynamic> details) async {
+  // Store salon details
+  Future<void> storeSalonDetails(int salonId, Map<String, dynamic> details) async {
     await store(
-      '${CacheKeys.shopDetailsPrefix}$shopId',
+      '${CacheKeys.salonDetailsPrefix}$salonId',
       details,
       duration: CacheDurations.medium,
     );
   }
 
-  // Retrieve shop details
-  Map<String, dynamic>? retrieveShopDetails(int shopId) {
-    return retrieve('${CacheKeys.shopDetailsPrefix}$shopId');
+  // Retrieve salon details
+  Map<String, dynamic>? retrieveSalonDetails(int salonId) {
+    return retrieve('${CacheKeys.salonDetailsPrefix}$salonId');
   }
 
   // Store appointments
@@ -1521,7 +1521,7 @@ class _BounceAnimationState extends State<BounceAnimation> with SingleTickerProv
     super.dispose();
   }
 }
-import '../../Models/appointments/shop_appointments_model.dart';
+import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Models/auth/user_model.dart';
 import '../../../Services/core/enums/user_role.dart';
 import '../../../Services/core/enums/gender.dart';
@@ -1585,35 +1585,35 @@ class DataMappers {
     );
   }
 
-  // Shop Mappers - Using Map structure since Shop class might not exist
-  static Map<String, dynamic> shopToJson(Map<String, dynamic> shop) {
+  // Salon Mappers - Using Map structure since Salon class might not exist
+  static Map<String, dynamic> salonToJson(Map<String, dynamic> salon) {
     return {
-      'id': shop['id'],
-      'title': shop['title'],
-      'workingHours': shop['workingHours'],
-      'shopLocation': shop['shopLocation'],
-      'shopRating': shop['shopRating'],
-      'profilePicture': shop['profilePicture'],
+      'id': salon['id'],
+      'title': salon['title'],
+      'workingHours': salon['workingHours'],
+      'salonLocation': salon['salonLocation'],
+      'salonRating': salon['salonRating'],
+      'profilePicture': salon['profilePicture'],
     };
   }
 
-  static Map<String, dynamic> shopFromJson(Map<String, dynamic> json) {
+  static Map<String, dynamic> salonFromJson(Map<String, dynamic> json) {
     return {
       'id': json['id']?.toString() ?? '',
       'title': json['title']?.toString() ?? '',
       'workingHours': json['workingHours']?.toString() ?? '',
-      'shopLocation': json['shopLocation']?.toString() ?? '',
-      'shopRating': _parseRating(json['shopRating']),
+      'salonLocation': json['salonLocation']?.toString() ?? '',
+      'salonRating': _parseRating(json['salonRating']),
       'profilePicture': json['profilePicture']?.toString() ?? '',
     };
   }
 
   // Appointment Mappers
-  static Map<String, dynamic> appointmentToJson(ShopAppointment appointment) {
+  static Map<String, dynamic> appointmentToJson(SalonAppointment appointment) {
     return {
       'id': appointment.id,
       'customer': appointment.customerId,
-      'shop': appointment.shopId,
+      'salon': appointment.salonId,
       'barber': appointment.barberId,
       'start_time': appointment.startTime.toIso8601String(),
       'end_time': appointment.endTime.toIso8601String(),
@@ -1631,11 +1631,11 @@ class DataMappers {
     };
   }
 
-  static ShopAppointment appointmentFromJson(Map<String, dynamic> json) {
-    return ShopAppointment(
+  static SalonAppointment appointmentFromJson(Map<String, dynamic> json) {
+    return SalonAppointment(
       id: json['id']?.toString() ?? '',
       customerId: (json['customer'] as num?)?.toInt() ?? 0,
-      shopId: (json['shop'] as num?)?.toInt() ?? 0,
+      salonId: (json['salon'] as num?)?.toInt() ?? 0,
       barberId: (json['barber'] as num?)?.toInt(),
       startTime: DateTime.parse(json['start_time']?.toString() ?? DateTime.now().toIso8601String()),
       endTime: DateTime.parse(json['end_time']?.toString() ?? DateTime.now().toIso8601String()),
@@ -1823,19 +1823,19 @@ class UserLoggedInEvent extends DomainEvent {
 
 class UserLoggedOutEvent extends DomainEvent {}
 
-class ShopFavoritedEvent extends DomainEvent {
-  final String shopId;
-  final String shopName;
+class SalonFavoritedEvent extends DomainEvent {
+  final String salonId;
+  final String salonName;
 
-  ShopFavoritedEvent(this.shopId, this.shopName);
+  SalonFavoritedEvent(this.salonId, this.salonName);
 }
 
 class AppointmentBookedEvent extends DomainEvent {
   final String appointmentId;
-  final String shopId;
+  final String salonId;
   final double amount;
 
-  AppointmentBookedEvent(this.appointmentId, this.shopId, this.amount);
+  AppointmentBookedEvent(this.appointmentId, this.salonId, this.amount);
 }
 
 class PointsEarnedEvent extends DomainEvent {
@@ -2220,8 +2220,8 @@ class PointsTrackerHelpers {
   }
 }
 import 'package:flutter/material.dart';
-import '../../Models/shop/shop_schedule_model.dart';
-// import '../Models/shop_service_model.dart';
+import '../../Models/salon/salon_schedule_model.dart';
+// import '../Models/salon_service_model.dart';
 
 class ScheduleHelper {
   // Mock data - replace with actual API calls
@@ -2283,13 +2283,13 @@ class ScheduleHelper {
         .toList();
   }
 
-  static Future<void> bookSchedule(ShopScheduleSlot scheduleSlot) async {
+  static Future<void> bookSchedule(SalonScheduleSlot scheduleSlot) async {
     // Implement actual booking logic here
     await Future.delayed(Duration(seconds: 1)); // Simulate API call
     print('Schedule booked: ${scheduleSlot.dateTime}');
   }
 
-  static Future<List<ShopScheduleSlot>> getUserSchedules() async {
+  static Future<List<SalonScheduleSlot>> getUserSchedules() async {
     // Implement actual fetch logic here
     await Future.delayed(Duration(seconds: 1));
     return [];
@@ -3621,9 +3621,9 @@ class InventoryHelpers {
     }
   }
 
-  static Future<bool> shouldShowLowStockAlert({int? shopId}) async {
+  static Future<bool> shouldShowLowStockAlert({int? salonId}) async {
     try {
-      final lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
+      final lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
       return lowStockItems.isNotEmpty;
     } catch (e) {
       print('Error checking low stock alert: $e');
@@ -3631,9 +3631,9 @@ class InventoryHelpers {
     }
   }
 
-  static Future<String> formatLowStockAlert({int? shopId}) async {
+  static Future<String> formatLowStockAlert({int? salonId}) async {
     try {
-      final lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
+      final lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
 
       if (lowStockItems.isEmpty) return '';
 
@@ -3645,9 +3645,9 @@ class InventoryHelpers {
     }
   }
 
-  static Future<Map<String, dynamic>> getInventoryAlertsSummary({int? shopId}) async {
+  static Future<Map<String, dynamic>> getInventoryAlertsSummary({int? salonId}) async {
     try {
-      return await _inventoryService.getInventoryAlerts(shopId: shopId);
+      return await _inventoryService.getInventoryAlerts(salonId: salonId);
     } catch (e) {
       print('Error getting inventory alerts summary: $e');
       return {
@@ -3658,9 +3658,9 @@ class InventoryHelpers {
     }
   }
 
-  static Future<List<InventoryItem>> getCriticalStockItems({int? shopId}) async {
+  static Future<List<InventoryItem>> getCriticalStockItems({int? salonId}) async {
     try {
-      final allItems = await _inventoryService.getInventoryItems(shopId: shopId);
+      final allItems = await _inventoryService.getInventoryItems(salonId: salonId);
       return _inventoryService.getCriticalStockItemsFromList(allItems);
     } catch (e) {
       print('Error getting critical stock items: $e');
@@ -3668,9 +3668,9 @@ class InventoryHelpers {
     }
   }
 
-  static Future<int> getLowStockCount({int? shopId}) async {
+  static Future<int> getLowStockCount({int? salonId}) async {
     try {
-      final lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
+      final lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
       return lowStockItems.length;
     } catch (e) {
       print('Error getting low stock count: $e');
@@ -3678,9 +3678,9 @@ class InventoryHelpers {
     }
   }
 
-  static Future<int> getOutOfStockCount({int? shopId}) async {
+  static Future<int> getOutOfStockCount({int? salonId}) async {
     try {
-      final allItems = await _inventoryService.getInventoryItems(shopId: shopId);
+      final allItems = await _inventoryService.getInventoryItems(salonId: salonId);
       return allItems.where((item) => item.quantityInStock == 0).length;
     } catch (e) {
       print('Error getting out of stock count: $e');
@@ -3689,11 +3689,11 @@ class InventoryHelpers {
   }
 
   static Future<List<InventoryItem>> getItemsByStockLevel({
-    int? shopId,
+    int? salonId,
     required StockLevel level,
   }) async {
     try {
-      final allItems = await _inventoryService.getInventoryItems(shopId: shopId);
+      final allItems = await _inventoryService.getInventoryItems(salonId: salonId);
 
       switch (level) {
         case StockLevel.critical:
@@ -3732,14 +3732,14 @@ class InventoryHelpers {
 
   static Future<InventoryItem> addNewInventoryItem({
     required int productId,
-    required int shopId,
+    required int salonId,
     required int initialQuantity,
     String? notes,
   }) async {
     try {
       return await _inventoryService.addInventoryItem(
         productId: productId,
-        shopId: shopId,
+        salonId: salonId,
         initialQuantity: initialQuantity,
         notes: notes,
       );
@@ -4656,13 +4656,13 @@ class NotificationHelper {
     required String appointmentId,
     required String customerName,
     required DateTime appointmentTime,
-    required String shopName,
+    required String salonName,
     Duration reminderBefore = const Duration(hours: 1),
   }) async {
     try {
       final reminderTime = appointmentTime.subtract(reminderBefore);
       final title = 'Appointment Reminder';
-      final body = 'Your appointment at $shopName is in ${reminderBefore.inHours} hour(s)';
+      final body = 'Your appointment at $salonName is in ${reminderBefore.inHours} hour(s)';
 
       await scheduleNotification(
         id: appointmentId.hashCode,
@@ -5082,7 +5082,7 @@ class PermissionHelper {
   String getPermissionDescription(Permission permission) {
     switch (permission) {
       case Permission.location:
-        return 'Location access is needed to find nearby barber shops and provide accurate service recommendations.';
+        return 'Location access is needed to find nearby barber salons and provide accurate service recommendations.';
       case Permission.camera:
         return 'Camera access is needed to take photos for reviews and profile pictures.';
       case Permission.storage:
@@ -5899,12 +5899,12 @@ class SubscriptionHelper {
   static final BusinessService _subscriptionService = BusinessService();
 
   // Get available subscription plans from the service
-  static Future<List<ShopSubscription>> getSubscriptions() async {
+  static Future<List<SalonSubscription>> getSubscriptions() async {
     try {
       final plans = await _subscriptionService.getAvailablePlans();
 
-      // Convert SubscriptionPlan to ShopSubscription
-      return plans.map((plan) => ShopSubscription(
+      // Convert SubscriptionPlan to SalonSubscription
+      return plans.map((plan) => SalonSubscription(
         id: plan.id,
         name: plan.name,
         description: plan.description,
@@ -5912,7 +5912,7 @@ class SubscriptionHelper {
         duration: plan.duration,
         features: plan.features,
         isPopular: plan.isPopular,
-        shopId: null, // This can be set based on your business logic
+        salonId: null, // This can be set based on your business logic
       )).toList();
 
     } catch (e) {
@@ -6015,12 +6015,12 @@ class SubscriptionHelper {
   }
 
   // Mock data fallback (keep your existing mock data)
-  static List<ShopSubscription> _getMockSubscriptions() {
+  static List<SalonSubscription> _getMockSubscriptions() {
     return [
-      ShopSubscription(
+      SalonSubscription(
         id: '1',
         name: 'Basic Plan',
-        description: 'Perfect for casual shoppers',
+        description: 'Perfect for casual salonpers',
         price: 9.99,
         duration: 'MONTHLY',
         features: [
@@ -6029,10 +6029,10 @@ class SubscriptionHelper {
           'Early access to sales',
         ],
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '2',
         name: 'Premium Plan',
-        description: 'Best value for frequent shoppers',
+        description: 'Best value for frequent salonpers',
         price: 19.99,
         duration: 'MONTHLY',
         features: [
@@ -6044,7 +6044,7 @@ class SubscriptionHelper {
         ],
         isPopular: true,
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '3',
         name: 'Annual Plan',
         description: 'Save big with yearly subscription',
@@ -6058,7 +6058,7 @@ class SubscriptionHelper {
           'Quarterly surprise boxes',
         ],
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '4',
         name: 'Family Plan',
         description: 'Share benefits with your family',
@@ -6070,7 +6070,7 @@ class SubscriptionHelper {
           'Separate order tracking',
         ],
       ),
-      ShopSubscription(
+      SalonSubscription(
         id: '5',
         name: 'Student Plan',
         description: 'Special discount for students',
@@ -6086,13 +6086,13 @@ class SubscriptionHelper {
   }
 
   // Get featured/popular subscriptions
-  static Future<List<ShopSubscription>> getFeaturedSubscriptions() async {
+  static Future<List<SalonSubscription>> getFeaturedSubscriptions() async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions.where((sub) => sub.isPopular).toList();
   }
 
   // Get subscriptions by duration type
-  static Future<List<ShopSubscription>> getSubscriptionsByDuration(String duration) async {
+  static Future<List<SalonSubscription>> getSubscriptionsByDuration(String duration) async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions
         .where((sub) => sub.duration.toUpperCase() == duration.toUpperCase())
@@ -6100,7 +6100,7 @@ class SubscriptionHelper {
   }
 
   // Find subscription by ID
-  static Future<ShopSubscription?> getSubscriptionById(String id) async {
+  static Future<SalonSubscription?> getSubscriptionById(String id) async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions.firstWhere(
       (sub) => sub.id == id,
@@ -6137,14 +6137,14 @@ class TestData {
     };
   }
 
-  static Map<String, dynamic> getTestShop() {
+  static Map<String, dynamic> getTestSalon() {
     return {
-      'id': 'shop_123',
-      'title': 'Test Barber Shop',
+      'id': 'salon_123',
+      'title': 'Test Barber Salon',
       'workingHours': '9:00 - 18:00',
-      'shopLocation': '123 Test Street',
-      'shopRating': 4.5,
-      'profilePicture': 'https://example.com/shop.jpg',
+      'salonLocation': '123 Test Street',
+      'salonRating': 4.5,
+      'profilePicture': 'https://example.com/salon.jpg',
     };
   }
 }
@@ -6820,7 +6820,7 @@ class ValidationHelper {
   }
 
   // Business validation
-  static bool isValidShopName(String name) {
+  static bool isValidSalonName(String name) {
     return name.length >= 2 && name.length <= 100;
   }
 

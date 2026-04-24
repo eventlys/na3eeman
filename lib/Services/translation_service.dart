@@ -130,8 +130,8 @@ class TranslationService {
     'remaining': {'en': 'Remaining', 'ar': 'المتبقي'},
 
     // Screen titles
-    'find_shop': {'en': 'Find Shop', 'ar': 'ابحث عن صالون'},
-    'shop_details': {'en': 'Shop Details', 'ar': 'تفاصيل الصالون'},
+    'find_salon': {'en': 'Find Salon', 'ar': 'ابحث عن صالون'},
+    'salon_details': {'en': 'Salon Details', 'ar': 'تفاصيل الصالون'},
     'services': {'en': 'Services', 'ar': 'الخدمات'},
     'packages': {'en': 'Packages', 'ar': 'الباقات'},
     'amenities': {'en': 'Amenities', 'ar': 'المرافق'},

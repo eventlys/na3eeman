@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -27,14 +28,14 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
   Future<void> _fetchInventory() async {
     if (!mounted) return;
     final owner = context.read<OwnerProvider>();
-    final shopId = owner.activeShopId;
-    if (shopId == null) {
-      if (mounted) setState(() { _isLoading = false; _error = 'No shop selected'; });
+    final salonId = owner.activeSalonId;
+    if (salonId == null) {
+      if (mounted) setState(() { _isLoading = false; _error = 'No salon selected'; });
       return;
     }
 
     try {
-      final response = await _apiService.get('/shops/shops/$shopId/inventory/');
+      final response = await _apiService.get('/salons/salons/$salonId/inventory/');
       final data = response['results'] as List;
       
       final parsed = data.map((json) {
@@ -94,12 +95,12 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
               TextButton(
                 onPressed: isSubmitting ? null : () async {
                   // Permanent remove action
-                  final shopId = context.read<OwnerProvider>().activeShopId;
-                  if (shopId == null) return;
+                  final salonId = context.read<OwnerProvider>().activeSalonId;
+                  if (salonId == null) return;
                   
                   setModalState(() => isSubmitting = true);
                   try {
-                    await _apiService.delete('/shops/shops/$shopId/inventory/${item.id}/');
+                    await _apiService.delete('/salons/salons/$salonId/inventory/${item.id}/');
                     if (mounted) {
                       Navigator.pop(ctx);
                       _fetchInventory();
@@ -109,20 +110,20 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                   }
                 },
                 style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: const Text('Remove Permanently'),
+                child: Text(AppLocalizations.of(context)!.removePermanently),
               ),
               ElevatedButton(
                 onPressed: isSubmitting ? null : () async {
                   final val = int.tryParse(qtyController.text.trim());
                   if (val == null || val <= 0) return;
                   
-                  final shopId = context.read<OwnerProvider>().activeShopId;
-                  if (shopId == null) return;
+                  final salonId = context.read<OwnerProvider>().activeSalonId;
+                  if (salonId == null) return;
                   
                   setModalState(() => isSubmitting = true);
                   
                   try {
-                    await _apiService.post('/shops/shops/$shopId/inventory/${item.id}/add_stock/', data: {
+                    await _apiService.post('/salons/salons/$salonId/inventory/${item.id}/add_stock/', data: {
                       'quantity': val
                     });
                     if (mounted) {
@@ -133,7 +134,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                     setModalState(() => isSubmitting = false);
                   }
                 },
-                child: isSubmitting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Add Stock'),
+                child: isSubmitting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : Text(AppLocalizations.of(context)!.addStock),
               ),
             ],
           );
@@ -157,7 +158,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
             const Icon(Icons.warning_amber_rounded,
                 size: 18, color: Colors.orange),
             const SizedBox(width: 8),
-            Text('low_stock_alerts'.tr(),
+            Text(AppLocalizations.of(context)!.lowStockAlerts,
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),
@@ -170,9 +171,9 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
         ),
         const SizedBox(height: 12),
         if (_items.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('All stock levels are nominal.'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(AppLocalizations.of(context)!.allStockNominal),
           ),
         ..._items.map((item) {
           final pct = item.qty / item.threshold;
@@ -227,7 +228,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
         TextButton.icon(
           onPressed: () => Navigator.pushNamed(context, '/inventory'),
           icon: const Icon(Icons.add_shopping_cart_rounded, size: 16),
-          label: Text('Manage Inventory'.tr()),
+          label: Text(AppLocalizations.of(context)!.manageInventory),
         ),
       ],
     );

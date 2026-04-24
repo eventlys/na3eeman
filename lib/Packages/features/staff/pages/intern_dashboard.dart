@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,7 +40,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
       final barberProvider = context.read<BarberProvider>();
       
       await internProvider.initInternDashboard(null);
-      await barberProvider.loadBarbers(refresh: true, shopId: internProvider.shopId);
+      await barberProvider.loadBarbers(refresh: true, salonId: internProvider.salonId);
     });
   }
 
@@ -63,21 +64,25 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
-            title: Text('intern_portal'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: IconButtonStyled(
-              icon: Icons.menu_rounded,
-              onPressed: _toggleSidebar,
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0.0),
+              child: Row(
+                children: [
+                  IconButtonStyled(
+                    icon: Icons.menu_rounded,
+                    onPressed: _toggleSidebar,
+                  ),
+                ],
+              ),
             ),
             actions: [
               IconButtonStyled(
                 icon: Icons.notifications_none_rounded,
                 onPressed: () => NotificationsBottomSheet.show(context),
               ),
-              const SizedBox(width: 12),
-              const UserProfileButton(),
-              const SizedBox(width: 16),
             ],
           ),
           body: RefreshIndicator(
@@ -98,9 +103,9 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
 
                   // Active Assignments / Mentors Section
                   DashboardSectionHeader(
-                    title: 'active_assignments'.tr(),
-                    actionText: barberProvider.isLoading ? 'loading'.tr() : 'refresh'.tr(),
-                    onPressed: () => barberProvider.loadBarbers(refresh: true, shopId: internProvider.shopId),
+                    title: AppLocalizations.of(context)!.activeAssignments,
+                    actionText: barberProvider.isLoading ? AppLocalizations.of(context)!.loading : AppLocalizations.of(context)!.refresh,
+                    onPressed: () => barberProvider.loadBarbers(refresh: true, salonId: internProvider.salonId),
                   ),
                   const SizedBox(height: 16),
                   if (barberProvider.isLoading && barberProvider.barbers.isEmpty)
@@ -112,8 +117,8 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
 
                   // ToDo Tasks Section
                   DashboardSectionHeader(
-                    title: 'daily_tasks'.tr(), 
-                    actionText: 'add_task'.tr(),
+                    title: AppLocalizations.of(context)!.dailyTasks, 
+                    actionText: AppLocalizations.of(context)!.addTask,
                     onPressed: () => _showAddTaskSheet(context),
                   ),
                   const SizedBox(height: 16),
@@ -125,7 +130,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                   const SizedBox(height: 32),
 
                   // Weekly Progress Section (Chart)
-                  DashboardSectionHeader(title: 'weekly_training'.tr()),
+                  DashboardSectionHeader(title: AppLocalizations.of(context)!.weeklyTraining),
                   const SizedBox(height: 16),
                   const WeeklyProgressChart(),
 
@@ -133,12 +138,15 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
 
                   // Monthly Targets Section
                   DashboardSectionHeader(
-                    title: 'monthly_targets'.tr(), 
-                    actionText: isNumericView ? 'show_pct'.tr() : 'show_num'.tr(),
+                    title: AppLocalizations.of(context)!.monthlyTargets, 
+                    actionText: isNumericView ? AppLocalizations.of(context)!.showPct : AppLocalizations.of(context)!.showNum,
                     onPressed: () => setState(() => isNumericView = !isNumericView),
                   ),
                   const SizedBox(height: 16),
                   _buildTargetsList(internProvider),
+
+                  const SizedBox(height: 32),
+                  const FeedbackSection(),
 
                   const SizedBox(height: 48),
                 ],
@@ -341,7 +349,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
           children: [
             Icon(Icons.people_outline_rounded, color: AppColors.almostBlack300, size: 40),
             SizedBox(height: 12),
-            Text('No employees found in the shop', style: TextStyle(color: AppColors.almostBlack300)),
+            Text('No employees found in the salon', style: TextStyle(color: AppColors.almostBlack300)),
           ],
         ),
       );
@@ -486,18 +494,3 @@ class ShadowingBadge extends StatelessWidget {
   }
 }
 
-class UserProfileButton extends StatelessWidget {
-  const UserProfileButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/profile'),
-      child: CircleAvatar(
-        radius: 17,
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-        child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
-      ),
-    );
-  }
-}

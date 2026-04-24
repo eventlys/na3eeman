@@ -11,11 +11,11 @@ class BarberService {
     int page = 1,
     int limit = 20,
     String? search,
-    int? shopId,
+    int? salonId,
     bool? isActive,
   }) async {
     try {
-      AppLogger.debug('Fetching barbers - page: $page, limit: $limit, shopId: $shopId');
+      AppLogger.debug('Fetching barbers - page: $page, limit: $limit, salonId: $salonId');
 
       final queryParams = <String, dynamic>{
         'page': page.toString(),
@@ -25,8 +25,8 @@ class BarberService {
       if (search != null && search.isNotEmpty) {
         queryParams['search'] = search;
       }
-      if (shopId != null) {
-        queryParams['shop'] = shopId.toString();
+      if (salonId != null) {
+        queryParams['salon'] = salonId.toString();
       }
       if (isActive != null) {
         queryParams['is_active'] = isActive.toString();
@@ -89,15 +89,15 @@ class BarberService {
     }
   }
 
-  Future<List<BarberDto>> getShopBarbers(int shopId) async {
+  Future<List<BarberDto>> getSalonBarbers(int salonId) async {
     try {
-      AppLogger.debug('Fetching barbers for shop: $shopId');
+      AppLogger.debug('Fetching barbers for salon: $salonId');
 
-      final response = await _apiService.get('/shops/$shopId/staff');
+      final response = await _apiService.get('/salons/$salonId/staff');
       final List<dynamic> data = response['data'] ?? [];
       return data.map((barberData) => BarberDto.fromJson(barberData)).toList();
     } catch (error) {
-      AppLogger.debug('Failed to fetch shop barbers: $shopId. Returning empty list.');
+      AppLogger.debug('Failed to fetch salon barbers: $salonId. Returning empty list.');
       return [];
     }
   }

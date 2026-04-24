@@ -48,17 +48,17 @@ class AppConstants {
   static const String barbersEndpoint = '/usr/barbers/';
   static const String customersEndpoint = '/usr/customers/';
 
-  // Shop Endpoints
-  static const String shopsEndpoint = '/shop/shops';
-  static const String shopAppointmentsEndpoint = '/shop/appointments';
-  static const String shopReviewsEndpoint = '/shop/reviews';
-  static const String shopSubscriptionsEndpoint = '/shop/subscriptions';
-  static const String shopStylesEndpoint = '/shop/styles';
-  static const String shopOptionsEndpoint = '/shop/options';
-  static const String shopPackagesEndpoint = '/shop/packages';
-  static const String shopProductsEndpoint = '/shop/products';
-  static const String shopInventoryEndpoint = '/shop/inventory';
-  static const String shopBarbersEndpoint = '/shop/barbers';
+  // Salon Endpoints
+  static const String salonsEndpoint = '/salon/salons';
+  static const String salonAppointmentsEndpoint = '/salon/appointments';
+  static const String salonReviewsEndpoint = '/salon/reviews';
+  static const String salonSubscriptionsEndpoint = '/salon/subscriptions';
+  static const String salonStylesEndpoint = '/salon/styles';
+  static const String salonOptionsEndpoint = '/salon/options';
+  static const String salonPackagesEndpoint = '/salon/packages';
+  static const String salonProductsEndpoint = '/salon/products';
+  static const String salonInventoryEndpoint = '/salon/inventory';
+  static const String salonBarbersEndpoint = '/salon/barbers';
 
   // Loyalty Endpoints
   static const String loyaltyBalanceEndpoint = '/loyalty/balance';
@@ -123,11 +123,11 @@ class AppConstants {
   static const double sidebarWidth = 280.0;
   static const double sidebarAnimationDuration = 400;
 
-  // Shop Constants
-  static const double minShopRating = 1.0;
-  static const double maxShopRating = 5.0;
+  // Salon Constants
+  static const double minSalonRating = 1.0;
+  static const double maxSalonRating = 5.0;
   static const int maxGalleryImages = 10;
-  static const int maxServicesPerShop = 20;
+  static const int maxServicesPerSalon = 20;
 
   // Staff Management Constants
   static const List<String> barberSpecialties = [
@@ -167,7 +167,7 @@ class AppConstants {
   static const int pointsForFeedback = 15;
 
   // Cache Durations
-  static const Duration shopCacheDuration = Duration(minutes: 30);
+  static const Duration salonCacheDuration = Duration(minutes: 30);
   static const Duration userCacheDuration = Duration(hours: 1);
   static const Duration configCacheDuration = Duration(hours: 24);
   static const int cacheTimeout = 300;

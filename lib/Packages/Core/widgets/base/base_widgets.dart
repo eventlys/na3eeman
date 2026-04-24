@@ -1,10 +1,11 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Helpers/error_handler.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../themes/glass_appbar.dart';
 import '../../utils/helpers/themes_helpers.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
@@ -105,7 +106,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
             valueColor: AlwaysStoppedAnimation<Color>(_getIconColor()),
           ),
           const SizedBox(height: 16),
-          Text('loading'.tr(),
+          Text(AppLocalizations.of(context)!.loading,
             style: TextStyle(
               color: isDarkMode ? AppColor.darkText : AppColor.lightText,
               fontSize: 16,
@@ -132,7 +133,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
               color: _getErrorColor(),
             ),
             const SizedBox(height: 16),
-            Text('oops_something_went_wrong'.tr(),
+            Text(AppLocalizations.of(context)!.oopsSomethingWentWrong,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -155,7 +156,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
                 Icons.refresh,
                 color: _getIconColor(),
               ),
-              label: Text('try_again'.tr(),
+              label: Text(AppLocalizations.of(context)!.tryAgain,
                 style: TextStyle(
                   color: isDarkMode ? AppColor.darkText : AppColor.lightText,
                 ),

@@ -1,10 +1,11 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_button.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/common/app_text_field.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 /// Dispute/Issue Resolution Page.
 /// Users can submit a dispute for a booking and track its status.
@@ -132,7 +133,7 @@ class _NewReportTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Issue type
-            Text('issue_type'.tr(),
+            Text(AppLocalizations.of(context)!.issueType,
               style: Theme.of(
                 context,
               ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -235,7 +236,7 @@ class _NewReportTab extends StatelessWidget {
             const SizedBox(height: 24),
 
             AppButton(
-              label: 'submit_report'.tr(),
+              label: AppLocalizations.of(context)!.submitReport,
               fullWidth: true,
               isLoading: submitting,
               icon: Icons.send_rounded,

@@ -1,8 +1,9 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Helpers/customized/schedule_helper.dart';
 import '../../constants/app_color.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class ScheduleDatePicker extends StatefulWidget {
   final DateTime? selectedDate;
@@ -93,7 +94,7 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('select_date'.tr(),
+                Text(AppLocalizations.of(context)!.selectDate,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -286,7 +287,7 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('available_times'.tr(),
+            Text(AppLocalizations.of(context)!.availableTimes,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -312,7 +313,7 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
                       size: 20,
                     ),
                     const SizedBox(width: 12),
-                    Text('select_a_date_first_to_see_available_times'.tr(),
+                    Text(AppLocalizations.of(context)!.selectADateFirstToSeeAvailableTimes,
                       style: TextStyle(
                         color: widget.textColor ?? AppColor.lightText, // Updated to use AppColor
                         fontSize: 16,

@@ -151,7 +151,7 @@ class AuthRepository {
   Future<User> updateProfile(Map<String, dynamic> profileData) async {
     try {
       final response = await _apiService.patch(
-        '/auth/profile',
+        '/auth/me/',
         data: profileData,
       );
       return User.fromJson(response['data']);

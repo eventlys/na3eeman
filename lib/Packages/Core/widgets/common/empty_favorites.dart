@@ -1,7 +1,8 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/app_color.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class EmptyFavorites extends StatelessWidget {
   final VoidCallback onBrowseProducts;
@@ -24,14 +25,14 @@ class EmptyFavorites extends StatelessWidget {
               size: 100,
             ),
             const SizedBox(height: 24),
-            Text('no_favorites_yet'.tr(),
+            Text(AppLocalizations.of(context)!.noFavoritesYet,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            Text('items_you_add_to_your_favorites_will_appear_here'.tr(),
+            Text(AppLocalizations.of(context)!.itemsYouAddToYourFavoritesWillAppearHere,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -42,7 +43,7 @@ class EmptyFavorites extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onBrowseProducts,
               icon: const Icon(Icons.search),
-              label: Text('browse_products'.tr()),
+              label: Text(AppLocalizations.of(context)!.browseProducts),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),

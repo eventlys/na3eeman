@@ -1,10 +1,11 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class SoonestAppointmentCard extends StatefulWidget {
   final Function(Map<String, dynamic>)? onAppointmentDelayed;
@@ -73,7 +74,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
   void _handleDelayAppointment() async {
     if (_soonestAppointment == null) return;
 
-    final result = await showDialog<Duration>(
+    final result = await showDialog<int>(
       context: context,
       builder: (context) => _DelayAppointmentDialog(
         currentAppointment: _soonestAppointment!,
@@ -85,62 +86,50 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
     }
   }
 
-  void _processDelay(Duration delay) async {
+  void _processDelay(int minutes) async {
     if (_soonestAppointment == null) return;
 
     try {
-      if (SoonestAppointmentHelpers.canDelayAppointment(_soonestAppointment!, delay)) {
-        final delayedAppointment = SoonestAppointmentHelpers.delayAppointment(
-          _soonestAppointment!,
-          delay,
+      final appointmentProvider = context.read<AppointmentProvider>();
+      final pointsProvider = context.read<PointsProvider>();
+      
+      await appointmentProvider.delayAppointment(
+        _soonestAppointment!['id'].toString(),
+        minutes,
+      );
+
+      // Refresh points as they were deducted
+      await pointsProvider.loadBalance();
+      await _loadSoonestAppointment();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Appointment delayed by $minutes minutes'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
-
-        final appointmentProvider = context.read<AppointmentProvider>();
-        await appointmentProvider.rescheduleAppointment(
-          delayedAppointment['id'] as String,
-          DateTime.parse(delayedAppointment['dateTime'] as String),
-          DateTime.parse(delayedAppointment['dateTime'] as String).add(const Duration(minutes: 30)),
-        );
-
-        widget.onAppointmentDelayed?.call(delayedAppointment);
-
-        setState(() {
-          _soonestAppointment = delayedAppointment;
-        });
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Appointment delayed by ${delay.inMinutes} minutes'),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-          );
-        }
-      } else {
-        widget.onAppointmentRescheduleNeeded?.call(_soonestAppointment!);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Cannot delay. Please reschedule.'),
-              backgroundColor: AppColors.warning,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-          );
-        }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error updating appointment'),
+          SnackBar(
+            content: Text(e.toString().contains('points') ? 'Insufficient points for this delay' : 'Error updating appointment'),
             backgroundColor: AppColors.error,
           ),
         );
       }
     }
+  }
+
+  void _handleRepeatAppointment(String? recurrence) async {
+    if (recurrence == null || recurrence == 'NONE') return;
+    
+    // Simulate updating recurrence or call API
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Setting appointment to repeat: $recurrence'))
+    );
   }
 
   void _showAppointmentDetails(BuildContext context) {
@@ -170,7 +159,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
             ),
             const SizedBox(height: 24),
             Text(
-              _soonestAppointment!['shopName'] ?? 'Barber Shop',
+              _soonestAppointment!['salonName'] ?? 'Barber Salon',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -203,7 +192,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: Text('close'.tr()),
+                    child: Text(AppLocalizations.of(context)!.close),
                   ),
                 ),
               ],
@@ -237,106 +226,132 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.almostBlack600 : AppColors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
-            offset: const Offset(0, 8),
-            blurRadius: 24,
+    return GestureDetector(
+      onTap: () => _showAppointmentDetails(context),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : AppColors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isDark ? AppColors.white.withOpacity(0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
+            width: 1,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  'NEXT APPOINTMENT',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ),
-              Icon(Icons.calendar_month, color: Theme.of(context).primaryColor, size: 20),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _soonestAppointment!['shopName'] ?? 'Barber Shop',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+              offset: const Offset(0, 8),
+              blurRadius: 24,
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(Icons.access_time_filled, size: 16, color: Theme.of(context).primaryColor),
-              const SizedBox(width: 8),
-              Text(
-                SoonestAppointmentHelpers.formatAppointmentDateTime(_soonestAppointment!['dateTime']),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _handleDelayAppointment,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'Delay',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                    'NEXT APPOINTMENT',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
+                Icon(Icons.calendar_month, color: Theme.of(context).primaryColor, size: 20),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _soonestAppointment!['salonName'] ?? 'Barber Salon',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => _showAppointmentDetails(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: AppColors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Details',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.access_time_filled, size: 16, color: Theme.of(context).primaryColor),
+                const SizedBox(width: 8),
+                Text(
+                  SoonestAppointmentHelpers.formatAppointmentDateTime(_soonestAppointment!['dateTime']),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                const Icon(Icons.repeat, size: 16, color: Colors.grey),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isDense: true,
+                      value: _soonestAppointment!['recurrence'] ?? 'NONE',
+                      style: TextStyle(fontSize: 13, color: isDark ? Colors.white : Colors.black),
+                      items: [
+                        DropdownMenuItem(value: 'NONE', child: Text('No Repeat')),
+                        DropdownMenuItem(value: 'WEEKLY', child: Text('Weekly')),
+                        DropdownMenuItem(value: 'BIWEEKLY', child: Text('Bi-Weekly')),
+                        DropdownMenuItem(value: 'MONTHLY', child: Text('Monthly')),
+                      ],
+                      onChanged: _handleRepeatAppointment,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _handleDelayAppointment,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text(
+                      'Delay',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => _showAppointmentDetails(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: AppColors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Details',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -372,41 +387,62 @@ class _DelayAppointmentDialogState extends State<_DelayAppointmentDialog> {
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            const Text('How many minutes would you like to delay your appointment by?'),
+            const Text('Choose your delay. Note: This will cost you loyalty points.'),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [5, 10, 15].map((mins) {
-                final isSelected = _selectedMinutes == mins;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedMinutes = mins),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack400 : Theme.of(context).primaryColor.withValues(alpha: 0.05)),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '$mins min',
-                      style: TextStyle(
-                        color: isSelected ? AppColors.white : (isDark ? AppColors.white : Theme.of(context).primaryColor),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+            Column(
+              children: [
+                _delayOption(5, 10, isDark),
+                const SizedBox(height: 12),
+                _delayOption(10, 20, isDark),
+                const SizedBox(height: 12),
+                _delayOption(15, 30, isDark),
+              ],
             ),
             const SizedBox(height: 32),
             PrimaryButton(
               text: 'Confirm Delay',
-              onPressed: () => Navigator.pop(context, Duration(minutes: _selectedMinutes)),
+              onPressed: () => Navigator.pop(context, _selectedMinutes),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('cancel'.tr(),
+              child: Text(AppLocalizations.of(context)!.cancel,
                 style: TextStyle(color: isDark ? AppColors.cream400 : AppColors.almostBlack400),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _delayOption(int minutes, int points, bool isDark) {
+    final isSelected = _selectedMinutes == minutes;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedMinutes = minutes),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack400 : Theme.of(context).primaryColor.withValues(alpha: 0.05)),
+          borderRadius: BorderRadius.circular(16),
+          border: isSelected ? null : Border.all(color: Colors.grey.withOpacity(0.2)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '$minutes Minutes',
+              style: TextStyle(
+                color: isSelected ? AppColors.white : (isDark ? AppColors.white : Colors.black),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              '-$points Points',
+              style: TextStyle(
+                color: isSelected ? AppColors.white.withOpacity(0.8) : Colors.red,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
               ),
             ),
           ],

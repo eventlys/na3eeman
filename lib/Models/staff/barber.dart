@@ -19,7 +19,7 @@ class Barber extends StaffMember {
     required super.email,
     required super.joinDate,
     super.profileImage,
-    super.shopId,
+    super.salonId,
     super.isActive = true,
     super.hourlyRate,
     this.barberProfile,
@@ -51,7 +51,7 @@ class Barber extends StaffMember {
     Map<String, int> servicesCount = const {},
     DateTime? lastActive,
     double? hourlyRate,
-    int? shopId,
+    int? salonId,
   }) {
     return Barber(
       id: user.id.toString(),
@@ -60,7 +60,7 @@ class Barber extends StaffMember {
       email: user.email,
       joinDate: user.createdAt,
       profileImage: user.profilePic,
-      shopId: shopId,
+      salonId: salonId,
       isActive: user.isActive,
       hourlyRate: hourlyRate,
       barberProfile: profile,
@@ -81,7 +81,7 @@ class Barber extends StaffMember {
       email: json['barber_email'] as String? ?? '',
       joinDate: DateTime.parse(json['hired_at'] as String? ?? DateTime.now().toString()),
       profileImage: json['profile_image'] as String?,
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
       isActive: json['is_active'] as bool? ?? true,
       hourlyRate: (json['hourly_rate'] as num?)?.toDouble(),
       barberProfile: json['barber_profile'] != null

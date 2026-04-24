@@ -6,7 +6,7 @@ class BarberPerformance {
   final double tips;
   final double rating;
   final Map<String, int> servicesBreakdown;
-  final int shopId;
+  final int salonId;
 
   BarberPerformance({
     required this.staffId,
@@ -16,7 +16,7 @@ class BarberPerformance {
     required this.tips,
     required this.rating,
     required this.servicesBreakdown,
-    required this.shopId,
+    required this.salonId,
   });
 
   double get earnings => totalRevenue + tips;
@@ -31,7 +31,7 @@ class BarberPerformance {
       tips: (json['tips'] ?? 0).toDouble(),
       rating: (json['rating'] ?? 0).toDouble(),
       servicesBreakdown: Map<String, int>.from(json['services_breakdown'] ?? json['servicesBreakdown'] ?? {}),
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
     );
   }
 
@@ -44,7 +44,7 @@ class BarberPerformance {
       'tips': tips,
       'rating': rating,
       'services_breakdown': servicesBreakdown,
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 }
@@ -58,7 +58,7 @@ class StaffAttendance {
   final DateTime? clockOut;
   final String status; // 'PRESENT', 'ABSENT', 'LATE', 'LEAVE'
   final String? notes;
-  final int shopId;
+  final int salonId;
 
   StaffAttendance({
     required this.staffId,
@@ -69,7 +69,7 @@ class StaffAttendance {
     this.clockOut,
     required this.status,
     this.notes,
-    required this.shopId,
+    required this.salonId,
   });
 
   Duration get scheduledHours => scheduledEnd.difference(scheduledStart);
@@ -95,7 +95,7 @@ class StaffAttendance {
       clockOut: json['clock_out'] != null ? DateTime.parse(json['clock_out']) : null,
       status: json['status'] as String,
       notes: json['notes'] as String?,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
     );
   }
 }
@@ -110,7 +110,7 @@ class StaffPayroll {
   final double deductions;
   final double netPay;
   final String status; // 'PENDING', 'PAID', 'PROCESSING'
-  final int shopId;
+  final int salonId;
 
   StaffPayroll({
     required this.staffId,
@@ -122,7 +122,7 @@ class StaffPayroll {
     required this.deductions,
     required this.netPay,
     required this.status,
-    required this.shopId,
+    required this.salonId,
   });
 
   double get grossPay => baseSalary + commission + tips;
@@ -138,7 +138,7 @@ class StaffPayroll {
       deductions: (json['deductions'] as num).toDouble(),
       netPay: (json['net_pay'] as num).toDouble(),
       status: json['status'] as String,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
     );
   }
 }

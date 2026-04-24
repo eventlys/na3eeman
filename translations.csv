@@ -9,7 +9,7 @@ active,Active,نشط
 active_assignments,Active Assignments,المهام النشطة
 active_campaigns,Active Campaigns,الحملات النشطة
 active_offers,Active Offers,العروض النشطة
-active_shops,Active Shops,المتاجر المفتوحة
+active_salons,Active Salons,المتاجر المفتوحة
 ad_campaign_launched,Ad Campaign launched!,تم إطلاق الحملة الإعلانية!
 add,Add,إضافة
 add_a_new_appointment,Add a new appointment,إضافة موعد جديد
@@ -128,7 +128,7 @@ delete_profile,Delete Profile,حذف الملف الشخصي
 description,Description,الوصف
 description_optional,Description (Optional),الوصف (اختياري)
 dev_account_switcher,Dev Account Switcher,مبدل حسابات المطورين
-discover_shops,Discover Shops,اكتشف المتاجر
+discover_salons,Discover Salons,اكتشف المتاجر
 don_t_have_an_account,Don't have an account?,ليس لديك حساب؟
 don_t_have_an_account_sign_up,Don't have an account? Sign up,ليس لديك حساب؟ أنشئ حساب
 done,Done,تم
@@ -150,7 +150,7 @@ error,Error,خطأ
 error_details,Error Details,تفاصيل الخطأ
 exclusive_offers_coming_soon,Exclusive offers coming soon!,عروض حصرية قريباً!
 explore_mentors,Explore Mentors Below,تصفح المشرفين أدناه
-explore_shops,Explore Shops,استكشف المتاجر
+explore_salons,Explore Salons,استكشف المتاجر
 failed_to_load_branches,Failed to load branches,فشل في تحميل الفروع
 failed_to_load_inventory,Failed to load inventory,فشل في تحميل المخزون
 failed_to_load_subscriptions,Failed to load subscriptions,فشل تحميل الاشتراكات
@@ -191,7 +191,7 @@ inactive,Inactive,غير نشط
 include_options,Include Options:,تضمين الخيارات:
 included_services,Included Services,الخدمات المشمولة
 initial_count,Initial Count,الرصيد الافتتاحي
-initializing_shop_details,Initializing shop details...,جاري تهيئة تفاصيل المتجر...
+initializing_salon_details,Initializing salon details...,جاري تهيئة تفاصيل المتجر...
 insights,Insights,تحليلات ورؤى
 inter_branch_transfers,Inter-Branch Transfers,التحويلات بين الفروع
 intern_activity,Intern Activity,نشاط المتدربين
@@ -223,14 +223,14 @@ main_service,Main Service,الخدمة الأساسية
 male,Male,ذكر
 manage_all_your_branches_view_performance_metrics_,"Manage all your branches, view performance metrics, and handle branch-specific settings from this page.",قم بإدارة جميع فروعك، واعرض مقاييس الأداء، وتعامل مع الإعدادات الخاصة بكل فرع من هذه الصفحة.
 manage_inventory,Manage Inventory,إدارة المخزون
-manage_shop,Manage Shop Profile,إدارة ملف المتجر
+manage_salon,Manage Salon Profile,إدارة ملف المتجر
 messages,Messages,الرسائل
 mock_owner_variants_local_state,Mock Owner Variants (Local State),خيارات تجريبية للمالك
 monthly,Monthly,شهرياً
 monthly_targets,Monthly Targets,الأهداف الشهرية
 multi_branch_support_setup_required_admin_action_a,Multi-Branch support setup required admin action approval configuration setup.,إعداد دعم الفروع المتعددة يتطلب موافقة من الإدارة.
 my_schedule,My Schedule,جدولي
-my_shop,My Shop,متجري
+my_salon,My Salon,متجري
 na3eeman,NA3EEMAN,نعيمًا
 name,Name,الاسم
 new_action,New Action,إجراء جديد
@@ -243,7 +243,7 @@ no_branches_available,No Branches Available,لا توجد فروع متاحة
 no_branches_found,No branches found,لم يتم العثور على فروع
 no_data_found,No data found,لا توجد بيانات
 no_earnings_data_available,No earnings data available,لا تتوفر بيانات أرباح
-no_employees,No employees found in the shop,لا يوجد موظفين في هذا المتجر
+no_employees,No employees found in the salon,لا يوجد موظفين في هذا المتجر
 no_favorites_yet,No Favorites Yet,لا توجد مفضلة بعد
 no_features_available,No features available,لا توجد ميزات متاحة
 no_items_in_inventory,No items in inventory,لا توجد عناصر في المخزون
@@ -252,7 +252,7 @@ no_offers_available_at_this_moment,No offers available at this moment,لا تو�
 no_reviews_found,No reviews found.,لا توجد تقييمات.
 no_service_selected,No Service Selected,لم يتم تحديد أي خدمة
 no_services_available,No services available,لا توجد خدمات متاحة
-no_shops_found_nearby,No shops found nearby,لم يتم العثور على متاجر قريبة
+no_salons_found_nearby,No salons found nearby,لم يتم العثور على متاجر قريبة
 no_subscriptions_available,No Subscriptions Available,لا توجد اشتراكات متاحة
 no_targets,No targets set for this month,
 notifications,Notifications,الإشعارات
@@ -323,7 +323,7 @@ refresh_failed,Refresh failed!,فشل التحديث!
 release_to_load_more,Release to load more,أفلت للتحميل أكثر
 release_to_refresh,Release to refresh,أفلت للتحديث
 remember_me,Remember me,تذكرني
-remove_from_shop,Remove from Shop,إزالة من المتجر
+remove_from_salon,Remove from Salon,إزالة من المتجر
 reorder_now,Reorder Now,إعادة الطلب الآن
 repeat_every_2_weeks,Repeat every 2 weeks,تكرار كل أسبوعين
 repeat_every_month,Repeat every month,كرر كل شهر
@@ -332,7 +332,7 @@ report_details,Report Details,تفاصيل التقرير
 report_issue,Report Issue,الإبلاغ عن مشكلة
 report_options,Report Options,خيارات التقرير
 report_problem,Report a Problem,الإبلاغ عن مشكلة
-report_shop,Report Shop,الإبلاغ عن المشغل
+report_salon,Report Salon,الإبلاغ عن المشغل
 report_success,Report generated successfully!,تم إنشاء التقرير بنجاح!
 report_type,Report Type,نوع التقرير
 reports,Reports,التقارير
@@ -375,16 +375,16 @@ settings,Settings,الإعدادات
 shadowing,SHADOWING,متابعة تدريبية
 share,Share,مشاركة
 share_dialog_opened,Share Dialog Opened,تم فتح نافذة المشاركة
-share_link,Share Shop Link,شارك رابط المتجر
-shop_branches,Shop Branches,فروع المتجر
-shop_dashboard,Shop Dashboard,لوحة المتجر
-shop_details,Shop Details,تفاصيل المتجر
-shop_feedback,Shop Feedback,آراء المتجر
-shop_link_copied,Shop Link Copied to Clipboard!,تم نسخ رابط المتجر بنجاح!
-shop_management,Shop Management,إدارة المتجر
-shop_name,Shop Name,اسم المتجر
-shop_products_catalog_coming_soon,Shop products catalog coming soon!,تشكيلة منتجات المتجر قريباً!
-shops,Shops,المتاجر
+share_link,Share Salon Link,شارك رابط المتجر
+salon_branches,Salon Branches,فروع المتجر
+salon_dashboard,Salon Dashboard,لوحة المتجر
+salon_details,Salon Details,تفاصيل المتجر
+salon_feedback,Salon Feedback,آراء المتجر
+salon_link_copied,Salon Link Copied to Clipboard!,تم نسخ رابط المتجر بنجاح!
+salon_management,Salon Management,إدارة المتجر
+salon_name,Salon Name,اسم المتجر
+salon_products_catalog_coming_soon,Salon products catalog coming soon!,تشكيلة منتجات المتجر قريباً!
+salons,Salons,المتاجر
 show_more,Show more,عرض المزيد
 show_num,Show #,عرض #
 show_pct,Show %,عرض %
@@ -403,7 +403,7 @@ subject,Subject,الموضوع
 submit,Submit,إرسال
 submit_report,Submit Report,إرسال التقرير
 submit_review,Submit Review,إرسال التقييم
-subscribe_to_the_shop,Subscribe to the Shop,اشترك في المتجر
+subscribe_to_the_salon,Subscribe to the Salon,اشترك في المتجر
 subscription,Subscription,اشتراك
 subscription_details,Subscription Details,تفاصيل الاشتراك
 subscription_plans,Subscription Plans,خطط الاشتراك
@@ -427,7 +427,7 @@ time_period,Time Period,الفترة الزمنية
 today,Today\,اليوم\
 today_s_earnings,Today's Earnings,أرباح اليوم
 tools_inventory,Tools & Inventory,الأدوات والمخزون
-top_categories_insight,"Top categories: Barbershops (65%), Spas (20%).",الفئات الأعلى: محلات الحلاقة (65%)، السبا (20%).
+top_categories_insight,"Top categories: Barbersalons (65%), Spas (20%).",الفئات الأعلى: محلات الحلاقة (65%)، السبا (20%).
 total,Total,الإجمالي
 total_charges,Total Charges,إجمالي الرسوم
 total_duration,Total Duration:,المدة الإجمالية:

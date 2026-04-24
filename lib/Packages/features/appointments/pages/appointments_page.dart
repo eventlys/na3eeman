@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,7 +7,7 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../widgets/appointment_accordion.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class AppointmentsPage extends StatefulWidget {
   const AppointmentsPage({super.key});
@@ -215,7 +216,7 @@ class AppointmentsPageState extends State<AppointmentsPage> {
                   backgroundColor: _getAccentColor(context, userGender),
                   foregroundColor: Colors.white,
                 ),
-                child: Text('try_again'.tr()),
+                child: Text(AppLocalizations.of(context)!.tryAgain),
               ),
             ],
           ),

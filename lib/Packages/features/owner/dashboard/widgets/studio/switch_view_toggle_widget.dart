@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../core/enums/owner_enums.dart'; // Added
@@ -25,7 +26,7 @@ class SwitchViewToggleWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('view_mode'.tr(),
+          Text(AppLocalizations.of(context)!.viewMode,
               style: theme.textTheme.labelMedium
                   ?.copyWith(color: theme.hintColor)),
           const SizedBox(height: 10),

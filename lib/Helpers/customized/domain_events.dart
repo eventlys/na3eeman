@@ -9,19 +9,19 @@ class UserLoggedInEvent extends DomainEvent {
 
 class UserLoggedOutEvent extends DomainEvent {}
 
-class ShopFavoritedEvent extends DomainEvent {
-  final String shopId;
-  final String shopName;
+class SalonFavoritedEvent extends DomainEvent {
+  final String salonId;
+  final String salonName;
 
-  ShopFavoritedEvent(this.shopId, this.shopName);
+  SalonFavoritedEvent(this.salonId, this.salonName);
 }
 
 class AppointmentBookedEvent extends DomainEvent {
   final String appointmentId;
-  final String shopId;
+  final String salonId;
   final double amount;
 
-  AppointmentBookedEvent(this.appointmentId, this.shopId, this.amount);
+  AppointmentBookedEvent(this.appointmentId, this.salonId, this.amount);
 }
 
 class PointsEarnedEvent extends DomainEvent {

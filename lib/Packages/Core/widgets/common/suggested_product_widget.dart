@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/inventory_helpers.dart';
@@ -7,7 +8,7 @@ import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../base/error_boundary.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class SuggestedProductWidget extends StatefulWidget {
   final Map<String, dynamic> productData;
@@ -256,16 +257,16 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     try {
       final inventoryService = Provider.of<InventoryService>(context, listen: false);
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final shopId = authProvider.user?.shopId;
+      final salonId = authProvider.user?.salonId;
       
-      if (shopId == null) {
-        throw 'Shop ID was not found for this account';
+      if (salonId == null) {
+        throw 'Salon ID was not found for this account';
       }
       final newQuantity = currentQuantity + 5; // Add 5 units for quick restock
 
       await inventoryService.updateItemQuantity(
         itemId: itemId,
-        shopId: shopId,
+        salonId: salonId,
         newQuantity: newQuantity,
         reason: 'Quick restock from suggested products',
       );
@@ -305,15 +306,15 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     try {
       final inventoryService = Provider.of<InventoryService>(context, listen: false);
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final shopId = authProvider.user?.shopId;
+      final salonId = authProvider.user?.salonId;
       
-      if (shopId == null) {
-        throw 'Shop ID was not found for this account';
+      if (salonId == null) {
+        throw 'Salon ID was not found for this account';
       }
 
       await inventoryService.updateItemQuantity(
         itemId: itemId,
-        shopId: shopId,
+        salonId: salonId,
         newQuantity: 10, // Default restock quantity
         reason: 'Restocked from suggested products',
       );
@@ -324,7 +325,7 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('item_restocked_to_10_units'.tr()),
+            content: Text(AppLocalizations.of(context)!.itemRestockedTo10Units),
             backgroundColor: _getSuccessColor(),
             behavior: SnackBarBehavior.floating,
           ),

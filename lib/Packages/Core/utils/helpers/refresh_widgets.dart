@@ -1,6 +1,7 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide RefreshIndicator;
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class RefreshableList extends StatelessWidget {
   final RefreshController refreshController;
@@ -32,15 +33,15 @@ class RefreshableList extends StatelessWidget {
         builder: (context, mode) {
           Widget body;
           if (mode == RefreshStatus.idle) {
-            body = Text('pull_down_to_refresh'.tr());
+            body = Text(AppLocalizations.of(context)!.pullDownToRefresh);
           } else if (mode == RefreshStatus.refreshing) {
             body = const CircularProgressIndicator();
           } else if (mode == RefreshStatus.failed) {
-            body = Text('refresh_failed'.tr());
+            body = Text(AppLocalizations.of(context)!.refreshFailed);
           } else if (mode == RefreshStatus.canRefresh) {
-            body = Text('release_to_refresh'.tr());
+            body = Text(AppLocalizations.of(context)!.releaseToRefresh);
           } else {
-            body = Text('refresh_completed'.tr());
+            body = Text(AppLocalizations.of(context)!.refreshCompleted);
           }
           return Container(
             height: 60,
@@ -52,15 +53,15 @@ class RefreshableList extends StatelessWidget {
         builder: (context, mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text('pull_up_to_load_more'.tr());
+            body = Text(AppLocalizations.of(context)!.pullUpToLoadMore);
           } else if (mode == LoadStatus.loading) {
             body = const CircularProgressIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text('load_failed'.tr());
+            body = Text(AppLocalizations.of(context)!.loadFailed);
           } else if (mode == LoadStatus.canLoading) {
-            body = Text('release_to_load_more'.tr());
+            body = Text(AppLocalizations.of(context)!.releaseToLoadMore);
           } else {
-            body = Text('no_more_data'.tr());
+            body = Text(AppLocalizations.of(context)!.noMoreData);
           }
           return Container(
             height: 60,

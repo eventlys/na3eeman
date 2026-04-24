@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 // import 'package:flutter/material.dart';
 // import 'package:na3eeman/Services/ui/sidebar_navigation_service.dart';
 //
@@ -8,14 +9,14 @@
 // import '../../features/sidebar/overlays/logout_confirmation_overlay.dart';
 // import '../../features/sidebar/overlays/privacy_policy_overlay.dart';
 // import '../../features/sidebar/overlays/report_problem_overlay.dart';
-// import '../../features/sidebar/overlays/report_shop_overlay.dart';
+// import '../../features/sidebar/overlays/report_salon_overlay.dart';
 // import '../../features/sidebar/overlays/security_policy_overlay.dart';
 // import '../../features/sidebar/overlays/user_reports_overlay.dart';
 //
 // class OverlayService {
 //   static void showPrivacyPolicy() {
 //     _showDialog(
-//       title: 'privacy_policy'.tr(),
+//       title: AppLocalizations.of(context)!.privacyPolicy,
 //       icon: 'assets/icons/lock.png',
 //       content: PrivacyPolicyOverlay(),
 //     );
@@ -23,7 +24,7 @@
 //
 //   static void showSecurityPolicy() {
 //     _showDialog(
-//       title: 'security_policy'.tr(),
+//       title: AppLocalizations.of(context)!.securityPolicy,
 //       icon: 'assets/icons/secure.png',
 //       content: SecurityPolicyOverlay(),
 //     );
@@ -31,7 +32,7 @@
 //
 //   static void showAppRules() {
 //     _showDialog(
-//       title: 'application_rules'.tr(),
+//       title: AppLocalizations.of(context)!.applicationRules,
 //       icon: 'assets/icons/report.png',
 //       content: AppRulesOverlay(),
 //     );
@@ -39,7 +40,7 @@
 //
 //   static void showInviteFriends() {
 //     _showDialog(
-//       title: 'invite_friends'.tr(),
+//       title: AppLocalizations.of(context)!.inviteFriends,
 //       icon: 'assets/icons/plus.png',
 //       content: InviteFriendsOverlay(),
 //     );
@@ -47,25 +48,25 @@
 //
 //   static void showContactUs() {
 //     _showDialog(
-//       title: 'contact_us'.tr(),
+//       title: AppLocalizations.of(context)!.contactUs,
 //       icon: 'assets/icons/mail_view.png',
 //       content: ContactUsOverlay(),
 //       isForm: true,
 //     );
 //   }
 //
-//   static void showReportShop() {
+//   static void showReportSalon() {
 //     _showDialog(
-//       title: 'report_shop'.tr(),
+//       title: AppLocalizations.of(context)!.reportSalon,
 //       icon: 'assets/icons/report.png',
-//       content: ReportShopOverlay(),
+//       content: ReportSalonOverlay(),
 //       isForm: true,
 //     );
 //   }
 //
 //   static void showReportProblem() {
 //     _showDialog(
-//       title: 'report_a_problem'.tr(),
+//       title: AppLocalizations.of(context)!.reportAProblem,
 //       icon: 'assets/icons/report.png',
 //       content: ReportProblemOverlay(),
 //       isForm: true,
@@ -74,7 +75,7 @@
 //
 //     static void showFeedback() {
 //     _showDialog(
-//       title: 'your_feedback_matters'.tr(),
+//       title: AppLocalizations.of(context)!.yourFeedbackMatters,
 //       icon: 'assets/icons/chat_text.png',
 //       content: FeedbackOverlay(),
 //       isForm: true,
@@ -83,7 +84,7 @@
 //
 //   static void showUserReports() {
 //     _showDialog(
-//       title: 'user_reports'.tr(),
+//       title: AppLocalizations.of(context)!.userReports,
 //       icon: 'assets/icons/file_star_view.png',
 //       content: UserReportsOverlay(),
 //     );
@@ -91,7 +92,7 @@
 //
 //   static void showLogoutConfirmation({required VoidCallback onConfirm}) {
 //     _showDialog(
-//       title: 'logout'.tr().tr(),
+//       title: AppLocalizations.of(context)!.logout,
 //       icon: 'assets/icons/exit.png',
 //       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
 //     );
@@ -170,14 +171,14 @@
 //   //   return Column(
 //   //     mainAxisSize: MainAxisSize.min,
 //   //     children: [
-//   //       Text('are_you_sure_you_want_to_logout'.tr()),
+//   //       Text(AppLocalizations.of(context)!.areYouSureYouWantToLogout),
 //   //       const SizedBox(height: 16),
 //   //       Row(
 //   //         children: [
 //   //           Expanded(
 //   //             child: OutlinedButton(
 //   //               onPressed: () => Navigator.of(SideNavigationService.navigatorKey.currentContext!).pop(),
-//   //               child: Text('cancel'.tr()),
+//   //               child: Text(AppLocalizations.of(context)!.cancel),
 //   //             ),
 //   //           ),
 //   //           const SizedBox(width: 8),
@@ -190,7 +191,7 @@
 //   //               style: ElevatedButton.styleFrom(
 //   //                 backgroundColor: Colors.red,
 //   //               ),
-//   //               child: Text('logout'.tr().tr()),
+//   //               child: Text(AppLocalizations.of(context)!.logout),
 //   //             ),
 //   //           ),
 //   //         ],
@@ -208,7 +209,7 @@ import '../../Packages/features/navigation/overlays/invite_friends_overlay.dart'
 import '../../Packages/features/navigation/overlays/logout_confirmation_overlay.dart';
 import '../../Packages/features/navigation/overlays/privacy_policy_overlay.dart';
 import '../../Packages/features/navigation/overlays/report_problem_overlay.dart';
-import '../../Packages/features/navigation/overlays/report_shop_overlay.dart';
+import '../../Packages/features/navigation/overlays/report_salon_overlay.dart';
 import '../../Packages/features/navigation/overlays/security_policy_overlay.dart';
 import '../../Packages/features/navigation/overlays/user_reports_overlay.dart';
 import 'sidebar_navigation_service.dart';
@@ -222,58 +223,72 @@ class OverlayService {
   OverlayService._internal();
 
   static void showPrivacyPolicy() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'privacy_policy'.tr(),
+      title: AppLocalizations.of(context)!.privacyPolicy,
       icon: 'assets/icons/lock.png',
       content: PrivacyPolicyOverlay(),
     );
   }
 
   static void showSecurityPolicy() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'security_policy'.tr(),
+      title: AppLocalizations.of(context)!.securityPolicy,
       icon: 'assets/icons/secure.png',
       content: SecurityPolicyOverlay(),
     );
   }
 
   static void showAppRules() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'application_rules'.tr(),
+      title: AppLocalizations.of(context)!.applicationRules,
       icon: 'assets/icons/report.png',
       content: AppRulesOverlay(),
     );
   }
 
   static void showInviteFriends() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'invite_friends'.tr(),
+      title: AppLocalizations.of(context)!.inviteFriends,
       icon: 'assets/icons/plus.png',
       content: InviteFriendsOverlay(),
     );
   }
 
   static void showContactUs() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'contact_us'.tr(),
+      title: AppLocalizations.of(context)!.contactUs,
       icon: 'assets/icons/mail_view.png',
       content: ContactUsOverlay(),
       isForm: true,
     );
   }
 
-  static void showReportShop() {
+  static void showReportSalon() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'report_shop'.tr(),
+      title: AppLocalizations.of(context)!.reportSalon,
       icon: 'assets/icons/report.png',
-      content: ReportShopOverlay(),
+      content: ReportSalonOverlay(),
       isForm: true,
     );
   }
 
   static void showReportProblem() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'report_a_problem'.tr(),
+      title: AppLocalizations.of(context)!.reportAProblem,
       icon: 'assets/icons/report.png',
       content: ReportProblemOverlay(),
       isForm: true,
@@ -281,8 +296,10 @@ class OverlayService {
   }
 
   static void showFeedback() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'your_feedback_matters'.tr(),
+      title: AppLocalizations.of(context)!.yourFeedbackMatters,
       icon: 'assets/icons/chat_text.png',
       content: FeedbackOverlay(),
       isForm: true,
@@ -290,16 +307,20 @@ class OverlayService {
   }
 
   static void showUserReports() {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'user_reports'.tr(),
+      title: AppLocalizations.of(context)!.userReports,
       icon: 'assets/icons/file_star_view.png',
       content: UserReportsOverlay(),
     );
   }
 
   static void showLogoutConfirmation({required VoidCallback onConfirm}) {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'logout'.tr().tr(),
+      title: AppLocalizations.of(context)!.logout,
       icon: 'assets/icons/exit.png',
       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
     );
@@ -307,15 +328,17 @@ class OverlayService {
 
   // New method for appointment booking overlay
   static void showAppointmentBooking({
-    required int shopId,
+    required int salonId,
     required List<dynamic> services,
     VoidCallback? onBookingComplete,
   }) {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'book_appointment'.tr(),
+      title: AppLocalizations.of(context)!.bookAppointment,
       icon: 'assets/icons/calendar.png',
       content: AppointmentBookingOverlay(
-        shopId: shopId,
+        salonId: salonId,
         services: services,
         onBookingComplete: onBookingComplete,
       ),
@@ -330,8 +353,10 @@ class OverlayService {
     required Function(String) onPaymentSuccess,
     required Function(String) onPaymentFailure,
   }) {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'complete_payment'.tr(),
+      title: AppLocalizations.of(context)!.completePayment,
       icon: 'assets/icons/payment.png',
       content: PaymentOverlay(
         amount: amount,
@@ -348,8 +373,10 @@ class OverlayService {
     required int points,
     required String source,
   }) {
+    final context = SideNavigationService.navigatorKey.currentContext;
+    if (context == null) return;
     _showDialog(
-      title: 'loyalty_points_earned'.tr(),
+      title: AppLocalizations.of(context)!.loyaltyPointsEarned,
       icon: 'assets/icons/star.png',
       content: LoyaltyPointsOverlay(
         points: points,
@@ -439,13 +466,13 @@ class OverlayService {
 
 // New overlay widgets (you'll need to create these)
 class AppointmentBookingOverlay extends StatelessWidget {
-  final int shopId;
+  final int salonId;
   final List<dynamic> services;
   final VoidCallback? onBookingComplete;
 
   const AppointmentBookingOverlay({
     super.key,
-    required this.shopId,
+    required this.salonId,
     required this.services,
     this.onBookingComplete,
   });
@@ -457,14 +484,14 @@ class AppointmentBookingOverlay extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Book Appointment for Shop $shopId'),
+          Text('Book Appointment for Salon $salonId'),
           // Add your appointment booking form here
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
               onBookingComplete?.call();
             },
-            child: Text('confirm_booking'.tr()),
+            child: Text(AppLocalizations.of(context)!.confirmBooking),
           ),
         ],
       ),
@@ -504,7 +531,7 @@ class PaymentOverlay extends StatelessWidget {
                     Navigator.of(context).pop();
                     onPaymentFailure('Payment cancelled');
                   },
-                  child: Text('cancel'.tr()),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
               ),
               const SizedBox(width: 8),
@@ -514,7 +541,7 @@ class PaymentOverlay extends StatelessWidget {
                     Navigator.of(context).pop();
                     onPaymentSuccess('payment_123');
                   },
-                  child: Text('pay_now'.tr()),
+                  child: Text(AppLocalizations.of(context)!.payNow),
                 ),
               ),
             ],
@@ -560,7 +587,7 @@ class LoyaltyPointsOverlay extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('awesome'.tr()),
+            child: Text(AppLocalizations.of(context)!.awesome),
           ),
         ],
       ),

@@ -170,28 +170,28 @@ ApiService().get(Endpoints.login);  // Correct: /auth/login/
 import 'package:na3eeman/Services/api/endpoints.dart';
 
 // Pagination
-final url = Endpoints.withPagination(Endpoints.shops, page: 2, pageSize: 20);
-// /shops/shops/?page=2&page_size=20
+final url = Endpoints.withPagination(Endpoints.salons, page: 2, pageSize: 20);
+// /salons/salons/?page=2&page_size=20
 
 // Search
-final searchUrl = Endpoints.withSearch(Endpoints.shops, 'barber');
-// /shops/shops/?search=barber
+final searchUrl = Endpoints.withSearch(Endpoints.salons, 'barber');
+// /salons/salons/?search=barber
 
 // Filters
-final filteredUrl = Endpoints.withFilters(Endpoints.shops, {'city': 'Riyadh', 'rating_min': 4});
-// /shops/shops/?city=Riyadh&rating_min=4
+final filteredUrl = Endpoints.withFilters(Endpoints.salons, {'city': 'Riyadh', 'rating_min': 4});
+// /salons/salons/?city=Riyadh&rating_min=4
 
 // Path parameters
-final shopUrl = Endpoints.shopDetails(123);
-// /shops/shops/123/
+final salonUrl = Endpoints.salonDetails(123);
+// /salons/salons/123/
 
-// Nearby shops
-final nearbyUrl = Endpoints.getNearbyShopsUrl(
+// Nearby salons
+final nearbyUrl = Endpoints.getNearbySalonsUrl(
   latitude: 24.7136,
   longitude: 46.6753,
   radiusKm: 5.0,
 );
-// /shops/shops/?lat=24.7136&lng=46.6753&radius=5.0
+// /salons/salons/?lat=24.7136&lng=46.6753&radius=5.0
 ```
 
 ## Testing Different Environments
@@ -296,8 +296,8 @@ void main() async {
 - [ ] Update all imports to use `Endpoints` class
 - [ ] Replace hardcoded URLs with `Endpoints.xxx` constants
 - [ ] Test login flow with new `/auth/login/` endpoint
-- [ ] Test shop listing with new `/shops/shops/` endpoint
-- [ ] Test appointments with new `/shops/appointments/` endpoint
+- [ ] Test salon listing with new `/salons/salons/` endpoint
+- [ ] Test appointments with new `/salons/appointments/` endpoint
 - [ ] Test loyalty with new `/loyalty/balance/` endpoint
 - [ ] Verify token refresh works with `/auth/token/refresh/`
 - [ ] Test on Android emulator (use 10.0.2.2)

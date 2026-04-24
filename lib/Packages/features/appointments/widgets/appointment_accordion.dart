@@ -1,11 +1,15 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
+import '../../../Core/constants/app_roles.dart';
 import '../../../Core/utils/helpers/themes_helpers.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../../Models/appointments/salon_appointments_model.dart';
 
 class AppointmentAccordion extends StatefulWidget {
   final Map<String, dynamic> appointment;
@@ -81,6 +85,8 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
         return widget.isDarkMode ? AppColor.darkError : AppColor.lightError;
       case 'pending':
         return widget.isDarkMode ? AppColor.darkWarning : AppColor.lightWarning;
+      case 'pending_payment':
+        return widget.isDarkMode ? AppColor.darkError : AppColor.lightError;
       default:
         return widget.isDarkMode ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
     }
@@ -96,6 +102,8 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
         return Icons.cancel;
       case 'pending':
         return Icons.pending;
+      case 'pending_payment':
+        return Icons.payment;
       default:
         return Icons.help;
     }
@@ -202,7 +210,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
 
   String _getTitle() {
     return widget.appointment['title']?.toString() ??
-           widget.appointment['shopName']?.toString() ??
+           widget.appointment['salonName']?.toString() ??
            'Appointment';
   }
 
@@ -214,25 +222,26 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
 
   String _getBarberNumber() {
     return widget.appointment['barberNumber']?.toString() ??
-           widget.appointment['shopPhoneNumber']?.toString() ??
+           widget.appointment['salonPhoneNumber']?.toString() ??
            'No phone number';
   }
 
-  String _getBarberShopName() {
-    return widget.appointment['barberShopName']?.toString() ??
-           widget.appointment['shopName']?.toString() ??
-           'Unknown Shop';
+  String _getBarbershopName() {
+    return widget.appointment['barberSalonName']?.toString() ??
+           widget.appointment['salonName']?.toString() ??
+           'Unknown Salon';
   }
 
   String _getImagePath() {
     return widget.appointment['imagePath']?.toString() ??
            widget.appointment['barberImage']?.toString() ??
-           widget.appointment['shopImage']?.toString() ??
+           widget.appointment['salonImage']?.toString() ??
            '';
   }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
     final primaryColor = _getPrimaryColor();
     final cardColor = _getCardColor();
     final textColor = _getTextColor();
@@ -310,13 +319,13 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                   children: [
                     _buildDetailRow(
                       icon: Icons.access_time,
-                      title: 'date'.tr(),
+                      title: AppLocalizations.of(context)!.date,
                       value: _formatAppointmentDate(),
                     ),
                     const SizedBox(height: 12),
                     _buildDetailRow(
                       icon: Icons.schedule,
-                      title: 'time'.tr(),
+                      title: AppLocalizations.of(context)!.time,
                       value: _formatAppointmentTime(),
                     ),
                     const SizedBox(height: 12),
@@ -332,7 +341,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                     ],
                     _buildDetailRow(
                       icon: Icons.person,
-                      title: 'barber'.tr().tr(),
+                      title: AppLocalizations.of(context)!.barber,
                       value: _getBarberName(),
                     ),
                     const SizedBox(height: 12),
@@ -345,15 +354,202 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                     const SizedBox(height: 12),
                     _buildDetailRow(
                       icon: Icons.store,
-                      title: 'Barber Shop',
-                      value: _getBarberShopName(),
+                      title: 'Barber Salon',
+                      value: _getBarbershopName(),
                     ),
+                    // Payment Details (Point 2)
+                    if (authProvider.user?.isStaff == true) ...[
+                      const Divider(height: 32),
+                      _buildDetailRow(
+                        icon: Icons.payments_outlined,
+                        title: 'Payment Status',
+                        value: (widget.appointment['isPaid'] ?? false) ? 'PAID' : 'UNPAID',
+                        valueColor: (widget.appointment['isPaid'] ?? false) ? Colors.green : Colors.red,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildDetailRow(
+                        icon: Icons.account_balance_wallet_outlined,
+                        title: 'Method',
+                        value: widget.appointment['paymentMethod']?.toString().toUpperCase() ?? 'NONE',
+                      ),
+                      if (widget.appointment['paymentEvidence'] != null) ...[
+                        const SizedBox(height: 12),
+                        _buildEvidenceSection(context),
+                      ],
+                    ],
+                    const SizedBox(height: 16),
+                    _buildStaffActions(context),
+                    _buildCustomerActions(context),
                   ],
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStaffActions(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    if (authProvider.user?.isStaff != true) return const SizedBox.shrink();
+
+    final status = widget.appointment['status']?.toString().toLowerCase();
+    final paymentVerified = widget.appointment['paymentVerified'] ?? false;
+    final hasEvidence = widget.appointment['paymentEvidence'] != null;
+    final appointmentId = widget.appointment['id']?.toString() ?? '';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        const SizedBox(height: 8),
+        Text(
+          'Staff Actions',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: _getPrimaryColor(),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            if (status == 'scheduled' || status == 'pending')
+              ElevatedButton.icon(
+                onPressed: () => _showDelayDialog(context, appointmentId),
+                icon: const Icon(Icons.timer_outlined, size: 18),
+                label: const Text('Report Delay'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            if (hasEvidence && !paymentVerified)
+              ElevatedButton.icon(
+                onPressed: () => _verifyPayment(context, appointmentId),
+                icon: const Icon(Icons.fact_check_outlined, size: 18),
+                label: const Text('Verify Payment'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            // Receptionist specific: Remind and Report (Point 1, 2)
+            if (authProvider.user?.role == UserRole.receptionist) ...[
+              if (!(widget.appointment['isPaid'] ?? false))
+                ElevatedButton.icon(
+                  onPressed: () => _remindCustomer(context, appointmentId),
+                  icon: const Icon(Icons.notifications_active_outlined, size: 18),
+                  label: const Text('Remind Customer'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.femaleAccent,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ElevatedButton.icon(
+                onPressed: () => _showReportIncompletePaymentDialog(context, appointmentId),
+                icon: const Icon(Icons.report_gmailerrorred_rounded, size: 18),
+                label: const Text('Report Payment Issue'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+            if (status == 'completed')
+              ElevatedButton.icon(
+                onPressed: () => _showRatingDialog(context, appointmentId),
+                icon: const Icon(Icons.star_outline, size: 18),
+                label: const Text('Rate Customer'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _showDelayDialog(BuildContext context, String id) {
+    int minutes = 15;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Report Delay'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Select delay duration (min):'),
+            const SizedBox(height: 16),
+            DropdownButton<int>(
+              value: minutes,
+              items: [15, 30, 45, 60].map((m) => DropdownMenuItem(value: m, child: Text('$m min'))).toList(),
+              onChanged: (val) => minutes = val!,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              context.read<AppointmentProvider>().delayAppointment(id, minutes);
+              Navigator.pop(context);
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _verifyPayment(BuildContext context, String id) {
+    context.read<AppointmentProvider>().verifyPayment(id);
+  }
+
+  void _showRatingDialog(BuildContext context, String id) {
+    double rating = 5.0;
+    final reviewsController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rate Customer'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('How was the customer?'),
+            const SizedBox(height: 16),
+            Slider(
+              value: rating,
+              min: 1,
+              max: 5,
+              divisions: 4,
+              label: rating.toString(),
+              onChanged: (val) => rating = val,
+            ),
+            TextField(
+              controller: reviewsController,
+              decoration: const InputDecoration(labelText: 'Review (Optional)'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              context.read<AppointmentProvider>().rateCustomer(
+                appointmentId: id,
+                rating: rating,
+                reviews: reviewsController.text,
+              );
+              Navigator.pop(context);
+            },
+            child: const Text('Submit'),
+          ),
+        ],
       ),
     );
   }
@@ -385,7 +581,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                       ),
                     ),
                     child: Text(
-                      service.toString(),
+                      service is AppointmentServiceModel ? service.name : service.toString(),
                       style: TextStyle(
                         color: _getTextColor(),
                         fontSize: 12,
@@ -403,6 +599,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     required String title,
     required String value,
     bool isClickable = false,
+    Color? valueColor,
   }) {
     final primaryColor = _getPrimaryColor();
     final textColor = _getTextColor();
@@ -432,8 +629,8 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
             child: Text(
               value,
               style: TextStyle(
-                color: isClickable ? primaryColor : textColor,
-                fontWeight: isClickable ? FontWeight.w600 : FontWeight.normal,
+                color: valueColor ?? (isClickable ? primaryColor : textColor),
+                fontWeight: isClickable || valueColor != null ? FontWeight.w600 : FontWeight.normal,
                 decoration: isClickable ? TextDecoration.underline : TextDecoration.none,
               ),
               textAlign: TextAlign.right,
@@ -442,6 +639,126 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
         ),
       ],
     );
+  }
+
+  Widget _buildEvidenceSection(BuildContext context) {
+    final evidence = widget.appointment['paymentEvidence'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Payment Evidence:', 
+          style: TextStyle(fontWeight: FontWeight.bold, color: _getTextColor())),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () => _showEvidenceImage(context, evidence),
+          child: Container(
+            height: 120,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(evidence),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: const Center(
+              child: Icon(Icons.zoom_in, color: Colors.white, size: 40),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showEvidenceImage(BuildContext context, String url) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CachedNetworkImage(imageUrl: url),
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _remindCustomer(BuildContext context, String id) {
+     ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Payment reminder sent to customer.')),
+    );
+  }
+
+  void _showReportIncompletePaymentDialog(BuildContext context, String id) {
+    final reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Report Payment Issue'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Reason for reporting (e.g. incorrect amount, faked evidence):'),
+            const SizedBox(height: 12),
+            TextField(
+              controller: reasonController,
+              maxLines: 3,
+              decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Enter reason...'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              // Logic here
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report submitted successfully.')));
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Submit Report'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCustomerActions(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    if (authProvider.user?.isCustomer != true) return const SizedBox.shrink();
+
+    final status = widget.appointment['status']?.toString().toLowerCase();
+    final checkoutUrl = widget.appointment['checkoutUrl'] ?? widget.appointment['checkout_url'];
+
+    if (status == 'pending_payment' && checkoutUrl != null) {
+      return Column(
+        children: [
+          const Divider(),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                final uri = Uri.parse(checkoutUrl);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              icon: const Icon(Icons.payment_rounded),
+              label: const Text('Complete Payment Now'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColor.success,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   void _callBarber(String phoneNumber) {

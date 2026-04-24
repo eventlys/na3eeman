@@ -50,11 +50,11 @@ class AppPaths {
   static const String updateProfile = '$apiBase/user/update';
   static const String changePassword = '$apiBase/user/change-password';
 
-  static const String shops = '$apiBase/shops';
-  static String shopById(String id) => '$shops/$id';
-  static String shopServices(String shopId) => '$shops/$shopId/services';
-  static String shopGallery(String shopId) => '$shops/$shopId/gallery';
-  static String shopReviews(String shopId) => '$shops/$shopId/reviews';
+  static const String salons = '$apiBase/salons';
+  static String salonById(String id) => '$salons/$id';
+  static String salonServices(String salonId) => '$salons/$salonId/services';
+  static String salonGallery(String salonId) => '$salons/$salonId/gallery';
+  static String salonReviews(String salonId) => '$salons/$salonId/reviews';
 
   static const String appointments = '$apiBase/appointments';
   static String appointmentById(String id) => '$appointments/$id';
@@ -83,7 +83,7 @@ class AppPaths {
   static const String homeRoute = '/home';
   static const String profileRoute = '/profile';
   static const String settingsRoute = '/settings';
-  static const String shopDetailsRoute = '/shop-details';
+  static const String salonDetailsRoute = '/salon-details';
   static const String appointmentBookingRoute = '/appointment-booking';
   static const String paymentRoute = '/payment';
   static const String orderHistoryRoute = '/order-history';

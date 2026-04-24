@@ -242,19 +242,19 @@ class LocationService with ChangeNotifier {
     }
   }
 
-  // Method to get nearby shops based on current location
-  Future<List<dynamic>> getNearbyShops(double radiusKm) async {
+  // Method to get nearby salons based on current location
+  Future<List<dynamic>> getNearbySalons(double radiusKm) async {
     try {
       final currentPosition = await getCurrentLocation();
       if (currentPosition == null) {
         throw Exception('No current location available');
       }
 
-      // This would integrate with your backend API to get nearby shops
+      // This would integrate with your backend API to get nearby salons
       // For now, return empty list
       return [];
     } catch (e) {
-      AppLogger.error('Failed to get nearby shops: $e');
+      AppLogger.error('Failed to get nearby salons: $e');
       return [];
     }
   }

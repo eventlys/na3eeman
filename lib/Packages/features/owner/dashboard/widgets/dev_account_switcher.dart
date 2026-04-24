@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
@@ -8,6 +9,8 @@ import 'package:na3eeman/core/enums/owner_enums.dart';
 import 'package:na3eeman/Services/enums/gender.dart';
 import 'package:na3eeman/core/enums/app_enums.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+import '../../../../Core/constants/app_roles.dart';
 
 class DevAccountSwitcher extends StatelessWidget {
   const DevAccountSwitcher({super.key});
@@ -36,10 +39,10 @@ class DevAccountSwitcher extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('dev_account_switcher'.tr(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+            Text(AppLocalizations.of(context)!.devAccountSwitcher, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             const SizedBox(height: 16),
-            _buildOption(context, 'Male Shop Owner (Empire)', Gender.male, OwnerType.pureOwner, OwnerSubscriptionTier.empire),
-            _buildOption(context, 'Female Shop Owner (Elite)', Gender.female, OwnerType.employeeOwner, OwnerSubscriptionTier.elite),
+            _buildOption(context, 'Male Salon Owner (Empire)', Gender.male, OwnerType.pureOwner, OwnerSubscriptionTier.empire),
+            _buildOption(context, 'Female Salon Owner (Elite)', Gender.female, OwnerType.employeeOwner, OwnerSubscriptionTier.elite),
             _buildOption(context, 'Male Freelancer (Artisan)', Gender.male, OwnerType.soloFreelancer, OwnerSubscriptionTier.artisan),
             _buildOption(context, 'Female Studio Sync', Gender.female, OwnerType.employeeOwner, OwnerSubscriptionTier.studio),
             _buildOption(context, 'Expired Subscription', Gender.male, OwnerType.employeeOwner, OwnerSubscriptionTier.studio, expired: true),

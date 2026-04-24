@@ -3,7 +3,7 @@ class EarningsData {
   final double amount;
   final int appointments;
   final double tips;
-  final int shopId;
+  final int salonId;
   final int? barberId;
 
   EarningsData({
@@ -11,7 +11,7 @@ class EarningsData {
     required this.amount,
     required this.appointments,
     this.tips = 0.0,
-    required this.shopId,
+    required this.salonId,
     this.barberId,
   });
 
@@ -21,7 +21,7 @@ class EarningsData {
       amount: (json['amount'] ?? 0).toDouble(),
       appointments: json['appointments'] ?? 0,
       tips: (json['tips'] ?? 0).toDouble(),
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
       barberId: json['barber'] as int?,
     );
   }
@@ -32,7 +32,7 @@ class EarningsData {
       'amount': amount,
       'appointments': appointments,
       'tips': tips,
-      'shop': shopId,
+      'salon': salonId,
       'barber': barberId,
     };
   }

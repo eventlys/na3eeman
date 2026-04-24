@@ -1,5 +1,6 @@
 import 'dart:convert';
 // import 'package:flutter/material.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 import '../base_provider.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
@@ -132,7 +133,7 @@ class AuthProvider extends BaseProvider {
   bool get hasOwnerProfile => _ownerProfile != null;
 
   // Combined role checks
-  bool get canManageShop => RolePermissionManager.canAccessShopManagement(_user?.role ?? UserRole.customer);
+  bool get canManageSalon => RolePermissionManager.canAccessSalonManagement(_user?.role ?? UserRole.customer);
   bool get canManageAppointments => RolePermissionManager.canManageAppointments(_user?.role ?? UserRole.customer);
   bool get canManageInventory => RolePermissionManager.canManageInventory(_user?.role ?? UserRole.customer);
   bool get canManageFinancials => RolePermissionManager.canManageFinancials(_user?.role ?? UserRole.customer);
@@ -200,7 +201,7 @@ class AuthProvider extends BaseProvider {
     _barberProfile = BarberProfile(
       id: 2,
       barberId: 3,
-      bio: 'Shop owner and master barber',
+      bio: 'Salon owner and master barber',
       specialties: 'All Services',
       contactPhone: '+962791234568',
       hasAccess: true,
@@ -444,8 +445,8 @@ class AuthProvider extends BaseProvider {
   bool hasAccessTo(String feature) {
     final role = _user?.role ?? UserRole.customer;
     switch (feature) {
-      case 'shop_management':
-        return RolePermissionManager.canAccessShopManagement(role);
+      case 'salon_management':
+        return RolePermissionManager.canAccessSalonManagement(role);
       case 'appointment_management':
         return RolePermissionManager.canManageAppointments(role);
       case 'inventory_management':
@@ -483,6 +484,21 @@ class AuthProvider extends BaseProvider {
       notifyListeners();
     } catch (e) {
       print('Error updating profile in provider: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> toggleOnlineStatus() async {
+    if (_user == null || !_user!.isStaffMember) return;
+    
+    try {
+      final newStatus = !_user!.isOnline;
+      await _authService.updateOnlineStatus(newStatus);
+      _user = _user!.copyWith(isOnline: newStatus);
+      await secureStorage.saveUserData(_user!.toJson());
+      notifyListeners();
+    } catch (e) {
+      AppLogger.error('Failed to toggle online status', error: e);
       rethrow;
     }
   }

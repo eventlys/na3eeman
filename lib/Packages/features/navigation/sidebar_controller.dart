@@ -88,14 +88,24 @@ class SidebarController with ChangeNotifier {
     OverlayService.showContactUs();
   }
 
-  void showReportShop() {
+  void showReportSalon() {
     closeSidebar();
-    OverlayService.showReportShop();
+    OverlayService.showReportSalon();
   }
 
   void showUserReports() {
     closeSidebar();
     OverlayService.showUserReports();
+  }
+
+  void showFAQs() {
+    closeSidebar();
+    // Implementation for FAQs overlay or navigation
+  }
+
+  void showUserGuides() {
+    closeSidebar();
+    // Implementation for User Guides overlay or navigation
   }
 
   void showLogoutConfirmation() {

@@ -45,6 +45,7 @@ class AnimatedSidebarItem extends StatelessWidget {
           assetIcon: item.assetIcon,
           onTap: item.onTap,
           backgroundColor: backgroundColor,
+          children: item.children,
         ),
       ),
     );

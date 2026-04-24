@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +18,9 @@ class InterBranchTransfersWidget extends StatelessWidget {
     final inventory = context.watch<InventoryProvider>();
     final owner = context.watch<OwnerProvider>();
 
-    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeShopId != null) {
+    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        inventory.loadInventory(owner.activeShopId!);
+        inventory.loadInventory(owner.activeSalonId!);
       });
     }
 
@@ -35,7 +36,7 @@ class InterBranchTransfersWidget extends StatelessWidget {
           children: [
             Icon(Icons.swap_horiz_rounded, size: 18, color: theme.primaryColor),
             const SizedBox(width: 8),
-            Text('inter_branch_transfers'.tr(),
+            Text(AppLocalizations.of(context)!.interBranchTransfers,
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),
@@ -102,7 +103,7 @@ class InterBranchTransfersWidget extends StatelessWidget {
           TextButton.icon(
             onPressed: () {},
             icon: const Icon(Icons.add_rounded, size: 16),
-            label: Text('new_transfer'.tr()),
+            label: Text(AppLocalizations.of(context)!.newTransfer),
           ),
       ],
     );

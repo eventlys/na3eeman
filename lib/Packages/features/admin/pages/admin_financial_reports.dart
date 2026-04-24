@@ -132,8 +132,8 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     // Mocking payouts for now as backend doesn't have a payout model yet
     final payouts = [
-      {'shop': 'Golden Scissors', 'amount': '420.00', 'status': 'Pending'},
-      {'shop': 'Elite Barbers', 'amount': '1,250.00', 'status': 'Processed'},
+      {'salon': 'Golden Scissors', 'amount': '420.00', 'status': 'Pending'},
+      {'salon': 'Elite Barbers', 'amount': '1,250.00', 'status': 'Processed'},
     ];
 
     return Column(
@@ -153,7 +153,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p['shop']!, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(p['salon']!, style: const TextStyle(fontWeight: FontWeight.bold)),
                     Text('\$${p['amount']}', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16)),
                   ],
                 ),

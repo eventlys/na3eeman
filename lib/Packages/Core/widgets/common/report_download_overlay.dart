@@ -1,10 +1,11 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
 import '../../constants/app_color.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class ReportDownloadDialog extends StatefulWidget {
   final BusinessService businessService;
@@ -48,12 +49,12 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
     });
 
     try {
-      // Get shopId from provider
-      final shopProvider = Provider.of<ShopProvider>(context, listen: false);
-      final selectedShop = shopProvider.selectedShop;
+      // Get salonId from provider
+      final salonProvider = Provider.of<SalonProvider>(context, listen: false);
+      final selectedSalon = salonProvider.selectedSalon;
 
-      if (selectedShop == null) {
-        throw Exception('No shop selected. Please select a shop first.');
+      if (selectedSalon == null) {
+        throw Exception('No salon selected. Please select a salon first.');
       }
 
       final request = StaffReportRequest(
@@ -68,10 +69,10 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
         reportType: _selectedReportType,
       );
 
-      // Pass the shopId to the service method
+      // Pass the salonId to the service method
       await widget.businessService.generateStaffReport(
         request,
-        shopId: selectedShop.id, // Use the shop ID from provider
+        salonId: selectedSalon.id, // Use the salon ID from provider
       );
 
       if (mounted) {
@@ -94,7 +95,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
   void _showSuccessSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('report_success'.tr()),
+        content: Text(AppLocalizations.of(context)!.reportSuccess),
         backgroundColor: AppColor.lightSuccess,
         behavior: SnackBarBehavior.floating,
       ),
@@ -114,17 +115,17 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-    final shopProvider = Provider.of<ShopProvider>(context);
-    final selectedShop = shopProvider.selectedShop;
+    final salonProvider = Provider.of<SalonProvider>(context);
+    final selectedSalon = salonProvider.selectedSalon;
 
     return AlertDialog(
-      title: Text('download_report'.tr()),
+      title: Text(AppLocalizations.of(context)!.downloadReport),
       backgroundColor: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('file_format_pdf'.tr(),
+            Text(AppLocalizations.of(context)!.fileFormatPdf,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
@@ -132,8 +133,8 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
             ),
             const SizedBox(height: 16),
 
-            // Shop Information
-            if (selectedShop != null) ...[
+            // Salon Information
+            if (selectedSalon != null) ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -155,7 +156,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        selectedShop.shopName,
+                        selectedSalon.salonName,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
@@ -173,7 +174,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
             DropdownButtonFormField<StaffReportType>(
               initialValue: _selectedReportType,
               decoration: InputDecoration(
-                labelText: 'report_type'.tr(),
+                labelText: AppLocalizations.of(context)!.reportType,
                 labelStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
@@ -218,7 +219,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
             DropdownButtonFormField<ReportTime>(
               initialValue: _selectedTime,
               decoration: InputDecoration(
-                labelText: 'time_period'.tr(),
+                labelText: AppLocalizations.of(context)!.timePeriod,
                 labelStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
@@ -264,11 +265,11 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
               controller: _fileNameController,
               enabled: !_isGenerating,
               decoration: InputDecoration(
-                labelText: 'file_name'.tr(),
+                labelText: AppLocalizations.of(context)!.fileName,
                 labelStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
                 ),
-                hintText: 'enter_file_name'.tr(),
+                hintText: AppLocalizations.of(context)!.enterFileName,
                 hintStyle: TextStyle(
                   color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
                 ),
@@ -301,7 +302,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('report_details'.tr(),
+                  Text(AppLocalizations.of(context)!.reportDetails,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
@@ -324,10 +325,10 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                       fontSize: 12,
                     ),
                   ),
-                  if (selectedShop != null) ...[
+                  if (selectedSalon != null) ...[
                     const SizedBox(height: 4),
                     Text(
-                      'Shop: ${selectedShop.shopName}',
+                      'Salon: ${selectedSalon.salonName}',
                       style: TextStyle(
                         color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                         fontSize: 12,
@@ -373,7 +374,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text('generating_report'.tr(),
+                  Text(AppLocalizations.of(context)!.generatingReport,
                     style: TextStyle(
                       color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
                       fontSize: 14,
@@ -388,16 +389,16 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
       actions: [
         TextButton(
           onPressed: _isGenerating ? null : () => Navigator.of(context).pop(false),
-          child: Text('cancel'.tr(),
+          child: Text(AppLocalizations.of(context)!.cancel,
             style: TextStyle(
               color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
             ),
           ),
         ),
         ElevatedButton(
-          onPressed: (selectedShop == null || _isGenerating) ? null : _generateReport,
+          onPressed: (selectedSalon == null || _isGenerating) ? null : _generateReport,
           style: ElevatedButton.styleFrom(
-            backgroundColor: (selectedShop == null || _isGenerating)
+            backgroundColor: (selectedSalon == null || _isGenerating)
                 ? (isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint)
                 : AppColor.lightPrimary,
             foregroundColor: Colors.white,
@@ -413,7 +414,7 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     ),
                   ),
                 )
-              : Text('download'.tr()),
+              : Text(AppLocalizations.of(context)!.download),
         ),
       ],
     );

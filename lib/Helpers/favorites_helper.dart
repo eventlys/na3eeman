@@ -1,11 +1,11 @@
 class FavoritesHelper {
-  // Format shop data for display
-  static String formatShopName(Map<String, dynamic> shop) {
-    return shop['shopName'] ?? 'Unknown Shop';
+  // Format salon data for display
+  static String formatSalonName(Map<String, dynamic> salon) {
+    return salon['salonName'] ?? 'Unknown Salon';
   }
 
-  static String formatAddress(Map<String, dynamic> shop) {
-    return shop['address'] ?? 'Address not available';
+  static String formatAddress(Map<String, dynamic> salon) {
+    return salon['address'] ?? 'Address not available';
   }
 
   static double parseRating(dynamic rating) {
@@ -16,7 +16,7 @@ class FavoritesHelper {
     return 0.0;
   }
 
-  double _parseShopRating(dynamic rating) {
+  double _parseSalonRating(dynamic rating) {
     if (rating == null) return 0.0;
     if (rating is double) return rating;
     if (rating is int) return rating.toDouble();
@@ -33,9 +33,9 @@ class FavoritesHelper {
     return services.join(', ');
   }
 
-  // Get appropriate icon based on shop type or service
-  static String getShopIcon(Map<String, dynamic> shop) {
-    final type = shop['type']?.toString().toLowerCase() ?? '';
+  // Get appropriate icon based on salon type or service
+  static String getSalonIcon(Map<String, dynamic> salon) {
+    final type = salon['type']?.toString().toLowerCase() ?? '';
 
     if (type.contains('barber') || type.contains('hair')) {
       return 'assets/icons/scissors.png'; // Update with your actual icon path
@@ -45,32 +45,32 @@ class FavoritesHelper {
       return 'assets/icons/nail.png'; // Update with your actual icon path
     }
 
-    return 'assets/icons/shop.png'; // Default shop icon
+    return 'assets/icons/salon.png'; // Default salon icon
   }
 
-  // Validate shop data
-  static bool isValidShop(Map<String, dynamic> shop) {
-    return shop['id'] != null && shop['shopName'] != null;
+  // Validate salon data
+  static bool isValidSalon(Map<String, dynamic> salon) {
+    return salon['id'] != null && salon['salonName'] != null;
   }
 
   // Sort favorites by different criteria
   static List<Map<String, dynamic>> sortFavorites(
-    List<Map<String, dynamic>> shops,
+    List<Map<String, dynamic>> salons,
     String sortBy
   ) {
-    final sortedShops = List<Map<String, dynamic>>.from(shops);
+    final sortedSalons = List<Map<String, dynamic>>.from(salons);
 
     switch (sortBy) {
       case 'name':
-        sortedShops.sort((a, b) =>
-          (a['shopName'] ?? '').compareTo(b['shopName'] ?? ''));
+        sortedSalons.sort((a, b) =>
+          (a['salonName'] ?? '').compareTo(b['salonName'] ?? ''));
         break;
       case 'rating':
-        sortedShops.sort((a, b) =>
+        sortedSalons.sort((a, b) =>
           (b['rating'] ?? 0.0).compareTo(a['rating'] ?? 0.0));
         break;
       case 'distance':
-        sortedShops.sort((a, b) =>
+        sortedSalons.sort((a, b) =>
           (a['distance'] ?? double.infinity).compareTo(b['distance'] ?? double.infinity));
         break;
       case 'recent':
@@ -79,21 +79,21 @@ class FavoritesHelper {
         break;
     }
 
-    return sortedShops;
+    return sortedSalons;
   }
 
   // Filter favorites
   static List<Map<String, dynamic>> filterFavorites(
-    List<Map<String, dynamic>> shops,
+    List<Map<String, dynamic>> salons,
     String query,
   ) {
-    if (query.isEmpty) return shops;
+    if (query.isEmpty) return salons;
 
     final lowerQuery = query.toLowerCase();
-    return shops.where((shop) {
-      final name = shop['shopName']?.toString().toLowerCase() ?? '';
-      final address = shop['address']?.toString().toLowerCase() ?? '';
-      final services = shop['services']?.toString().toLowerCase() ?? '';
+    return salons.where((salon) {
+      final name = salon['salonName']?.toString().toLowerCase() ?? '';
+      final address = salon['address']?.toString().toLowerCase() ?? '';
+      final services = salon['services']?.toString().toLowerCase() ?? '';
 
       return name.contains(lowerQuery) ||
              address.contains(lowerQuery) ||
@@ -101,15 +101,15 @@ class FavoritesHelper {
     }).toList();
   }
 
-  // Get shop statistics
-  static Map<String, int> getFavoritesStats(List<Map<String, dynamic>> shops) {
-    int totalShops = shops.length;
-    int withRating = shops.where((shop) => shop['rating'] != null).length;
-    int withServices = shops.where((shop) =>
-      shop['services'] != null && (shop['services'] as List).isNotEmpty).length;
+  // Get salon statistics
+  static Map<String, int> getFavoritesStats(List<Map<String, dynamic>> salons) {
+    int totalSalons = salons.length;
+    int withRating = salons.where((salon) => salon['rating'] != null).length;
+    int withServices = salons.where((salon) =>
+      salon['services'] != null && (salon['services'] as List).isNotEmpty).length;
 
     return {
-      'total': totalShops,
+      'total': totalSalons,
       'withRating': withRating,
       'withServices': withServices,
     };

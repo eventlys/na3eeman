@@ -11,7 +11,7 @@ import 'app_providers.dart';
 // import 'base_provider.dart';
 import 'features/app_state_provider.dart';
 import 'features/auth_provider.dart';
-import 'features/shop_provider.dart';
+import 'features/salon_provider.dart';
 import 'features/appointment_provider.dart';
 import 'features/cart_provider.dart';
 import 'features/staff_provider.dart';
@@ -27,7 +27,9 @@ import 'features/owner_provider.dart'; // ← Owner module
 import 'features/intern_provider.dart'; // Added
 import 'features/notification_provider.dart';
 import 'features/admin_analytics_provider.dart';
+import 'features/admin_service_provider.dart';
 import '../Helpers/inventory_helpers.dart'; // Added
+import 'locale_provider.dart';
 
 // Service Locator
 final GetIt locator = GetIt.instance;
@@ -54,6 +56,7 @@ List<SingleChildWidget> providers = [
         ThemeProvider(brightness: Brightness.light),
   ),
   ChangeNotifierProvider(create: (_) => RBACProvider()),
+  ChangeNotifierProvider(create: (_) => LocaleProvider()),
 
   // Independent providers
   ChangeNotifierProvider(create: (_) => AppStateProvider()),
@@ -61,10 +64,10 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider(create: (_) => AuthProvider()),
 
   // Dependent providers - depend on AuthProvider
-  ChangeNotifierProxyProvider<AuthProvider, ShopProvider>(
-    create: (_) => ShopProvider(),
-    update: (_, authProvider, shopProvider) =>
-        shopProvider!..updateAuth(authProvider),
+  ChangeNotifierProxyProvider<AuthProvider, SalonProvider>(
+    create: (_) => SalonProvider(),
+    update: (_, authProvider, salonProvider) =>
+        salonProvider!..updateAuth(authProvider),
   ),
 
   ChangeNotifierProxyProvider<AuthProvider, AppointmentProvider>(
@@ -133,6 +136,7 @@ List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider(create: (_) => InternProvider()),
   ChangeNotifierProvider(create: (_) => AdminAnalyticsProvider()),
+  ChangeNotifierProvider(create: (_) => AdminServiceProvider()),
   ChangeNotifierProvider(create: (_) => NotificationProvider()),
 ];
 

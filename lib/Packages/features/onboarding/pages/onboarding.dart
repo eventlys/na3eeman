@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
@@ -134,7 +135,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         TextButton(
                           onPressed: () =>
                               Navigator.pushReplacementNamed(context, '/login'),
-                          child: Text('already_have_an_account_log_in'.tr(),
+                          child: Text(AppLocalizations.of(context)!.alreadyHaveAnAccountLogIn,
                             style: TextStyle(
                               fontSize: 13,
                               color: isDark
@@ -177,7 +178,7 @@ class _WelcomePage extends StatelessWidget {
             child: Icon(Icons.cut_rounded, size: 60, color: primary),
           ),
           const SizedBox(height: 40),
-          Text('welcome_to_na3eeman'.tr(),
+          Text(AppLocalizations.of(context)!.welcomeToNa3Eeman,
             style: Theme.of(
               context,
             ).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800),
@@ -213,7 +214,7 @@ class _GenderPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('personalise_your_theme'.tr(),
+          Text(AppLocalizations.of(context)!.personaliseYourTheme,
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),
@@ -231,7 +232,7 @@ class _GenderPage extends StatelessWidget {
           Row(
             children: [
               _GenderCard(
-                label: 'male'.tr(),
+                label: AppLocalizations.of(context)!.male,
                 emoji: '✂️',
                 accent: AppColor.navyPrimary,
                 bgTint: AppColor.navyBgTint,
@@ -240,7 +241,7 @@ class _GenderPage extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               _GenderCard(
-                label: 'female'.tr(),
+                label: AppLocalizations.of(context)!.female,
                 emoji: '💅',
                 accent: AppColor.pinkPrimary,
                 bgTint: AppColor.pinkBgTint,
@@ -252,7 +253,7 @@ class _GenderPage extends StatelessWidget {
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => onSelect(UserGender.nonBinary),
-            child: Text('prefer_not_to_say'.tr(),
+            child: Text(AppLocalizations.of(context)!.preferNotToSay,
               style: TextStyle(fontSize: 13),
             ),
           ),
@@ -332,7 +333,7 @@ class _RolePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('how_will_you_use_na3eeman'.tr(),
+          Text(AppLocalizations.of(context)!.howWillYouUseNa3Eeman,
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),
@@ -349,7 +350,7 @@ class _RolePage extends StatelessWidget {
           _RoleTile(
             icon: Icons.cut_rounded,
             label: tr('i_m_a_barber_staff'),
-            description: 'Manage your shop, bookings, and team.',
+            description: 'Manage your salon, bookings, and team.',
             isSelected: !isCustomer,
             primary: primary,
             onTap: () => onSelect(false),

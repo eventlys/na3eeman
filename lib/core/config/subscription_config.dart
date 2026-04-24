@@ -36,12 +36,14 @@ class SubscriptionConfig {
         FeatureKey.widgetKitMaintenance,
         FeatureKey.widgetQuickBook,
         FeatureKey.reportsBasic,
+        FeatureKey.paymentManagement,
       },
       dashboardWidgets: [
         DashboardWidgetKey.todayTimeline,
         DashboardWidgetKey.dailyEarnings,
         DashboardWidgetKey.kitMaintenance,
         DashboardWidgetKey.quickBook,
+        DashboardWidgetKey.revenueOverview,
       ],
     ),
 
@@ -78,6 +80,8 @@ class SubscriptionConfig {
         DashboardWidgetKey.teamLeaderboard,
         DashboardWidgetKey.retailSnapshot,
         DashboardWidgetKey.lowStockAlert,
+        DashboardWidgetKey.revenueOverview,
+        DashboardWidgetKey.voucherSystem,
       ],
     ),
 
@@ -257,6 +261,11 @@ enum DashboardWidgetKey {
   globalStockValue,
   interBranchTransfers,
   unifiedProfitLoss,
+
+  // Revenue & AI
+  revenueOverview,
+  voucherSystem,
+  noShowRiskAlert,
 }
 
 // ---------------------------------------------------------------------------

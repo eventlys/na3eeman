@@ -9,7 +9,7 @@ class StaffMember {
   final StaffRole role;
   final DateTime joinDate;
   final String? profileImage;
-  final int? shopId;
+  final int? salonId;
   final bool isActive;
   final double? hourlyRate;
   final List<String>? specialties;
@@ -24,7 +24,7 @@ class StaffMember {
     required this.role,
     required this.joinDate,
     this.profileImage,
-    this.shopId,
+    this.salonId,
     this.isActive = true,
     this.hourlyRate,
     this.specialties,
@@ -43,7 +43,7 @@ class StaffMember {
       role: StaffRoleExtension.fromString(json['role']?.toString() ?? 'barber'),
       joinDate: DateTime.parse(json['hired_at']?.toString() ?? json['join_date']?.toString() ?? DateTime.now().toString()),
       profileImage: json['profile_image'] as String?,
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
       isActive: json['is_active'] as bool? ?? true,
       hourlyRate: (json['hourly_rate'] as num?)?.toDouble(),
       specialties: json['specialties'] != null
@@ -65,7 +65,7 @@ class StaffMember {
       'role': role.value,
       'hired_at': joinDate.toIso8601String(),
       'profile_image': profileImage,
-      'shop': shopId,
+      'salon': salonId,
       'is_active': isActive,
       'hourly_rate': hourlyRate,
       'specialties': specialties,
@@ -74,32 +74,32 @@ class StaffMember {
   }
 }
 
-class ShopBarber {
+class SalonBarber {
   final int id;
   final int barberId;
   final String barberName;
   final String barberEmail;
-  final int shopId;
+  final int salonId;
   final bool isActive;
   final DateTime hiredAt;
 
-  ShopBarber({
+  SalonBarber({
     required this.id,
     required this.barberId,
     required this.barberName,
     required this.barberEmail,
-    required this.shopId,
+    required this.salonId,
     required this.isActive,
     required this.hiredAt,
   });
 
-  factory ShopBarber.fromJson(Map<String, dynamic> json) {
-    return ShopBarber(
+  factory SalonBarber.fromJson(Map<String, dynamic> json) {
+    return SalonBarber(
       id: json['id'] as int,
       barberId: json['barber'] as int,
       barberName: json['barber_name'] as String,
       barberEmail: json['barber_email'] as String,
-      shopId: json['shop'] as int,
+      salonId: json['salon'] as int,
       isActive: json['is_active'] as bool? ?? true,
       hiredAt: DateTime.parse(json['hired_at'] as String),
     );

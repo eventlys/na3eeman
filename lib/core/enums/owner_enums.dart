@@ -87,7 +87,7 @@ extension OwnerSubscriptionTierExtension on OwnerSubscriptionTier {
 // OWNER TYPE
 // ---------------------------------------------------------------------------
 
-/// How the owner relates to their own shop operations.
+/// How the owner relates to their own salon operations.
 enum OwnerType {
   /// Owner who also works as a practitioner (e.g., barber-owner).
   employeeOwner,
@@ -231,4 +231,9 @@ enum FeatureKey {
 
   // ── Admin ──────────────────────────────────────────────────────────────
   adminCreateOwner,
+
+  // ── Revenue & AI (NEW) ──────────────────────────────────────────────────
+  paymentManagement,   // Configure deposits, CliQ, etc.
+  aiNoShowRisk,        // Predict no-show probability
+  vouchers,            // Prepaid packages & gift cards
 }

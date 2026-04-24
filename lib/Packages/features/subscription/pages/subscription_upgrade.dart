@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,7 +18,7 @@ class SubscriptionUpgradePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('review_plan'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.reviewPlan, style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -41,7 +42,7 @@ class SubscriptionUpgradePage extends StatelessWidget {
                 children: [
                   Icon(Icons.check_circle_rounded, size: 48, color: Theme.of(context).primaryColor),
                   const SizedBox(height: 12),
-                  Text('plan_confirmed_selection'.tr(), style: TextStyle(color: AppColors.almostBlack300, fontSize: 13)),
+                  Text(AppLocalizations.of(context)!.planConfirmedSelection, style: TextStyle(color: AppColors.almostBlack300, fontSize: 13)),
                   const SizedBox(height: 4),
                   Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
                   const SizedBox(height: 32),
@@ -57,7 +58,7 @@ class SubscriptionUpgradePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('total_charges'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(AppLocalizations.of(context)!.totalCharges, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       Text(price, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
                     ],
                   ),
@@ -82,11 +83,11 @@ class SubscriptionUpgradePage extends StatelessWidget {
                     children: [
                       Icon(Icons.payment_rounded, color: Theme.of(context).primaryColor),
                       const SizedBox(width: 8),
-                      Text('payment_instructions'.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                      Text(AppLocalizations.of(context)!.paymentInstructions, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text('please_proceed_with_your_primary_linked_account_ba'.tr(), style: TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                  Text(AppLocalizations.of(context)!.pleaseProceedWithYourPrimaryLinkedAccountBa, style: TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
                 ],
               ),
             ),
@@ -101,7 +102,7 @@ class SubscriptionUpgradePage extends StatelessWidget {
                   children: [
                     const Icon(Icons.info_outline, color: Colors.amber),
                     const SizedBox(width: 8),
-                    Expanded(child: Text('multi_branch_support_setup_required_admin_action_a'.tr(), style: TextStyle(fontSize: 11))),
+                    Expanded(child: Text(AppLocalizations.of(context)!.multiBranchSupportSetupRequiredAdminActionA, style: TextStyle(fontSize: 11))),
                   ],
                 ),
               ),
@@ -114,9 +115,9 @@ class SubscriptionUpgradePage extends StatelessWidget {
               height: 52,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('processing_payment_mock_step'.tr())));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.processingPaymentMockStep)));
                 },
-                child: Text('proceed_to_pay'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(AppLocalizations.of(context)!.proceedToPay, style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
             const SizedBox(height: 12),
@@ -125,10 +126,10 @@ class SubscriptionUpgradePage extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('admin_alerted_regarding_multi_branch_access'.tr())));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.adminAlertedRegardingMultiBranchAccess)));
                   },
                   icon: const Icon(Icons.support_agent_rounded, size: 20),
-                  label: Text('contact_admin'.tr()),
+                  label: Text(AppLocalizations.of(context)!.contactAdmin),
                 ),
               ),
           ],

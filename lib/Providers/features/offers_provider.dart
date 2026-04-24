@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Models/shop/offer_model.dart';
-import '../../Models/shop/ad_campaign_model.dart';
+import '../../Models/salon/offer_model.dart';
+import '../../Models/salon/ad_campaign_model.dart';
 import '../../Services/business_service.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
@@ -17,16 +17,16 @@ class OffersProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   
-  /// Loads all campaigns (Offers & Ads) for a specific shop.
-  /// Used by Owner Dashboard and Specific Shop pages.
-  Future<void> loadCampaigns(int shopId) async {
+  /// Loads all campaigns (Offers & Ads) for a specific salon.
+  /// Used by Owner Dashboard and Specific Salon pages.
+  Future<void> loadCampaigns(int salonId) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final offersData = await _offersService.getShopOffers(shopId);
-      final adsData = await _offersService.getShopAdCampaigns(shopId);
+      final offersData = await _offersService.getSalonOffers(salonId);
+      final adsData = await _offersService.getSalonAdCampaigns(salonId);
       
       _offers = offersData.map((e) => OfferModel.fromMap(e as Map<String, dynamic>)).toList();
       _adCampaigns = adsData.map((e) => AdCampaignModel.fromMap(e as Map<String, dynamic>)).toList();
@@ -39,54 +39,54 @@ class OffersProvider with ChangeNotifier {
     }
   }
 
-  /// Alias for loadCampaigns used by generic shop preview widgets.
-  /// If [shopId] is null, it attempts to load featured offers (currently fallback to shop 1).
-  Future<void> loadOffers({int? shopId}) async {
-    await loadCampaigns(shopId ?? 1); 
+  /// Alias for loadCampaigns used by generic salon preview widgets.
+  /// If [salonId] is null, it attempts to load featured offers (currently fallback to salon 1).
+  Future<void> loadOffers({int? salonId}) async {
+    await loadCampaigns(salonId ?? 1); 
   }
 
-  Future<void> createOffer(int shopId, OfferModel offer) async {
+  Future<void> createOffer(int salonId, OfferModel offer) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _offersService.createOffer(shopId, offer.toMap());
-      await loadCampaigns(shopId);
+      await _offersService.createOffer(salonId, offer.toMap());
+      await loadCampaigns(salonId);
     } catch (e) {
       _error = 'Failed to create offer: $e';
       notifyListeners();
     }
   }
 
-  Future<void> createAdCampaign(int shopId, AdCampaignModel ad) async {
+  Future<void> createAdCampaign(int salonId, AdCampaignModel ad) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _offersService.createAdCampaign(shopId, ad.toMap());
-      await loadCampaigns(shopId);
+      await _offersService.createAdCampaign(salonId, ad.toMap());
+      await loadCampaigns(salonId);
     } catch (e) {
       _error = 'Failed to create ad campaign: $e';
       notifyListeners();
     }
   }
 
-  Future<void> deleteOffer(int shopId, int offerId) async {
+  Future<void> deleteOffer(int salonId, int offerId) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _offersService.deleteOffer(shopId, offerId);
-      await loadCampaigns(shopId);
+      await _offersService.deleteOffer(salonId, offerId);
+      await loadCampaigns(salonId);
     } catch (e) {
       _error = 'Failed to delete offer: $e';
       notifyListeners();
     }
   }
 
-  Future<void> deleteAdCampaign(int shopId, int adId) async {
+  Future<void> deleteAdCampaign(int salonId, int adId) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _offersService.deleteAdCampaign(shopId, adId);
-      await loadCampaigns(shopId);
+      await _offersService.deleteAdCampaign(salonId, adId);
+      await loadCampaigns(salonId);
     } catch (e) {
       _error = 'Failed to delete ad campaign: $e';
       notifyListeners();

@@ -42,9 +42,9 @@ class SideNavigationService {
     navigatorKey.currentState?.pushNamed('/booking');
   }
 
-  static void navigateToShopDetail(int shopId) {
-    _logNavigation('Shop Detail $shopId');
-    navigatorKey.currentState?.pushNamed('/shop/$shopId');
+  static void navigateToSalonDetail(int salonId) {
+    _logNavigation('Salon Detail $salonId');
+    navigatorKey.currentState?.pushNamed('/salon/$salonId');
   }
 
   static void navigateToBarberDetail(int barberId) {
@@ -127,10 +127,10 @@ class SideNavigationService {
     AppLogger.debug('Handling deep link: $uri');
 
     switch (uri.path) {
-      case '/shop':
-        final shopId = uri.queryParameters['id'];
-        if (shopId != null) {
-          navigateToShopDetail(int.parse(shopId));
+      case '/salon':
+        final salonId = uri.queryParameters['id'];
+        if (salonId != null) {
+          navigateToSalonDetail(int.parse(salonId));
         }
         break;
       case '/appointment':
@@ -140,9 +140,9 @@ class SideNavigationService {
         }
         break;
       case '/booking':
-        final shopId = uri.queryParameters['shopId'];
-        if (shopId != null) {
-          navigateWithArguments('/booking', int.parse(shopId));
+        final salonId = uri.queryParameters['salonId'];
+        if (salonId != null) {
+          navigateWithArguments('/booking', int.parse(salonId));
         }
         break;
       default:

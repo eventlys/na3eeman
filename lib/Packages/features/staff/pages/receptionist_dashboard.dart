@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
@@ -6,10 +7,13 @@ import '../../../../core/widgets/dashboard/dashboard_widgets.dart'; // Added
 import 'receptionist/receptionist_inventory_page.dart'; // Added
 import 'receptionist/receptionist_products_page.dart'; // Added
 import 'receptionist/receptionist_feedback_page.dart'; // Added
-import 'receptionist/receptionist_shop_profile_page.dart'; // Added
+import 'receptionist/receptionist_salon_profile_page.dart'; // Added
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/appointment_provider.dart';
+import '../../../../Models/appointments/salon_appointments_model.dart';
 
 class ReceptionistDashboard extends StatefulWidget {
   const ReceptionistDashboard({super.key});
@@ -47,28 +51,27 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('receptionist_desk'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButtonStyled(
-          icon: Icons.menu_rounded,
-          onPressed: _toggleSidebar,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0.0),
+          child: Row(
+            children: [
+              IconButtonStyled(
+                icon: Icons.menu_rounded,
+                onPressed: _toggleSidebar,
+              ),
+              const SizedBox(width: 8),
+              const GlobalSearchBar(),
+            ],
+          ),
         ),
         actions: [
           IconButtonStyled(
             icon: Icons.notifications_none_rounded,
             onPressed: () => NotificationsBottomSheet.show(context),
           ),
-          const SizedBox(width: 12),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/profile'),
-            child: CircleAvatar(
-              radius: 17,
-              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              child: Icon(Icons.person, color: Theme.of(context).primaryColor, size: 20),
-            ),
-          ),
-          const SizedBox(width: 16),
         ],
       ),
       body: SingleChildScrollView(
@@ -76,38 +79,60 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Quick Action Buttons
+            // Analytics Section (Point 5)
+            _buildAnalyticsSection(context),
+
+            const SizedBox(height: 32),
+
+            // FAQs & User Guide Section (Point 4) - Arabic with tips/hints
+            _buildFAQAndGuideSection(context),
+
+            const SizedBox(height: 32),
+
+            // Quick Action Buttons (Re-organized)
             GridView.count(
               crossAxisCount: 2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 1.2,
+              childAspectRatio: 1.5,
               children: [
                 _buildQuickAction(
-                  'Latest Appointments', 
-                  Icons.calendar_today_rounded, 
+                  AppLocalizations.of(context)!.bookForCustomer, 
+                  Icons.person_add_alt_1_rounded, 
                   Theme.of(context).primaryColor,
-                  onTap: () => _showLatestAppointmentsModal(context),
+                  onTap: () => _showBookForCustomerModal(context),
+                ),
+                _buildQuickAction(
+                  'Revenue Setup', 
+                  Icons.account_balance_rounded, 
+                  Colors.green,
+                  onTap: () => Navigator.pushNamed(context, '/management/revenue'),
+                ),
+                _buildQuickAction(
+                   AppLocalizations.of(context)!.searchAppointments, 
+                  Icons.search_rounded, 
+                  AppColors.blue,
+                  onTap: () => _showSearchAppointmentsModal(context),
+                ),
+                _buildQuickAction(
+                  'Vouchers', 
+                  Icons.confirmation_num_rounded, 
+                  Colors.orange,
+                  onTap: () => Navigator.pushNamed(context, '/management/vouchers'),
                 ),
                 _buildQuickAction(
                   'Our Products', 
-                  Icons.shopping_basket_rounded, 
+                  Icons.shopping_basket_rounded,
                   AppColors.pink,
                   onTap: () => _navigateToProductsPage(context),
                 ),
                 _buildQuickAction(
-                  'Customer Feedback', 
+                  AppLocalizations.of(context)!.feedback, 
                   Icons.assessment_rounded, 
                   AppColors.cream600,
                   onTap: () => _navigateToFeedbackPage(context, false),
-                ),
-                _buildQuickAction(
-                  'Staff Feeds & Requests', 
-                  Icons.message_rounded, 
-                  AppColors.success,
-                  onTap: () => _navigateToFeedbackPage(context, true),
                 ),
               ],
             ),
@@ -115,10 +140,24 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             const SizedBox(height: 32),
 
             // Pending Payments Widget
-            DashboardSectionHeader(title: 'pending_payments'.tr(), actionText: 'View All'),
+            DashboardSectionHeader(title: AppLocalizations.of(context)!.pendingPayments, actionText: 'View All'),
             const SizedBox(height: 16),
-            _buildPendingPaymentItem('Mohammed Ali', '\$45.00', 'Haircut + Styling'),
-            _buildPendingPaymentItem('Zaid Hassan', '\$15.00', 'Beard Trim'),
+            Consumer<AppointmentProvider>(
+              builder: (context, provider, _) {
+                final pendingAppts = provider.appointments.where((a) => a.paymentStatus == 'PENDING').toList();
+                if (pendingAppts.isEmpty) {
+                  return const Center(child: Text('No pending payments', style: TextStyle(color: Colors.grey)));
+                }
+                return Column(
+                  children: pendingAppts.map((appt) => _buildPendingPaymentItem(
+                    appt.id,
+                    'Customer #${appt.customerId}', 
+                    '${appt.totalAmount ?? appt.depositAmount ?? 0.0} JOD', 
+                    (appt.services as List<AppointmentServiceModel>).map((s) => s.name).join(', ')
+                  )).toList(),
+                );
+              },
+            ),
 
             const SizedBox(height: 32),
 
@@ -132,7 +171,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             const SizedBox(height: 32),
 
             // Inventory Count Preview
-            DashboardSectionHeader(title: 'inventory_management'.tr()),
+            DashboardSectionHeader(title: AppLocalizations.of(context)!.inventoryManagement),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -165,16 +204,19 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             const SizedBox(height: 32),
 
             // Campaigns (Offers/Ads) Section
-            DashboardSectionHeader(title: 'active_campaigns'.tr()),
+            DashboardSectionHeader(title: AppLocalizations.of(context)!.activeCampaigns),
             const SizedBox(height: 16),
             _buildCampaignList(context),
 
             const SizedBox(height: 32),
 
-            // Shop Management Section
-            DashboardSectionHeader(title: 'shop_management'.tr()),
+            // Salon Management Section
+            DashboardSectionHeader(title: AppLocalizations.of(context)!.manageSalon),
             const SizedBox(height: 16),
-            _buildShopManagementCard(context),
+            _buildSalonManagementCard(context),
+
+            const SizedBox(height: 32),
+            const FeedbackSection(),
 
             const SizedBox(height: 48),
           ],
@@ -207,7 +249,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('create_promotion'.tr(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.createPromotion, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             _buildModalActionButton(context, Icons.local_offer_rounded, 'Create Offer', AppColors.blue, () {
               Navigator.pop(context);
@@ -245,7 +287,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             _buildDetailRow(context, 'Duration', '7 Days', Theme.of(context).primaryColor),
             _buildDetailRow(context, 'Standard Price', '\$12.00', Theme.of(context).primaryColor),
             const SizedBox(height: 24),
-            PrimaryButton(text: 'close'.tr(), onPressed: () => Navigator.pop(context)),
+            PrimaryButton(text: AppLocalizations.of(context)!.close, onPressed: () => Navigator.pop(context)),
           ],
         ),
       ),
@@ -298,7 +340,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         decoration: BoxDecoration(
           color: isDark ? AppColors.almostBlack600 : AppColors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+          border: Border.all(color: isDark ? AppColors.white.withValues(alpha: 0.1) : AppColors.almostBlack50),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -317,7 +359,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                 child: Text(status, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 11)),
               ),
               const SizedBox(width: 8),
@@ -343,7 +385,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text('create_offer'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(AppLocalizations.of(context)!.createOffer, style: TextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -354,7 +396,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                 _buildDialogField('Special Price (\$)', keyboard: TextInputType.number),
                 const SizedBox(height: 16),
                 
-                Text('include_options'.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text(AppLocalizations.of(context)!.includeOptions, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 4, runSpacing: 4,
@@ -376,7 +418,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                 ),
 
                 const SizedBox(height: 16),
-                Text('validity_period'.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text(AppLocalizations.of(context)!.validityPeriod, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: () async {
@@ -391,7 +433,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                   },
                   child: Container(
                     padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(border: Border.all(color: AppColors.almostBlack300.withOpacity(0.5)), borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(border: Border.all(color: AppColors.almostBlack300.withValues(alpha: 0.5)), borderRadius: BorderRadius.circular(12)),
                     child: Row(
                       children: [
                         Icon(Icons.date_range_rounded, size: 18, color: Theme.of(context).primaryColor),
@@ -412,14 +454,14 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+            TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('offer_success'.tr())));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.offerSuccess)));
               },
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-              child: Text('create'.tr()),
+              child: Text(AppLocalizations.of(context)!.create),
             ),
           ],
         ),
@@ -431,7 +473,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('create_ad'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.createAd, style: TextStyle(fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -445,30 +487,30 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('ad_campaign_launched'.tr())));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.adCampaignLaunched)));
             },
             style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-            child: Text('launch'.tr()),
+            child: Text(AppLocalizations.of(context)!.launch),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildShopManagementCard(BuildContext context) {
+  Widget _buildSalonManagementCard(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistShopProfilePage())),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistSalonProfilePage())),
       child: DashboardCard(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
               child: Icon(Icons.storefront_rounded, color: Theme.of(context).primaryColor, size: 24),
             ),
             const SizedBox(width: 16),
@@ -476,7 +518,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('manage_shop'.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(AppLocalizations.of(context)!.manageSalon, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const Text('Location, products & descriptions', style: TextStyle(color: AppColors.almostBlack300, fontSize: 13)),
                 ],
               ),
@@ -562,9 +604,9 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.almostBlack500 : AppColors.almostBlack50.withOpacity(0.5),
+        color: isDark ? AppColors.almostBlack500 : AppColors.almostBlack50.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(color: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.almostBlack50),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -608,7 +650,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         decoration: BoxDecoration(
           color: isDark ? AppColors.almostBlack600 : AppColors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+          border: Border.all(color: isDark ? AppColors.white.withValues(alpha: 0.1) : AppColors.almostBlack50),
         ),
         child: Column(
           children: [
@@ -621,8 +663,10 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     );
   }
 
-  void _showPendingPaymentModal(BuildContext context, String customer, String amount, String service) {
+  void _showPendingPaymentModal(BuildContext context, String appointmentId, String customer, String amount, String service) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final appointmentProvider = Provider.of<AppointmentProvider>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -640,6 +684,16 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             const SizedBox(height: 8),
             Text('Amount Details: $amount for $service', style: const TextStyle(color: AppColors.almostBlack300)),
             const SizedBox(height: 24),
+            _buildModalActionButton(context, Icons.check_circle_rounded, 'Confirm Payment', Colors.green, () async {
+               Navigator.pop(context);
+               try {
+                 await appointmentProvider.confirmPayment(appointmentId);
+                 if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment confirmed!')));
+               } catch (e) {
+                 if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to confirm: $e')));
+               }
+            }),
+            const SizedBox(height: 12),
             _buildModalActionButton(context, Icons.notification_important_rounded, 'Remind Customer', AppColors.pink, () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification reminder sent!')));
@@ -667,9 +721,9 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
@@ -684,28 +738,31 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     );
   }
 
-  Widget _buildPendingPaymentItem(String customer, String amount, String service) {
+  Widget _buildPendingPaymentItem(String id, String customer, String amount, String service) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onTap: () => _showPendingPaymentModal(context, customer, amount, service),
+      onTap: () => _showPendingPaymentModal(context, id, customer, amount, service),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.pink.withOpacity(0.05),
+          color: AppColors.pink.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.pink.withOpacity(0.1)),
+          border: Border.all(color: AppColors.pink.withValues(alpha: 0.1)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(customer, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text(service, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(customer, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(service, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+                ],
+              ),
             ),
+            const SizedBox(width: 8),
             Row(
               children: [
                 Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.pink)),
@@ -736,7 +793,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           children: [
             Row(
               children: [
-                CircleAvatar(backgroundColor: statusColor.withOpacity(0.1), child: Icon(Icons.person, color: statusColor)),
+                CircleAvatar(backgroundColor: statusColor.withValues(alpha: 0.1), child: Icon(Icons.person, color: statusColor)),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -786,13 +843,13 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         decoration: BoxDecoration(
           color: isDark ? AppColors.almostBlack600 : AppColors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+          border: Border.all(color: isDark ? AppColors.white.withValues(alpha: 0.1) : AppColors.almostBlack50),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: statusColor.withOpacity(0.1), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), shape: BoxShape.circle),
               child: Icon(Icons.person, color: statusColor, size: 20),
             ),
             const SizedBox(width: 16),
@@ -823,6 +880,252 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           const Spacer(),
           Text(count, style: TextStyle(color: isCritical ? AppColors.error : AppColors.almostBlack300, fontWeight: FontWeight.bold, fontSize: 14)),
         ],
+      ),
+    );
+  }
+
+  // --- NEW ANALYTICS & GUIDE BUILDERS ---
+
+  Widget _buildAnalyticsSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DashboardSectionHeader(title: AppLocalizations.of(context)!.performanceAnalytics),
+        const SizedBox(height: 16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: _buildBookingStatsCard(context),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: _buildTodayScheduleCard(context),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBookingStatsCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(AppLocalizations.of(context)!.bookingsSummary, 
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+              const Icon(Icons.trending_up_rounded, color: Colors.white, size: 20),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _buildStatRow(AppLocalizations.of(context)!.today, '24'),
+          const Divider(color: Colors.white24, height: 16),
+          _buildStatRow(AppLocalizations.of(context)!.thisWeek, '142'),
+          const Divider(color: Colors.white24, height: 16),
+          _buildStatRow(AppLocalizations.of(context)!.thisMonth, '580'),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: () => _showLatestAppointmentsModal(context),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(AppLocalizations.of(context)!.viewHistory, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 4),
+                const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 14),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13)),
+        Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18)),
+      ],
+    );
+  }
+
+  Widget _buildTodayScheduleCard(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/employee_schedule'),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : AppColors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: isDark ? AppColors.white.withValues(alpha: 0.1) : AppColors.almostBlack50),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: AppColors.pink.withValues(alpha: 0.1), shape: BoxShape.circle),
+              child: const Icon(Icons.calendar_month_rounded, color: AppColors.pink, size: 28),
+            ),
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.todaySchedule, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            const SizedBox(height: 8),
+            const Text('8 Active', style: TextStyle(color: AppColors.pink, fontWeight: FontWeight.bold, fontSize: 12)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFAQAndGuideSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DashboardSectionHeader(
+          title: 'FAQs & User Guides', 
+          actionText: 'عرض الكل',
+          onPressed: () {},
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.pink.withValues(alpha: 0.05), Theme.of(context).primaryColor.withValues(alpha: 0.05)],
+            ),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.pink.withValues(alpha: 0.1)),
+          ),
+          child: Column(
+            children: [
+              _buildGuideLink(context, 'كيفية إضافة موعد جديد؟', 'أضف العملاء يدوياً من خلال قسم البحث'),
+              const Divider(height: 24),
+              _buildGuideLink(context, 'تأكيد الدفع والتحقق من الهوية', 'تأكد من مطابقة إيصال الدفع قبل التأكيد'),
+              const Divider(height: 24),
+              _buildGuideLink(context, 'إدارة الموظفين والمتدربين', 'تابع تقدم الموظفين الحاليين والمهام الموكلة'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGuideLink(BuildContext context, String title, String hint) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(Icons.lightbulb_outline_rounded, color: Theme.of(context).primaryColor, size: 20),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              Text(hint, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+            ],
+          ),
+        ),
+        const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.almostBlack300),
+      ],
+    );
+  }
+
+  // --- NEW MODALS ---
+
+  void _showBookForCustomerModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Text(AppLocalizations.of(context)!.bookForCustomer, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
+            _buildDialogField('Customer Name or Phone'),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildCustomerSearchItem('Azeez Jordan', '+962 79 000 0000'),
+                  _buildCustomerSearchItem('Hassan Ali', '+962 78 111 1111'),
+                ],
+              ),
+            ),
+            PrimaryButton(text: 'Proceed to Booking', onPressed: () {}),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomerSearchItem(String name, String phone) {
+    return ListTile(
+      leading: CircleAvatar(child: Text(name[0])),
+      title: Text(name),
+      subtitle: Text(phone),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: () {},
+    );
+  }
+
+  void _showSearchAppointmentsModal(BuildContext context) {
+     showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Text(AppLocalizations.of(context)!.searchAppointments, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
+            _buildDialogField('Search by name, phone, or ID'),
+            const SizedBox(height: 16),
+            const Expanded(child: Center(child: Text('Search Results Appear here'))),
+          ],
+        ),
       ),
     );
   }

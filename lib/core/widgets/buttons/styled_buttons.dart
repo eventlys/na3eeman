@@ -173,7 +173,7 @@ class IconButtonStyled extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? (isDark ? AppColors.almostBlack400 : AppColors.cream200),
+        color: backgroundColor ?? (isDark ? AppColors.almostBlack : AppColors.cream),
         borderRadius: BorderRadius.circular(12),
       ),
       child: IconButton(

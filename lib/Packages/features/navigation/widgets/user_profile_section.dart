@@ -4,6 +4,7 @@ import '../../../../Helpers/customized/animations.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Services/enums/gender.dart';
 import '../../../../core/enums/app_enums.dart';
+import '../../../Core/constants/app_roles.dart';
 import '../sidebar_controller.dart';
 
 
@@ -127,6 +128,8 @@ class UserProfileSection extends StatelessWidget {
         return Icons.content_cut; // Scissors icon for barber
       case UserRole.admin:
       case UserRole.owner:
+      case UserRole.ownerEmployee:
+      case UserRole.ownerOwner:
         return Icons.business; // Business icon for owner
       case UserRole.customer:
       default:
@@ -159,7 +162,9 @@ class UserProfileSection extends StatelessWidget {
         return 'Staff';
       case UserRole.owner:
       case UserRole.admin:
-        return 'Shop Owner';
+      case UserRole.ownerEmployee:
+      case UserRole.ownerOwner:
+        return 'Salon Owner';
       default:
         return 'User';
     }
@@ -173,6 +178,8 @@ class UserProfileSection extends StatelessWidget {
         return Colors.green;
       case UserRole.admin:
       case UserRole.owner:
+      case UserRole.ownerEmployee:
+      case UserRole.ownerOwner:
         return Colors.purple;
       default:
         return Colors.grey;
@@ -187,7 +194,9 @@ class UserProfileSection extends StatelessWidget {
         return 'Staff';
       case UserRole.admin:
       case UserRole.owner:
-        return 'Shop Owner';
+      case UserRole.ownerEmployee:
+      case UserRole.ownerOwner:
+        return 'Salon Owner';
       default:
         return 'User';
     }

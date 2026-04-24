@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,7 +44,7 @@ class UnifiedProfitLossWidget extends StatelessWidget {
             Icon(Icons.account_balance_rounded,
                 size: 18, color: theme.primaryColor),
             const SizedBox(width: 8),
-            Text('unified_p_l'.tr(),
+            Text(AppLocalizations.of(context)!.unifiedPL,
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),

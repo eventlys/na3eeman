@@ -8,18 +8,18 @@ class FavoritesProvider extends BaseProvider {
   final ApiService _apiService = ApiService();
   final UnifiedStorageService _storageService = UnifiedStorageService();
 
-  List<Map<String, dynamic>> _favoriteShops = [];
+  List<Map<String, dynamic>> _favoriteSalons = [];
   bool _hasLoaded = false;
 
   // Getters
-  List<Map<String, dynamic>> get favoriteShops => _favoriteShops;
+  List<Map<String, dynamic>> get favoriteSalons => _favoriteSalons;
   bool get hasLoaded => _hasLoaded;
-  int get favoritesCount => _favoriteShops.length;
+  int get favoritesCount => _favoriteSalons.length;
 
-  // Check if a shop is favorited
-  bool isShopFavorited(String shopId) {
-    return _favoriteShops.any(
-      (shop) => shop['id'].toString() == shopId.toString(),
+  // Check if a salon is favorited
+  bool isSalonFavorited(String salonId) {
+    return _favoriteSalons.any(
+      (salon) => salon['id'].toString() == salonId.toString(),
     );
   }
 
@@ -46,42 +46,42 @@ class FavoritesProvider extends BaseProvider {
     }
   }
 
-  // Add shop to favorites
-  Future<bool> addToFavorites(Map<String, dynamic> shopData) async {
+  // Add salon to favorites
+  Future<bool> addToFavorites(Map<String, dynamic> salonData) async {
     try {
       setLoading(true);
 
-      final shopId = shopData['id'].toString();
+      final salonId = salonData['id'].toString();
 
       // Check if already favorited
-      if (isShopFavorited(shopId)) {
+      if (isSalonFavorited(salonId)) {
         return true; // Already in favorites
       }
 
       // Add to local list immediately for instant UI feedback
-      _favoriteShops.add(shopData);
+      _favoriteSalons.add(salonData);
       notifyListeners();
 
       // Save to cache
       await _saveFavoritesToCache();
 
       // Call API to add to favorites
-      final response = await _apiService.addToFavorites(int.parse(shopId));
+      final response = await _apiService.addToFavorites(int.parse(salonId));
 
       if (response['success'] == true) {
-        AppLogger.info('Shop added to favorites', extra: {'shopId': shopId});
+        AppLogger.info('Salon added to favorites', extra: {'salonId': salonId});
         return true;
       } else {
         // Rollback if API call failed
-        _favoriteShops.removeWhere((shop) => shop['id'].toString() == shopId);
+        _favoriteSalons.removeWhere((salon) => salon['id'].toString() == salonId);
         notifyListeners();
         await _saveFavoritesToCache();
         throw Exception(response['message'] ?? 'Failed to add to favorites');
       }
     } catch (e) {
       // Rollback on error
-      final shopId = shopData['id'].toString();
-      _favoriteShops.removeWhere((shop) => shop['id'].toString() == shopId);
+      final salonId = salonData['id'].toString();
+      _favoriteSalons.removeWhere((salon) => salon['id'].toString() == salonId);
       notifyListeners();
       await _saveFavoritesToCache();
 
@@ -89,7 +89,7 @@ class FavoritesProvider extends BaseProvider {
       AppLogger.error(
         'Failed to add to favorites',
         error: e,
-        extra: {'shopId': shopData['id']},
+        extra: {'salonId': salonData['id']},
       );
       return false;
     } finally {
@@ -97,36 +97,36 @@ class FavoritesProvider extends BaseProvider {
     }
   }
 
-  // Remove shop from favorites
-  Future<bool> removeFromFavorites(String shopId) async {
+  // Remove salon from favorites
+  Future<bool> removeFromFavorites(String salonId) async {
     try {
       setLoading(true);
 
       // Remove from local list immediately for instant UI feedback
-      final removedShop = _favoriteShops.firstWhere(
-        (shop) => shop['id'].toString() == shopId,
+      final removedSalon = _favoriteSalons.firstWhere(
+        (salon) => salon['id'].toString() == salonId,
         orElse: () => {},
       );
 
-      _favoriteShops.removeWhere((shop) => shop['id'].toString() == shopId);
+      _favoriteSalons.removeWhere((salon) => salon['id'].toString() == salonId);
       notifyListeners();
 
       // Save to cache
       await _saveFavoritesToCache();
 
       // Call API to remove from favorites
-      final response = await _apiService.removeFromFavorites(int.parse(shopId));
+      final response = await _apiService.removeFromFavorites(int.parse(salonId));
 
       if (response['success'] == true) {
         AppLogger.info(
-          'Shop removed from favorites',
-          extra: {'shopId': shopId},
+          'Salon removed from favorites',
+          extra: {'salonId': salonId},
         );
         return true;
       } else {
         // Rollback if API call failed
-        if (removedShop.isNotEmpty) {
-          _favoriteShops.add(removedShop);
+        if (removedSalon.isNotEmpty) {
+          _favoriteSalons.add(removedSalon);
           notifyListeners();
           await _saveFavoritesToCache();
         }
@@ -139,7 +139,7 @@ class FavoritesProvider extends BaseProvider {
       AppLogger.error(
         'Failed to remove from favorites',
         error: e,
-        extra: {'shopId': shopId},
+        extra: {'salonId': salonId},
       );
       return false;
     } finally {
@@ -148,19 +148,19 @@ class FavoritesProvider extends BaseProvider {
   }
 
   // Toggle favorite status
-  Future<bool> toggleFavorite(Map<String, dynamic> shopData) async {
-    final shopId = shopData['id'].toString();
+  Future<bool> toggleFavorite(Map<String, dynamic> salonData) async {
+    final salonId = salonData['id'].toString();
 
-    if (isShopFavorited(shopId)) {
-      return await removeFromFavorites(shopId);
+    if (isSalonFavorited(salonId)) {
+      return await removeFromFavorites(salonId);
     } else {
-      return await addToFavorites(shopData);
+      return await addToFavorites(salonData);
     }
   }
 
   // Clear all favorites
   Future<void> clearFavorites() async {
-    _favoriteShops.clear();
+    _favoriteSalons.clear();
     await _storageService.removePreference('user_favorites');
     notifyListeners();
   }
@@ -172,7 +172,7 @@ class FavoritesProvider extends BaseProvider {
         'user_favorites',
       );
       if (cachedFavorites != null && cachedFavorites is List) {
-        _favoriteShops = List<Map<String, dynamic>>.from(cachedFavorites);
+        _favoriteSalons = List<Map<String, dynamic>>.from(cachedFavorites);
         notifyListeners();
       }
     } catch (e) {
@@ -183,14 +183,9 @@ class FavoritesProvider extends BaseProvider {
   Future<void> _loadFavoritesFromApi() async {
     try {
       final response = await _apiService.getUserFavorites();
-      if (response['success'] == true) {
-        final favorites = List<Map<String, dynamic>>.from(
-          response['data'] ?? [],
-        );
-        _favoriteShops = favorites;
-        await _saveFavoritesToCache();
-        notifyListeners();
-      }
+      _favoriteSalons = List<Map<String, dynamic>>.from(response);
+      await _saveFavoritesToCache();
+      notifyListeners();
     } catch (e) {
       AppLogger.warning(
         'Failed to load favorites from API, using cache',
@@ -202,7 +197,7 @@ class FavoritesProvider extends BaseProvider {
 
   Future<void> _saveFavoritesToCache() async {
     try {
-      await _storageService.setPreference('user_favorites', _favoriteShops);
+      await _storageService.setPreference('user_favorites', _favoriteSalons);
     } catch (e) {
       AppLogger.error('Failed to save favorites to cache', error: e);
     }

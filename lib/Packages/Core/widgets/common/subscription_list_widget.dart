@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -6,7 +7,7 @@ import '../../../../Helpers/subscription_helper.dart';
 import '../../../shared/overlays/subscription_details_dialog.dart';
 import '../../constants/app_color.dart';
 import '../../utils/helpers/themes_helpers.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class SubscriptionListWidget extends StatefulWidget {
   final VoidCallback onSubscriptionSuccess;
@@ -53,7 +54,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
             'duration': sub.duration,
             'features': sub.features,
             'isPopular': sub.isPopular,
-            'shopId': sub.shopId,
+            'salonId': sub.salonId,
           };
         }).toList();
         _isLoading = false;
@@ -141,7 +142,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightError,
           ),
           SizedBox(height: 16),
-          Text('failed_to_load_subscriptions'.tr(),
+          Text(AppLocalizations.of(context)!.failedToLoadSubscriptions,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -169,7 +170,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                   : AppColor.lightPrimary,
               foregroundColor: AppColor.light,
             ),
-            child: Text('try_again'.tr()),
+            child: Text(AppLocalizations.of(context)!.tryAgain),
           ),
         ],
       ),
@@ -189,7 +190,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightTextHint,
           ),
           SizedBox(height: 16),
-          Text('no_subscriptions_available'.tr(),
+          Text(AppLocalizations.of(context)!.noSubscriptionsAvailable,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -199,7 +200,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
             ),
           ),
           SizedBox(height: 8),
-          Text('there_are_no_subscription_plans_available_at_the_m'.tr(),
+          Text(AppLocalizations.of(context)!.thereAreNoSubscriptionPlansAvailableAtTheM,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).brightness == Brightness.dark
@@ -235,7 +236,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
         // Header
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Text('subscribe_to_the_shop'.tr(),
+          child: Text(AppLocalizations.of(context)!.subscribeToTheSalon,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -280,7 +281,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                   vertical: 12,
                 ),
               ),
-              child: Text('show_more'.tr()),
+              child: Text(AppLocalizations.of(context)!.showMore),
             ),
           ),
 

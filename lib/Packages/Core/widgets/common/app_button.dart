@@ -1,3 +1,4 @@
+// import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../themes/app_theme.dart';
@@ -10,8 +11,8 @@ enum AppButtonSize { sm, md, lg }
 /// Reusable app-wide button that adapts to the current theme accent colour.
 ///
 /// ```dart
-/// AppButton(label: 'book_now'.tr(), onPressed: _book)
-/// AppButton(label: 'cancel'.tr(), type: AppButtonType.outline, onPressed: _cancel)
+/// AppButton(label: AppLocalizations.of(context)!.bookNow, onPressed: _book)
+/// AppButton(label: AppLocalizations.of(context)!.cancel, type: AppButtonType.outline, onPressed: _cancel)
 /// ```
 class AppButton extends StatelessWidget {
   const AppButton({

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Providers/main_providers.dart';
 import '../../../../../core/theme/colors.dart';
-import '../../shop/widgets/inventory_manager.dart';
+import '../../salon/widgets/inventory_manager.dart';
 
 class ToolsAndInventoryOverview extends StatefulWidget {
   const ToolsAndInventoryOverview({super.key});
@@ -23,9 +23,9 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
   Future<void> _fetchData() async {
     final inventoryProvider = context.read<InventoryProvider>();
     final authProvider = context.read<AuthProvider>();
-    final shopId = authProvider.user?.shopId;
-    if (shopId != null) {
-      await inventoryProvider.loadInventoryItems(shopId: shopId);
+    final salonId = authProvider.user?.salonId;
+    if (salonId != null) {
+      await inventoryProvider.loadInventoryItems(salonId: salonId);
     }
   }
 

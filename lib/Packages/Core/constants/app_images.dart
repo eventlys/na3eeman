@@ -4,19 +4,19 @@ class AppImages {
   static const String appLogo = 'assets/images/logo.png';
   static const String placeholderImage = 'assets/images/placeholder.jpg';
   static const String defaultProfile = 'assets/images/default_profile.png';
-  static const String defaultShop = 'assets/images/default_shop.jpg';
+  static const String defaultSalon = 'assets/images/default_salon.jpg';
 
-  // Shop Images
-  static const String shop1 = 'assets/images/shop1.jpg';
-  static const String shop2 = 'assets/images/shop2.jpg';
-  static const String shop3 = 'assets/images/shop3.jpg';
-  static const String shop4 = 'assets/images/shop4.jpg';
-  static const String shop5 = 'assets/images/shop5.jpg';
-  static const String shop6 = 'assets/images/shop6.jpg';
-  static const String shop7 = 'assets/images/shop7.jpg';
-  static const String shop8 = 'assets/images/shop8.jpg';
-  static const String shop9 = 'assets/images/shop9.jpg';
-  static const String shop10 = 'assets/images/shop10.jpg';
+  // Salon Images
+  static const String salon1 = 'assets/images/salon1.jpg';
+  static const String salon2 = 'assets/images/salon2.jpg';
+  static const String salon3 = 'assets/images/salon3.jpg';
+  static const String salon4 = 'assets/images/salon4.jpg';
+  static const String salon5 = 'assets/images/salon5.jpg';
+  static const String salon6 = 'assets/images/salon6.jpg';
+  static const String salon7 = 'assets/images/salon7.jpg';
+  static const String salon8 = 'assets/images/salon8.jpg';
+  static const String salon9 = 'assets/images/salon9.jpg';
+  static const String salon10 = 'assets/images/salon10.jpg';
 
   // Mock Images for Development
   static const String mockAvatar1 = 'assets/images/mock_avatar1.png';
@@ -156,8 +156,8 @@ class AppImages {
   static const String eye_view = 'assets/icons/eye_view.png';
   static const String inventory = 'assets/icons/inventory.png';
   static const String download = 'assets/icons/download.png';
-  static const String store = 'assets/icons/shop1.png';
-  static const String store_view = 'assets/icons/shop2.png';
+  static const String store = 'assets/icons/salon1.png';
+  static const String store_view = 'assets/icons/salon2.png';
   static const String warning = 'assets/icons/warning.png';
   static const String warning_view = 'assets/icons/warning_view.png';
   static const String workspace_premium = 'assets/icons/premium.png';

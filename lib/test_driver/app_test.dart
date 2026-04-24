@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 // import 'package:flutter_driver/flutter_driver.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import 'package:test/test.dart';
@@ -23,29 +24,29 @@
 //       final loginButton = find.byValueKey('login_button');
 //
 //       await driver.tap(emailField);
-//       await driver.enterText('test_example_com'.tr());
+//       await driver.enterText(AppLocalizations.of(context)!.testExampleCom);
 //
 //       await driver.tap(passwordField);
-//       await driver.enterText('test123'.tr());
+//       await driver.enterText(AppLocalizations.of(context)!.test123);
 //
 //       await driver.tap(loginButton);
 //
 //       // Wait for login to complete
 //       await driver.waitFor(find.byValueKey('home_page'));
 //
-//       // Navigate to shops
-//       final shopsTab = find.byValueKey('shops_tab');
-//       await driver.tap(shopsTab);
+//       // Navigate to salons
+//       final salonsTab = find.byValueKey('salons_tab');
+//       await driver.tap(salonsTab);
 //
-//       // Verify shops list appears
-//       await driver.waitFor(find.byValueKey('shops_list'));
+//       // Verify salons list appears
+//       await driver.waitFor(find.byValueKey('salons_list'));
 //
-//       // Tap on first shop
-//       final firstShop = find.byValueKey('shop_0');
-//       await driver.tap(firstShop);
+//       // Tap on first salon
+//       final firstSalon = find.byValueKey('salon_0');
+//       await driver.tap(firstSalon);
 //
-//       // Verify shop details page
-//       await driver.waitFor(find.byValueKey('shop_details_page'));
+//       // Verify salon details page
+//       await driver.waitFor(find.byValueKey('salon_details_page'));
 //     });
 //   });
 // }

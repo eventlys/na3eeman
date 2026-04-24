@@ -45,87 +45,99 @@ class AdsHorizontalList extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(width: 16),
             itemBuilder: (context, index) {
               final ad = ads[index];
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withOpacity(0.8),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-                      offset: const Offset(0, 4),
-                      blurRadius: 15,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context, 
+                    '/salon_details', 
+                    arguments: {
+                      'salonData': {'id': ad['salon_id'], 'salonName': ad['salon_name']},
+                      'highlightedServiceIds': ad['highlight_services']?.toString().split(',') ?? [],
+                    },
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).primaryColor,
+                        Theme.of(context).primaryColor.withOpacity(0.8),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            ad['name'] ?? 'Promo',
-                            style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            ad['details'] ?? 'Special details and rewards',
-                            style: TextStyle(
-                              color: AppColors.white.withOpacity(0.9),
-                              fontSize: 13,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.stars_rounded, color: Colors.amber, size: 14),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${ad['reward_points'] ?? 0} Points reward',
-                                  style: const TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+                        offset: const Offset(0, 4),
+                        blurRadius: 15,
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Icon(
-                      Icons.campaign_rounded,
-                      size: 64,
-                      color: AppColors.white.withOpacity(0.4),
-                    ),
-                  ],
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ad['name'] ?? 'Promo',
+                              style: const TextStyle(
+                                color: AppColors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              ad['details'] ?? 'Special details and rewards',
+                              style: TextStyle(
+                                color: AppColors.white.withOpacity(0.9),
+                                fontSize: 13,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 12),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppColors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.stars_rounded, color: Colors.amber, size: 14),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${ad['reward_points'] ?? 0} Points reward',
+                                    style: const TextStyle(
+                                      color: AppColors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(
+                        Icons.campaign_rounded,
+                        size: 64,
+                        color: AppColors.white.withOpacity(0.4),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

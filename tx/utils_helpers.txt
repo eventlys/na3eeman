@@ -729,7 +729,7 @@ extension ObjectExtensions on Object {
 //   static const String forgotPasswordEndpoint = 'auth/forgot-password';
 //   static const String resetPasswordEndpoint = 'auth/reset-password';
 //   static const String changePasswordEndpoint = 'auth/change-password';
-//   static const String shopsEndpoint = 'shops';
+//   static const String salonsEndpoint = 'salons';
 //   static const String appointmentsEndpoint = 'appointments';
 //   static const String usersEndpoint = 'users';
 //
@@ -962,7 +962,7 @@ class ProfileHelperFunctions {
 }
 
 
-import '../Models/shop/shop_service_model.dart';
+import '../Models/salon/salon_service_model.dart';
 
 
 class ServiceCalculator {
@@ -988,7 +988,7 @@ class ServiceCalculator {
     return 0.0;
   }
 
-  static String formatTotalDuration(List<ShopService> services) {
+  static String formatTotalDuration(List<SalonService> services) {
     if (services.isEmpty) return '0 min';
 
     int totalMinutes = 0;
@@ -1006,7 +1006,7 @@ class ServiceCalculator {
     }
   }
 
-  static String formatTotalPrice(List<ShopService> services) {
+  static String formatTotalPrice(List<SalonService> services) {
     if (services.isEmpty) return '\$0';
 
     double total = 0;
@@ -1017,7 +1017,7 @@ class ServiceCalculator {
     return '\$${total.toStringAsFixed(0)}'; // Remove decimals for whole dollar amounts
   }
 
-  static int getTotalDurationInMinutes(List<ShopService> services) {
+  static int getTotalDurationInMinutes(List<SalonService> services) {
     int totalMinutes = 0;
     for (var service in services) {
       totalMinutes += parseDuration(service.duration);

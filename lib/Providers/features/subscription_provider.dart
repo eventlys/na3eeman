@@ -76,7 +76,7 @@ class SubscriptionProvider extends BaseProvider {
       _currentSubscription = Subscription(
         id: 'sub_123456',
         customerId: _authProvider?.user?.id ?? 1,
-        shopId: 1,
+        salonId: 1,
         planName: 'Professional Plan',
         subscriptionType: 'MONTHLY',
         price: 79.99,

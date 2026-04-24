@@ -7,10 +7,10 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/appointments/booking_group_model.dart';
-import '../../Models/appointments/shop_appointments_model.dart';
+import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/loyalty/points_balance_model.dart';
-import '../../Models/shop/shops_model.dart';
+import '../../Models/salon/salons_model.dart';
 import 'api/api_service.dart';
 
 class UnifiedStorageService {
@@ -23,7 +23,7 @@ class UnifiedStorageService {
   // Storage instances
   late SharedPreferences _prefs;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  late Box _hiveShopsBox;
+  late Box _hiveSalonsBox;
   late Box _hiveAppointmentsBox;
   late Box _hiveUserDataBox;
   late Box _hiveOfflineActionsBox;
@@ -32,7 +32,7 @@ class UnifiedStorageService {
   static const Duration _defaultCacheDuration = Duration(minutes: 10);
 
   // Hive box names
-  static const String _shopsBoxName = 'shops';
+  static const String _salonsBoxName = 'salons';
   static const String _appointmentsBoxName = 'appointments';
   static const String _userDataBoxName = 'user_data';
   static const String _offlineActionsBoxName = 'offline_actions';
@@ -70,7 +70,7 @@ class UnifiedStorageService {
     final directory = await getApplicationDocumentsDirectory();
     Hive.init(directory.path);
 
-    _hiveShopsBox = await Hive.openBox(_shopsBoxName);
+    _hiveSalonsBox = await Hive.openBox(_salonsBoxName);
     _hiveAppointmentsBox = await Hive.openBox(_appointmentsBoxName);
     _hiveUserDataBox = await Hive.openBox(_userDataBoxName);
     _hiveOfflineActionsBox = await Hive.openBox(_offlineActionsBoxName);
@@ -192,7 +192,7 @@ class UnifiedStorageService {
 
   Box _getHiveBox(String boxName) {
     switch (boxName) {
-      case _shopsBoxName: return _hiveShopsBox;
+      case _salonsBoxName: return _hiveSalonsBox;
       case _appointmentsBoxName: return _hiveAppointmentsBox;
       case _userDataBoxName: return _hiveUserDataBox;
       case _offlineActionsBoxName: return _hiveOfflineActionsBox;
@@ -251,38 +251,38 @@ class UnifiedStorageService {
   // }
 
   // ============ MODEL-SPECIFIC STORAGE ============
-  // Shops
-  Future<void> setShops(List<Shop> shops, {bool persist = true}) {
-    final shopsJson = shops.map((shop) => shop.toJson()).toList();
-    setMemoryCache('shops_list', shopsJson);
+  // Salons
+  Future<void> setSalons(List<Salon> salons, {bool persist = true}) {
+    final salonsJson = salons.map((salon) => salon.toJson()).toList();
+    setMemoryCache('salons_list', salonsJson);
 
     if (persist) {
-      return setHive(_shopsBoxName, 'cached_shops', shopsJson);
+      return setHive(_salonsBoxName, 'cached_salons', salonsJson);
     }
     return Future.value();
   }
 
-  Future<List<Shop>?> getShops() async {
+  Future<List<Salon>?> getSalons() async {
     // Try memory cache first
-    final memoryData = getMemoryCache('shops_list');
+    final memoryData = getMemoryCache('salons_list');
     if (memoryData != null) {
-      return (memoryData as List).map((item) => Shop.fromJson(item)).toList();
+      return (memoryData as List).map((item) => Salon.fromJson(item)).toList();
     }
 
     // Try Hive storage
-    final hiveData = getHive(_shopsBoxName, 'cached_shops', defaultValue: []);
+    final hiveData = getHive(_salonsBoxName, 'cached_salons', defaultValue: []);
     if (hiveData.isNotEmpty) {
-      final shops = (hiveData as List).map((item) => Shop.fromJson(item)).toList();
+      final salons = (hiveData as List).map((item) => Salon.fromJson(item)).toList();
       // Populate memory cache
-      setMemoryCache('shops_list', hiveData);
-      return shops;
+      setMemoryCache('salons_list', hiveData);
+      return salons;
     }
 
     return null;
   }
 
   // Appointments
-  Future<void> setAppointments(List<ShopAppointment> appointments, {bool persist = true}) {
+  Future<void> setAppointments(List<SalonAppointment> appointments, {bool persist = true}) {
     final appointmentsJson = appointments.map((a) => a.toJson()).toList();
     setMemoryCache('user_appointments', appointmentsJson);
 
@@ -292,17 +292,17 @@ class UnifiedStorageService {
     return Future.value();
   }
 
-  Future<List<ShopAppointment>?> getAppointments() async {
+  Future<List<SalonAppointment>?> getAppointments() async {
     // Try memory cache first
     final memoryData = getMemoryCache('user_appointments');
     if (memoryData != null) {
-      return (memoryData as List).map((item) => ShopAppointment.fromJson(item)).toList();
+      return (memoryData as List).map((item) => SalonAppointment.fromJson(item)).toList();
     }
 
     // Try Hive storage
     final hiveData = getHive(_appointmentsBoxName, 'user_appointments', defaultValue: []);
     if (hiveData.isNotEmpty) {
-      final appointments = (hiveData as List).map((item) => ShopAppointment.fromJson(item)).toList();
+      final appointments = (hiveData as List).map((item) => SalonAppointment.fromJson(item)).toList();
       // Populate memory cache
       setMemoryCache('user_appointments', hiveData);
       return appointments;
@@ -462,7 +462,7 @@ class UnifiedStorageService {
     await _secureStorage.deleteAll();
 
     // Clear Hive boxes
-    await _hiveShopsBox.clear();
+    await _hiveSalonsBox.clear();
     await _hiveAppointmentsBox.clear();
     await _hiveUserDataBox.clear();
     await _hiveOfflineActionsBox.clear();
@@ -473,7 +473,7 @@ class UnifiedStorageService {
   Future<Map<String, dynamic>> getStorageStats() async {
     return {
       'memory_cache_entries': _memoryCache.length,
-      'shops_count': (getHive(_shopsBoxName, 'cached_shops', defaultValue: []) as List).length,
+      'salons_count': (getHive(_salonsBoxName, 'cached_salons', defaultValue: []) as List).length,
       'appointments_count': (getHive(_appointmentsBoxName, 'user_appointments', defaultValue: []) as List).length,
       'queued_actions_count': (getHive(_offlineActionsBoxName, 'action_queue', defaultValue: []) as List).length,
       'authenticated': await isAuthenticated(),
@@ -481,7 +481,7 @@ class UnifiedStorageService {
   }
 
   Future<void> close() async {
-    await _hiveShopsBox.close();
+    await _hiveSalonsBox.close();
     await _hiveAppointmentsBox.close();
     await _hiveUserDataBox.close();
     await _hiveOfflineActionsBox.close();

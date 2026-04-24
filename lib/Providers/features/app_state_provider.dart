@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 import '../base_provider.dart';
 import '../../Helpers/analytics_helper.dart';
 import '../../Helpers/cache_helper.dart';
@@ -179,8 +180,10 @@ class AppStateProvider extends BaseProvider {
   }
 
   // Permission checks
-  bool canAccessShopManagement() {
-    return _userRole == UserRole.owner;
+  bool canAccessSalonManagement() {
+    return _userRole == UserRole.owner || 
+           _userRole == UserRole.ownerEmployee || 
+           _userRole == UserRole.ownerOwner;
   }
 
   // Private methods

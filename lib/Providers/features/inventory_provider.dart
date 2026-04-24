@@ -35,7 +35,7 @@ class InventoryProvider with ChangeNotifier {
   }).toList();
   List<dynamic> get inventoryItems => _inventoryItems;
 
-  Future<void> loadInventory(int shopId, {
+  Future<void> loadInventory(int salonId, {
     bool? lowStockOnly,
     String? category,
   }) async {
@@ -45,7 +45,7 @@ class InventoryProvider with ChangeNotifier {
  
      try {
        _inventoryItems = await _inventoryService.getInventoryItems(
-         shopId: shopId,
+         salonId: salonId,
          lowStockOnly: lowStockOnly,
          category: category,
        );
@@ -58,7 +58,7 @@ class InventoryProvider with ChangeNotifier {
    }
  
    Future<void> loadInventoryItems({
-     int? shopId,
+     int? salonId,
      bool? lowStockOnly,
      String? category,
    }) async {
@@ -68,7 +68,7 @@ class InventoryProvider with ChangeNotifier {
 
     try {
       _inventoryItems = await _inventoryService.getInventoryItems(
-        shopId: shopId,
+        salonId: salonId,
         lowStockOnly: lowStockOnly,
         category: category,
       );
@@ -88,13 +88,13 @@ class InventoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadLowStockItems({int? shopId}) async {
+  Future<void> loadLowStockItems({int? salonId}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _lowStockItems = await _inventoryService.getLowStockItems(shopId: shopId);
+      _lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
     } catch (e) {
       _error = 'Failed to load low stock items: ${e.toString()}';
     } finally {
@@ -103,11 +103,11 @@ class InventoryProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> getInventoryAlerts({int? shopId}) async {
-    return await _inventoryHelpers.getInventoryAlertsSummary(shopId: shopId);
+  Future<Map<String, dynamic>> getInventoryAlerts({int? salonId}) async {
+    return await _inventoryHelpers.getInventoryAlertsSummary(salonId: salonId);
   }
 
-  Future<void> refreshInventoryData({int? shopId}) async {
-    await loadLowStockItems(shopId: shopId);
+  Future<void> refreshInventoryData({int? salonId}) async {
+    await loadLowStockItems(salonId: salonId);
   }
 }

@@ -177,13 +177,13 @@ class NotificationHelper {
     required String appointmentId,
     required String customerName,
     required DateTime appointmentTime,
-    required String shopName,
+    required String salonName,
     Duration reminderBefore = const Duration(hours: 1),
   }) async {
     try {
       final reminderTime = appointmentTime.subtract(reminderBefore);
       final title = 'Appointment Reminder';
-      final body = 'Your appointment at $shopName is in ${reminderBefore.inHours} hour(s)';
+      final body = 'Your appointment at $salonName is in ${reminderBefore.inHours} hour(s)';
 
       await scheduleNotification(
         id: appointmentId.hashCode,

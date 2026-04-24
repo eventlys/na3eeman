@@ -1,7 +1,7 @@
 class Subscription {
   final String id;
   final int customerId;
-  final int shopId;
+  final int salonId;
   final String planName;
   final String subscriptionType;
   final double price;
@@ -15,7 +15,7 @@ class Subscription {
   Subscription({
     required this.id,
     required this.customerId,
-    required this.shopId,
+    required this.salonId,
     required this.planName,
     required this.subscriptionType,
     required this.price,
@@ -31,7 +31,7 @@ class Subscription {
     return Subscription(
       id: json['id'].toString(),
       customerId: json['customer_id'] ?? json['customerId'] ?? 0,
-      shopId: json['shop_id'] ?? json['shopId'] ?? 0,
+      salonId: json['salon_id'] ?? json['salonId'] ?? 0,
       planName: json['plan_name'] ?? json['planName'],
       subscriptionType: json['subscription_type'] ?? json['subscriptionType'],
       price: (json['price'] as num).toDouble(),
@@ -48,7 +48,7 @@ class Subscription {
     return {
       'id': id,
       'customer_id': customerId,
-      'shop_id': shopId,
+      'salon_id': salonId,
       'plan_name': planName,
       'subscription_type': subscriptionType,
       'price': price,

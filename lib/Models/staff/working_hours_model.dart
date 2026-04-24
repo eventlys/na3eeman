@@ -6,7 +6,7 @@ class WorkingHours {
   final DateTime? actualEnd;
   final bool isWorking;
   final int? staffId;
-  final int? shopId;
+  final int? salonId;
 
   WorkingHours({
     required this.date,
@@ -16,7 +16,7 @@ class WorkingHours {
     this.actualEnd,
     required this.isWorking,
     this.staffId,
-    this.shopId,
+    this.salonId,
   });
 
   Duration get scheduledDuration => scheduledEnd.difference(scheduledStart);
@@ -52,7 +52,7 @@ class WorkingHours {
       actualEnd: json['actual_end'] != null ? DateTime.parse(json['actual_end']) : null,
       isWorking: json['is_working'] ?? false,
       staffId: json['staff'] as int?,
-      shopId: json['shop'] as int?,
+      salonId: json['salon'] as int?,
     );
   }
 
@@ -65,7 +65,7 @@ class WorkingHours {
       'actual_end': actualEnd?.toIso8601String(),
       'is_working': isWorking,
       'staff': staffId,
-      'shop': shopId,
+      'salon': salonId,
     };
   }
 }

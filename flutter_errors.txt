@@ -6,8 +6,8 @@ warning • The value of the local variable 'isDark' isn't used • lib/Packages
    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/Packages/features/admin/pages/error_reports_page.dart:52:32 • deprecated_member_use
    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/Packages/features/admin/pages/error_reports_page.dart:54:51 • deprecated_member_use
   error • The method 'setGender' isn't defined for the type 'ThemeProvider' • lib/Packages/features/onboarding/pages/onboarding.dart:108:57 • undefined_method
-  error • The property 'id' can't be unconditionally accessed because the receiver can be 'null' • lib/Packages/features/shop/widgets/barber_card.dart:29:20 • unchecked_use_of_nullable_value
-  error • Target of URI doesn't exist: '../../Models/shop/barber_dto.dart' • lib/Providers/features/barber_provider.dart:3:8 • uri_does_not_exist
+  error • The property 'id' can't be unconditionally accessed because the receiver can be 'null' • lib/Packages/features/salon/widgets/barber_card.dart:29:20 • unchecked_use_of_nullable_value
+  error • Target of URI doesn't exist: '../../Models/salon/barber_dto.dart' • lib/Providers/features/barber_provider.dart:3:8 • uri_does_not_exist
   error • The name 'BarberDto' isn't a type, so it can't be used as a type argument • lib/Providers/features/barber_provider.dart:8:8 • non_type_as_type_argument
   error • Undefined class 'BarberDto' • lib/Providers/features/barber_provider.dart:9:3 • undefined_class
   error • The name 'BarberDto' isn't a type, so it can't be used as a type argument • lib/Providers/features/barber_provider.dart:16:8 • non_type_as_type_argument

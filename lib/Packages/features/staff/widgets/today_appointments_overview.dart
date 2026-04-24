@@ -1,3 +1,4 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
@@ -216,7 +217,7 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
                           child: OutlinedButton(
                             onPressed: () => _handlePenaltyAppointment(activeAppointment['id'] as String, activeAppointment['customerId'] as int, 'Canceled'),
                             style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white), foregroundColor: Colors.white),
-                            child: Text('cancel'.tr()),
+                            child: Text(AppLocalizations.of(context)!.cancel),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -241,7 +242,7 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
           children: [
             Expanded(child: DashboardSummaryCard(title: tr('today_s_earnings'), value: '\$120.00', icon: Icons.account_balance_wallet_rounded, color: AppColors.success)),
             const SizedBox(width: 16),
-            Expanded(child: DashboardSummaryCard(title: 'completed'.tr().tr(), value: '${_todayAppointments.where((a) => a['status'] == 'Done' || a['status'] == 'Completed').length}', icon: Icons.check_circle_rounded, color: Theme.of(context).primaryColor)),
+            Expanded(child: DashboardSummaryCard(title: AppLocalizations.of(context)!.completed, value: '${_todayAppointments.where((a) => a['status'] == 'Done' || a['status'] == 'Completed').length}', icon: Icons.check_circle_rounded, color: Theme.of(context).primaryColor)),
           ],
         ),
 

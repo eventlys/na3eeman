@@ -1,7 +1,9 @@
+import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../core/enums/app_enums.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 
 class RoleBasedRoute extends StatelessWidget {
   final List<UserRole> allowedRoles;
@@ -35,11 +37,11 @@ class RoleBasedRoute extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text('You do not have permission to view this page.'),
+            Text(AppLocalizations.of(context)!.noPermissionMessage),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-              child: const Text('Back to Home'),
+              child: Text(AppLocalizations.of(context)!.backToHome),
             ),
           ],
         ),
