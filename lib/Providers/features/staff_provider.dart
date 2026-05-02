@@ -1,0 +1,80 @@
+import '../base_provider.dart';
+import 'auth_provider.dart';
+import '../../Models/salon/staff_member_model.dart';
+import '../../Models/salon/expert_model.dart';
+import '../../Services/api/api_service.dart';
+import '../../Services/api/endpoints.dart';
+import '../../Helpers/logger.dart';
+
+class StaffProvider extends BaseProvider {
+  final ApiService _apiService = ApiService();
+  List<StaffMember> _staff = [];
+  List<Expert> _experts = [];
+  AuthProvider? _authProvider;
+  StaffMember? _selectedStaff;
+
+  // Getters
+  List<StaffMember> get staff => _staff;
+  List<Expert> get experts => _experts;
+  StaffMember? get selectedStaff => _selectedStaff;
+
+  List<StaffMember> get manageableStaff {
+    return _staff;
+  }
+
+  // Methods
+  void updateAuth(AuthProvider authProvider) {
+    _authProvider = authProvider;
+    if (_authProvider?.isAuthenticated == true &&
+        (_authProvider?.isOwner == true || _authProvider?.isAdmin == true)) {
+      loadStaffData();
+    }
+  }
+
+  Future<void> loadStaffData() async {
+    try {
+      setLoading(true);
+      clearError();
+
+      final salonId = _authProvider?.user?.salonId;
+      if (salonId == null && _authProvider?.isAdmin != true) {
+        throw Exception('No active salon found for current user');
+      }
+
+      // For Admin, they might need to select a salon first, but for Owner/Staff it's their salon
+      if (salonId != null) {
+        await loadStaff(salonId);
+      }
+
+      notifyListeners();
+    } catch (e) {
+      setError(e.toString());
+      AppLogger.error('Error loading staff data: $e');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> loadStaff(int salonId) async {
+    try {
+      final response = await _apiService.get(Endpoints.salonExperts(salonId));
+      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+      
+      // Map to StaffMember or Expert based on needs
+      // For now, mapping to both for backward compatibility with existing UI
+      _staff = data.map((json) => StaffMember.fromJson(json)).toList();
+      _experts = data.map((json) => Expert.fromJson(json)).toList();
+      
+      notifyListeners();
+    } catch (e) {
+      AppLogger.error('Failed to load staff for salon $salonId: $e');
+      _staff = [];
+      _experts = [];
+    }
+  }
+
+  void selectStaff(StaffMember? staff) {
+    _selectedStaff = staff;
+    notifyListeners();
+  }
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Network Security Config
+  ========================
+  This file allows cleartext (HTTP) traffic ONLY to the local development
+  server IP address (192.168.1.90). All other traffic is HTTPS-only, which
+  is the Android 9+ default.
+
+  Physical Device note:
+    • 192.168.1.90 = your dev machine's LAN IP (correct for a physical device
+      on the same Wi-Fi network).
+    • 10.0.2.2 = the Android emulator alias for localhost — NOT needed here.
+    • "localhost" alone will NOT work on a physical device.
+
+  Before going to production:
+    • Remove this file (and the android:networkSecurityConfig reference in
+      AndroidManifest.xml) OR set up a proper domain + HTTPS certificate.
+-->
+<network-security-config>
+
+    <!-- Allow HTTP cleartext only to the dev server — never to everything. -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Your local dev machine LAN IP -->
+        <domain includeSubdomains="false">192.168.1.90</domain>
+    </domain-config>
+
+    <!-- All other connections must use HTTPS (Android 9+ default). -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+</network-security-config>
