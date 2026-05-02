@@ -11,7 +11,7 @@ import '../../core/config/subscription_config.dart';
 /// - Added `maxStaff` derived from config (no separate field needed)
 class OwnerProfile {
   final int id;
-  final int barberProfileId;
+  final int expertProfileId;
   final OwnerType ownerType;
   final bool isOwner;
   final bool isWorker;
@@ -28,8 +28,8 @@ class OwnerProfile {
 
   const OwnerProfile({
     required this.id,
-    required this.barberProfileId,
-    this.ownerType = OwnerType.employeeOwner,
+    required this.expertProfileId,
+    this.ownerType = OwnerType.expertOwner,
     this.isOwner = true,
     this.isWorker = true,
     this.isSubscribed = false,
@@ -77,9 +77,9 @@ class OwnerProfile {
 
   bool get hasUnlimitedStaff => maxStaff == -1;
 
-  /// True if the owner is both a worker and manager (employeeOwner / soloFreelancer).
+  /// True if the owner is both a worker and manager (expertOwner / soloFreelancer).
   bool get isPractitioner =>
-      ownerType == OwnerType.employeeOwner ||
+      ownerType == OwnerType.expertOwner ||
       ownerType == OwnerType.soloFreelancer;
 
   /// False when subscriptionEndDate is within 7 days (show renewal banner).
@@ -95,8 +95,8 @@ class OwnerProfile {
   factory OwnerProfile.fromJson(Map<String, dynamic> json) {
     return OwnerProfile(
       id: (json['id'] as int?) ?? 0,
-      // Backend Owner model IS the profile — no nested barber field
-      barberProfileId: json['id'] as int? ?? 0,
+      // Backend Owner model IS the profile — no nested expert field
+      expertProfileId: json['id'] as int? ?? 0,
       ownerType: OwnerTypeExtension.fromString(json['owner_type'] as String?),
       isOwner: json['is_owner'] as bool? ?? true,
       isWorker: json['is_worker'] as bool? ?? true,
@@ -126,7 +126,7 @@ class OwnerProfile {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'barber': barberProfileId,
+      'expert': expertProfileId,
       'owner_type': ownerType.value,
       'is_owner': isOwner,
       'is_worker': isWorker,
@@ -145,7 +145,7 @@ class OwnerProfile {
 
   OwnerProfile copyWith({
     int? id,
-    int? barberProfileId,
+    int? expertProfileId,
     OwnerType? ownerType,
     bool? isOwner,
     bool? isWorker,
@@ -162,7 +162,7 @@ class OwnerProfile {
   }) {
     return OwnerProfile(
       id: id ?? this.id,
-      barberProfileId: barberProfileId ?? this.barberProfileId,
+      expertProfileId: expertProfileId ?? this.expertProfileId,
       ownerType: ownerType ?? this.ownerType,
       isOwner: isOwner ?? this.isOwner,
       isWorker: isWorker ?? this.isWorker,

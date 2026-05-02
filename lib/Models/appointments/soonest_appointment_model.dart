@@ -7,11 +7,11 @@ class SoonestAppointment {
   final String salonId;
   final String customerName;
   final List<String> services;
-  final String? barberName;
+  final String? expertName;
   final String? status;
   final String? salonAddress;
   final int? customerId;
-  final int? barberId;
+  final int? expertId;
 
   SoonestAppointment({
     required this.id,
@@ -22,11 +22,11 @@ class SoonestAppointment {
     required this.salonId,
     required this.customerName,
     required this.services,
-    this.barberName,
+    this.expertName,
     this.status,
     this.salonAddress,
     this.customerId,
-    this.barberId,
+    this.expertId,
   });
 
   SoonestAppointment copyWith({
@@ -34,7 +34,7 @@ class SoonestAppointment {
     double? totalPrice,
     String? salonName,
     String? salonPhoneNumber,
-    String? barberName,
+    String? expertName,
     String? status,
     List<String>? services,
   }) {
@@ -47,11 +47,11 @@ class SoonestAppointment {
       salonId: salonId,
       customerName: customerName,
       services: services ?? this.services,
-      barberName: barberName ?? this.barberName,
+      expertName: expertName ?? this.expertName,
       status: status ?? this.status,
       salonAddress: salonAddress,
       customerId: customerId,
-      barberId: barberId,
+      expertId: expertId,
     );
   }
 
@@ -65,11 +65,11 @@ class SoonestAppointment {
       salonId: json['salon_id']?.toString() ?? json['salon']?.toString() ?? '',
       customerName: json['customer_name'] as String? ?? '',
       services: List<String>.from(json['services'] ?? []),
-      barberName: json['barber_name'] as String?,
+      expertName: json['expert_name'] ?? json['expert_name'] as String?,
       status: json['status'] as String?,
       salonAddress: json['salon_address'] as String?,
       customerId: json['customer'] as int?,
-      barberId: json['barber'] as int?,
+      expertId: json['expert'] ?? json['expert'] as int?,
     );
   }
 
@@ -83,45 +83,16 @@ class SoonestAppointment {
       'salon': salonId,
       'customer_name': customerName,
       'services': services,
-      'barber_name': barberName,
+      'expert_name': expertName,
       'status': status,
       'salon_address': salonAddress,
       'customer': customerId,
-      'barber': barberId,
+      'expert': expertId,
     };
   }
 }
 
 class SoonestAppointmentData {
-  static List<SoonestAppointment> getMockAppointments() {
-    return [
-      SoonestAppointment(
-        id: '1',
-        dateTime: DateTime.now().add(Duration(hours: 2)),
-        totalPrice: 45.00,
-        salonName: 'Modern Cuts Barbersalon',
-        salonPhoneNumber: '+1 (555) 123-4567',
-        salonId: '1',
-        customerName: 'John Doe',
-        services: ['Haircut', 'Beard Trim'],
-        barberName: 'Mike Johnson',
-        status: 'SCHEDULED',
-      ),
-      SoonestAppointment(
-        id: '2',
-        dateTime: DateTime.now().add(Duration(days: 1, hours: 3)),
-        totalPrice: 60.00,
-        salonName: 'Elite Barber Studio',
-        salonPhoneNumber: '+1 (555) 987-6543',
-        salonId: '2',
-        customerName: 'John Doe',
-        services: ['Haircut', 'Shave', 'Facial'],
-        barberName: 'Sarah Wilson',
-        status: 'SCHEDULED',
-      ),
-    ];
-  }
-
   static SoonestAppointment? getSoonestAppointment(List<SoonestAppointment> appointments) {
     if (appointments.isEmpty) return null;
 

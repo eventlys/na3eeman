@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:na3eeman/Providers/features/auth_provider.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
-import 'package:na3eeman/Packages/Core/constants/app_roles.dart';
 
 /// Payroll management page (WAJ parity).
 /// Accessible to Owner (all types) and Co-Founder.
@@ -55,7 +52,7 @@ class _PayrollPageState extends State<PayrollPage> {
   }
 
   void _showCreateDialog() {
-    final employeeCtrl = TextEditingController();
+    final expertCtrl = TextEditingController();
     final baseCtrl = TextEditingController();
     final commCtrl = TextEditingController();
     final dedCtrl = TextEditingController();
@@ -70,7 +67,7 @@ class _PayrollPageState extends State<PayrollPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _field(employeeCtrl, 'Employee ID', TextInputType.number),
+              _field(expertCtrl, 'Expert ID', TextInputType.number),
               _field(baseCtrl, 'Base Salary (JOD)', TextInputType.number),
               _field(commCtrl, 'Commission Earned', TextInputType.number),
               _field(dedCtrl, 'Deductions', TextInputType.number),
@@ -87,7 +84,7 @@ class _PayrollPageState extends State<PayrollPage> {
                 final api = ApiService();
                 final now = DateTime.now();
                 await api.post('/salons/payroll/', data: {
-                  'employee': int.tryParse(employeeCtrl.text) ?? 0,
+                  'expert': int.tryParse(expertCtrl.text) ?? 0,
                   'period_start': '${now.year}-${now.month.toString().padLeft(2,'0')}-01',
                   'period_end': '${now.year}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')}',
                   'base_salary': double.tryParse(baseCtrl.text) ?? 0,
@@ -151,7 +148,7 @@ class _PayrollPageState extends State<PayrollPage> {
                       child: ListView.separated(
                         padding: const EdgeInsets.all(20),
                         itemCount: _records.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        separatorBuilder: (_, _) => const SizedBox(height: 12),
                         itemBuilder: (_, i) => _PayrollCard(
                           record: _records[i],
                           onMarkPaid: () => _markPaid(_records[i]['id'] as int),
@@ -189,7 +186,7 @@ class _PayrollCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isPaid = record['is_paid'] as bool? ?? false;
     final total = (record['total_paid'] as num?)?.toDouble() ?? 0.0;
-    final name = record['employee_name'] as String? ?? 'Employee';
+    final name = record['expert_name'] as String? ?? 'Expert';
 
     return Container(
       padding: const EdgeInsets.all(20),

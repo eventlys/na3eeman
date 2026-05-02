@@ -221,11 +221,13 @@ class AnalyticsService {
 
   /// Fetch filtered service requests for admin review.
   Future<List<dynamic>> getServiceRequests(Map<String, String> params) async {
-    final resultMap = await _apiService.get(
-      '/admin/service-requests/',
+    final result = await _apiService.get(
+      Endpoints.feedback,
       queryParams: params,
-    ) as Map<String, dynamic>?;
-    return (resultMap?['results'] as List<dynamic>?) ?? [];
+    );
+    if (result is List) return result;
+    if (result is Map && result.containsKey('results')) return result['results'];
+    return [];
   }
 }
 

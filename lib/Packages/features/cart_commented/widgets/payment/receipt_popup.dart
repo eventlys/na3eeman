@@ -1,4 +1,4 @@
-// import 'package:na3eeman/l10n/app_localizations.dart';
+// import 'package:easy_localization/easy_localization.dart';
 // import 'package:flutter/material.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import 'payment_methods.dart';
@@ -33,7 +33,7 @@
 //           actions: [
 //             TextButton(
 //               onPressed: () => Navigator.of(context).pop(),
-//               child: Text(AppLocalizations.of(context)!.cancel),
+//               child: Text("cancel".tr()),
 //             ),
 //             ElevatedButton(
 //               onPressed: () async {
@@ -49,7 +49,7 @@
 //                   );
 //                 }
 //               },
-//               child: Text(AppLocalizations.of(context)!.confirmPay),
+//               child: Text("confirm_pay".tr()),
 //             ),
 //           ],
 //         );

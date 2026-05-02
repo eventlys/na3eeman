@@ -6,9 +6,10 @@ class NavigationService {
       case 'CUSTOMER':
         Navigator.pushNamedAndRemoveUntil(context, '/customer_home', (route) => false);
         break;
-      case 'BARBER':
+      case 'EXPERT':
+      case 'EXPERT':
       case 'EMPLOYEE':
-        Navigator.pushNamedAndRemoveUntil(context, '/employee_dashboard', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/expert_dashboard', (route) => false);
         break;
       case 'INTERN':
         Navigator.pushNamedAndRemoveUntil(context, '/intern_dashboard', (route) => false);
@@ -17,9 +18,10 @@ class NavigationService {
         Navigator.pushNamedAndRemoveUntil(context, '/receptionist_dashboard', (route) => false);
         break;
       case 'OWNER':
+      case 'MANAGER':
+      case 'OWNER_EXPERT':
       case 'OWNER_EMPLOYEE':
       case 'OWNER_OWNER':
-      case 'MANAGER':
       case 'COFOUNDER':
         Navigator.pushNamedAndRemoveUntil(context, '/owner_dashboard', (route) => false);
         break;

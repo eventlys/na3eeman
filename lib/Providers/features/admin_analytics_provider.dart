@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../Models/loyalty/feedback_model.dart';
 import '../../Services/analytics_service.dart';
 
 class AdminAnalyticsProvider with ChangeNotifier {
@@ -68,7 +69,7 @@ class AdminAnalyticsProvider with ChangeNotifier {
       _userStats = await _analyticsService.getAdminUserAnalytics();
       notifyListeners();
     } catch (e) {
-       debugPrint('UserAnalytics Error: $e');
+      debugPrint('UserAnalytics Error: $e');
     }
   }
 
@@ -91,8 +92,7 @@ class AdminAnalyticsProvider with ChangeNotifier {
   }
 
   /// Fetches user service requests with optional filters.
-  /// Returns null on error (caller falls back to mock data).
-  Future<List<dynamic>?> fetchServiceRequests({
+  Future<List<HelpFeedback>> fetchServiceRequests({
     String ageFilter = 'all',
     String roleFilter = 'all',
     String subFilter = 'all',
@@ -104,11 +104,10 @@ class AdminAnalyticsProvider with ChangeNotifier {
       if (subFilter != 'all') params['subscription'] = subFilter;
 
       final data = await _analyticsService.getServiceRequests(params);
-      return data;
+      return data.map((json) => HelpFeedback.fromJson(json)).toList();
     } catch (e) {
       debugPrint('ServiceRequests Error: $e');
-      return null;
+      return [];
     }
   }
 }
-

@@ -278,7 +278,6 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
               ),
             );
           case NeomorphicSphereAnimationType.scale:
-          default:
             return Transform.scale(
               scale: _scaleAnimation.value,
               child: child,

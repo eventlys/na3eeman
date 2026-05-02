@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Core/themes/animated_cart_button.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ProductSection extends StatelessWidget {
   final Map<String, dynamic> salonData;
@@ -33,7 +32,7 @@ class ProductSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.of(context)!.productsPrices,
+          Text("products_prices".tr(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -45,7 +44,7 @@ class ProductSection extends StatelessWidget {
             name: service['name'] as String,
             price: service['price'] as String,
             made: service['made'] as String,
-          )).toList(),
+          )),
         ],
       ),
     );

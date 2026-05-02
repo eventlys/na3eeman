@@ -1,16 +1,11 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../../Helpers/registration_helper.dart';
-import '../../../../Helpers/login_helper.dart';
-import '../../../../Providers/app_providers.dart';
 import '../../../../Providers/locale_provider.dart';
-import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../Services/api/auth_service.dart';
 import '../../../../Services/repositories/auth_repository.dart';
-import '../../../../Services/ui/navigation_service.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 
@@ -86,26 +81,28 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                AppLocalizations.of(context)!.selectLanguage,
+                "select_language".tr(),
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             ListTile(
               leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
               title: const Text('English'),
-              trailing: localeProvider.locale.languageCode == 'en' ? Icon(Icons.check, color: AppColors.primary) : null,
-              onTap: () {
-                localeProvider.setLocale(const Locale('en'));
-                Navigator.pop(context);
+              trailing: context.locale.languageCode == 'en' ? Icon(Icons.check, color: AppColors.primary) : null,
+              onTap: () async {
+                await context.setLocale(const Locale('en', 'US'));
+                await localeProvider.setLocale(const Locale('en'));
+                if (mounted) Navigator.pop(this.context);
               },
             ),
             ListTile(
               leading: const Text('🇸🇦', style: TextStyle(fontSize: 24)),
               title: const Text('العربية'),
-              trailing: localeProvider.locale.languageCode == 'ar' ? Icon(Icons.check, color: AppColors.primary) : null,
-              onTap: () {
-                localeProvider.setLocale(const Locale('ar'));
-                Navigator.pop(context);
+              trailing: context.locale.languageCode == 'ar' ? Icon(Icons.check, color: AppColors.primary) : null,
+              onTap: () async {
+                await context.setLocale(const Locale('ar', 'EG'));
+                await localeProvider.setLocale(const Locale('ar'));
+                if (mounted) Navigator.pop(this.context);
               },
             ),
           ],
@@ -157,7 +154,6 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Stack(
@@ -214,7 +210,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                       const SizedBox(height: 32),
                       
                       Text(
-                        l10n.signUp,
+                        "sign_up".tr(),
                         style: theme.textTheme.headlineLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: isDark ? AppColors.white : AppColors.almostBlack700,
@@ -264,7 +260,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                labelText: l10n.email,
+                                labelText: "email".tr(),
                                 prefixIcon: const Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                               ),
@@ -275,7 +271,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
-                                labelText: l10n.phoneNumber,
+                                labelText: "phone_number".tr(),
                                 prefixIcon: const Icon(Icons.phone_outlined),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                               ),
@@ -321,7 +317,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               controller: _passwordController,
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
-                                labelText: l10n.password,
+                                labelText: "password".tr(),
                                 prefixIcon: const Icon(Icons.lock_outline_rounded),
                                 suffixIcon: IconButton(
                                   icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
@@ -336,7 +332,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               controller: _confirmPasswordController,
                               obscureText: !_isConfirmPasswordVisible,
                               decoration: InputDecoration(
-                                labelText: l10n.confirmPassword,
+                                labelText: "confirm_password".tr(),
                                 prefixIcon: const Icon(Icons.lock_reset_rounded),
                                 suffixIcon: IconButton(
                                   icon: Icon(_isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility),
@@ -352,7 +348,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                       
                       const SizedBox(height: 32),
                       PrimaryButton(
-                        text: l10n.signUp,
+                        text: "sign_up".tr(),
                         onPressed: _handleSignup,
                       ),
                       
@@ -360,10 +356,10 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(l10n.backToLogin.split('?')[0]),
+                          Text("back_to_login".tr().split('?')[0]),
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text(l10n.signIn),
+                            child: Text("sign_in".tr()),
                           ),
                         ],
                       ),

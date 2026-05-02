@@ -8,11 +8,11 @@ class RatingWithPointsWidget extends StatefulWidget {
   final Function(double)? onRatingChanged;
 
   const RatingWithPointsWidget({
-    Key? key,
+    super.key,
     required this.salonData,
     this.initialRating = 0.0,
     this.onRatingChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<RatingWithPointsWidget> createState() => _RatingWithPointsWidgetState();

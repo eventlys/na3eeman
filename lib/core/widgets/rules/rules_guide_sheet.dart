@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../theme/colors.dart';
-import '../../theme/spacing.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../Packages/Core/constants/app_roles.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../../../Services/content_service.dart';
 
-/// Canonical Rules & User Guide bottom sheet.
-///
-/// Call via:
-/// ```dart
-/// RulesGuideSheet.showRules(context);
-/// RulesGuideSheet.showGuide(context);
-/// ```
-class RulesGuideSheet extends StatelessWidget {
-  final bool showGuide; // false = rules mode, true = guide mode
+class RulesGuideSheet extends StatefulWidget {
+  final bool showGuide; 
+  final bool showPrivacy;
+  final bool isPointsRules;
 
-  const RulesGuideSheet({super.key, required this.showGuide});
+  const RulesGuideSheet({
+    super.key, 
+    required this.showGuide,
+    this.showPrivacy = false,
+    this.isPointsRules = false,
+  });
 
-  // ─── Public Static Methods ───────────────────────────────────────────────────
+  static Future<void> showPointsRules(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const RulesGuideSheet(showGuide: false, isPointsRules: true),
+    );
+  }
 
   static Future<void> showRulesSheet(BuildContext context) {
     return showModalBottomSheet(
@@ -38,7 +45,52 @@ class RulesGuideSheet extends StatelessWidget {
     );
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  static Future<void> showPrivacySheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const RulesGuideSheet(showGuide: false, showPrivacy: true),
+    );
+  }
+
+  @override
+  State<RulesGuideSheet> createState() => _RulesGuideSheetState();
+}
+
+class _RulesGuideSheetState extends State<RulesGuideSheet> {
+  final ContentService _contentService = ContentService();
+  String _content = '';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchContent();
+  }
+
+  Future<void> _fetchContent() async {
+    final role = context.read<AuthProvider>().user?.role ?? UserRole.customer;
+    final roleName = role.toString().split('.').last;
+    
+    String fetchedContent = '';
+    if (widget.isPointsRules) {
+      fetchedContent = await _contentService.getAppRules('LOYALTY');
+    } else if (widget.showPrivacy) {
+      fetchedContent = await _contentService.getPrivacyPolicy();
+    } else if (widget.showGuide) {
+      fetchedContent = await _contentService.getUserGuide(roleName);
+    } else {
+      fetchedContent = await _contentService.getAppRules(roleName);
+    }
+
+    if (mounted) {
+      setState(() {
+        _content = fetchedContent;
+        _isLoading = false;
+      });
+    }
+  }
 
   UserRole _currentRole(BuildContext context) {
     final user = context.read<AuthProvider>().user;
@@ -46,211 +98,121 @@ class RulesGuideSheet extends StatelessWidget {
   }
 
   String _currentRoleName(BuildContext context, UserRole role) {
-    final l10n = AppLocalizations.of(context)!;
     switch (role) {
       case UserRole.owner:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
-        return l10n.rulesOwner.split('\n').first.isEmpty ? 'Owner' : 'Owner';
+      case UserRole.ownerExpert:
+        return 'Owner';
       case UserRole.receptionist:
         return 'Receptionist';
       case UserRole.cofounder:
-        return l10n.cofounder;
+        return "cofounder".tr();
       case UserRole.intern:
         return 'Intern';
-      case UserRole.barber:
-      case UserRole.employee:
-        return 'Employee';
+      case UserRole.expert:
+        return 'Expert';
       default:
         return 'Customer';
     }
   }
 
-  String _rulesText(BuildContext context, UserRole role) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (role) {
-      case UserRole.owner:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
-        return l10n.rulesOwner;
-      case UserRole.receptionist:
-        return l10n.rulesReceptionist;
-      case UserRole.cofounder:
-        return l10n.rulesCofounder;
-      case UserRole.intern:
-        return l10n.rulesIntern;
-      case UserRole.barber:
-      case UserRole.employee:
-        return l10n.rulesEmployee;
-      default:
-        return l10n.rulesCustomer;
-    }
-  }
-
-  String _guideText(BuildContext context, UserRole role) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (role) {
-      case UserRole.owner:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
-        return l10n.guideOwner;
-      case UserRole.receptionist:
-        return l10n.guideReceptionist;
-      case UserRole.cofounder:
-        return l10n.guideCofounder;
-      case UserRole.intern:
-        return l10n.guideIntern;
-      case UserRole.barber:
-      case UserRole.employee:
-        return l10n.guideEmployee;
-      default:
-        return l10n.guideCustomer;
-    }
-  }
-
-  // ─── Build ───────────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final role = _currentRole(context);
-    final text = showGuide ? _guideText(context, role) : _rulesText(context, role);
-    final title = showGuide ? l10n.userGuideTitle : l10n.appRulesTitle;
-    final icon = showGuide ? Icons.menu_book_rounded : Icons.gavel_rounded;
-    final accent = showGuide ? const Color(0xFF1565C0) : const Color(0xFF6A1B9A);
+    
+    final String title;
+    final IconData icon;
+    final Color accent;
+
+    if (widget.isPointsRules) {
+      title = 'Loyalty Points Rules';
+      icon = Icons.stars_rounded;
+      accent = AppColors.pink;
+    } else {
+      title = widget.showPrivacy 
+          ? "privacy_policy".tr() 
+          : (widget.showGuide ? "user_guide_title".tr() : "app_rules_title".tr());
+      icon = widget.showPrivacy 
+          ? Icons.lock_person_rounded 
+          : (widget.showGuide ? Icons.menu_book_rounded : Icons.gavel_rounded);
+      accent = widget.showPrivacy 
+          ? const Color(0xFF2E7D32) 
+          : (widget.showGuide ? const Color(0xFF1565C0) : const Color(0xFF6A1B9A));
+    }
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.75,
+      initialChildSize: 0.8,
       minChildSize: 0.5,
       maxChildSize: 0.95,
       builder: (_, scrollController) {
         return Container(
           decoration: BoxDecoration(
             color: isDark ? AppColors.almostBlack600 : Colors.white,
-            borderRadius: AppSpacing.brSheet,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 32,
-                offset: const Offset(0, -4),
-              ),
-            ],
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
           ),
           child: Column(
             children: [
-              // Drag handle
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 4),
-                width: 40,
-                height: 4,
+                margin: const EdgeInsets.only(top: 16, bottom: 8),
+                width: 50,
+                height: 5,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.white.withOpacity(0.2) : AppColors.almostBlack100,
-                  borderRadius: AppSpacing.brRound,
+                  color: isDark ? AppColors.white.withOpacity(0.15) : AppColors.almostBlack100,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-
-              // Header
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.pageH,
-                  vertical: AppSpacing.md,
-                ),
+                padding: const EdgeInsets.all(24),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: accent.withOpacity(0.12),
-                        borderRadius: AppSpacing.brSm,
+                        color: accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Icon(icon, color: accent, size: AppSpacing.iconBase),
+                      child: Icon(icon, color: accent, size: 32),
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    const SizedBox(width: 20),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(title,
-                            style: TextStyle(
-                              fontSize: AppSpacing.fontLg,
-                              fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : AppColors.almostBlack,
-                            ),
-                          ),
-                          Text(
-                            l10n.rulesForYourRole,
-                            style: TextStyle(
-                              fontSize: AppSpacing.fontSm,
-                              color: accent,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                          Text('${"rules_for_your_role".tr()}: ${_currentRoleName(context, role)}',
+                            style: TextStyle(fontSize: 12, color: accent, fontWeight: FontWeight.bold)),
                         ],
-                      ),
-                    ),
-                    // Role badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: accent.withOpacity(0.12),
-                        borderRadius: AppSpacing.brSm,
-                        border: Border.all(color: accent.withOpacity(0.3)),
-                      ),
-                      child: Text(
-                        _currentRoleName(context, role),
-                        style: TextStyle(
-                          color: accent,
-                          fontSize: AppSpacing.fontXs,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              Divider(
-                color: isDark ? AppColors.white.withOpacity(0.08) : AppColors.almostBlack50,
-                height: 1,
-              ),
-
-              // Content
+              const Divider(height: 1),
               Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(AppSpacing.pageH),
-                  child: _buildContent(context, text, isDark, accent),
-                ),
+                child: _isLoading 
+                    ? const Center(child: CircularProgressIndicator())
+                    : _content.isEmpty
+                        ? Center(child: Text("no_data_available".tr() ?? 'No content available.'))
+                        : SingleChildScrollView(
+                            controller: scrollController,
+                            padding: const EdgeInsets.all(24),
+                            child: _buildContent(context, _content, isDark, accent),
+                          ),
               ),
-
-              // Close button
               Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.pageH, AppSpacing.sm, AppSpacing.pageH, AppSpacing.lg,
-                ),
+                padding: const EdgeInsets.all(24),
                 child: SizedBox(
                   width: double.infinity,
-                  height: AppSpacing.buttonHeight,
-                  child: FilledButton(
+                  height: 56,
+                  child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: accent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppSpacing.brMd,
-                      ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isDark ? AppColors.almostBlack700 : Colors.grey[100],
+                      foregroundColor: isDark ? Colors.white : AppColors.almostBlack,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 0,
                     ),
-                    child: Text(
-                      AppLocalizations.of(context)!.close,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: AppSpacing.fontBase,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: Text("close".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -263,88 +225,78 @@ class RulesGuideSheet extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, String text, bool isDark, Color accent) {
     final lines = text.split('\n');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: lines.map((line) {
-        if (line.trim().isEmpty) return const SizedBox(height: AppSpacing.sm);
+    final List<Widget> widgets = [];
+    String? currentHeader;
+    List<String> currentItems = [];
 
-        // Numbered rules (1. / ١.)
-        final bool isNumbered = RegExp(r'^[\d١٢٣٤٥٦٧٨٩٠]+[.\)]').hasMatch(line.trim());
-        // Bullet points
-        final bool isBullet = line.trim().startsWith('•') || line.trim().startsWith('-');
+    void flushSection() {
+      if (currentHeader != null) {
+        widgets.add(_buildAccordionSection(context, currentHeader!, currentItems, isDark, accent));
+        widgets.add(const SizedBox(height: 12));
+      } else if (currentItems.isNotEmpty) {
+         widgets.addAll(currentItems.map((item) => _buildSimpleLine(item, isDark, accent)));
+      }
+      currentHeader = null;
+      currentItems = [];
+    }
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (isNumbered) ...[
-                Container(
-                  width: 28,
-                  height: 28,
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(top: 1),
-                  decoration: BoxDecoration(
-                    color: accent.withOpacity(0.12),
-                    borderRadius: AppSpacing.brSm,
-                  ),
-                  child: Text(
-                    line.trim().split(RegExp(r'[.\)]')).first,
-                    style: TextStyle(
-                      color: accent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppSpacing.fontSm,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    line.trim().replaceFirst(RegExp(r'^[\d١٢٣٤٥٦٧٨٩٠]+[.\)]\s*'), ''),
-                    style: TextStyle(
-                      fontSize: AppSpacing.fontMd,
-                      color: isDark ? AppColors.cream : AppColors.almostBlack700,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ] else if (isBullet) ...[
-                Container(
-                  width: 6,
-                  height: 6,
-                  margin: const EdgeInsets.only(top: 7, right: 10, left: 2),
-                  decoration: BoxDecoration(
-                    color: accent,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    line.trim().replaceFirst(RegExp(r'^[•\-]\s*'), ''),
-                    style: TextStyle(
-                      fontSize: AppSpacing.fontMd,
-                      color: isDark ? AppColors.cream : AppColors.almostBlack700,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ] else ...[
-                Expanded(
-                  child: Text(
-                    line,
-                    style: TextStyle(
-                      fontSize: AppSpacing.fontMd,
-                      color: isDark ? AppColors.cream : AppColors.almostBlack700,
-                      height: 1.5,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ],
+    for (var line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) continue;
+
+      if (!trimmed.startsWith('•') && !trimmed.startsWith('-') && !RegExp(r'^[\d١٢٣٤٥٦٧٨٩٠]+[.\)]').hasMatch(trimmed)) {
+        flushSection();
+        currentHeader = trimmed;
+      } else {
+        currentItems.add(trimmed);
+      }
+    }
+    flushSection();
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets);
+  }
+
+  Widget _buildAccordionSection(BuildContext context, String title, List<String> items, bool isDark, Color accent) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack500 : Colors.grey[50],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: accent.withOpacity(0.1)),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          leading: Icon(Icons.info_outline_rounded, color: accent, size: 20),
+          title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: isDark ? Colors.white : AppColors.almostBlack)),
+          childrenPadding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          children: items.map((item) => _buildSimpleLine(item, isDark, accent)).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimpleLine(String line, bool isDark, Color accent) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6, right: 10),
+            child: Container(width: 6, height: 6, decoration: BoxDecoration(color: accent, shape: BoxShape.circle)),
           ),
-        );
-      }).toList(),
+          Expanded(
+            child: Text(
+              line.replaceFirst(RegExp(r'^([•\-]|[\d١٢٣٤٥٦٧٨٩٠]+[.\)])\s*'), ''),
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

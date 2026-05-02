@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 // import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AttachFeedbackDialog extends StatefulWidget {
   final String staffName;
@@ -60,12 +59,12 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text("cancel".tr()),
         ),
         ElevatedButton(
           onPressed: _handleSubmit,
           style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-          child: Text(AppLocalizations.of(context)!.confirm, style: TextStyle(color: Colors.white)),
+          child: Text("confirm".tr(), style: TextStyle(color: Colors.white)),
         ),
       ],
     );

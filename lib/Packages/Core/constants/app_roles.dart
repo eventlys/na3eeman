@@ -3,6 +3,7 @@
 /// UserRole — all actor types in the system
 /// SubscriptionTier — commercial offering levels
 /// AppPermission — granular permissions checked at the widget/feature level
+library;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // USER ROLES
@@ -13,78 +14,58 @@ enum UserRole {
   /// End customer (books appointments).
   customer,
 
-  /// Individual barber exposed to clients (no management scope).
-  barber,
-
-  /// Salon employee working under an owner.
-  employee,
-
-  /// Manages scheduling & staff; limited financial access.
-  manager,
-
-  /// Front-desk operator; creates/edits appointments.
-  receptionist,
-
-  /// Assistant tasks only (materials, cleaning, etc.).
-  helper,
-
-  /// Full salon owner; all salon-level permissions.
-  owner,
-
-  /// Owner who also works as an employee.
-  ownerEmployee,
-
-  /// Pure business owner who doesn't work in the salon.
-  ownerOwner,
-
-  /// Administrative role for salon/platform management.
-  admin,
+  /// Expert practitioner (replaces Expert and Expert).
+  expert,
 
   /// Trainee or junior staff.
   intern,
 
-  /// App-level god mode. Developer / platform administrator.
-  superAdmin,
+  /// Front-desk operator; creates/edits appointments.
+  receptionist,
+
+  /// Full salon owner; all salon-level permissions.
+  owner,
+
+  /// Owner of a second branch.
+  manager,
+
+  /// Owner who also works as an expert.
+  ownerExpert,
 
   /// Co-Founder — shares all Owner permissions and pages.
-  cofounder;
+  cofounder,
+
+  /// Administrative role for salon/platform management.
+  admin;
 
   bool get isStaff =>
-      [barber, employee, manager, receptionist, helper, owner, ownerEmployee, ownerOwner, intern, admin, cofounder].contains(this);
+      [expert, intern, receptionist, owner, manager, ownerExpert, cofounder, admin].contains(this);
 
   bool get isOwnerEquivalent =>
-      [owner, ownerEmployee, ownerOwner, cofounder].contains(this);
+      [owner, manager, ownerExpert, cofounder].contains(this);
 
-  bool get isAdmin => this == admin || this == superAdmin;
+  bool get isAdmin => this == admin;
 
   String get displayName {
     switch (this) {
       case customer:
         return 'Customer';
-      case barber:
-        return 'Barber';
-      case employee:
-        return 'Employee';
-      case manager:
-        return 'Manager';
-      case receptionist:
-        return 'Receptionist';
-      case helper:
-        return 'Helper';
-      case owner:
-        return 'Owner';
-      case ownerEmployee:
-        return 'Owner (Employee)';
-      case ownerOwner:
-        return 'Owner (Manager)';
-      case admin:
-        return 'Admin';
+      case expert:
+        return 'Expert';
       case intern:
         return 'Intern';
-      case superAdmin:
-        return 'Super Admin';
+      case receptionist:
+        return 'Receptionist';
+      case owner:
+        return 'Owner';
+      case manager:
+        return 'Manager';
+      case ownerExpert:
+        return 'Owner Expert';
       case cofounder:
         return 'Co-Founder';
+      case admin:
+        return 'Admin';
     }
   }
 
@@ -96,32 +77,29 @@ extension UserRoleExtension on UserRole {
     switch (role.toUpperCase()) {
       case 'CUSTOMER':
         return UserRole.customer;
-      case 'BARBER':
-        return UserRole.barber;
+      case 'EXPERT':
       case 'EMPLOYEE':
-        return UserRole.employee;
-      case 'MANAGER':
-        return UserRole.manager;
+        return UserRole.expert;
+      case 'INTERN':
+      case 'HELPER':
+        return UserRole.intern;
       case 'RECEPTIONIST':
         return UserRole.receptionist;
-      case 'HELPER':
-        return UserRole.helper;
       case 'OWNER':
-        return UserRole.owner;
-      case 'OWNER_EMPLOYEE':
-        return UserRole.ownerEmployee;
       case 'OWNER_OWNER':
-        return UserRole.ownerOwner;
-      case 'ADMIN':
-        return UserRole.admin;
-      case 'INTERN':
-        return UserRole.intern;
-      case 'SUPERADMIN':
-      case 'SUPER_ADMIN':
-        return UserRole.superAdmin;
+        return UserRole.owner;
+      case 'MANAGER':
+        return UserRole.manager;
+      case 'OWNER_EXPERT':
+      case 'OWNER_EMPLOYEE':
+        return UserRole.ownerExpert;
       case 'COFOUNDER':
       case 'CO_FOUNDER':
         return UserRole.cofounder;
+      case 'ADMIN':
+      case 'SUPERADMIN':
+      case 'SUPER_ADMIN':
+        return UserRole.admin;
       default:
         return UserRole.customer;
     }
@@ -233,7 +211,6 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.createBooking,
     AppPermission.rescheduleBooking,
   },
-  UserRole.helper: {AppPermission.viewBookings},
   UserRole.receptionist: {
     AppPermission.viewBookings,
     AppPermission.createBooking,
@@ -241,14 +218,10 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.rescheduleBooking,
     AppPermission.viewCustomerList,
   },
-  UserRole.barber: {
+  UserRole.expert: {
     AppPermission.viewBookings,
     AppPermission.viewCustomerList,
     AppPermission.viewReports,
-  },
-  UserRole.employee: {
-    AppPermission.viewBookings,
-    AppPermission.viewCustomerList,
     AppPermission.manageServices,
     AppPermission.manageSessions,
   },
@@ -288,27 +261,7 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.viewAnalytics,
     AppPermission.viewPeakHours,
   },
-  UserRole.ownerEmployee: {
-    AppPermission.viewBookings,
-    AppPermission.createBooking,
-    AppPermission.cancelAnyBooking,
-    AppPermission.rescheduleBooking,
-    AppPermission.viewCustomerList,
-    AppPermission.editCustomerProfile,
-    AppPermission.viewStaffList,
-    AppPermission.manageStaff,
-    AppPermission.setStaffRoles,
-    AppPermission.viewSalonRevenue,
-    AppPermission.viewPayoutRequests,
-    AppPermission.viewReports,
-    AppPermission.downloadReports,
-    AppPermission.editSalonProfile,
-    AppPermission.manageSessions,
-    AppPermission.manageServices,
-    AppPermission.viewAnalytics,
-    AppPermission.viewPeakHours,
-  },
-  UserRole.ownerOwner: {
+  UserRole.ownerExpert: {
     AppPermission.viewBookings,
     AppPermission.createBooking,
     AppPermission.cancelAnyBooking,
@@ -329,15 +282,11 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.viewPeakHours,
   },
   UserRole.admin: {
-    ...AppPermission.values, // Admins get everything for now
+    ...AppPermission.values, // Admins get everything
   },
   UserRole.intern: {
     AppPermission.viewBookings,
     AppPermission.viewCustomerList,
-  },
-  UserRole.superAdmin: {
-    // Super Admin has ALL permissions — populated dynamically
-    ...AppPermission.values,
   },
   UserRole.cofounder: {
     // Co-Founder has identical permissions to Owner

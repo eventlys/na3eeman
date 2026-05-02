@@ -1,42 +1,18 @@
 import '../../Helpers/service_models_helper.dart';
+import '../api/api_service.dart';
+import '../../Helpers/logger.dart';
 
 class ServiceRepository {
   // Simulate fetching services from API
   Future<List<Map<String, dynamic>>> getSalonServices(int salonId) async {
-    // This would typically call your API service
-    await Future.delayed(Duration(milliseconds: 500)); // Simulate network delay
-
-    // Mock data - in real app, this would come from your API
-    return [
-      ServiceDataHelper.createServiceData(
-        id: '1',
-        name: 'Classic Haircut',
-        duration: '30 min',
-        price: '\$25.00',
-        description: 'Professional haircut with styling',
-      ),
-      ServiceDataHelper.createServiceData(
-        id: '2',
-        name: 'Beard Trim',
-        duration: '15 min',
-        price: '\$15.00',
-        description: 'Precise beard shaping and trimming',
-      ),
-      ServiceDataHelper.createServiceData(
-        id: '3',
-        name: 'Haircut & Beard',
-        duration: '45 min',
-        price: '\$35.00',
-        description: 'Complete grooming package',
-      ),
-      ServiceDataHelper.createServiceData(
-        id: '4',
-        name: 'Hair Wash & Style',
-        duration: '20 min',
-        price: '\$18.00',
-        description: 'Relaxing hair wash with professional styling',
-      ),
-    ];
+    try {
+      final apiService = ApiService();
+      final response = await apiService.getSalonServices(salonId);
+      return convertApiResponseToServices(response);
+    } catch (e) {
+      AppLogger.error('Failed to fetch salon services', error: e);
+      return [];
+    }
   }
 
   // Convert API response to service data format

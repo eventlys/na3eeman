@@ -1,9 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_color.dart';
-import '../utils/helpers/themes_helpers.dart';
 import 'app_theme.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class EmptyState extends StatelessWidget {
   final String title;
@@ -212,9 +210,9 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.noItemsFound,
+      title: title ?? "no_items_found".tr(),
       description:
-          description ?? AppLocalizations.of(context)!.thereAreNoItemsToDisplayAtTheMoment,
+          description ?? "there_are_no_items_to_display_at_the_moment".tr(),
       icon: Icons.inventory_2_outlined,
       actionButton: actionButton,
       compact: compact,
@@ -230,8 +228,8 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.noFavoritesYet,
-      description: description ?? AppLocalizations.of(context)!.yourFavoriteItemsWillAppearHere,
+      title: title ?? "no_favorites_yet".tr(),
+      description: description ?? "your_favorite_items_will_appear_here".tr(),
       icon: Icons.favorite_border,
       actionButton: actionButton,
       gender: gender,
@@ -246,8 +244,8 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.noResultsFound,
-      description: description ?? AppLocalizations.of(context)!.tryAdjustingYourSearchTerms,
+      title: title ?? "no_results_found".tr(),
+      description: description ?? "try_adjusting_your_search_terms".tr(),
       icon: Icons.search_off,
       actionButton: actionButton,
       gender: gender,
@@ -262,15 +260,15 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.somethingWentWrong,
-      description: description ?? AppLocalizations.of(context)!.pleaseTryAgainLater,
+      title: title ?? "something_went_wrong".tr(),
+      description: description ?? "please_try_again_later".tr(),
       icon: Icons.error_outline,
       iconColor: AppColor.lightError,
       actionButton: onRetry != null
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context)!.tryAgain),
+              label: Text("try_again".tr()),
             )
           : null,
       gender: gender,
@@ -285,14 +283,14 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.noInternetConnection,
-      description: description ?? AppLocalizations.of(context)!.pleaseCheckYourConnectionAndTryAgain,
+      title: title ?? "no_internet_connection".tr(),
+      description: description ?? "please_check_your_connection_and_try_again".tr(),
       icon: Icons.wifi_off,
       actionButton: onRetry != null
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context)!.retry),
+              label: Text("retry".tr()),
             )
           : null,
       gender: gender,
@@ -307,8 +305,8 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.loading,
-      description: description ?? AppLocalizations.of(context)!.pleaseWaitWhileWeLoadYourContent,
+      title: title ?? "loading".tr(),
+      description: description ?? "please_wait_while_we_load_your_content".tr(),
       icon: Icons.hourglass_empty,
       gender: gender,
     );
@@ -323,7 +321,7 @@ class EmptyState extends StatelessWidget {
     UserGender? gender,
   }) {
     return EmptyState(
-      title: title ?? AppLocalizations.of(context)!.success,
+      title: title ?? "success".tr(),
       description: description,
       icon: Icons.check_circle_outline,
       iconColor: AppColor.lightSuccess,

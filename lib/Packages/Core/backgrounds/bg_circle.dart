@@ -12,7 +12,7 @@ class BgCircle extends StatefulWidget {
   final Offset endPosition;
 
   const BgCircle({
-    Key? key,
+    super.key,
     required this.color,
     required this.blurLevel,
     required this.size,
@@ -20,7 +20,7 @@ class BgCircle extends StatefulWidget {
     required this.animationDuration,
     required this.startPosition,
     required this.endPosition,
-  }) : super(key: key);
+  });
 
   @override
   BgCircleState createState() => BgCircleState();

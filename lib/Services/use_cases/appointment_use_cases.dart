@@ -30,7 +30,7 @@ class AppointmentUseCases {
   Future<dynamic> bookAppointment({
     required int customerId,
     required int salonId,
-    required int? barberId,
+    required int? expertId,
     required DateTime startTime,
     required DateTime endTime,
     required List<Map<String, dynamic>> services,
@@ -69,7 +69,7 @@ class AppointmentUseCases {
     return await _appointmentService.bookAppointment(
       customerId: customerId,
       salonId: salonId,
-      barberId: barberId,
+      expertId: expertId,
       startTime: startTime,
       endTime: endTime,
       services: services,

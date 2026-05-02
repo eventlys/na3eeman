@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -11,7 +11,7 @@ import '../../Core/themes/app_scaffold.dart';
 import '../../Core/themes/loading_indicator.dart';
 import '../../Core/utils/helpers/refresh_widgets.dart';
 import '../../Core/widgets/shared/error_widget.dart';
-import '../salon/widgets/barbershop_card.dart';
+import '../salon/widgets/expert_salon_card.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -77,10 +77,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
     _refreshController.refreshCompleted();
   }
 
-  void _onLoading() {
-    _loadMoreData();
-    _refreshController.loadComplete();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +158,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       backgroundColor: AppColor.primary,
                       foregroundColor: AppColor.light,
                     ),
-                    child: Text(AppLocalizations.of(context)!.exploreSalons),
+                    child: Text("explore_salons".tr()),
                   ),
                 ],
               ),
@@ -191,7 +187,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 final Map<String, dynamic> salon = favoriteSalons[index];
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
-                  child: BarbersalonCard(
+                  child: ExpertSalonCard(
                     title: salon['salonName'] ?? 'Unknown Salon',
                     workingHours: salon['businessHours'] ?? '9:00 AM - 6:00 PM',
                     bottomLeftIconPath: AppImages.location, // Use your location icon
@@ -297,13 +293,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       backgroundColor: AppColor.primary,
                       foregroundColor: AppColor.light,
                     ),
-                    child: Text(AppLocalizations.of(context)!.bookAppointment),
+                    child: Text("book_appointment".tr()),
                   ),
                 ),
                 const SizedBox(width: 12),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(AppLocalizations.of(context)!.close,
+                  child: Text("close".tr(),
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),
@@ -432,7 +428,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(AppLocalizations.of(context)!.cancel,
+                  child: Text("cancel".tr(),
                     style: TextStyle(
                       color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
                     ),

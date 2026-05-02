@@ -4,15 +4,14 @@ import '../../../../Services/api/api_service.dart';
 import '../../../../Models/salon/category_model.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
-import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../widgets/ads_horizontal_list.dart';
 import '../widgets/offers_horizontal_list.dart';
-import '../../salon/widgets/barbershop_card.dart';
+import '../../salon/widgets/expert_salon_card.dart';
 import 'package:provider/provider.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CategoryDetailsPage extends StatefulWidget {
   final Category category;
@@ -213,7 +212,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> with TickerPr
                       });
                     },
                     decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.searchSalon,
+                      hintText: "search_salon".tr(),
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
                       filled: true,
                       fillColor: Theme.of(context).brightness == Brightness.dark ? AppColors.almostBlack600 : AppColors.almostBlack50,
@@ -280,11 +279,11 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> with TickerPr
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppLocalizations.of(context)!.yourLastVisit,
+            "your_last_visit".tr(),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          BarbersalonCard(
+          ExpertSalonCard(
             title: _previousSalon!['salonName'] ?? _previousSalon!['salon_name'] ?? 'Last Salon',
             workingHours: '${_previousSalon!['openingTime'] ?? '09:00 AM'} - ${_previousSalon!['closingTime'] ?? '11:00 PM'}',
             profilePicture: 'assets/salons/${_previousSalon!['salon_logo']?.toString().split('/').last ?? 'salon1.jpeg'}',
@@ -356,7 +355,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> with TickerPr
       separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final salon = filteredSalons[index];
-        return BarbersalonCard(
+        return ExpertSalonCard(
           title: salon['salonName'] ?? salon['salon_name'],
           workingHours: '${salon['openingTime'] ?? '09:00 AM'} - ${salon['closingTime'] ?? '11:00 PM'}',
           profilePicture: 'assets/salons/${salon['salon_logo']?.toString().split('/').last ?? 'salon1.jpeg'}',

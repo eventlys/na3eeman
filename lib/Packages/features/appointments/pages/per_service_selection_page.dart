@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../core/theme/colors.dart';
 
@@ -19,22 +19,22 @@ class PerServiceSelectionPage extends StatefulWidget {
 
 class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
   final ApiService _api = ApiService();
-  List<dynamic> _barbers = [];
+  List<dynamic> _experts = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadBarbers();
+    _loadExperts();
   }
 
-  Future<void> _loadBarbers() async {
+  Future<void> _loadExperts() async {
     try {
-      final barbers = await _api.getSalonBarbers(widget.salonId);
-      // In a real app, you might filter barbers by the specific service they provide
+      final experts = await _api.getSalonExperts(widget.salonId);
+      // In a real app, you might filter experts by the specific service they provide
       if (mounted) {
         setState(() {
-          _barbers = barbers;
+          _experts = experts;
           _isLoading = false;
         });
       }
@@ -49,24 +49,24 @@ class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.selectForService(widget.service['name'] ?? 'Service')),
+        title: Text("select_for_service".tr(args: [widget.service['name'] ?? 'Service'])),
         centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _barbers.isEmpty
+          : _experts.isEmpty
               ? const Center(child: Text('No professionals available for this service.'))
               : ListView.separated(
                   padding: const EdgeInsets.all(24),
-                  itemCount: _barbers.length,
+                  itemCount: _experts.length,
                   separatorBuilder: (context, index) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
-                    final barber = _barbers[index];
-                    final name = barber['first_name'] ?? 'Professional';
-                    final rating = (barber['rating'] ?? 5.0).toDouble();
+                    final expert = _experts[index];
+                    final name = expert['first_name'] ?? 'Professional';
+                    final rating = (expert['rating'] ?? 5.0).toDouble();
 
                     return InkWell(
-                      onTap: () => Navigator.pop(context, barber),
+                      onTap: () => Navigator.pop(context, expert),
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         padding: const EdgeInsets.all(16),

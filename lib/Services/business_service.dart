@@ -10,7 +10,6 @@ import 'package:printing/printing.dart';
 import '../Helpers/customized/reports_helper.dart';
 import '../Helpers/error_handler.dart';
 import '../Helpers/config.dart';
-import '../Helpers/gallery_helper.dart';
 import '../Models/appointments/booking_group_model.dart';
 import '../Models/appointments/salon_appointments_model.dart';
 import '../Models/appointments/soonest_appointment_model.dart';
@@ -21,7 +20,7 @@ import '../Models/reports/earnings_model.dart';
 import '../Models/reports/profit_data.dart';
 import '../Models/salon/review_model.dart';
 import '../Models/salon/salons_model.dart' hide Review;
-import '../Models/staff/barber.dart';
+import '../Models/staff/expert.dart';
 import '../Models/staff/staff_member.dart';
 import '../Models/subscriptions/subscription.dart';
 import '../Models/subscriptions/subscription_model.dart';
@@ -29,13 +28,13 @@ import '../Models/auth/user_model.dart';
 
 // Core
 import 'enums/appointment_status.dart';
-import 'enums/attendee_type.dart';
 import '../Helpers/logger.dart';
 import '../Packages/Core/utils/formatters.dart';
 import 'enums/points_types.dart';
 
 // Services
 import '../Services/api/api_service.dart';
+import '../Services/api/endpoints.dart';
 import 'api/api_interceptor_service.dart';
 import 'enums/report_enums.dart';
 import 'enums/staff_role.dart';
@@ -249,7 +248,7 @@ class BusinessService {
       return data.map((json) => SalonAppointment.fromJson(json)).toList();
     } catch (e) {
       AppLogger.error('Error fetching appointments: $e');
-      return _getMockAppointments();
+      rethrow;
     }
   }
 
@@ -269,7 +268,7 @@ class BusinessService {
   Future<SalonAppointment> bookAppointment({
     required int customerId,
     required int salonId,
-    required int? barberId,
+    required int? expertId,
     required DateTime startTime,
     required DateTime endTime,
     required List<Map<String, dynamic>> services,
@@ -284,7 +283,7 @@ class BusinessService {
       final appointmentData = {
         'customer': customerId,
         'salon': salonId,
-        'barber': barberId,
+        'expert': expertId,
         'start_time': startTime.toIso8601String(),
         'end_time': endTime.toIso8601String(),
         'attendee_type': attendeeType,
@@ -313,11 +312,11 @@ class BusinessService {
 
       switch (request.reportType) {
         case StaffReportType.performance:
-          final barbers = await getBarbers(
+          final experts = await getExperts(
             salonId: salonId,
             includePerformance: true,
           );
-          await generateStaffPerformanceReport(barbers, request);
+          await generateStaffPerformanceReport(experts, request);
           break;
 
         case StaffReportType.attendance:
@@ -333,17 +332,17 @@ class BusinessService {
           break;
 
         case StaffReportType.payroll:
-          final barbers = await getBarbers(
+          final experts = await getExperts(
             salonId: salonId,
             includePerformance: true,
           );
-          final earningsData = barbers.map((barber) => EarningsData(
+          final earningsData = experts.map((expert) => EarningsData(
             date: DateTime.now(),
-            amount: barber.totalEarnings,
-            appointments: barber.totalAppointments,
+            amount: expert.totalEarnings,
+            appointments: expert.totalAppointments,
             tips: 0.0,
             salonId: salonId, // Add the required salonId
-            barberId: barber.userId, // Add barberId
+            expertId: expert.userId, // Add expertId
           )).toList();
 
           await generateEarningsReport(
@@ -358,11 +357,11 @@ class BusinessService {
         case StaffReportType.monthly:
         case StaffReportType.annually:
           // Generate summary report for the time period
-          final barbers = await getBarbers(
+          final experts = await getExperts(
             salonId: salonId,
             includePerformance: true,
           );
-          await generateStaffPerformanceReport(barbers, request);
+          await generateStaffPerformanceReport(experts, request);
           break;
       }
 
@@ -652,12 +651,12 @@ class BusinessService {
   }
 
   static Future<void> generateStaffPerformanceReport(
-    List<Barber> barbers,
+    List<Expert> experts,
     StaffReportRequest request,
   )
   async {
     final pdf = pw.Document();
-    pdf.addPage(_buildStaffPerformancePage(barbers, request));
+    pdf.addPage(_buildStaffPerformancePage(experts, request));
     await _savePdf(pdf, 'staff_performance_${DateTime.now().millisecondsSinceEpoch}');
   }
 
@@ -858,13 +857,13 @@ class BusinessService {
     }
   }
 
-  Future<List<Barber>> getSalonBarbers(int salonId) async {
+  Future<List<Expert>> getSalonExperts(int salonId) async {
     try {
-      final response = await _apiService.get('/salons/$salonId/barbers');
+      final response = await _apiService.get('/salons/$salonId/experts');
       final List<dynamic> data = response['data'] ?? [];
-      return data.map((item) => Barber.fromJson(item)).toList();
+      return data.map((item) => Expert.fromJson(item)).toList();
     } catch (e) {
-      AppLogger.error('Error fetching salon barbers: $e');
+      AppLogger.error('Error fetching salon experts: $e');
       return [];
     }
   }
@@ -910,11 +909,11 @@ class BusinessService {
       return data.map((item) => StaffMember.fromJson(item)).toList();
     } catch (e) {
       AppLogger.error('Error fetching staff members: $e');
-      return _getMockStaffMembers();
+      rethrow;
     }
   }
 
-  Future<List<Barber>> getBarbers({
+  Future<List<Expert>> getExperts({
     String? branchId,
     int? salonId,
     bool? includePerformance,
@@ -928,16 +927,15 @@ class BusinessService {
       if (includePerformance != null) queryParams['include_performance'] = includePerformance.toString();
 
       final response = await _apiService.get(
-        '/barbers',
+        '/experts',
         queryParams: queryParams,
       );
 
       final List<dynamic> data = response['data'] ?? [];
-      return data.map((item) => Barber.fromJson(item)).toList();
+      return data.map((item) => Expert.fromJson(item)).toList();
     } catch (e) {
-      AppLogger.error('Error fetching barbers: $e');
-      final staff = await getStaffMembers(salonId: salonId);
-      return _convertStaffToBarbers(staff.where((member) => member.role == StaffRole.barber).toList());
+      AppLogger.error('Error fetching experts: $e');
+      rethrow;
     }
   }
 
@@ -955,12 +953,12 @@ class BusinessService {
 
   Future<List<SubscriptionPlan>> getAvailablePlans() async {
     try {
-      final response = await _apiService.get('/subscription/plans');
-      final List<dynamic> data = response['data'] ?? [];
+      final response = await _apiService.get(Endpoints.platformSubscriptionPlans);
+      final List<dynamic> data = response['results'] ?? response['data'] ?? [];
       return data.map((item) => SubscriptionPlan.fromJson(item)).toList();
     } catch (e) {
       AppLogger.error('Error fetching subscription plans: $e');
-      return _getMockSubscriptionPlans();
+      rethrow;
     }
   }
 
@@ -1047,142 +1045,6 @@ class BusinessService {
     }
   }
 
-  // ============ MOCK DATA METHODS ============
-
-  List<SalonAppointment> _getMockAppointments() {
-    return [
-      SalonAppointment(
-        id: '1',
-        customerId: 1,
-        salonId: 1,
-        barberId: 1,
-        startTime: DateTime.now().add(Duration(hours: 2)),
-        endTime: DateTime.now().add(Duration(hours: 2, minutes: 30)),
-        status: AppointmentStatus.scheduled,
-        isFree: false,
-        attendeeType: AttendeeType.self,
-        createdAt: DateTime.now(),
-        services: [
-          AppointmentServiceModel(
-            serviceType: 'OPTION',
-            optionId: 1,
-            quantity: 1,
-          ),
-        ],
-      ),
-    ];
-  }
-
-  List<InventoryItem> _getMockInventoryItems() {
-    return [
-      InventoryItem(
-        id: '1',
-        productId: 1,
-        salonId: 1,
-        quantityInStock: 5,
-        lastUpdated: DateTime.now(),
-        productName: 'Professional Shampoo',
-        productDescription: 'Premium shampoo for all hair types',
-        productPrice: 15.99,
-      ),
-      InventoryItem(
-        id: '2',
-        productId: 2,
-        salonId: 1,
-        quantityInStock: 2,
-        lastUpdated: DateTime.now(),
-        productName: 'Conditioner',
-        productDescription: 'Hydrating conditioner',
-        productPrice: 12.99,
-      ),
-    ];
-  }
-
-  List<StaffMember> _getMockStaffMembers() {
-    return [
-      StaffMember(
-        id: '1',
-        userId: 1,
-        name: 'John Barber',
-        email: 'john@barbershop.com',
-        phone: '+1234567890',
-        role: StaffRole.barber,
-        joinDate: DateTime(2023, 1, 15),
-        salonId: 1,
-        hourlyRate: 25.0,
-        specialties: ['Haircut', 'Beard Trim', 'Styling'],
-        isActive: true,
-      ),
-    ];
-  }
-
-  List<Barber> _convertStaffToBarbers(List<StaffMember> barberStaff) {
-    return barberStaff.asMap().entries.map((entry) {
-      final index = entry.key;
-      final staffMember = entry.value;
-      return Barber(
-        id: staffMember.id,
-        userId: staffMember.userId,
-        name: staffMember.name,
-        email: staffMember.email,
-        joinDate: staffMember.joinDate,
-        profileImage: staffMember.profileImage,
-        salonId: staffMember.salonId,
-        isActive: staffMember.isActive,
-        hourlyRate: staffMember.hourlyRate,
-        barberProfile: null,
-        rating: 4.5 + (index * 0.1),
-        totalAppointments: 100 + (index * 50),
-        totalEarnings: 5000 + (index * 2500).toDouble(),
-        specialties: staffMember.specialties ?? ['Haircut', 'Beard Trim'],
-        servicesCount: {'Haircut': 70 + index * 20, 'Beard Trim': 30 + index * 10},
-        lastActive: DateTime.now().subtract(Duration(hours: index * 2)),
-      );
-    }).toList();
-  }
-
-  List<SubscriptionPlan> _getMockSubscriptionPlans() {
-    return [
-      SubscriptionPlan(
-        id: '1',
-        name: 'Basic',
-        description: 'Perfect for small barbershops',
-        price: 29.99,
-        duration: 'MONTHLY',
-        features: [
-          'Up to 2 branches',
-          'Basic analytics',
-          'Email support',
-          'Staff management',
-        ],
-        maxBranches: 2,
-        maxStaff: 5,
-        analyticsEnabled: true,
-        premiumSupport: false,
-        trialDays: 14,
-      ),
-      SubscriptionPlan(
-        id: '2',
-        name: 'Professional',
-        description: 'For growing barbershop businesses',
-        price: 59.99,
-        duration: 'MONTHLY',
-        features: [
-          'Up to 5 branches',
-          'Advanced analytics',
-          'Priority support',
-          'Staff management',
-          'Marketing tools',
-        ],
-        isPopular: true,
-        maxBranches: 5,
-        maxStaff: 15,
-        analyticsEnabled: true,
-        premiumSupport: true,
-        trialDays: 14,
-      ),
-    ];
-  }
 
   // ============ PDF HELPER METHODS ============
 
@@ -1228,7 +1090,7 @@ class BusinessService {
     );
   }
 
-  static pw.Page _buildStaffPerformancePage(List<Barber> barbers, StaffReportRequest request) {
+  static pw.Page _buildStaffPerformancePage(List<Expert> experts, StaffReportRequest request) {
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -1248,9 +1110,9 @@ class BusinessService {
               style: const pw.TextStyle(fontSize: 12),
             ),
             pw.SizedBox(height: 20),
-            _buildStaffPerformanceTable(barbers),
+            _buildStaffPerformanceTable(experts),
             pw.SizedBox(height: 30),
-            _buildPerformanceSummary(barbers),
+            _buildPerformanceSummary(experts),
           ],
         );
       },
@@ -1360,7 +1222,7 @@ class BusinessService {
     );
   }
 
-  static pw.Widget _buildStaffPerformanceTable(List<Barber> barbers) {
+  static pw.Widget _buildStaffPerformanceTable(List<Expert> experts) {
     return pw.Table(
       border: pw.TableBorder.all(),
       children: [
@@ -1373,14 +1235,14 @@ class BusinessService {
             _buildTableHeader('Specialties'),
           ],
         ),
-        for (var barber in barbers)
+        for (var expert in experts)
           pw.TableRow(
             children: [
-              _buildTableCell(barber.name),
-              _buildTableCell(barber.totalAppointments.toString()),
-              _buildTableCell(Formatters.formatCurrency(barber.totalEarnings)),
-              _buildTableCell(barber.rating.toStringAsFixed(1)),
-              _buildTableCell(barber.specialties.join(', ')),
+              _buildTableCell(expert.name),
+              _buildTableCell(expert.totalAppointments.toString()),
+              _buildTableCell(Formatters.formatCurrency(expert.totalEarnings)),
+              _buildTableCell(expert.rating.toStringAsFixed(1)),
+              _buildTableCell(expert.specialties.join(', ')),
             ],
           ),
       ],
@@ -1477,10 +1339,10 @@ class BusinessService {
     );
   }
 
-  static pw.Widget _buildPerformanceSummary(List<Barber> barbers) {
-    final totalAppointments = barbers.fold(0, (sum, barber) => sum + barber.totalAppointments);
-    final totalEarnings = barbers.fold(0.0, (sum, barber) => sum + barber.totalEarnings);
-    final averageRating = barbers.fold(0.0, (sum, barber) => sum + barber.rating) / barbers.length;
+  static pw.Widget _buildPerformanceSummary(List<Expert> experts) {
+    final totalAppointments = experts.fold(0, (sum, expert) => sum + expert.totalAppointments);
+    final totalEarnings = experts.fold(0.0, (sum, expert) => sum + expert.totalEarnings);
+    final averageRating = experts.fold(0.0, (sum, expert) => sum + expert.rating) / experts.length;
 
     return _buildSummaryContainer(
       'Performance Summary',
@@ -1488,7 +1350,7 @@ class BusinessService {
         'Total Appointments: $totalAppointments',
         'Total Earnings: ${Formatters.formatCurrency(totalEarnings)}',
         'Average Rating: ${averageRating.toStringAsFixed(1)}',
-        'Number of Barbers: ${barbers.length}',
+        'Number of Experts: ${experts.length}',
       ],
     );
   }
@@ -1640,9 +1502,10 @@ class InventoryService {
       return data;
     } catch (e) {
       AppLogger.error('Error fetching inventory items: $e');
-      throw ErrorHandler.handleException(e);
+      rethrow;
     }
   }
+
 
   Future<dynamic> updateItemQuantity({
     required String itemId,
@@ -1655,7 +1518,7 @@ class InventoryService {
         '/salons/salons/$salonId/inventory/$itemId/',
         data: {
           'quantity_in_stock': newQuantity,
-          if (reason != null) 'notes': reason, // Map reason to notes if needed
+          'notes': ?reason, // Map reason to notes if needed
         },
       );
       return response['data'];
@@ -1666,7 +1529,10 @@ class InventoryService {
   }
 
   Future<dynamic> addInventoryItem({
-    required int productId,
+    int? productId,
+    String? productName,
+    double? productPrice,
+    String? category,
     required int salonId,
     required int initialQuantity,
     String? notes,
@@ -1675,9 +1541,12 @@ class InventoryService {
       final response = await _apiService.post(
         '/salons/salons/$salonId/inventory/',
         data: {
-          'product': productId,
+          'product': ?productId,
+          'product_name': ?productName,
+          'product_price': ?productPrice,
+          'category': ?category,
           'quantity_in_stock': initialQuantity,
-          if (notes != null) 'notes': notes,
+          'notes': ?notes,
         },
       );
       return response['data'];
@@ -1817,6 +1686,14 @@ class OffersService {
   Future<void> deleteAdCampaign(int salonId, int campaignId) async {
     await _apiService.deleteAdCampaign(salonId, campaignId);
   }
+
+  Future<void> updateOffer(int salonId, int offerId, Map<String, dynamic> data) async {
+    await _apiService.updateOffer(salonId, offerId, data);
+  }
+
+  Future<void> updateAdCampaign(int salonId, int campaignId, Map<String, dynamic> data) async {
+    await _apiService.updateAdCampaign(salonId, campaignId, data);
+  }
 }
 
 class ProfitService {
@@ -1884,50 +1761,30 @@ class ProfitService {
         throw Exception('Failed to fetch profit data: ${response.statusCode}');
       }
     } catch (e) {
-      // For demo purposes, return mock data
-      return _getMockProfitData(startDate, endDate);
+      AppLogger.error('Error fetching profit data: $e');
+      rethrow;
     }
-  }
-
-  List<Map<String, dynamic>> _getMockProfitData(DateTime startDate, DateTime endDate) {
-    final data = <Map<String, dynamic>>[];
-    var current = DateTime(startDate.year, startDate.month);
-    final end = DateTime(endDate.year, endDate.month);
-    var baseRevenue = 5000.0;
-
-    while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
-      final revenue = baseRevenue + (DateTime.now().month % 12 * 500);
-      final expenses = revenue * 0.3;
-      final profit = revenue - expenses;
-
-      data.add({
-        'date': current.toIso8601String(),
-        'revenue': revenue,
-        'expenses': expenses,
-        'profit': profit,
-        'profitMargin': (profit / revenue) * 100,
-      });
-
-      baseRevenue += 200;
-      current = DateTime(current.year, current.month + 1);
-    }
-
-    return data;
   }
 }
 
 class SalonGalleryService {
-  // In a real app, this would fetch from your API
+  final ApiService _apiService;
+
+  SalonGalleryService({ApiService? apiService}) : _apiService = apiService ?? ApiService();
+
   Future<List<String>> getSalonGalleryImages(String salonId, {int limit = 4}) async {
     try {
-      // Simulate API call delay
-      await Future.delayed(const Duration(milliseconds: 300));
+      final response = await _apiService.get(
+        Endpoints.salonGallery(int.parse(salonId)),
+        queryParams: {'limit': limit.toString()},
+      );
 
-      // For demo purposes, return placeholder images
-      // In production, this would fetch from your backend
-      return ImageHelper.getSalonGalleryImages(salonId, count: limit);
+      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+      return data.map((item) => item['image_url'] as String).toList();
     } catch (e) {
-      throw AppError('Failed to load gallery images: ${ErrorHandler.handleError(e)}');
+      // If gallery fails, we can return empty or handle error
+      AppLogger.error('Gallery Error: $e');
+      return [];
     }
   }
 

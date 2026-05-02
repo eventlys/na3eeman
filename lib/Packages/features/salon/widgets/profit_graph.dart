@@ -1,10 +1,9 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 // import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ProfitGraph extends StatefulWidget {
   final DateTime? startDate;
@@ -42,7 +41,7 @@ class _ProfitGraphState extends State<ProfitGraph> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.financialPerformance,
+              Text("financial_performance".tr(),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Container(
@@ -51,7 +50,7 @@ class _ProfitGraphState extends State<ProfitGraph> {
                   color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(AppLocalizations.of(context)!.monthly,
+                child: Text("monthly".tr(),
                   style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ),

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:na3eeman/Providers/features/auth_provider.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
+import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 
-/// POS / Cash Register terminal view — WAJ + Fresha parity
-/// Quick-checkout terminal for Receptionist and Owner roles.
 class PosTerminalPage extends StatefulWidget {
   const PosTerminalPage({super.key});
 
@@ -15,23 +11,21 @@ class PosTerminalPage extends StatefulWidget {
 }
 
 class _PosTerminalPageState extends State<PosTerminalPage> {
-  // Cart
   final List<_CartItem> _cartItems = [];
-
-  // Quick service catalogue (loaded from API or used as static fallback)
   List<Map<String, dynamic>> _services = [];
-  bool _loadingServices = true;
+  List<Map<String, dynamic>> _products = [];
+  List<Map<String, dynamic>> _offers = [];
+  List<Map<String, dynamic>> _packages = [];
+  bool _loading = true;
 
-  // Payment
   String _selectedMethod = 'CASH';
   String? _voucherCode;
-  bool _isProcessing = false;
+  final bool _isProcessing = false;
 
-  // Customer
-  String? _customerEmail;
-
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
   final _voucherCtrl = TextEditingController();
-  final _customerCtrl = TextEditingController();
 
   static const _paymentMethods = [
     {'value': 'CASH', 'label': 'Cash', 'icon': Icons.money_rounded},
@@ -44,64 +38,41 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   @override
   void initState() {
     super.initState();
-    _loadServices();
+    _loadData();
   }
 
-  @override
-  void dispose() {
-    _voucherCtrl.dispose();
-    _customerCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadServices() async {
-    setState(() => _loadingServices = true);
+  Future<void> _loadData() async {
+    setState(() => _loading = true);
     try {
-      final auth = Provider.of<AuthProvider>(context, listen: false);
-      final salonId = auth.user?.salonId ?? 1;
-      final api = ApiService();
-      final res = await api.get('/salons/$salonId/options/');
-      if (res is List) {
-        setState(() {
-          _services = List<Map<String, dynamic>>.from(
-            res.map((e) => Map<String, dynamic>.from(e as Map)),
-          );
-        });
-      } else if (res is Map && res['results'] is List) {
-        setState(() {
-          _services = List<Map<String, dynamic>>.from(
-            (res['results'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
-          );
-        });
-      }
-    } catch (_) {
-      // Use mock data if API not ready
+      // Mocking data for now
       _services = [
-        {'id': 1, 'option_name': 'Haircut', 'option_price': '8.00'},
-        {'id': 2, 'option_name': 'Beard Trim', 'option_price': '5.00'},
-        {'id': 3, 'option_name': 'Fade', 'option_price': '12.00'},
-        {'id': 4, 'option_name': 'Full Package', 'option_price': '18.00'},
-        {'id': 5, 'option_name': 'Kids Cut', 'option_price': '6.00'},
-        {'id': 6, 'option_name': 'Hot Towel Shave', 'option_price': '10.00'},
+        {'id': 's1', 'name': 'Classic Haircut', 'price': 8.0},
+        {'id': 's2', 'name': 'Beard Trim', 'price': 5.0},
+      ];
+      _products = [
+        {'id': 'p1', 'name': 'Hair Wax', 'price': 12.0},
+        {'id': 'p2', 'name': 'Face Cream', 'price': 15.0},
+      ];
+      _offers = [
+        {'id': 'o1', 'name': 'Summer Offer', 'price': 10.0},
+      ];
+      _packages = [
+        {'id': 'pk1', 'name': 'Full Grooming', 'price': 25.0},
       ];
     } finally {
-      if (mounted) setState(() => _loadingServices = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   double get _subtotal => _cartItems.fold(0.0, (s, i) => s + i.total);
 
-  void _addItem(Map<String, dynamic> service) {
-    final name = service['option_name'] as String? ?? 'Service';
-    final price = double.tryParse(service['option_price']?.toString() ?? '0') ?? 0.0;
-    final id = service['id']?.toString() ?? name;
-
+  void _addItem(String id, String name, double price, String type) {
     final existing = _cartItems.indexWhere((c) => c.id == id);
     setState(() {
       if (existing >= 0) {
         _cartItems[existing].quantity++;
       } else {
-        _cartItems.add(_CartItem(id: id, name: name, price: price, quantity: 1));
+        _cartItems.add(_CartItem(id: id, name: name, price: price, quantity: 1, type: type));
       }
     });
   }
@@ -118,271 +89,271 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
 
   void _clearCart() => setState(() => _cartItems.clear());
 
-  Future<void> _checkout() async {
-    if (_cartItems.isEmpty) {
-      AppSnackBar.error(context, 'Cart is empty');
-      return;
-    }
-    setState(() => _isProcessing = true);
-    try {
-      // Build a quick JSON payload for a POS transaction
-      final api = ApiService();
-      await api.post('/salons/pos-checkout/', data: {
-        'items': _cartItems.map((c) => {'name': c.name, 'price': c.price, 'quantity': c.quantity}).toList(),
-        'total': _subtotal,
-        'payment_method': _selectedMethod,
-        'voucher_code': _voucherCode,
-        'customer_email': _customerEmail,
-      });
-      if (mounted) {
-        AppSnackBar.success(context, 'Checkout complete — ${_subtotal.toStringAsFixed(2)} JOD via $_selectedMethod');
-        _clearCart();
-        _customerCtrl.clear();
-        _voucherCtrl.clear();
-      }
-    } catch (e) {
-      if (mounted) AppSnackBar.error(context, 'Checkout failed: $e');
-    } finally {
-      if (mounted) setState(() => _isProcessing = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isWide = MediaQuery.of(context).size.width > 700;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('POS Terminal'),
+        title: const Text('POS Terminal', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           if (_cartItems.isNotEmpty)
-            TextButton.icon(
-              onPressed: _clearCart,
-              icon: const Icon(Icons.delete_outline_rounded),
-              label: const Text('Clear'),
-            ),
+            IconButton(onPressed: _clearCart, icon: const Icon(Icons.delete_sweep_rounded, color: AppColors.error)),
         ],
       ),
-      body: isWide
-          ? Row(
-              children: [
-                Expanded(flex: 3, child: _buildServiceGrid(theme)),
-                const VerticalDivider(width: 1),
-                Expanded(flex: 2, child: _buildCart(theme)),
-              ],
-            )
-          : Column(
-              children: [
-                Expanded(child: _buildServiceGrid(theme)),
-                const Divider(height: 1),
-                SizedBox(height: 380, child: _buildCart(theme)),
-              ],
-            ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildCustomerInfoSection(theme, isDark),
+            const Divider(height: 1),
+            _buildSelectionSection(theme, isDark),
+            _buildCartSummary(theme, isDark),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomBar(theme, isDark),
     );
   }
 
-  Widget _buildServiceGrid(ThemeData theme) {
-    if (_loadingServices) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    return Padding(
-      padding: const EdgeInsets.all(16),
+  Widget _buildCustomerInfoSection(ThemeData theme, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      color: isDark ? AppColors.almostBlack600 : Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Services', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          const Text('Customer Information', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(child: _buildTextField(_firstNameCtrl, 'First Name', Icons.person_rounded)),
+              const SizedBox(width: 12),
+              Expanded(child: _buildTextField(_lastNameCtrl, 'Last Name', Icons.person_rounded)),
+            ],
+          ),
           const SizedBox(height: 12),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.6,
-              ),
-              itemCount: _services.length,
-              itemBuilder: (_, i) {
-                final s = _services[i];
-                final name = s['option_name'] as String? ?? 'Service';
-                final price = double.tryParse(s['option_price']?.toString() ?? '0') ?? 0.0;
-                return GestureDetector(
-                  onTap: () => _addItem(s),
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: theme.dividerColor),
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2)),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('${price.toStringAsFixed(1)} JOD', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700)),
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(Icons.add_rounded, size: 16, color: AppColors.primary),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          _buildTextField(_phoneCtrl, 'Phone Number', Icons.phone_rounded, keyboardType: TextInputType.phone),
         ],
       ),
     );
   }
 
-  Widget _buildCart(ThemeData theme) {
+  Widget _buildTextField(TextEditingController ctrl, String label, IconData icon, {TextInputType keyboardType = TextInputType.text}) {
+    return TextFormField(
+      controller: ctrl,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, size: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+        isDense: true,
+      ),
+    );
+  }
+
+  Widget _buildSelectionSection(ThemeData theme, bool isDark) {
+    if (_loading) return const Center(child: CircularProgressIndicator());
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Cart (${_cartItems.length})', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Expanded(
-            child: _cartItems.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.shopping_cart_outlined, size: 46, color: theme.hintColor),
-                        const SizedBox(height: 8),
-                        Text('Tap a service to add', style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor)),
-                      ],
-                    ),
-                  )
-                : ListView.separated(
-                    itemCount: _cartItems.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 6),
-                    itemBuilder: (_, i) {
-                      final item = _cartItems[i];
-                      return Row(
+          _buildCategorySection('Services', _services, Colors.blue, 'Service'),
+          const SizedBox(height: 32),
+          _buildCategorySection('Packages', _packages, Colors.purple, 'Package'),
+          const SizedBox(height: 32),
+          _buildCategorySection('Offers', _offers, Colors.orange, 'Offer'),
+          const SizedBox(height: 32),
+          _buildCategorySection('Products', _products, Colors.green, 'Product'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategorySection(String title, List<Map<String, dynamic>> items, Color color, String type) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 2.2,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, i) {
+            final item = items[i];
+            return GestureDetector(
+              onTap: () => _addItem(item['id'], item['name'], item['price'], type),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: color.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: Text('${item.name} x${item.quantity}', style: theme.textTheme.bodyMedium),
-                          ),
-                          Text('${item.total.toStringAsFixed(2)} JOD', style: const TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () => _removeItem(i),
-                            child: Icon(Icons.remove_circle_outline_rounded, size: 20, color: theme.colorScheme.error),
-                          ),
+                          Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          Text('${item['price']} JOD', style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
                         ],
-                      );
-                    },
-                  ),
-          ),
-          const Divider(),
-          // Customer lookup
-          TextField(
-            controller: _customerCtrl,
-            onChanged: (v) => _customerEmail = v.isEmpty ? null : v,
-            decoration: InputDecoration(
-              labelText: 'Customer email (optional)',
-              prefixIcon: const Icon(Icons.person_search_rounded),
-              isDense: true,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Payment method row
-          SizedBox(
-            height: 52,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: _paymentMethods.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (_, i) {
-                final m = _paymentMethods[i];
-                final isSelected = _selectedMethod == m['value'];
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedMethod = m['value'] as String),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary : theme.cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: isSelected ? Colors.transparent : theme.dividerColor),
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(m['icon'] as IconData, size: 16, color: isSelected ? Colors.white : null),
-                        const SizedBox(width: 6),
-                        Text(m['label'] as String, style: TextStyle(color: isSelected ? Colors.white : null, fontWeight: FontWeight.w600, fontSize: 13)),
-                      ],
-                    ),
+                    Icon(Icons.add_circle_outline_rounded, color: color, size: 20),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCartSummary(ThemeData theme, bool isDark) {
+    if (_cartItems.isEmpty) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Cart Summary', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          ..._cartItems.asMap().entries.map((entry) {
+            final i = entry.key;
+            final item = entry.value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Expanded(child: Text('${item.name} (${item.type}) x${item.quantity}')),
+                  Text('${item.total.toStringAsFixed(2)} JOD', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () => _removeItem(i),
+                    child: const Icon(Icons.remove_circle_outline_rounded, size: 18, color: AppColors.error),
                   ),
-                );
-              },
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomBar(ThemeData theme, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
+      ),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Total Amount', style: TextStyle(color: AppColors.almostBlack300)),
+                Text('${_subtotal.toStringAsFixed(2)} JOD', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Theme.of(context).primaryColor)),
+              ],
             ),
-          ),
-          if (_selectedMethod == 'VOUCHER') ...[
-            const SizedBox(height: 8),
-            TextField(
-              controller: _voucherCtrl,
-              onChanged: (v) => _voucherCode = v.isEmpty ? null : v,
-              decoration: InputDecoration(
-                labelText: 'Voucher code',
-                prefixIcon: const Icon(Icons.card_giftcard_rounded),
-                isDense: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: PrimaryButton(
+                text: 'Proceed to Checkout',
+                onPressed: () => _showPaymentModal(theme, isDark),
               ),
             ),
           ],
-          const SizedBox(height: 12),
-          // Total + Checkout
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      ),
+    );
+  }
+
+  void _showPaymentModal(ThemeData theme, bool isDark) {
+    if (_cartItems.isEmpty) {
+      AppSnackBar.error(context, 'Cart is empty');
+      return;
+    }
+    if (_phoneCtrl.text.isEmpty) {
+      AppSnackBar.error(context, 'Please enter customer phone');
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          decoration: BoxDecoration(color: isDark ? AppColors.almostBlack600 : Colors.white, borderRadius: const BorderRadius.vertical(top: Radius.circular(32))),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Total', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                  Text('${_subtotal.toStringAsFixed(2)} JOD',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: AppColors.primary)),
-                ],
+              const Text('Payment Method', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 12, runSpacing: 12,
+                children: _paymentMethods.map((m) {
+                  final isSelected = _selectedMethod == m['value'];
+                  return GestureDetector(
+                    onTap: () => setModalState(() => _selectedMethod = m['value'] as String),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(m['icon'] as IconData, size: 18, color: isSelected ? Colors.white : null),
+                          const SizedBox(width: 8),
+                          Text(m['label'] as String, style: TextStyle(color: isSelected ? Colors.white : null, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
-              SizedBox(
-                height: 52,
-                child: FilledButton.icon(
-                  onPressed: _isProcessing ? null : _checkout,
-                  icon: _isProcessing
-                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : const Icon(Icons.point_of_sale_rounded),
-                  label: const Text('Checkout', style: TextStyle(fontWeight: FontWeight.bold)),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                  ),
-                ),
+              const SizedBox(height: 32),
+              PrimaryButton(
+                text: 'Complete Booking',
+                onPressed: () {
+                  Navigator.pop(context);
+                  AppSnackBar.success(context, 'Booking completed for ${_firstNameCtrl.text}!');
+                  Navigator.pop(context);
+                },
               ),
+              const SizedBox(height: 16),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -392,9 +363,10 @@ class _CartItem {
   final String id;
   final String name;
   final double price;
+  final String type;
   int quantity;
 
-  _CartItem({required this.id, required this.name, required this.price, required this.quantity});
+  _CartItem({required this.id, required this.name, required this.price, required this.quantity, required this.type});
 
   double get total => price * quantity;
 }

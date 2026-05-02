@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class ReportProblemOverlay extends StatefulWidget {
   const ReportProblemOverlay({super.key});
@@ -18,7 +17,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.reportProblem),
+      title: Text("report_problem".tr()),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -33,19 +32,19 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
                 items: [
                   DropdownMenuItem(
                     value: 'bug',
-                    child: Text(AppLocalizations.of(context)!.bugReport),
+                    child: Text("bug_report".tr()),
                   ),
                   DropdownMenuItem(
                     value: 'abuse',
-                    child: Text(AppLocalizations.of(context)!.usageAbuse),
+                    child: Text("usage_abuse".tr()),
                   ),
                   DropdownMenuItem(
                     value: 'feature',
-                    child: Text(AppLocalizations.of(context)!.featureRequest),
+                    child: Text("feature_request".tr()),
                   ),
                   DropdownMenuItem(
                     value: 'other',
-                    child: Text(AppLocalizations.of(context)!.other),
+                    child: Text("other".tr()),
                   ),
                 ],
                 onChanged: (value) {
@@ -58,7 +57,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
               TextFormField(
                 controller: _subjectController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.subject,
+                  labelText: "subject".tr(),
                   hintText: 'Brief description of the problem',
                 ),
                 validator: (value) {
@@ -73,7 +72,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
                 controller: _descriptionController,
                 maxLines: 5,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.description,
+                  labelText: "description".tr(),
                   hintText: 'Please describe the problem in detail...',
                   alignLabelWithHint: true,
                 ),
@@ -91,7 +90,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text("cancel".tr()),
         ),
         ElevatedButton(
           onPressed: _submitReport,

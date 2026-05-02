@@ -1,10 +1,9 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
-import '../widgets/barbershop_card.dart';
-import 'package:easy_localization/easy_localization.dart';
+import '../widgets/expert_salon_card.dart';
 
 class SalonListPage extends StatefulWidget {
   const SalonListPage({super.key});
@@ -40,66 +39,22 @@ class _SalonListPageState extends State<SalonListPage> {
 
       if (mounted) {
         setState(() {
-          if (salonsList.isEmpty) {
-            _salons = _getMockSalons(); // Fallback if empty
-          } else {
-            _salons = salonsList;
-          }
+          _salons = salonsList;
           _filteredSalons = List.from(_salons);
           _isLoading = false;
+          if (_salons.isEmpty) {
+            _error = "no_salons_found_nearby".tr();
+          }
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _salons = _getMockSalons(); // Fallback on error
-          _filteredSalons = List.from(_salons);
+          _error = 'Failed to load salons. Please try again.';
           _isLoading = false;
         });
       }
     }
-  }
-
-  List<Map<String, dynamic>> _getMockSalons() {
-    return [
-      {
-        'id': 101,
-        'salonName': 'Modern Cuts Barbersalon',
-        'title': 'Modern Cuts Barbersalon',
-        'workingHours': '09:00 AM – 10:00 PM',
-        'location': 'Abdali, Amman, Jordan',
-        'salonLocation': 'Abdali, Amman',
-        'salonRating': 4.8,
-        'image': 'assets/images/salon_placeholder.png',
-      },
-      {
-        'id': 102,
-        'salonName': 'Elite Grooming Lounge',
-        'title': 'Elite Grooming Lounge',
-        'workingHours': '10:00 AM – 09:00 PM',
-        'location': 'Sweifieh, Amman, Jordan',
-        'salonLocation': 'Sweifieh, Amman',
-        'salonRating': 4.5,
-      },
-      {
-        'id': 103,
-        'salonName': 'Rose Beauty Center',
-        'title': 'Rose Beauty Center',
-        'workingHours': '09:00 AM – 08:00 PM',
-        'location': 'Shmeisani, Amman, Jordan',
-        'salonLocation': 'Shmeisani, Amman',
-        'salonRating': 4.7,
-      },
-      {
-        'id': 104,
-        'salonName': 'Gentleman Choice',
-        'title': 'Gentleman Choice',
-        'workingHours': '10:00 AM – 10:00 PM',
-        'location': 'Tabarbour, Amman, Jordan',
-        'salonLocation': 'Tabarbour, Amman',
-        'salonRating': 4.2,
-      },
-    ];
   }
 
 
@@ -110,7 +65,7 @@ class _SalonListPageState extends State<SalonListPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.discoverSalons, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("discover_salons".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -129,7 +84,7 @@ class _SalonListPageState extends State<SalonListPage> {
             child: TextFormField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.searchByNameOrLocation,
+                hintText: "search_by_name_or_location".tr(),
                 prefixIcon: Icon(Icons.search_rounded, color: Theme.of(context).primaryColor),
                 filled: true,
                 fillColor: isDark ? AppColors.almostBlack600 : AppColors.white,
@@ -175,7 +130,7 @@ class _SalonListPageState extends State<SalonListPage> {
             Text(_error, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             SecondaryButton(
-              text: AppLocalizations.of(context)!.retry,
+              text: "retry".tr(),
               onPressed: _loadSalons,
               width: 120,
             ),
@@ -191,7 +146,7 @@ class _SalonListPageState extends State<SalonListPage> {
           children: [
             Icon(Icons.search_off_rounded, size: 64, color: AppColors.almostBlack200),
             const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.noSalonsFoundNearby, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text("no_salons_found_nearby".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       );
@@ -204,7 +159,7 @@ class _SalonListPageState extends State<SalonListPage> {
         final salon = _filteredSalons[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
-          child: BarbersalonCard(
+          child: ExpertSalonCard(
             title: salon['salonName'] ?? salon['title'] ?? 'Unknown',
             workingHours: salon['workingHours'] ?? '9:00 AM - 9:00 PM',
             profilePicture: 'assets/images/salon_placeholder.png',

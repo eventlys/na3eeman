@@ -1,11 +1,10 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../Core/widgets/common/app_text_field.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class StaffProfilePage extends StatefulWidget {
   const StaffProfilePage({super.key});
@@ -28,11 +27,13 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
   @override
   void initState() {
     super.initState();
-    final user = context.read<AuthProvider>().user;
+    final auth = context.read<AuthProvider>();
+    final user = auth.user;
+    final expert = auth.expertProfile;
     _firstNameController = TextEditingController(text: user?.firstName);
     _lastNameController = TextEditingController(text: user?.lastName);
     _phoneController = TextEditingController(text: user?.phone);
-    _bioController = TextEditingController(text: ''); // Mock
+    _bioController = TextEditingController(text: expert?.bio ?? '');
     _specializationController = TextEditingController(text: user?.specialization);
   }
 
@@ -51,8 +52,15 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
     
     setState(() => _isLoading = true);
     try {
-      // Mock API call to update profile
-      await Future.delayed(const Duration(seconds: 1));
+      final auth = context.read<AuthProvider>();
+      
+      await auth.updateProfile(
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+        phone: _phoneController.text.trim(),
+        specialization: _specializationController.text.trim(),
+        bio: _bioController.text.trim(),
+      );
       
       if (mounted) {
         setState(() {
@@ -60,7 +68,7 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
+          SnackBar(content: Text("profile_updated_successfully".tr())),
         );
       }
     } catch (e) {
@@ -80,7 +88,7 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.profile, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("profile".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -140,35 +148,35 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
               // Editable fields
               AppTextField(
                 controller: _firstNameController,
-                label: AppLocalizations.of(context)!.firstName,
+                label: "first_name".tr(),
                 prefixIcon: Icons.person_outline,
                 enabled: _isEditing,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _lastNameController,
-                label: AppLocalizations.of(context)!.lastName,
+                label: "last_name".tr(),
                 prefixIcon: Icons.person_outline,
                 enabled: _isEditing,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _phoneController,
-                label: AppLocalizations.of(context)!.phone,
+                label: "phone".tr(),
                 prefixIcon: Icons.phone_outlined,
                 enabled: _isEditing,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _specializationController,
-                label: AppLocalizations.of(context)!.specialization,
+                label: "specialization".tr(),
                 prefixIcon: Icons.star_outline,
                 enabled: _isEditing,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _bioController,
-                label: AppLocalizations.of(context)!.bio,
+                label: "bio".tr(),
                 prefixIcon: Icons.info_outline,
                 enabled: _isEditing,
                 maxLines: 3,
@@ -185,7 +193,7 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () => setState(() => _isEditing = false),
-                  child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.almostBlack400)),
+                  child: Text("cancel".tr(), style: const TextStyle(color: AppColors.almostBlack400)),
                 ),
               ],
             ],

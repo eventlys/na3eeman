@@ -1,11 +1,9 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:safe_device/safe_device.dart';
 import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
-import 'package:local_auth/local_auth.dart';
 
 import '../../Helpers/logger.dart';
 

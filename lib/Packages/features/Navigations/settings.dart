@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-import '../../../Helpers/customized/dialog_helper.dart';
 import '../../../Models/subscription/subscription_plan_model.dart';
 import '../../../Services/api/api_service.dart';
 import '../../../Services/ui/overlay_service.dart';
@@ -14,6 +13,7 @@ import '../auth/overlays/change_password_overlay.dart';
 import '../../../Providers/app_providers.dart';
 import '../../../Providers/locale_provider.dart';
 import '../../../Providers/features/auth_provider.dart';
+import '../../../../core/widgets/rules/rules_guide_sheet.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -54,7 +54,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final authProvider = Provider.of<AuthProvider>(context);
     final user = authProvider.user;
@@ -63,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          l10n.settings,
+          "settings".tr(),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
@@ -81,38 +80,40 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 12),
           
           // Account Settings
-          _buildSectionHeader('Account Settings'),
+          _buildSectionHeader('account_settings'.tr()),
           _buildCleanTile(
             icon: Icons.person_outline_rounded,
-            title: l10n.profile,
+            title: "profile".tr(),
             onTap: () => Navigator.pushNamed(context, '/profile'),
           ),
           _buildCleanTile(
             icon: Icons.lock_outline_rounded,
-            title: l10n.changePassword,
+            title: "change_password".tr(),
             onTap: () => _showChangePasswordDialog(),
           ),
           if (user?.role == UserRole.owner || user?.role == UserRole.receptionist)
             _buildCleanTile(
               icon: Icons.card_membership_rounded,
-              title: 'Subscription Management',
+              title: 'subscription_management'.tr(),
               onTap: () => _showSubscriptionManagementModal(),
             ),
           
           const SizedBox(height: 16),
 
           // App Preferences
-          _buildSectionHeader('App Preferences'),
+          _buildSectionHeader('app_preferences'.tr()),
           Consumer<LocaleProvider>(
             builder: (context, localeProvider, child) {
-              final isArabic = localeProvider.locale.languageCode == 'ar';
+              final isArabic = context.locale.languageCode == 'ar';
               return _buildSwitchTile(
                 icon: Icons.language_rounded,
-                title: 'Language',
+                title: 'language'.tr(),
                 subtitle: isArabic ? 'العربية' : 'English',
                 value: isArabic,
-                onChanged: (val) {
-                  localeProvider.setLocale(Locale(val ? 'ar' : 'en'));
+                onChanged: (val) async {
+                  final newLocale = val ? const Locale('ar', 'EG') : const Locale('en', 'US');
+                  await context.setLocale(newLocale);
+                  await localeProvider.setLocale(Locale(newLocale.languageCode));
                 },
               );
             },
@@ -121,8 +122,8 @@ class _SettingsPageState extends State<SettingsPage> {
             builder: (context, themeProvider, child) {
               return _buildSwitchTile(
                 icon: themeProvider.isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                title: 'Dark Mode',
-                subtitle: themeProvider.isDark ? 'Dark Theme' : 'Light Theme',
+                title: 'dark_mode'.tr(),
+                subtitle: themeProvider.isDark ? 'dark_theme'.tr() : 'light_theme'.tr(),
                 value: themeProvider.isDark,
                 onChanged: (val) {
                   themeProvider.toggleBrightness();
@@ -135,8 +136,8 @@ class _SettingsPageState extends State<SettingsPage> {
             builder: (context, isEnabled, child) {
               return _buildSwitchTile(
                 icon: Icons.location_on_outlined,
-                title: 'Location Privacy',
-                subtitle: isEnabled ? 'Always On' : 'Off',
+                title: 'location_privacy'.tr(),
+                subtitle: isEnabled ? 'always_on'.tr() : 'off'.tr(),
                 value: isEnabled,
                 onChanged: (value) => _locationService.toggleLocation(value),
               );
@@ -146,35 +147,35 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 16),
 
           // Support & Feedback
-          _buildSectionHeader('Support & Feedback'),
+          _buildSectionHeader('support_feedback'.tr()),
           _buildCleanTile(
             icon: Icons.star_outline_rounded,
-            title: 'Rate Us',
+            title: 'rate_us'.tr(),
             onTap: () => _rateApp(),
           ),
           _buildCleanTile(
             icon: Icons.feedback_outlined,
-            title: 'Send Feedback',
+            title: 'send_feedback'.tr(),
             onTap: () => OverlayService.showFeedback(),
           ),
           _buildCleanTile(
             icon: Icons.report_problem_outlined,
-            title: 'Report a Problem',
+            title: 'report_a_problem'.tr(),
             onTap: () => _showReportProblemDialog(),
           ),
           
           const SizedBox(height: 16),
 
           // More
-          _buildSectionHeader('More'),
+          _buildSectionHeader('more'.tr()),
           _buildCleanTile(
             icon: Icons.security_outlined,
-            title: 'Privacy & Security',
+            title: 'privacy_security'.tr(),
             onTap: () => _showPrivacyPolicy(),
           ),
           _buildCleanTile(
             icon: Icons.rule_rounded,
-            title: 'App Rules',
+            title: 'app_rules'.tr(),
             onTap: () => _showAppRules(),
           ),
 
@@ -186,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: TextButton.icon(
               icon: const Icon(Icons.logout_rounded, color: Colors.redAccent, size: 20),
               label: Text(
-                l10n.logout,
+                "logout".tr(),
                 style: const TextStyle(
                   color: Colors.redAccent,
                   fontWeight: FontWeight.bold,
@@ -278,7 +279,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: Theme.of(context).primaryColor,
+          activeThumbColor: Theme.of(context).primaryColor,
         ),
       ),
       onTap: () => onChanged(!value),
@@ -306,13 +307,13 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Column(
           children: [
-            const Text('Subscription Plans', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text('subscription_plans'.tr(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             Expanded(
               child: _isLoadingPlans 
                 ? const Center(child: CircularProgressIndicator())
                 : _plans == null || _plans!.isEmpty
-                  ? Center(child: Text('No plans available at the moment', style: TextStyle(color: Colors.grey[600])))
+                  ? Center(child: Text('no_plans_available'.tr(), style: TextStyle(color: Colors.grey[600])))
                   : SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -354,7 +355,7 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-              child: const Text('RECOMMENDED', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+              child: Text('recommended'.tr(), style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
             ),
           Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isRecommended ? Colors.white : (isDark ? Colors.white : Colors.black))),
           const SizedBox(height: 8),
@@ -383,7 +384,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 elevation: 0,
               ),
-              child: const Text('Select Plan'),
+              child: Text('select_plan'.tr()),
             ),
           ),
         ],
@@ -398,7 +399,7 @@ class _SettingsPageState extends State<SettingsPage> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open App Store')),
+          SnackBar(content: Text('could_not_open_app_store'.tr())),
         );
       }
     }
@@ -409,34 +410,34 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Report a Problem'),
+        title: Text('report_a_problem'.tr()),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Please describe the problem you encountered:'),
+            Text('describe_problem'.tr()),
             const SizedBox(height: 16),
             TextField(
               controller: controller,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: 'Enter details here...',
+                hintText: 'enter_details_here'.tr(),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report submitted. Thank you!')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('report_submitted_thanks'.tr())));
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: const Text('Submit'),
+            child: Text('submit'.tr()),
           ),
         ],
       ),
@@ -444,30 +445,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showPrivacyPolicy() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Privacy & Security'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: const SingleChildScrollView(child: Text('Privacy policy content goes here...')),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
-        ],
-      ),
-    );
+    RulesGuideSheet.showPrivacySheet(context);
   }
 
   void _showAppRules() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('App Rules'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: const SingleChildScrollView(child: Text('App rules content goes here...')),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
-        ],
-      ),
-    );
+    RulesGuideSheet.showRulesSheet(context);
   }
 }

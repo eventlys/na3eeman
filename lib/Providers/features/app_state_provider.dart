@@ -6,7 +6,7 @@ import '../../Helpers/cache_helper.dart';
 import '../../Helpers/connectivity_helper.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
-import '../../Models/auth/barber_profile.dart';
+import '../../Models/auth/expert_profile.dart';
 import '../../Models/auth/owner_profile.dart';
 import '../../Services/enums/gender.dart';
 import '../../core/enums/app_enums.dart';
@@ -14,7 +14,7 @@ import '../../core/enums/app_enums.dart';
 
 class AppStateProvider extends BaseProvider {
   User? _user;
-  BarberProfile? _barberProfile;
+  ExpertProfile? _expertProfile;
   OwnerProfile? _ownerProfile;
   bool _isAuthenticated = false;
   static final AppStateProvider _instance = AppStateProvider._internal();
@@ -23,10 +23,10 @@ class AppStateProvider extends BaseProvider {
 
   // Add the missing properties/methods from UserProviderService
   bool get isLoggedIn => _isAuthenticated;
-  bool get isBarber => _barberProfile != null;
+  bool get isExpert => _expertProfile != null;
   bool get isOwner => _ownerProfile != null;
   bool get isCustomer =>
-      !isBarber && !isOwner && _isAuthenticated;
+      !isExpert && !isOwner && _isAuthenticated;
 
   // Initialize app state
   Future<void> initialize() async {
@@ -182,8 +182,8 @@ class AppStateProvider extends BaseProvider {
   // Permission checks
   bool canAccessSalonManagement() {
     return _userRole == UserRole.owner || 
-           _userRole == UserRole.ownerEmployee || 
-           _userRole == UserRole.ownerOwner;
+           _userRole == UserRole.ownerExpert || 
+           _userRole == UserRole.owner;
   }
 
   // Private methods

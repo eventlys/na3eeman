@@ -1,11 +1,10 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/utils/formatters.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class BranchesOverview extends StatelessWidget {
   final List<dynamic> branches;
@@ -48,7 +47,7 @@ class BranchesOverview extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.salonBranches,
+              Text("salon_branches".tr(),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -58,7 +57,7 @@ class BranchesOverview extends StatelessWidget {
               if (onViewAllBranches != null)
                 TextButton(
                   onPressed: onViewAllBranches,
-                  child: Text(AppLocalizations.of(context)!.viewAll,
+                  child: Text("view_all".tr(),
                     style: TextStyle(
                       color: AppColor.lightPrimary,
                     ),
@@ -110,7 +109,7 @@ class BranchesOverview extends StatelessWidget {
             color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
           ),
           const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.noBranchesAvailable,
+          Text("no_branches_available".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -118,7 +117,7 @@ class BranchesOverview extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(AppLocalizations.of(context)!.addYourFirstBranchToGetStarted,
+          Text("add_your_first_branch_to_get_started".tr(),
             style: TextStyle(
               color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
               fontSize: 14,
@@ -134,7 +133,7 @@ class BranchesOverview extends StatelessWidget {
               backgroundColor: AppColor.lightPrimary,
               foregroundColor: Colors.white,
             ),
-            child: Text(AppLocalizations.of(context)!.addFirstBranch),
+            child: Text("add_first_branch".tr()),
           ),
         ],
       ),

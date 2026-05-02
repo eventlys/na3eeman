@@ -71,7 +71,7 @@ class ThemedAvatar extends StatelessWidget {
             width: diameter,
             height: diameter,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
+            errorBuilder: (_, _, _) =>
                 _placeholder(context, isDark, borderColor),
           )
         : Image.asset(
@@ -79,7 +79,7 @@ class ThemedAvatar extends StatelessWidget {
             width: diameter,
             height: diameter,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
+            errorBuilder: (_, _, _) =>
                 _placeholder(context, isDark, borderColor),
           );
 

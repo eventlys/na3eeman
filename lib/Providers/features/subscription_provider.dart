@@ -1,12 +1,15 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
 import '../../Models/subscription/subscription_model.dart';
 import '../../Models/subscription/subscription_plan_model.dart';
 import '../../Services/business_service.dart';
-// import '../../Services/api/api_service.dart';
+import '../../Services/api/api_service.dart';
 
 class SubscriptionProvider extends BaseProvider {
+  final ApiService _apiService = ApiService();
+  final SubscriptionService _subscriptionService;
+  
   List<SubscriptionPlan> _plans = [];
   Subscription? _currentSubscription;
   AuthProvider? _authProvider;
@@ -15,7 +18,7 @@ class SubscriptionProvider extends BaseProvider {
   List<SubscriptionPlan> get plans => _plans;
   Subscription? get currentSubscription => _currentSubscription;
   bool get hasActiveSubscription => _currentSubscription?.isActive == true;
-  final SubscriptionService _subscriptionService;
+  
   SubscriptionProvider({required SubscriptionService subscriptionService})
     : _subscriptionService = subscriptionService;
 
@@ -32,10 +35,15 @@ class SubscriptionProvider extends BaseProvider {
     notifyListeners();
 
     try {
-      await _subscriptionService.getSubscriptionDetails();
-      _currentSubscription = _subscriptionService.currentSubscription;
-      final errorMsg = _subscriptionService.error;
-      if (errorMsg != null) setError(errorMsg);
+      // 1. Load available plans
+      await loadPlans();
+      
+      // 2. Load current subscription if user is owner
+      if (_authProvider?.user?.isOwner == true) {
+        await loadCurrentSubscription();
+      }
+      
+      clearError();
     } catch (e) {
       setError(e.toString());
     } finally {
@@ -45,66 +53,49 @@ class SubscriptionProvider extends BaseProvider {
   }
 
   Future<void> loadPlans() async {
-    await Future.delayed(const Duration(seconds: 1));
-    _plans = [
-      SubscriptionPlan(
-        id: '1',
-        name: 'Starter',
-        description: 'Perfect for individual barbers starting out',
-        price: 29.99,
-        duration: 'MONTHLY',
-        features: [
-          '1 Branch',
-          '3 Staff Members',
-          'Basic Analytics',
-          'Email Support',
-          'Appointment Management',
-        ],
-        isPopular: false,
-        maxBranches: 1,
-        maxStaff: 3,
-        analyticsEnabled: true,
-        premiumSupport: false,
-        trialDays: 7,
-      ),
-    ];
+    try {
+      final List<dynamic> data = await _apiService.getSubscriptionPlans();
+      _plans = data.map((json) => SubscriptionPlan.fromJson(json)).toList();
+    } catch (e) {
+      debugPrint('Error loading plans: $e');
+      rethrow;
+    }
   }
 
   Future<void> loadCurrentSubscription() async {
-    await Future.delayed(const Duration(milliseconds: 600));
-    if (_authProvider?.ownerProfile?.isSubscribed == true) {
-      _currentSubscription = Subscription(
-        id: 'sub_123456',
-        customerId: _authProvider?.user?.id ?? 1,
-        salonId: 1,
-        planName: 'Professional Plan',
-        subscriptionType: 'MONTHLY',
-        price: 79.99,
-        startDate: DateTime.now().subtract(const Duration(days: 60)),
-        endDate: DateTime.now().add(const Duration(days: 305)),
-        status: 'Active',
-        isActive: true,
-        autoRenew: true,
-        features: [
-          '3 Branches',
-          '10 Staff Members',
-          'Advanced Analytics',
-          'Priority Support',
-          'Inventory Management',
-          'Marketing Tools',
-          'Custom Branding',
-        ],
-      );
+    try {
+      // Assuming Endpoint exists for current user subscription
+      final response = await _apiService.get('/salons/subscriptions/current/');
+      if (response != null && response['data'] != null) {
+        _currentSubscription = Subscription.fromJson(response['data']);
+      }
+    } catch (e) {
+      debugPrint('Error loading current subscription: $e');
+      // Non-fatal, user might not have one yet
     }
   }
 
   Future<void> upgradeToEnterprise() async {
-    await _subscriptionService.upgradeSubscription('enterprise');
-    await loadSubscriptionData();
+    setLoading(true);
+    try {
+      await _subscriptionService.upgradeSubscription('enterprise');
+      await loadSubscriptionData();
+    } catch (e) {
+      setError(e.toString());
+    } finally {
+      setLoading(false);
+    }
   }
 
   Future<void> upgradeToPremium() async {
-    await _subscriptionService.upgradeSubscription('premium');
-    await loadSubscriptionData();
+    setLoading(true);
+    try {
+      await _subscriptionService.upgradeSubscription('premium');
+      await loadSubscriptionData();
+    } catch (e) {
+      setError(e.toString());
+    } finally {
+      setLoading(false);
+    }
   }
 }

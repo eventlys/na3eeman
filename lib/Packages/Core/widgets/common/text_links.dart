@@ -10,7 +10,7 @@ class TextLink extends StatelessWidget {
   final bool underline;
 
   const TextLink({
-    Key? key,
+    super.key,
     required this.link,
     required this.text,
     required this.color,
@@ -18,7 +18,7 @@ class TextLink extends StatelessWidget {
     this.fontSize = 16,
     this.fontFamily = 'Jost',
     this.underline = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

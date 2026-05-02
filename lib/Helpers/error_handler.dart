@@ -133,8 +133,7 @@ class ErrorHandler {
           return 'Request timed out. Please try again.';
         case ErrorType.client:
         case ErrorType.unknown:
-        default:
-          return 'An unexpected error occurred. Please try again.';
+          return 'An unexpected error occurred. Please try again later.';
       }
     }
 

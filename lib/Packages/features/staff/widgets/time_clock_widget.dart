@@ -4,7 +4,7 @@ import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
 /// Staff Time Clock widget — Clock In / Clock Out.
-/// Shown on Employee Dashboard.  (Fresha / Bodrah / WAJ parity)
+/// Shown on Expert Dashboard.  (Fresha / Bodrah / WAJ parity)
 class TimeClockWidget extends StatefulWidget {
   const TimeClockWidget({super.key});
 

@@ -8,9 +8,7 @@ class LoginHelper {
   final Logger _logger = Logger();
 
   static Future<bool> login(BuildContext context, String email, String password) async {
-    // This is a placeholder that delegates to the provider/service
-    // In a real app, this should be handled by AuthProvider
-    return true; 
+    throw UnimplementedError('Use AuthProvider for login instead of LoginHelper');
   }
 
   /// Validates email format
@@ -94,14 +92,14 @@ class LoginHelper {
           'lightColor': AppColor.lightPrimary,
           'darkColor': AppColor.darkPrimary,
         };
-      case 'barber':
+      case 'expert':
         return {
-          'color': AppColor.lightBarber,
+          'color': AppColor.lightExpert,
           'icon': Icons.content_cut,
-          'name': 'Barber',
-          'homeRoute': '/barber_home',
-          'lightColor': AppColor.lightBarber,
-          'darkColor': AppColor.darkBarber,
+          'name': 'Expert',
+          'homeRoute': '/expert_home',
+          'lightColor': AppColor.lightExpert,
+          'darkColor': AppColor.darkExpert,
         };
       case 'owner':
         return {
@@ -258,67 +256,9 @@ class LoginHelper {
     }
   }
 
-  /// Check if debug mode is enabled
-  bool isDebugMode() {
-    return const bool.fromEnvironment('DEBUG', defaultValue: true);
-  }
-
-  /// Get available roles for testing
-  List<String> getAvailableRoles() {
-    return ['customer', 'barber', 'owner', 'admin', 'manager', 'assistant', 'receptionist'];
-  }
-
   /// Get social login providers
   List<String> getSocialLoginProviders() {
     return ['google', 'facebook', 'apple'];
-  }
-
-  /// Simulate login for testing with theme-aware responses
-  Future<Map<String, dynamic>> simulateLogin({
-    required String email,
-    required String password,
-    int delaySeconds = 2,
-  }) async {
-    _logger.d('Simulating login for: $email');
-
-    await Future.delayed(Duration(seconds: delaySeconds));
-
-    // Mock login logic
-    if (email.isNotEmpty && password.isNotEmpty) {
-      String role = 'customer';
-      if (email.contains('barber')) role = 'barber';
-      if (email.contains('owner')) role = 'owner';
-      if (email.contains('admin')) role = 'admin';
-      if (email.contains('manager')) role = 'manager';
-      if (email.contains('assistant')) role = 'assistant';
-      if (email.contains('receptionist')) role = 'receptionist';
-
-      final userName = email.split('@').first;
-
-      // Get role configuration
-      final roleConfig = getRoleConfig(role);
-
-      return {
-        'success': true,
-        'message': 'Login successful',
-        'user': {
-          'id': DateTime.now().millisecondsSinceEpoch,
-          'email': email,
-          'role': role,
-          'name': userName,
-        },
-        'token': 'mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}',
-        'roleConfig': roleConfig,
-      };
-    } else {
-      return {
-        'success': false,
-        'message': 'Invalid credentials',
-        'user': {},
-        'token': '',
-        'roleConfig': getRoleConfig('customer'),
-      };
-    }
   }
 
   /// Validate if user can access specific role-based features
@@ -327,7 +267,7 @@ class LoginHelper {
       'admin': ['all'],
       'owner': ['manage_salon', 'manage_staff', 'view_reports', 'manage_appointments'],
       'manager': ['manage_staff', 'view_reports', 'manage_appointments'],
-      'barber': ['manage_appointments', 'view_schedule', 'update_availability'],
+      'expert': ['manage_appointments', 'view_schedule', 'update_availability'],
       'receptionist': ['manage_appointments', 'view_schedule', 'customer_management'],
       'assistant': ['view_schedule', 'assist_appointments'],
       'customer': ['book_appointments', 'view_history', 'manage_profile'],
@@ -348,9 +288,9 @@ class LoginHelper {
         };
       case 'manage_staff':
         return {
-          'color': AppColor.lightBarber,
+          'color': AppColor.lightExpert,
           'iconColor': AppColor.light,
-          'darkColor': AppColor.darkBarber,
+          'darkColor': AppColor.darkExpert,
         };
       case 'manage_appointments':
         return {

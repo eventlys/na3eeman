@@ -21,7 +21,7 @@ class AppPaths {
   static const String plusIcon = '${iconsPath}plus.png';
 
   // Staff Management Icons
-  static const String barberIcon = '${iconsPath}barber.svg';
+  static const String expertIcon = '${iconsPath}expert.svg';
   static const String chartIcon = '${iconsPath}chart.svg';
   static const String reportIconSvg = '${iconsPath}report.svg';
   static const String branchIcon = '${iconsPath}branch.svg';

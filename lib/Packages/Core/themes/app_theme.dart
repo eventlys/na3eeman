@@ -218,12 +218,10 @@ class AppThemes {
         primary: primary,
         secondary: AppColor.accentOrange,
         surface: surface,
-        background: scaffold,
         error: AppColor.error,
         onPrimary: AppColor.white,
         onSecondary: AppColor.white,
         onSurface: textPrimary,
-        onBackground: textPrimary,
         onError: AppColor.white,
         outline: AppColor.lightGray,
       ),
@@ -281,14 +279,14 @@ class AppThemes {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: surface,
         indicatorColor: primary.withOpacity(0.12),
-        iconTheme: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return const IconThemeData(color: primary, size: 24);
           }
           return const IconThemeData(color: AppColor.mediumGray, size: 24);
         }),
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return GoogleFonts.inter(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -348,13 +346,13 @@ class AppThemes {
         linearTrackColor: AppColor.paleGray,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith(
-          (s) => s.contains(MaterialState.selected)
+        thumbColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
               ? primary
               : AppColor.mediumGray,
         ),
-        trackColor: MaterialStateProperty.resolveWith(
-          (s) => s.contains(MaterialState.selected)
+        trackColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
               ? primary.withOpacity(0.3)
               : AppColor.lightGray,
         ),
@@ -387,12 +385,10 @@ class AppThemes {
         primary: primary,
         secondary: AppColor.accentOrange,
         surface: surface,
-        background: scaffold,
         error: AppColor.darkError,
         onPrimary: AppColor.white,
         onSecondary: AppColor.white,
         onSurface: textPrimary,
-        onBackground: textPrimary,
         onError: AppColor.white,
         outline: AppColor.ninjaDivider,
       ),
@@ -454,14 +450,14 @@ class AppThemes {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: surface,
         indicatorColor: primary.withOpacity(0.15),
-        iconTheme: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return const IconThemeData(color: primary, size: 24);
           }
           return const IconThemeData(color: AppColor.darkTextHint, size: 24);
         }),
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return GoogleFonts.inter(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -521,13 +517,13 @@ class AppThemes {
         linearTrackColor: AppColor.darkSurface,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith(
-          (s) => s.contains(MaterialState.selected)
+        thumbColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
               ? primary
               : AppColor.darkTextHint,
         ),
-        trackColor: MaterialStateProperty.resolveWith(
-          (s) => s.contains(MaterialState.selected)
+        trackColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
               ? primary.withOpacity(0.3)
               : AppColor.ninjaDivider,
         ),

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
@@ -133,7 +133,7 @@ class _NewReportTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Issue type
-            Text(AppLocalizations.of(context)!.issueType,
+            Text("issue_type".tr(),
               style: Theme.of(
                 context,
               ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -236,7 +236,7 @@ class _NewReportTab extends StatelessWidget {
             const SizedBox(height: 24),
 
             AppButton(
-              label: AppLocalizations.of(context)!.submitReport,
+              label: "submit_report".tr(),
               fullWidth: true,
               isLoading: submitting,
               icon: Icons.send_rounded,
@@ -320,7 +320,7 @@ class _MyCasesTab extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: _myCases.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, i) {
         final c = _myCases[i];
         final sc = _statusColor(c.status);

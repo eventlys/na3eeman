@@ -148,7 +148,7 @@ class AppDialogThemes {
       final isDark = theme.brightness == Brightness.dark;
       dialogTheme = getGenderDialogTheme(gender, isDark);
     } else {
-      dialogTheme = theme.dialogTheme ?? AppDialogThemes.lightDialogTheme;
+      dialogTheme = theme.dialogTheme;
     }
 
     return showDialog<T>(

@@ -1,8 +1,8 @@
 class AppStrings {
   // App Name & Basic Info
   static const String appName = 'Na3eeman';
-  static const String appTagline = 'Premium Barber Experience';
-  static const String appDescription = 'Book appointments with the best barbers in town';
+  static const String appTagline = 'Premium Expert Experience';
+  static const String appDescription = 'Book appointments with the best experts in town';
 
   // Common Actions
   static const String save = 'Save';
@@ -90,7 +90,7 @@ class AppStrings {
 
   // Staff Management
   static const String staffManagement = 'Staff Management';
-  static const String barbers = 'Barbers';
+  static const String experts = 'Experts';
   static const String performance = 'Performance';
   static const String staffReports = 'Staff Reports';
   static const String assignManager = 'Assign Manager';
@@ -109,7 +109,7 @@ class AppStrings {
   static const String contact = 'Contact';
   static const String bookAppointment = 'Book Appointment';
   static const String selectService = 'Select Service';
-  static const String selectBarber = 'Select Barber';
+  static const String selectExpert = 'Select Expert';
   static const String selectDateTime = 'Select Date & Time';
 
   // Appointment Related

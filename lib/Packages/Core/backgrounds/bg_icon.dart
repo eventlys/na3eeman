@@ -13,7 +13,7 @@ class BgIcon extends StatefulWidget {
   final Offset endPosition;
 
   const BgIcon({
-    Key? key,
+    super.key,
     required this.iconPath,
     required this.blurLevel,
     required this.size,
@@ -21,7 +21,7 @@ class BgIcon extends StatefulWidget {
     required this.animationDuration,
     required this.startPosition,
     required this.endPosition,
-  }) : super(key: key);
+  });
 
   @override
   BgIconState createState() => BgIconState();

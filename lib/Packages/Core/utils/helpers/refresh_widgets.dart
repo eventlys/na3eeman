@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide RefreshIndicator;
 // import 'package:easy_localization/easy_localization.dart';
@@ -33,17 +33,17 @@ class RefreshableList extends StatelessWidget {
         builder: (context, mode) {
           Widget body;
           if (mode == RefreshStatus.idle) {
-            body = Text(AppLocalizations.of(context)!.pullDownToRefresh);
+            body = Text("pull_down_to_refresh".tr());
           } else if (mode == RefreshStatus.refreshing) {
             body = const CircularProgressIndicator();
           } else if (mode == RefreshStatus.failed) {
-            body = Text(AppLocalizations.of(context)!.refreshFailed);
+            body = Text("refresh_failed".tr());
           } else if (mode == RefreshStatus.canRefresh) {
-            body = Text(AppLocalizations.of(context)!.releaseToRefresh);
+            body = Text("release_to_refresh".tr());
           } else {
-            body = Text(AppLocalizations.of(context)!.refreshCompleted);
+            body = Text("refresh_completed".tr());
           }
-          return Container(
+          return SizedBox(
             height: 60,
             child: Center(child: body),
           );
@@ -53,17 +53,17 @@ class RefreshableList extends StatelessWidget {
         builder: (context, mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(AppLocalizations.of(context)!.pullUpToLoadMore);
+            body = Text("pull_up_to_load_more".tr());
           } else if (mode == LoadStatus.loading) {
             body = const CircularProgressIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text(AppLocalizations.of(context)!.loadFailed);
+            body = Text("load_failed".tr());
           } else if (mode == LoadStatus.canLoading) {
-            body = Text(AppLocalizations.of(context)!.releaseToLoadMore);
+            body = Text("release_to_load_more".tr());
           } else {
-            body = Text(AppLocalizations.of(context)!.noMoreData);
+            body = Text("no_more_data".tr());
           }
-          return Container(
+          return SizedBox(
             height: 60,
             child: Center(child: body),
           );

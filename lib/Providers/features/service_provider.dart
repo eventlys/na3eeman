@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../Services/api/api_service.dart';
-import '../../Services/barber_service.dart';
+import '../../Services/expert_service.dart';
 import '../../Helpers/service_models_helper.dart';
 
 class ServiceProvider with ChangeNotifier {
@@ -12,17 +12,17 @@ class ServiceProvider with ChangeNotifier {
       _availableAdditionalServices;
 
   final ApiService _apiService = ApiService();
-  late BarberService _barberService;
+  late ExpertService _expertService;
 
   ServiceProvider() {
     _initializeServices();
   }
 
   void _initializeServices() {
-    _barberService = BarberService();
+    _expertService = ExpertService();
   }
 
-  BarberService get barberService => _barberService;
+  ExpertService get expertService => _expertService;
   ApiService get apiService => _apiService;
 
   // Initialize with main service

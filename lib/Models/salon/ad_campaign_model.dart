@@ -4,6 +4,7 @@ class AdCampaignModel {
   final String details;
   final int durationDays;
   final int rewardPoints;
+  final bool isActive;
   final DateTime? createdAt;
   final int salonId;
 
@@ -13,6 +14,7 @@ class AdCampaignModel {
     required this.details,
     required this.durationDays,
     required this.rewardPoints,
+    this.isActive = true,
     this.createdAt,
     required this.salonId,
   });
@@ -24,6 +26,7 @@ class AdCampaignModel {
       details: map['details'] as String? ?? '',
       durationDays: map['duration_days'] as int? ?? 0,
       rewardPoints: map['reward_points'] as int? ?? 0,
+      isActive: map['is_active'] as bool? ?? true,
       createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
       salonId: map['salon_id'] as int? ?? (map['salon'] as int? ?? 0),
     );
@@ -36,6 +39,7 @@ class AdCampaignModel {
       'details': details,
       'duration_days': durationDays,
       'reward_points': rewardPoints,
+      'is_active': isActive,
       'salon': salonId,
     };
   }

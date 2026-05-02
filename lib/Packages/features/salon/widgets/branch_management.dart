@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class BranchManagementPage extends StatelessWidget {
   const BranchManagementPage({super.key});
@@ -13,7 +12,7 @@ class BranchManagementPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.branchManagement),
+        title: Text("branch_management".tr()),
         backgroundColor: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
         foregroundColor: isDarkTheme ? AppColor.darkText : AppColor.lightText,
         elevation: 2,
@@ -31,7 +30,7 @@ class BranchManagementPage extends StatelessWidget {
                 color: (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary).withOpacity(0.5),
               ),
               SizedBox(height: 20),
-              Text(AppLocalizations.of(context)!.branchManagement,
+              Text("branch_management".tr(),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -39,7 +38,7 @@ class BranchManagementPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Text(AppLocalizations.of(context)!.manageAllYourBranchesViewPerformanceMetrics,
+              Text("manage_all_your_branches_view_performance_metrics".tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: (isDarkTheme ? AppColor.darkText : AppColor.lightText).withValues(alpha: 0.7),

@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 
@@ -110,7 +109,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                   }
                 },
                 style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: Text(AppLocalizations.of(context)!.removePermanently),
+                child: Text("remove_permanently".tr()),
               ),
               ElevatedButton(
                 onPressed: isSubmitting ? null : () async {
@@ -134,7 +133,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                     setModalState(() => isSubmitting = false);
                   }
                 },
-                child: isSubmitting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : Text(AppLocalizations.of(context)!.addStock),
+                child: isSubmitting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : Text("add_stock".tr()),
               ),
             ],
           );
@@ -158,7 +157,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
             const Icon(Icons.warning_amber_rounded,
                 size: 18, color: Colors.orange),
             const SizedBox(width: 8),
-            Text(AppLocalizations.of(context)!.lowStockAlerts,
+            Text("low_stock_alerts".tr(),
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),
@@ -173,7 +172,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
         if (_items.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(AppLocalizations.of(context)!.allStockNominal),
+            child: Text("all_stock_nominal".tr()),
           ),
         ..._items.map((item) {
           final pct = item.qty / item.threshold;
@@ -228,7 +227,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
         TextButton.icon(
           onPressed: () => Navigator.pushNamed(context, '/inventory'),
           icon: const Icon(Icons.add_shopping_cart_rounded, size: 16),
-          label: Text(AppLocalizations.of(context)!.manageInventory),
+          label: Text("manage_inventory".tr()),
         ),
       ],
     );

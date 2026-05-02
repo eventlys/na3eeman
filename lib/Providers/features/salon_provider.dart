@@ -6,6 +6,7 @@ import '../../Models/salon/branch_model.dart';
 import '../../Models/salon/salon_service_model.dart';
 import '../../Models/inventory/inventory_item.dart';
 import '../../Services/api/api_service.dart';
+import '../../Services/api/endpoints.dart';
 
 class SalonProvider extends BaseProvider {
   List<Salon> _salons = [];
@@ -71,7 +72,7 @@ class SalonProvider extends BaseProvider {
 
   Future<void> loadSalons() async {
     try {
-      final response = await ApiService().get('/salons/salons/');
+      final response = await ApiService().get(Endpoints.salons);
       print('Frontend: loadSalons Response: $response');
       final List<dynamic> results = response['results'] ?? response['data'] ?? [];
       _salons = results.map<Salon>((json) => Salon.fromJson(json as Map<String, dynamic>)).toList();
@@ -86,6 +87,8 @@ class SalonProvider extends BaseProvider {
   Future<void> loadBranches() async {
     try {
       if (_selectedSalon == null) return;
+      // Note: Branch endpoint might need to be added to Endpoints.dart if it doesn't exist
+      // For now using the existing pattern
       final response = await ApiService().get('/salons/salons/${_selectedSalon!.id}/branches/');
       print('Frontend: loadBranches Response: $response');
       final List<dynamic> results = response['results'] ?? response['data'] ?? [];
@@ -110,7 +113,7 @@ class SalonProvider extends BaseProvider {
   Future<void> loadInventory() async {
     try {
       if (_selectedSalon == null) return;
-      final response = await ApiService().get('/salons/${_selectedSalon!.id}/inventory/');
+      final response = await ApiService().get(Endpoints.salonInventory(_selectedSalon!.id));
       print('Frontend: loadInventory Response: $response');
       final List<dynamic> results = response['results'] ?? response['data'] ?? [];
       _inventory = results.map<InventoryItem>((json) => InventoryItem.fromJson(json as Map<String, dynamic>)).toList();
@@ -180,6 +183,7 @@ class SalonProvider extends BaseProvider {
           productId: _inventory[index].productId,
           salonId: _inventory[index].salonId,
           quantityInStock: _inventory[index].quantityInStock + increment,
+          lowStockThreshold: _inventory[index].lowStockThreshold,
           lastUpdated: DateTime.now(),
           productName: _inventory[index].productName,
           productDescription: _inventory[index].productDescription,

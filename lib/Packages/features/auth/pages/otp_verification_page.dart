@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -8,7 +8,6 @@ import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import 'reset_password.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   final String email;
@@ -129,7 +128,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return AuthScaffold(
-      title: AppLocalizations.of(context)!.verifyOtp,
+      title: "verify_otp".tr(),
       subtitle: 'We sent a 6-digit OTP to your registered email',
       showBackButton: true,
       child: Column(
@@ -198,7 +197,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
           // Verify Button
           PrimaryButton(
-            text: AppLocalizations.of(context)!.verifyOtp,
+            text: "verify_otp".tr(),
             onPressed: _verifyOtp,
             isLoading: _isLoading,
           ),

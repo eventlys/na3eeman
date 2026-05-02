@@ -10,11 +10,11 @@ class SpaPackageCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const SpaPackageCard({
-    Key? key,
+    super.key,
     required this.package,
     this.language = 'ar',
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

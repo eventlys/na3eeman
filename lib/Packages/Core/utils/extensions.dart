@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' as intl;
 
 
@@ -415,15 +416,15 @@ extension WidgetExtensions on Widget {
       Tooltip(message: message, decoration: decoration, height: height, child: this);
 }
 
-extension ObjectExtensions on Object {
-  bool get hasProperty => this != null;
+// extension ObjectExtensions on Object {
+//   bool get hasProperty => this != null;
 
-  bool hasMethod(String methodName) {
-    try {
-      final dynamic obj = this;
-      return obj[methodName] != null;
-    } catch (e) {
-      return false;
-    }
-  }
-}
+//   bool hasMethod(String methodName) {
+//     try {
+//       final dynamic obj = this;
+//       return obj[methodName] != null;
+//     } catch (e) {
+//       return false;
+//     }
+//   }
+// }

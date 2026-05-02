@@ -265,7 +265,7 @@ class FloatingBackgroundState extends State<FloatingBackground> {
       AppColor.lightPrimary.withValues(alpha: 0.3),
       AppColor.lightSecondary.withValues(alpha: 0.3),
       AppColor.lightAccent.withValues(alpha: 0.3),
-      AppColor.lightBarber.withValues(alpha: 0.3),
+      AppColor.lightExpert.withValues(alpha: 0.3),
       AppColor.lightManager.withValues(alpha: 0.3),
       AppColor.lightAssistant.withValues(alpha: 0.3),
       AppColor.lightReceptionist.withValues(alpha: 0.3),

@@ -1,11 +1,10 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 // import 'dart:nativewrappers/_internal/vm/lib/mirrors_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class UserInfoHeader extends StatelessWidget {
   const UserInfoHeader({super.key});
@@ -157,7 +156,7 @@ class UserInfoHeader extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.photo_camera),
-              title: Text(AppLocalizations.of(context)!.changeProfilePicture),
+              title: Text("change_profile_picture".tr()),
               onTap: () {
                 Navigator.pop(context);
                 _showImageSourceDialog(context, authProvider);
@@ -178,7 +177,7 @@ class UserInfoHeader extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.changeProfilePicture),
+        title: Text("change_profile_picture".tr()),
         content: const Text('Select image source'),
         actions: [
           TextButton(
@@ -186,14 +185,14 @@ class UserInfoHeader extends StatelessWidget {
               Navigator.pop(context);
               // Implement camera functionality
             },
-            child: Text(AppLocalizations.of(context)!.camera),
+            child: Text("camera".tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               // Implement gallery functionality
             },
-            child: Text(AppLocalizations.of(context)!.gallery),
+            child: Text("gallery".tr()),
           ),
         ],
       ),

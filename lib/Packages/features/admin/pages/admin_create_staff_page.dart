@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -23,16 +23,46 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   
-  String _selectedRole = 'EMPLOYEE';
+  String _selectedRole = 'EXPERT';
   int? _selectedSalonId;
   bool _isLoading = false;
+  List<dynamic> _salons = [];
+  bool _fetchingSalons = false;
 
   final List<Map<String, String>> _roles = [
-    {'value': 'EMPLOYEE', 'label': 'Employee'},
+    {'value': 'EXPERT', 'label': 'Expert'},
     {'value': 'RECEPTIONIST', 'label': 'Receptionist'},
     {'value': 'INTERN', 'label': 'Intern'},
     {'value': 'OWNER', 'label': 'Owner'},
+    {'value': 'MANAGER', 'label': 'Manager'},
+    {'value': 'OWNER_EXPERT', 'label': 'Owner Expert'},
+    {'value': 'COFOUNDER', 'label': 'Co-Founder'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSalons();
+  }
+
+  Future<void> _loadSalons() async {
+    setState(() => _fetchingSalons = true);
+    try {
+      final authProvider = context.read<AuthProvider>();
+      final salons = await authProvider.fetchSalons();
+      if (mounted) {
+        setState(() {
+          _salons = salons;
+          if (_salons.isNotEmpty) {
+            _selectedSalonId = _salons.first['id'];
+          }
+          _fetchingSalons = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _fetchingSalons = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -58,14 +88,23 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
     
     try {
       final authProvider = context.read<AuthProvider>();
-      // We need an API call for this. For now let's assume AuthService has it.
-      // final success = await authProvider.adminCreateStaff(...)
       
-      await Future.delayed(const Duration(seconds: 1)); // Mock
+      final staffData = {
+        'role': _selectedRole,
+        'salon_id': _selectedSalonId,
+        'first_name': _firstNameController.text,
+        'last_name': _lastNameController.text,
+        'email': _emailController.text,
+        'username': _usernameController.text,
+        'phone': _phoneController.text,
+        'password': _passwordController.text.isNotEmpty ? _passwordController.text : null,
+      };
+
+      final success = await authProvider.adminCreateStaff(staffData);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.staffCreatedSuccessfully)),
+          SnackBar(content: Text("staff_created_successfully".tr())),
         );
         Navigator.pop(context);
       }
@@ -85,7 +124,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.createStaff, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("create_staff".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -103,10 +142,10 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
               const SizedBox(height: 32),
               
               // Role Selection
-              Text(AppLocalizations.of(context)!.role, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text("role".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: _selectedRole,
+                initialValue: _selectedRole,
                 items: _roles.map((role) {
                   return DropdownMenuItem(
                     value: role['value'],
@@ -123,43 +162,47 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
               
               const SizedBox(height: 24),
               
-              // Salon Selection (Mocked for now)
-              Text(AppLocalizations.of(context)!.salon, style: const TextStyle(fontWeight: FontWeight.bold)),
+              // Salon Selection
+              Text("salon".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              DropdownButtonFormField<int>(
-                value: _selectedSalonId,
-                hint: const Text('Select Salon'),
-                items: const [
-                  DropdownMenuItem(value: 1, child: Text('Salon Al-Amira')),
-                  DropdownMenuItem(value: 2, child: Text('Royal Barber Salon')),
-                ],
-                onChanged: (val) => setState(() => _selectedSalonId = val),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                ),
-              ),
+              _fetchingSalons 
+                ? const Center(child: CircularProgressIndicator())
+                : DropdownButtonFormField<int>(
+                    initialValue: _selectedSalonId,
+                    hint: const Text('Select Salon'),
+                    items: _salons.map((salon) {
+                      return DropdownMenuItem<int>(
+                        value: salon['id'] as int,
+                        child: Text(salon['salon_name']?.toString() ?? 'Unnamed Salon'),
+                      );
+                    }).toList(),
+                    onChanged: (val) => setState(() => _selectedSalonId = val),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Theme.of(context).cardColor,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    ),
+                  ),
               
               const SizedBox(height: 24),
               
               AppTextField(
                 controller: _firstNameController,
-                label: AppLocalizations.of(context)!.firstName,
+                label: "first_name".tr(),
                 prefixIcon: Icons.person_outline,
                 validator: (val) => val!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _lastNameController,
-                label: AppLocalizations.of(context)!.lastName,
+                label: "last_name".tr(),
                 prefixIcon: Icons.person_outline,
                 validator: (val) => val!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _emailController,
-                label: AppLocalizations.of(context)!.email,
+                label: "email".tr(),
                 prefixIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
                 validator: (val) => val!.isEmpty ? 'Required' : null,
@@ -167,21 +210,21 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
               const SizedBox(height: 16),
               AppTextField(
                 controller: _usernameController,
-                label: AppLocalizations.of(context)!.username,
+                label: "username".tr(),
                 prefixIcon: Icons.alternate_email,
                 validator: (val) => val!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _phoneController,
-                label: AppLocalizations.of(context)!.phone,
+                label: "phone".tr(),
                 prefixIcon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _passwordController,
-                label: AppLocalizations.of(context)!.temporaryPassword,
+                label: "temporary_password".tr(),
                 prefixIcon: Icons.lock_outline,
                 obscureText: true,
                 hint: 'Leave empty for auto-generated',
@@ -190,7 +233,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
               const SizedBox(height: 48),
               
               PrimaryButton(
-                text: AppLocalizations.of(context)!.createStaffMember,
+                text: "create_staff_member".tr(),
                 isLoading: _isLoading,
                 onPressed: _createStaff,
               ),

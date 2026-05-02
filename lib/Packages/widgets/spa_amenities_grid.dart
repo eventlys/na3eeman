@@ -8,10 +8,10 @@ class SpaAmenitiesGrid extends StatelessWidget {
   final String language;
 
   const SpaAmenitiesGrid({
-    Key? key,
+    super.key,
     required this.amenities,
     this.language = 'ar',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,10 +87,10 @@ class SpaAmenitiesSection extends StatelessWidget {
   final String language;
 
   const SpaAmenitiesSection({
-    Key? key,
+    super.key,
     required this.amenities,
     this.language = 'ar',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

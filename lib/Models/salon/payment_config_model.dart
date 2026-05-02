@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 enum DepositType { fixed, percent }
 
@@ -71,8 +70,8 @@ class SalonPaymentConfig {
     int? noShowEnforcementThreshold,
   }) {
     return SalonPaymentConfig(
-      id: this.id,
-      salonId: this.salonId,
+      id: id,
+      salonId: salonId,
       allowCash: allowCash ?? this.allowCash,
       allowOnline: allowOnline ?? this.allowOnline,
       allowCliq: allowCliq ?? this.allowCliq,

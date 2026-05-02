@@ -112,7 +112,7 @@ class AppRulesOverlay extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        ...rules.map((rule) => _buildRuleItem(rule)).toList(),
+        ...rules.map((rule) => _buildRuleItem(rule)),
       ],
     );
   }

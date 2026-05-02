@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../features/navigation/widgets/custom_navigation_bar.dart';
 import '../utils/helpers/refresh_widgets.dart';
-import '../utils/helpers/themes_helpers.dart';
 import 'app_theme.dart';
 import 'glass_appbar.dart';
 import '../widgets/shared/error_widget.dart';
@@ -120,7 +119,6 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final gradientColors = AppThemes.getGradientColors(context);
 
     return HeroControllerScope(
@@ -686,7 +684,7 @@ class AuthScaffold extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             if (subtitle != null) ...[
@@ -694,7 +692,7 @@ class AuthScaffold extends StatelessWidget {
               Text(
                 subtitle!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onBackground.withValues(alpha: 0.7),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ],

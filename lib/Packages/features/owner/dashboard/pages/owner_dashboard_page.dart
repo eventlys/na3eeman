@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:na3eeman/Providers/features/owner_provider.dart';
 // import 'package:na3eeman/core/config/subscription_config.dart';
@@ -13,18 +12,11 @@ import 'package:na3eeman/core/widgets/dashboard/dashboard_widgets.dart';
 
 import 'package:na3eeman/Packages/features/navigation/sidebar.dart';
 import 'package:na3eeman/Packages/features/navigation/sidebar_controller.dart';
-import 'package:na3eeman/Packages/features/salon/pages/feedback_management_page.dart';
-import '../widgets/artisan/daily_earnings_widget.dart';
 
 // Artisan standalone
-import 'package:na3eeman/Packages/features/staff/widgets/tools_inventory_overview.dart';
 import 'package:na3eeman/Packages/features/staff/widgets/today_appointments_overview.dart';
 import 'package:na3eeman/Packages/features/subscription/widgets/subscription_details_modal.dart';
-import 'package:na3eeman/Packages/features/owner/dashboard/widgets/dev_account_switcher.dart';
-import 'package:na3eeman/Packages/features/owner/widgets/campaign_management_widgets.dart';
-import 'package:na3eeman/Packages/features/owner/widgets/assign_tip_modal.dart';
 import '../widgets/shared/practitioner_mode_toggle.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 /// Tier-aware Owner Dashboard.
 ///
@@ -116,17 +108,17 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
               ),
             ),
           ),
-          bottomNavigationBar: owner.isSubscriptionActive 
-              ? _buildQuickActionsBottomBar(context, owner)
-              : null,
+          // bottomNavigationBar: owner.isSubscriptionActive 
+          //     ? _buildQuickActionsBottomBar(context, owner)
+          //     : null,
         ),
         Sidebar(controller: _sidebarController),
-        if (kDebugMode)
-          const Positioned(
-            bottom: 30,
-            right: 20,
-            child: DevAccountSwitcher(),
-          ),
+        // if (kDebugMode)
+        //   const Positioned(
+        //     bottom: 30,
+        //     right: 20,
+        //     child: DevAccountSwitcher(),
+        //   ),
       ],
     );
   }
@@ -160,46 +152,46 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
     );
   }
 
-  Widget _buildQuickActionsBottomBar(BuildContext context, OwnerProvider owner) {
-    return SafeArea(
-      child: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildBottomNavItem(context, 'Offers', Icons.local_offer_rounded, Colors.orange, () => CampaignManagement.showCreateOfferDialog(context)),
-            _buildBottomNavItem(context, 'Ads', Icons.campaign_rounded, Colors.purple, () => CampaignManagement.showCreateAdDialog(context)),
-            _buildBottomNavItem(context, 'Feedback', Icons.rate_review_rounded, Colors.teal, () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedbackManagementPage()))),
-            _buildBottomNavItem(context, 'Tip', Icons.attach_money_rounded, Colors.green, () => AssignTipModal.show(context)),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildQuickActionsBottomBar(BuildContext context, OwnerProvider owner) {
+  //   return SafeArea(
+  //     child: Container(
+  //       height: 70,
+  //       decoration: BoxDecoration(
+  //         color: Theme.of(context).cardColor,
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.black.withOpacity(0.05),
+  //             blurRadius: 10,
+  //             offset: const Offset(0, -5),
+  //           ),
+  //         ],
+  //       ),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         children: [
+  //           _buildBottomNavItem(context, 'Offers', Icons.local_offer_rounded, Colors.orange, () => CampaignManagement.showCreateOfferDialog(context)),
+  //           _buildBottomNavItem(context, 'Ads', Icons.campaign_rounded, Colors.purple, () => CampaignManagement.showCreateAdDialog(context)),
+  //           _buildBottomNavItem(context, 'Feedback', Icons.rate_review_rounded, Colors.teal, () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedbackManagementPage()))),
+  //           _buildBottomNavItem(context, 'Tip', Icons.attach_money_rounded, Colors.green, () => AssignTipModal.show(context)),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildBottomNavItem(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).hintColor)),
-        ],
-      ),
-    );
-  }
+  // Widget _buildBottomNavItem(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
+  //   return InkWell(
+  //     onTap: onTap,
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Icon(icon, color: color, size: 24),
+  //         const SizedBox(height: 4),
+  //         Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).hintColor)),
+  //       ],
+  //     ),
+  //   );
+  // }
 
 
   List<Widget> _buildUniversalDashboardWidgets(
@@ -208,21 +200,6 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
       const Padding(
         padding: EdgeInsets.only(bottom: 24),
         child: TodayAppointmentsOverview(),
-      ),
-      const Padding(
-        padding: EdgeInsets.only(bottom: 24),
-        child: DashboardCard(child: DailyEarningsWidget()),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DashboardSectionHeader(title: AppLocalizations.of(context)!.toolsInventory),
-            const SizedBox(height: 12),
-            const ToolsAndInventoryOverview(),
-          ],
-        ),
       ),
       const Padding(
         padding: EdgeInsets.only(bottom: 24),
@@ -253,7 +230,7 @@ class _TierHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.welcomeBack,
+              Text("welcome_back".tr(),
                 style: theme.textTheme.bodyMedium
                     ?.copyWith(color: theme.hintColor),
               ),
@@ -282,7 +259,7 @@ class _TierHeader extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(AppLocalizations.of(context)!.onYourPlan,
+              Text("on_your_plan".tr(),
                   style: theme.textTheme.labelSmall
                       ?.copyWith(color: theme.hintColor)),
             ],
@@ -348,7 +325,7 @@ class _TrialBadge extends StatelessWidget {
           color: Colors.orange.withOpacity(0.12),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(AppLocalizations.of(context)!.trial,
+        child: Text("trial".tr(),
             style: TextStyle(
                 color: Colors.orange,
                 fontSize: 11,

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
@@ -137,31 +137,6 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     );
   }
 
-  Widget _buildReportButton(Map<String, Color> colors) {
-    return TextButton(
-      onPressed: () {
-        // TODO: Implement error reporting
-        _showErrorDetails();
-      },
-      style: TextButton.styleFrom(
-        foregroundColor: colors['secondary'],
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            AppImages.report,
-            width: 16,
-            height: 16,
-            color: colors['secondary'],
-          ),
-          const SizedBox(width: 6),
-          Text(AppLocalizations.of(context)!.reportIssue),
-        ],
-      ),
-    );
-  }
 
   void _showErrorDetails() {
     showDialog(
@@ -176,7 +151,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               color: _getErrorColors()['primary'],
             ),
             const SizedBox(width: 8),
-            Text(AppLocalizations.of(context)!.errorDetails),
+            Text("error_details".tr()),
           ],
         ),
         content: SingleChildScrollView(
@@ -190,7 +165,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               ),
               const SizedBox(height: 8),
               if (stackTrace != null) ...[
-                Text(AppLocalizations.of(context)!.stackTrace,
+                Text("stack_trace".tr(),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -205,7 +180,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.close),
+            child: Text("close".tr()),
           ),
         ],
       ),
@@ -262,19 +237,6 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     };
   }
 
-  String _getErrorIcon() {
-    if (widget.userGender != null) {
-      switch (widget.userGender!) {
-        case UserGender.male:
-          return widget.isDarkMode ? AppImages.avatar_male_view : AppImages.avatar_male;
-        case UserGender.female:
-          return widget.isDarkMode ? AppImages.avatar_female_view : AppImages.avatar_female;
-        case UserGender.nonBinary:
-          return widget.isDarkMode ? AppImages.not_allowed_gray : AppImages.not_allowed;
-      }
-    }
-    return widget.isDarkMode ? AppImages.error_view : AppImages.error;
-  }
 
   void _handleRetry() {
     if (widget.onRetry != null) {
@@ -363,7 +325,7 @@ class ErrorBoundaryBuilder extends StatelessWidget {
             color: colors['icon'],
           ),
           const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.builderError,
+          Text("builder_error".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

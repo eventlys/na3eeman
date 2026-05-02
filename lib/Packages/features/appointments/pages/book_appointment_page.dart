@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Services/api/api_service.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
@@ -31,7 +30,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   List<Map<String, dynamic>> _selectedServices = [];
   final Set<String> _selectedServiceNames = {};
   
-  Map<String, dynamic>? _selectedBarber;
+  Map<String, dynamic>? _selectedExpert;
   DateTime _selectedDate = DateTime.now();
   String? _selectedTime;
   
@@ -50,7 +49,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   bool _initialized = false;
   SalonPaymentConfig? _paymentConfig;
   SelectionMode _selectionMode = SelectionMode.individual;
-  Map<int, dynamic> _perServiceBarbers = {}; // serviceId -> barberData
+  final Map<int, dynamic> _perServiceExperts = {}; // serviceId -> expertData
   
   bool _isFetchingConfig = false;
 
@@ -120,7 +119,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   List<String> _generateTimeSlots() {
-    if (_selectedBarber == null) return [];
+    if (_selectedExpert == null) return [];
     
     final slots = <String>[];
     final startHour = 9; 
@@ -145,15 +144,15 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
   void _handleConfirmBooking() {
     if (_selectedServices.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select at least one service.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('select_at_least_one_service'.tr())));
       return;
     }
-    if (_selectedBarber == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a barber.')));
+    if (_selectedExpert == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please_select_expert'.tr())));
       return;
     }
     if (_selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a time slot.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please_select_time'.tr())));
       return;
     }
 
@@ -189,26 +188,26 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               children: [
                 Center(child: Container(width: 40, height: 5, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)))),
                 const SizedBox(height: 24),
-                const Text('Booking Summary', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text('booking_summary'.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 const Divider(height: 32),
-                _buildSummaryRow('Salon', salonData!['salonName'] ?? 'Barber Salon'),
-                _buildSummaryRow('Barber', _selectedBarber!['first_name'] ?? 'Professional'),
-                _buildSummaryRow('Date', DateFormat('MMM d, yyyy').format(_selectedDate)),
-                _buildSummaryRow('Time', _selectedTime!),
-                _buildSummaryRow('Total', '${totalAmount.toStringAsFixed(2)} JOD', isBold: true),
+                _buildSummaryRow('salon'.tr(), salonData!['salonName'] ?? 'expert_salon'.tr()),
+                _buildSummaryRow('expert'.tr(), _selectedExpert!['first_name'] ?? 'Professional'),
+                _buildSummaryRow('date'.tr(), DateFormat('MMM d, yyyy').format(_selectedDate)),
+                _buildSummaryRow('time'.tr(), _selectedTime!),
+                _buildSummaryRow('total'.tr(), '${totalAmount.toStringAsFixed(2)} JOD', isBold: true),
                 
                 if (depositAmount > 0)
-                  _buildSummaryRow('Required Prepayment', '${depositAmount.toStringAsFixed(2)} JOD', isBold: true, color: AppColors.error),
+                  _buildSummaryRow('prepayment_required'.tr(), '${depositAmount.toStringAsFixed(2)} JOD', isBold: true, color: AppColors.error),
 
                 const SizedBox(height: 24),
-                const Text('Payment Method', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text('payment_method'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 const SizedBox(height: 12),
                 
                 // Payment Options dynamically from config
                 if (_paymentConfig?.allowCash ?? true)
                   _buildPaymentOption(
                     id: 'CASH',
-                    title: 'Cash (Pay at Salon)',
+                    title: 'Cash (Pay at Salon)'.tr(),
                     icon: Icons.money,
                     color: Colors.green,
                     selected: _selectedPaymentMethod == 'CASH',
@@ -217,8 +216,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 if (_paymentConfig?.allowOnline ?? true)
                   _buildPaymentOption(
                     id: 'STRIPE',
-                    title: 'Visa / Mastercard',
-                    subtitle: 'Powered by Stripe',
+                    title: 'Visa / Mastercard'.tr(),
+                    subtitle: 'powered_by_stripe'.tr(),
                     icon: Icons.credit_card,
                     color: Colors.purple,
                     selected: _selectedPaymentMethod == 'STRIPE',
@@ -227,8 +226,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 if (_paymentConfig?.allowCliq ?? false)
                   _buildPaymentOption(
                     id: 'CLIQ',
-                    title: 'CliQ',
-                    subtitle: 'Quick Bank Transfer',
+                    title: 'CliQ'.tr(),
+                    subtitle: 'quick_bank_transfer'.tr(),
                     icon: Icons.account_balance_wallet,
                     color: Colors.blue,
                     selected: _selectedPaymentMethod == 'CLIQ',
@@ -237,8 +236,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 if (_paymentConfig?.allowPoints ?? true)
                   _buildPaymentOption(
                     id: 'POINTS',
-                    title: 'Na3eeman Points',
-                    subtitle: hasEnoughPoints ? 'Redeem $pointsCost pts' : 'Need $pointsCost pts',
+                    title: 'Na3eeman Points'.tr(),
+                    subtitle: hasEnoughPoints ? 'redeem_pts'.tr(args: [pointsCost.toString()]) : 'need_pts'.tr(args: [pointsCost.toString()]),
                     icon: Icons.stars_rounded,
                     color: Colors.amber,
                     enabled: hasEnoughPoints,
@@ -248,8 +247,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 if (_paymentConfig?.allowVouchers ?? true)
                   _buildPaymentOption(
                     id: 'VOUCHER',
-                    title: 'Digital Voucher',
-                    subtitle: 'Redeem a prepaid code',
+                    title: 'Digital Voucher'.tr(),
+                    subtitle: 'digital_voucher_subtitle'.tr(),
                     icon: Icons.confirmation_number,
                     color: Colors.deepOrange,
                     selected: _selectedPaymentMethod == 'VOUCHER',
@@ -270,10 +269,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('CliQ Transfer Details:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                        Text('cliq_transfer_details'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                         const SizedBox(height: 4),
-                        Text('Alias: ${salonData!['cliq_alias'] ?? 'SalonAlias'}', style: const TextStyle(fontSize: 13)),
-                        Text('Phone: ${salonData!['cliq_phone_num'] ?? '00962...' }', style: const TextStyle(fontSize: 13)),
+                        Text('alias'.tr() + ': ${salonData!['cliq_alias'] ?? 'SalonAlias'}', style: const TextStyle(fontSize: 13)),
+                        Text('phone'.tr() + ': ${salonData!['cliq_phone_num'] ?? '00962...' }', style: const TextStyle(fontSize: 13)),
                       ],
                     ),
                   ),
@@ -284,11 +283,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 if (_selectedPaymentMethod == 'VOUCHER') ...[
                   TextField(
                     controller: _voucherController,
-                    decoration: const InputDecoration(
-                      labelText: 'Voucher Code',
+                    decoration: InputDecoration(
+                      labelText: 'voucher_code'.tr(),
                       hintText: 'ABCD-1234',
-                      prefixIcon: Icon(Icons.qr_code_scanner),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.qr_code_scanner),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -317,7 +316,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              _paymentProof == null ? 'Upload Proof of Payment (Required)' : 'Proof uploaded: ${_paymentProof!.name}',
+                              _paymentProof == null ? 'upload_proof_required'.tr() : 'proof_uploaded'.tr(args: [_paymentProof!.name]),
                               style: TextStyle(color: _paymentProof == null ? Colors.red : Colors.green, fontWeight: FontWeight.w500),
                             ),
                           ),
@@ -331,7 +330,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
                 const SizedBox(height: 16),
                 PrimaryButton(
-                  text: (_selectedPaymentMethod == 'STRIPE' && depositAmount > 0) ? 'Pay Deposit' : 'Confirm Booking',
+                  text: (_selectedPaymentMethod == 'STRIPE' && depositAmount > 0) ? 'pay_deposit'.tr() : 'confirm_booking'.tr(),
                   onPressed: (_selectedPaymentMethod == 'POINTS' || _selectedPaymentMethod == 'STRIPE' || _selectedPaymentMethod == 'VOUCHER' || _paymentProof != null) ? () {
                     Navigator.pop(context);
                     _processStandardPayment(totalAmount);
@@ -340,7 +339,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 Center(
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+                    child: Text('cancel'.tr(), style: const TextStyle(color: Colors.grey)),
                   ),
                 ),
               ],
@@ -398,7 +397,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     
     final appointmentData = {
       'salon': salonData!['id'],
-      'employee': _selectedBarber!['id'],
+      'expert': _selectedExpert!['id'],
       'start_time': "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T$_selectedTime:00Z",
       'end_time': "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T${_calculateEndTime()}:00Z",
       'services': _selectedServices.map((s) => {
@@ -455,7 +454,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       }
     } catch (e) {
       if (mounted) Navigator.pop(context); // Close loading dialog
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Booking failed: $e')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('booking_failed'.tr(args: [e.toString()]))));
     }
   }
 
@@ -489,16 +488,16 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('🎁 Gift Booked Successfully!'),
+        title: Text('gift_booked_success'.tr()),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.card_giftcard, size: 80, color: Colors.pink),
             const SizedBox(height: 24),
-            const Text('Your gift appointment has been scheduled and paid for.', textAlign: TextAlign.center),
+            Text('gift_scheduled_paid'.tr(), textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            Text('Sharing this link with your recipient allows them to view details!', 
+            Text('sharing_link_allows'.tr(), 
               style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
               textAlign: TextAlign.center,
             ),
@@ -514,7 +513,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 Share.share(message);
               },
               icon: const Icon(Icons.share),
-              label: const Text('Share Gift Link', style: TextStyle(fontWeight: FontWeight.bold)),
+              label: Text('share_gift_link'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pink,
                 foregroundColor: Colors.white,
@@ -530,7 +529,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
               },
-              child: Text(AppLocalizations.of(context)!.backToHome, style: const TextStyle(color: Colors.grey)),
+              child: Text("back_to_home".tr(), style: const TextStyle(color: Colors.grey)),
             ),
           ),
         ],
@@ -539,20 +538,20 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   void _completeBooking({String? method}) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Booking Confirmed${method != null ? ' ($method)' : ''}!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('booking_confirmed'.tr(args: [method != null ? ' ($method)' : '']))));
       Navigator.of(context).popUntil((route) => route.isFirst);
       NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
   }
 
   @override
   Widget build(BuildContext context) {
-    final barberProvider = context.watch<BarberProvider>();
-    final barbers = barberProvider.barbers;
+    final expertProvider = context.watch<ExpertProvider>();
+    final experts = expertProvider.experts;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.bookAppointment),
+        title: Text("book_appointment".tr()),
         centerTitle: true,
       ),
       body: salonData == null 
@@ -562,7 +561,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             children: [
               // Services Review
               Text(
-                '1. Select Services',
+                'select_services_step'.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
               ),
               const SizedBox(height: 16),
@@ -593,11 +592,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       children: [
                         Icon(_isGift ? Icons.card_giftcard : Icons.person_outline, color: _isGift ? Colors.pink : Colors.grey),
                         const SizedBox(width: 12),
-                        const Text('Gift this service', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('gift_this_service'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         const Spacer(),
                         Switch(
                           value: _isGift,
-                          activeColor: Colors.pink,
+                          activeThumbColor: Colors.pink,
                           onChanged: (val) {
                             setState(() {
                               _isGift = val;
@@ -615,20 +614,20 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       const SizedBox(height: 12),
                       TextField(
                         controller: _receiverNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Receiver Name',
-                          prefixIcon: Icon(Icons.person),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: 'receiver_name'.tr(),
+                          prefixIcon: const Icon(Icons.person),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: _receiverPhoneController,
                         keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          labelText: 'Receiver Phone',
-                          prefixIcon: Icon(Icons.phone),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: 'receiver_phone'.tr(),
+                          prefixIcon: const Icon(Icons.phone),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -636,24 +635,24 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                         children: [
                           Expanded(
                             child: DropdownButtonFormField<String>(
-                              value: _selectedRelation,
-                              decoration: const InputDecoration(
-                                labelText: 'Relation',
-                                border: OutlineInputBorder(),
+                              initialValue: _selectedRelation,
+                              decoration: InputDecoration(
+                                labelText: 'relation'.tr(),
+                                border: const OutlineInputBorder(),
                               ),
-                              items: _relations.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
+                              items: _relations.map((r) => DropdownMenuItem(value: r, child: Text(r.tr()))).toList(),
                               onChanged: (val) => setState(() => _selectedRelation = val),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<String>(
-                              value: _receiverGender,
-                              decoration: const InputDecoration(
-                                labelText: 'Gender',
-                                border: OutlineInputBorder(),
+                              initialValue: _receiverGender,
+                              decoration: InputDecoration(
+                                labelText: 'gender'.tr(),
+                                border: const OutlineInputBorder(),
                               ),
-                              items: ['MALE', 'FEMALE'].map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
+                              items: ['MALE', 'FEMALE'].map((g) => DropdownMenuItem(value: g, child: Text(g.tr()))).toList(),
                               onChanged: (val) => setState(() => _receiverGender = val),
                             ),
                           ),
@@ -663,10 +662,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       TextField(
                         controller: _giftMessageController,
                         maxLines: 2,
-                        decoration: const InputDecoration(
-                          labelText: 'Personal Message (Optional)',
-                          prefixIcon: Icon(Icons.message),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: 'personal_message_optional'.tr(),
+                          prefixIcon: const Icon(Icons.message),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                     ],
@@ -688,14 +687,14 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Total Duration', style: TextStyle(color: Colors.grey)),
-                        Text('${_calculateTotalDuration()} mins', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('total_duration'.tr(), style: const TextStyle(color: Colors.grey)),
+                        Text('mins_suffix'.tr(args: [_calculateTotalDuration().toString()]), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                       ],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text('Total Cost', style: TextStyle(color: Colors.grey)),
+                        Text('total_cost'.tr(), style: const TextStyle(color: Colors.grey)),
                         Text('\$${_calculateTotalCost().toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
                       ],
                     ),
@@ -707,7 +706,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               
               // Staff Selection Mode Selection
               Text(
-                '2. Professional Selection',
+                'professional_selection_step'.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
               ),
               const SizedBox(height: 16),
@@ -721,7 +720,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               else if (_selectionMode == SelectionMode.perService)
                 _buildPerServiceSelectionView(isDark)
               else
-                _buildIndividualSelectionView(isDark, barbers, barberProvider.isLoading),
+                _buildIndividualSelectionView(isDark, experts, expertProvider.isLoading),
 
               const SizedBox(height: 32),
             ],
@@ -730,7 +729,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: PrimaryButton(
-            text: AppLocalizations.of(context)!.confirmPay,
+            text: "confirm_pay".tr(),
             onPressed: _handleConfirmBooking,
           ),
         ),
@@ -742,19 +741,19 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     return Column(
       children: [
         _buildModeButton(
-          label: AppLocalizations.of(context)!.noPreferences,
+          label: "no_preferences".tr(),
           icon: Icons.shuffle_rounded,
           mode: SelectionMode.noPreference,
         ),
         const SizedBox(height: 12),
         _buildModeButton(
-          label: AppLocalizations.of(context)!.selectProfessionalPerService,
+          label: "select_professional_per_service".tr(),
           icon: Icons.list_alt_rounded,
           mode: SelectionMode.perService,
         ),
         const SizedBox(height: 12),
         _buildModeButton(
-          label: AppLocalizations.of(context)!.individualSelection,
+          label: "individual_selection".tr(),
           icon: Icons.person_search_rounded,
           mode: SelectionMode.individual,
         ),
@@ -827,7 +826,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       children: [
         ..._selectedServices.map((service) {
           final serviceId = service['id'] ?? service['_id'];
-          final selectedBarber = _perServiceBarbers[serviceId];
+          final selectedExpert = _perServiceExperts[serviceId];
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(16),
@@ -843,8 +842,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(service['name'] ?? 'Service', style: const TextStyle(fontWeight: FontWeight.bold)),
-                      if (selectedBarber != null)
-                        Text('Assigned to: ${selectedBarber['first_name']}', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13)),
+                      if (selectedExpert != null)
+                        Text('Assigned to: ${selectedExpert['first_name']}', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13)),
                     ],
                   ),
                 ),
@@ -855,12 +854,12 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     foregroundColor: Theme.of(context).primaryColor,
                     elevation: 0,
                   ),
-                  child: Text(selectedBarber == null ? 'Select' : 'Change'),
+                  child: Text(selectedExpert == null ? 'Select' : 'Change'),
                 ),
               ],
             ),
           );
-        }).toList(),
+        }),
         const SizedBox(height: 24),
         _buildDatesAndHoursSection(isDark),
       ],
@@ -880,12 +879,12 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
     if (result != null) {
       setState(() {
-        _perServiceBarbers[service['id']] = result;
+        _perServiceExperts[service['id']] = result;
       });
     }
   }
 
-  Widget _buildIndividualSelectionView(bool isDark, List<dynamic> barbers, bool isLoading) {
+  Widget _buildIndividualSelectionView(bool isDark, List<dynamic> experts, bool isLoading) {
     if (isLoading) return const Center(child: CircularProgressIndicator());
     
     return Column(
@@ -895,15 +894,15 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           height: 140,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: barbers.length,
+            itemCount: experts.length,
             itemBuilder: (context, index) {
-              final barber = barbers[index].toJson();
-              final isSelected = _selectedBarber != null && _selectedBarber!['id'] == barber['id'];
-              final rating = (barber['rating'] ?? 5.0).toDouble();
+              final expert = experts[index].toJson();
+              final isSelected = _selectedExpert != null && _selectedExpert!['id'] == expert['id'];
+              final rating = (expert['rating'] ?? 5.0).toDouble();
 
               return GestureDetector(
                 onTap: () => setState(() {
-                  _selectedBarber = barber;
+                  _selectedExpert = expert;
                   _selectedTime = null;
                 }),
                 child: Container(
@@ -934,7 +933,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        barber['first_name'] ?? 'Barber',
+                        expert['first_name'] ?? 'Expert',
                         style: TextStyle(
                           color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black),
                           fontWeight: FontWeight.bold,
@@ -971,7 +970,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context)!.availableDates,
+          "available_dates".tr(),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 12),
@@ -1026,7 +1025,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         ),
         const SizedBox(height: 24),
         Text(
-          AppLocalizations.of(context)!.availableHours,
+          "available_hours".tr(),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 12),

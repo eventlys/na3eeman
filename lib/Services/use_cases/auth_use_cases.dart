@@ -56,7 +56,7 @@ class RegisterUseCase {
       throw AppError('Please enter a valid phone number', type: ErrorType.validation);
     }
 
-    final validRoles = ['customer', 'barber', 'owner', 'admin'];
+    final validRoles = ['customer', 'expert', 'owner', 'admin'];
     if (!validRoles.contains(userData['role'])) {
       throw AppError('Invalid role specified', type: ErrorType.validation);
     }

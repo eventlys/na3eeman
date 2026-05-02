@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 // lib/Widgets/Inventory/low_stock_alert.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class LowStockDetailedAlert extends StatelessWidget {
   final int? salonId;
@@ -44,7 +43,7 @@ class LowStockDetailedAlert extends StatelessWidget {
                     color: AppColor.lightWarning,
                   ),
                   const SizedBox(width: 8),
-                  Text(AppLocalizations.of(context)!.lowStockAlert,
+                  Text("low_stock_alert".tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColor.lightWarning,

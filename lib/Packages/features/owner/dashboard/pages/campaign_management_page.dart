@@ -1,13 +1,12 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:easy_localization/easy_localization.dart';
 import '../../../../../Providers/features/offers_provider.dart';
 import '../../../../../Providers/features/owner_provider.dart';
 import '../../../../../core/theme/colors.dart';
-import '../../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../../Models/salon/offer_model.dart';
+import '../../../../../Models/salon/ad_campaign_model.dart';
 import '../../widgets/campaign_management_widgets.dart';
-
 class CampaignManagementPage extends StatefulWidget {
   const CampaignManagementPage({super.key});
 
@@ -15,10 +14,13 @@ class CampaignManagementPage extends StatefulWidget {
   State<CampaignManagementPage> createState() => _CampaignManagementPageState();
 }
 
-class _CampaignManagementPageState extends State<CampaignManagementPage> {
+class _CampaignManagementPageState extends State<CampaignManagementPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final salonId = context.read<OwnerProvider>().activeSalonId;
       if (salonId != null) {
@@ -28,15 +30,30 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final owner = context.watch<OwnerProvider>();
     final offersProvider = context.watch<OffersProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.activeCampaigns, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("active_campaigns".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Theme.of(context).primaryColor,
+          labelColor: Theme.of(context).primaryColor,
+          unselectedLabelColor: Colors.grey,
+          tabs: const [
+            Tab(text: 'Active Campaigns'),
+            Tab(text: 'Performance Analytics'),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline_rounded),
@@ -48,71 +65,146 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          if (owner.activeSalonId != null) {
-            await offersProvider.loadCampaigns(owner.activeSalonId!);
-          }
-        },
-        child: offersProvider.isLoading 
-          ? const Center(child: CircularProgressIndicator())
-          : _buildBody(context, offersProvider, owner),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildActiveCampaignsList(offersProvider, owner),
+          _buildPerformanceAnalytics(offersProvider, owner),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => CampaignManagement.showCampaignModal(context, onRefresh: () {
+           if (owner.activeSalonId != null) {
+             offersProvider.loadCampaigns(owner.activeSalonId!);
+           }
+        }),
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
-  Widget _buildBody(BuildContext context, OffersProvider provider, OwnerProvider owner) {
-    if (provider.offers.isEmpty && provider.adCampaigns.isEmpty) {
+  Widget _buildActiveCampaignsList(OffersProvider provider, OwnerProvider owner) {
+    final allItems = [...provider.offers, ...provider.adCampaigns];
+    return _buildList(
+      provider: provider,
+      owner: owner,
+      items: allItems,
+    );
+  }
+
+  Widget _buildPerformanceAnalytics(OffersProvider provider, OwnerProvider owner) {
+    final allItems = [...provider.offers, ...provider.adCampaigns];
+    if (allItems.isEmpty) {
+       return const Center(child: Text('No active campaigns to analyze'));
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(20),
+      itemCount: allItems.length,
+      itemBuilder: (context, index) {
+        final item = allItems[index];
+        return _buildAnalyticsCard(item);
+      },
+    );
+  }
+
+  Widget _buildAnalyticsCard(dynamic item) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark ? AppColors.almostBlack600 : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(item is OfferModel ? item.title : item.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildStat('Impressions', '1.2k'),
+              _buildStat('Clicks', '420'),
+              _buildStat('Conversions', '15'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStat(String label, String value) {
+    return Column(
+      children: [
+        Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
+        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+      ],
+    );
+  }
+
+  void _confirmDeleteItem(BuildContext context, OffersProvider provider, int salonId, dynamic item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Campaign?'),
+        content: const Text('This action cannot be undone.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              if (item is OfferModel) {
+                await provider.deleteOffer(salonId, item.id);
+              } else if (item is AdCampaignModel) {
+                await provider.deleteAdCampaign(salonId, item.id);
+              }
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList({required OffersProvider provider, required OwnerProvider owner, required List<dynamic> items}) {
+    if (items.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.campaign_outlined, size: 64, color: AppColors.almostBlack200),
             const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.noActiveCampaigns, style: TextStyle(color: AppColors.almostBlack300)),
-            const SizedBox(height: 24),
-            PrimaryButton(
-              text: AppLocalizations.of(context)!.createPromotion,
-              onPressed: () => CampaignManagement.showCampaignModal(context, onRefresh: () {
-                 if (owner.activeSalonId != null) {
-                   provider.loadCampaigns(owner.activeSalonId!);
-                 }
-              }),
-            ),
+            const Text('No active items in this category', style: TextStyle(color: AppColors.almostBlack300)),
           ],
         ),
       );
     }
 
-    return ListView(
+    return ListView.builder(
       padding: const EdgeInsets.all(20),
-      children: [
-        if (provider.offers.isNotEmpty) ...[
-          _SectionHeader(title: AppLocalizations.of(context)!.offers.toUpperCase()),
-          const SizedBox(height: 12),
-          ...provider.offers.map((offer) => _CampaignItem(
-            title: offer.title,
-            subtitle: offer.description,
-            status: 'Active',
-            statusColor: AppColors.success,
-            actionText: offer.validityPeriod,
-            onDelete: () => _confirmDeleteOffer(context, provider, owner.activeSalonId!, offer.id),
-          )),
-          const SizedBox(height: 24),
-        ],
-        if (provider.adCampaigns.isNotEmpty) ...[
-          _SectionHeader(title: AppLocalizations.of(context)!.ads.toUpperCase()),
-          const SizedBox(height: 12),
-          ...provider.adCampaigns.map((ad) => _CampaignItem(
-            title: ad.name,
-            subtitle: ad.details,
-            status: 'Running',
-            statusColor: AppColors.blue,
-            actionText: '${ad.durationDays} Days Left',
-            onDelete: () => _confirmDeleteAd(context, provider, owner.activeSalonId!, ad.id),
-          )),
-        ],
-      ],
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        final bool isActive = item.isActive;
+
+        return _CampaignItem(
+          title: item is OfferModel ? item.title : item.name,
+          subtitle: item is OfferModel ? item.description : item.details,
+          isActive: isActive,
+          onToggle: (val) async {
+            if (owner.activeSalonId != null) {
+              if (item is OfferModel) {
+                await provider.toggleOfferStatus(owner.activeSalonId!, item.id, val);
+              } else if (item is AdCampaignModel) {
+                await provider.toggleAdStatus(owner.activeSalonId!, item.id, val);
+              }
+            }
+          },
+          onDelete: () => _confirmDeleteItem(context, provider, owner.activeSalonId!, item),
+        );
+      },
     );
   }
 
@@ -120,16 +212,16 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Offer?'),
-        content: Text('This action cannot be undone.'),
+        title: const Text('Delete Offer?'),
+        content: const Text('This action cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               await provider.deleteOffer(salonId, id);
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -140,36 +232,18 @@ class _CampaignManagementPageState extends State<CampaignManagementPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Campaign?'),
-        content: Text('This action cannot be undone.'),
+        title: const Text('Delete Campaign?'),
+        content: const Text('This action cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               await provider.deleteAdCampaign(salonId, id);
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  const _SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
-        color: AppColors.almostBlack300,
-        letterSpacing: 1.2,
       ),
     );
   }
@@ -178,17 +252,15 @@ class _SectionHeader extends StatelessWidget {
 class _CampaignItem extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String status;
-  final Color statusColor;
-  final String actionText;
+  final bool isActive;
+  final Function(bool) onToggle;
   final VoidCallback onDelete;
 
   const _CampaignItem({
     required this.title,
     required this.subtitle,
-    required this.status,
-    required this.statusColor,
-    required this.actionText,
+    required this.isActive,
+    required this.onToggle,
     required this.onDelete,
   });
 
@@ -197,12 +269,15 @@ class _CampaignItem extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.almostBlack600 : AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,28 +289,37 @@ class _CampaignItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    const SizedBox(height: 2),
-                    Text(subtitle, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+                    Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 4),
+                    Text(subtitle, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 13), maxLines: 2, overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 20),
+                icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 22),
                 onPressed: onDelete,
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const Divider(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-                child: Text(status, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 11)),
+              Row(
+                children: [
+                  Container(
+                    width: 8, height: 8,
+                    decoration: BoxDecoration(color: isActive ? AppColors.success : Colors.grey, shape: BoxShape.circle),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(isActive ? 'Active' : 'Inactive', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: isActive ? AppColors.success : Colors.grey)),
+                ],
               ),
-              Text(actionText, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+              Switch.adaptive(
+                value: isActive,
+                onChanged: onToggle,
+                activeColor: Theme.of(context).primaryColor,
+              ),
             ],
           ),
         ],

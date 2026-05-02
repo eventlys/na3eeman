@@ -17,7 +17,7 @@ class AdminCompliancePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Compliance & Violations')),
       drawer: const AppDrawer(
-        role: UserRole.superAdmin,
+        role: UserRole.admin,
         currentRoute: '/admin/compliance',
       ),
       body: ListView(
@@ -109,7 +109,7 @@ class _DisputeModel {
 final _disputes = [
   const _DisputeModel(
     '#D-4821',
-    'Customer requesting refund for no-show barber',
+    'Customer requesting refund for no-show expert',
     '@ahmed.r',
     '27 Feb',
     'high',
@@ -318,7 +318,7 @@ class _Toggle extends StatelessWidget {
       ),
       value: value,
       onChanged: onChanged,
-      activeColor: Theme.of(context).colorScheme.primary,
+      activeThumbColor: Theme.of(context).colorScheme.primary,
     );
   }
 }

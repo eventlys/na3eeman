@@ -6,7 +6,7 @@ enum PointsType {
   gifting('gifting'),
   rateSalon('rate_salon'),
   rateApp('rate_app'),
-  employeeFeedback('employee_feedback'),
+  expertFeedback('expert_feedback'),
   salonFeedback('salon_feedback'),
   appFeedback('app_feedback'),
   makeAppointment('make_appointment'),

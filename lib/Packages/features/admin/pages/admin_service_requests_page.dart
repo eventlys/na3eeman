@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/features/admin_service_provider.dart';
 import '../../../../core/theme/colors.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AdminServiceRequestsPage extends StatefulWidget {
   const AdminServiceRequestsPage({super.key});
@@ -28,7 +28,7 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.serviceRequests, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("service_requests".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
@@ -16,7 +16,7 @@ class AdminSystemHealthPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.systemHealthTitle),
+        title: Text("system_health_title".tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
@@ -26,7 +26,7 @@ class AdminSystemHealthPage extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(
-        role: UserRole.superAdmin,
+        role: UserRole.admin,
         currentRoute: '/admin/system',
       ),
       body: ListView(

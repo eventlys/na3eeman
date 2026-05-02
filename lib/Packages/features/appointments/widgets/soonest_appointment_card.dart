@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
@@ -159,13 +159,13 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
             ),
             const SizedBox(height: 24),
             Text(
-              _soonestAppointment!['salonName'] ?? 'Barber Salon',
+              _soonestAppointment!['salonName'] ?? 'Expert Salon',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildDetailRow(context, Icons.access_time_filled, 'Time', SoonestAppointmentHelpers.formatAppointmentDateTime(_soonestAppointment!['dateTime'])),
             const SizedBox(height: 12),
-            _buildDetailRow(context, Icons.person_rounded, 'Barber', _soonestAppointment!['barberName'] ?? 'Any available Specialist'),
+            _buildDetailRow(context, Icons.person_rounded, 'Expert', _soonestAppointment!['expertName'] ?? 'Any available Specialist'),
             const SizedBox(height: 12),
             _buildDetailRow(context, Icons.cut_rounded, 'Service', _soonestAppointment!['serviceName'] ?? 'Haircut / Shave'),
             const SizedBox(height: 12),
@@ -192,7 +192,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: Text(AppLocalizations.of(context)!.close),
+                    child: Text("close".tr()),
                   ),
                 ),
               ],
@@ -226,40 +226,52 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: () => _showAppointmentDetails(context),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.almostBlack600 : AppColors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: isDark ? AppColors.white.withOpacity(0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
-            width: 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
-              offset: const Offset(0, 8),
-              blurRadius: 24,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 8),
+          child: Text(
+            'Upcoming appointments',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
-          ],
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        GestureDetector(
+          onTap: () => _showAppointmentDetails(context),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.almostBlack600 : AppColors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: isDark ? AppColors.white.withOpacity(0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                  offset: const Offset(0, 8),
+                  blurRadius: 24,
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'NEXT APPOINTMENT',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'NEXT APPOINTMENT',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 10,
@@ -273,7 +285,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
             ),
             const SizedBox(height: 16),
             Text(
-              _soonestAppointment!['salonName'] ?? 'Barber Salon',
+              _soonestAppointment!['salonName'] ?? 'Expert Salon',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -353,6 +365,8 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
           ],
         ),
       ),
+    ),
+    ],
     );
   }
 }
@@ -405,7 +419,7 @@ class _DelayAppointmentDialogState extends State<_DelayAppointmentDialog> {
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)!.cancel,
+              child: Text("cancel".tr(),
                 style: TextStyle(color: isDark ? AppColors.cream400 : AppColors.almostBlack400),
               ),
             ),

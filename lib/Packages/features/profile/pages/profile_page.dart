@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import '../../../../Helpers/profile_helper_functions.dart';
@@ -6,7 +6,6 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/profile_widgets.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -27,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _specialtiesController = TextEditingController();
@@ -49,12 +49,13 @@ class _ProfilePageState extends State<ProfilePage> {
           'lastName': user.lastName,
           'email': user.email,
           'username': user.username,
+          'nickname': user.metadata?['nickname'] ?? user.username,
           'phone': user.phone,
           'role': user.role.toString().split('.').last,
           'gender': user.gender.toString().split('.').last,
           'profilePic': 'assets/mojies/image65.png', // Temporary local asset
           'location': user.location,
-          'bio': 'Barber enthusiast',
+          'bio': 'Expert enthusiast',
           'isSubscribed': true,
         };
 
@@ -78,6 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _firstNameController.text = _userData?['firstName'] ?? '';
     _lastNameController.text = _userData?['lastName'] ?? '';
     _usernameController.text = _userData?['username'] ?? '';
+    _nicknameController.text = _userData?['nickname'] ?? '';
     _emailController.text = _userData?['email'] ?? '';
     _phoneController.text = _userData?['phone'] ?? '';
     _bioController.text = _userData?['bio'] ?? '';
@@ -91,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _usernameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _nicknameController.dispose();
     _bioController.dispose();
     _locationController.dispose();
     super.dispose();
@@ -111,6 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final updated = Map<String, dynamic>.from(_userData!);
       updated['firstName'] = _firstNameController.text;
       updated['lastName'] = _lastNameController.text;
+      updated['nickname'] = _nicknameController.text;
       updated['email'] = _emailController.text;
       updated['phone'] = _phoneController.text;
       updated['bio'] = _bioController.text;
@@ -131,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.profile, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("profile".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -157,6 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'firstName': _firstNameController,
                       'lastName': _lastNameController,
                       'username': _usernameController,
+                      'nickname': _nicknameController,
                       'email': _emailController,
                       'phone': _phoneController,
                       'bio': _bioController,
@@ -176,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: _toggleEdit,
-                      child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: AppColors.almostBlack400)),
+                      child: Text("cancel".tr(), style: TextStyle(color: AppColors.almostBlack400)),
                     ),
                   ],
                 ],

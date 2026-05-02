@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -27,7 +28,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Advanced Analytics', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('advanced_analytics'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -38,26 +39,26 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
               child: ListView(
                 padding: const EdgeInsets.all(24),
                 children: [
-                  _buildSectionHeader('User Growth (30d)'),
+                  _buildSectionHeader('user_growth_30d'.tr()),
                   const SizedBox(height: 24),
                   _buildGrowthChart(provider.userStats?['growth_30d'] ?? []),
                   const SizedBox(height: 32),
                   
                   Row(
                     children: [
-                      Expanded(child: _buildDistributionChart('User Roles', provider.userStats?['distribution_by_role'] ?? [])),
+                      Expanded(child: _buildDistributionChart('user_roles'.tr(), provider.userStats?['distribution_by_role'] ?? [])),
                       const SizedBox(width: 16),
-                      Expanded(child: _buildDistributionChart('Genders', provider.userStats?['distribution_by_gender'] ?? [])),
+                      Expanded(child: _buildDistributionChart('genders'.tr(), provider.userStats?['distribution_by_gender'] ?? [])),
                     ],
                   ),
                   
                   const SizedBox(height: 32),
-                  _buildSectionHeader('Top Performing Salons'),
+                  _buildSectionHeader('top_performing_salons'.tr()),
                   const SizedBox(height: 16),
                   _buildTopSalonsList(provider.usageStats?['top_salons'] ?? []),
                   
                   const SizedBox(height: 32),
-                  _buildSectionHeader('Appointment Status'),
+                  _buildSectionHeader('appointment_status'.tr()),
                   const SizedBox(height: 16),
                   _buildStatusDistribution(provider.usageStats?['appointment_status_distribution'] ?? []),
                   
@@ -79,9 +80,9 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     if (data.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 200,
-        child: Center(child: Text('No growth data available', style: TextStyle(color: AppColors.almostBlack300))),
+        child: Center(child: Text('no_growth_data'.tr(), style: const TextStyle(color: AppColors.almostBlack300))),
       );
     }
 
@@ -166,7 +167,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
           ...data.take(3).map((item) => Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              '${item['role'] ?? item['gender'] ?? 'Other'}: ${item['count']}',
+              '${item['role'] ?? item['gender'] ?? 'other'.tr()}: ${item['count']}',
               style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
             ),
           )),
@@ -199,7 +200,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(salon['salon_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text('${salon['app_count']} appointments', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                    Text('appointments_count_label'.tr(args: [salon['app_count'].toString()]), style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
                   ],
                 ),
               ),

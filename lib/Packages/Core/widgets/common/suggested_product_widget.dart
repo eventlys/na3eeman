@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/inventory_helpers.dart';
@@ -325,7 +325,7 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.itemRestockedTo10Units),
+            content: Text("item_restocked_to10_units".tr()),
             backgroundColor: _getSuccessColor(),
             behavior: SnackBarBehavior.floating,
           ),

@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../themes/app_theme.dart';
 import '../../constants/app_color.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 /// Navigation item data model.
 class AppNavItem {
@@ -44,57 +43,57 @@ class AppBottomNavBar extends StatelessWidget {
 
   static List<AppNavItem> customerItems(BuildContext context) => [
     AppNavItem(
-      label: AppLocalizations.of(context)!.home,
+      label: "home".tr(),
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
       route: '/customer_home',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.salons,
+      label: "salons".tr(),
       icon: Icons.storefront_outlined,
       activeIcon: Icons.storefront_rounded,
       route: '/salons',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.bookings,
+      label: "bookings".tr(),
       icon: Icons.calendar_today_outlined,
       activeIcon: Icons.calendar_today_rounded,
       route: '/appointments',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.favourites,
+      label: "favourites".tr(),
       icon: Icons.favorite_outline,
       activeIcon: Icons.favorite_rounded,
       route: '/favorites',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.profile,
+      label: "profile".tr(),
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,
       route: '/profile',
     ),
   ];
 
-  static List<AppNavItem> barberItems(BuildContext context) => [
+  static List<AppNavItem> expertItems(BuildContext context) => [
     AppNavItem(
-      label: AppLocalizations.of(context)!.home,
+      label: "home".tr(),
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
-      route: '/barber_home',
+      route: '/expert_home',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.bookings,
+      label: "bookings".tr(),
       icon: Icons.calendar_today_outlined,
       activeIcon: Icons.calendar_today_rounded,
       route: '/appointments',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.history,
+      label: "history".tr(),
       icon: Icons.history_rounded,
       route: '/history',
     ),
     AppNavItem(
-      label: AppLocalizations.of(context)!.profile,
+      label: "profile".tr(),
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,
       route: '/profile',

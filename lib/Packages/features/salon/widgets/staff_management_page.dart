@@ -1,10 +1,9 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 // import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../../../Services/api/api_service.dart';
 import '../../../../../Services/api/endpoints.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class StaffManagementPage extends StatefulWidget {
   const StaffManagementPage({super.key});
@@ -34,11 +33,13 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
         _staffList = data.map((s) {
           return {
             'id': s['id']?.toString() ?? '',
-            'name': '${s['first_name']} ${s['last_name']}',
-            'role': s['role'] ?? 'Employee',
+            'name': '${s['first_name'] ?? ''} ${s['last_name'] ?? ''}'.trim().isNotEmpty 
+                ? '${s['first_name']} ${s['last_name']}' 
+                : (s['username'] ?? 'Unnamed'),
+            'role': s['role'] ?? 'Expert',
             'phone': s['phone'] ?? 'N/A',
-            'rating': 4.5, // Mock rating or include from detail
-            'workingHours': '9:00 AM - 6:00 PM',
+            'rating': s['average_rating'] ?? 5.0,
+            'workingHours': s['working_hours_display'] ?? 'Flexible',
           };
         }).toList();
       });
@@ -49,7 +50,7 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
     }
   }
 
-  void _showEmployeeDetails(Map<String, dynamic> staff) {
+  void _showExpertDetails(Map<String, dynamic> staff) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
@@ -65,7 +66,7 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.employeeDetails, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text('Expert Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(context)),
               ],
             ),
@@ -78,12 +79,12 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
             Center(child: Text(staff['role'], style: const TextStyle(color: AppColors.almostBlack300))),
             const SizedBox(height: 24),
 
-            Text(AppLocalizations.of(context)!.performanceRating, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text("performance_rating".tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             Row(children: [const Icon(Icons.star_rounded, color: Colors.amber), const SizedBox(width: 4), Text('${staff['rating']} / 5.0')]),
             const SizedBox(height: 24),
 
-            Text(AppLocalizations.of(context)!.workingHours, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text("working_hours".tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             Text(staff['workingHours'], style: const TextStyle(color: AppColors.almostBlack300)),
             const SizedBox(height: 16),
@@ -96,9 +97,9 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
                 onPressed: () {
                   Navigator.pop(context);
-                  _removeEmployee(staff['id']);
+                  _removeExpert(staff['id']);
                 },
-                child: Text(AppLocalizations.of(context)!.removeFromSalon, style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text("remove_from_salon".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             )
           ],
@@ -107,45 +108,40 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
     );
   }
 
-  Future<void> _removeEmployee(String id) async {
+  Future<void> _removeExpert(String id) async {
     setState(() {
       _staffList.removeWhere((item) => item['id'] == id);
     });
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.employeeDetachedSuccessfully), backgroundColor: AppColors.success));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Expert removed successfully'), backgroundColor: AppColors.success));
   }
 
-  void _showAddEmployeeDialog() {
+  void _showAddExpertDialog() {
     final nameController = TextEditingController();
     final roleController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.addEmployee),
+        title: const Text('Add Expert'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: nameController, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name, hintText: AppLocalizations.of(context)!.johnDoe)),
-            TextField(controller: roleController, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.role, hintText: AppLocalizations.of(context)!.barber)),
+            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Name', hintText: 'John Doe')),
+            TextField(controller: roleController, decoration: const InputDecoration(labelText: 'Role', hintText: 'Expert')),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
           ElevatedButton(
             onPressed: () {
-              setState(() {
-                _staffList.add({
-                  'id': DateTime.now().millisecondsSinceEpoch.toString(),
-                  'name': nameController.text,
-                  'role': roleController.text.isNotEmpty ? roleController.text: AppLocalizations.of(context)!.employee,
-                  'phone': 'N/A',
-                  'rating': 5.0,
-                  'workingHours': '9:00 AM - 5:00 PM',
-                });
-              });
               Navigator.pop(context);
+              // Instead of adding to local list, navigate to AdminCreateStaffPage
+              // or handle via proper API call. For now, we point to the creation page.
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please use the Admin Create Staff page for new members'))
+              );
             },
-            child: Text(AppLocalizations.of(context)!.add),
+            child: Text("add".tr()),
           ),
         ],
       ),
@@ -159,12 +155,12 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.employeeManagement, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Expert Management', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddEmployeeDialog,
+        onPressed: _showAddExpertDialog,
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -176,7 +172,7 @@ class _StaffManagementPageState extends State<StaffManagementPage> {
               itemBuilder: (context, index) {
                 final staff = _staffList[index];
                 return GestureDetector(
-                  onTap: () => _showEmployeeDetails(staff),
+                  onTap: () => _showExpertDetails(staff),
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(16),

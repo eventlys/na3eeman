@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -7,7 +7,6 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   final String resetToken;
@@ -235,7 +234,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               controller: _passwordController,
               obscureText: !_passwordVisible,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.newPassword,
+                labelText: "new_password".tr(),
                 prefixIcon: Image.asset(
                   AppImages.lock,
                   width: 20,
@@ -296,7 +295,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               controller: _confirmPasswordController,
               obscureText: !_confirmPasswordVisible,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.confirmPassword,
+                labelText: "confirm_password".tr(),
                 prefixIcon: Image.asset(
                   AppImages.secure,
                   width: 20,

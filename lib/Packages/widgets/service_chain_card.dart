@@ -10,11 +10,11 @@ class ServiceChainCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const ServiceChainCard({
-    Key? key,
+    super.key,
     required this.chain,
     this.language = 'ar',
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

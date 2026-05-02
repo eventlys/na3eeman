@@ -64,8 +64,8 @@ class AppointmentReference {
   final DateTime endTime;
   final String status;
   final double amount;
-  final String? barberName;
-  final int? barberId;
+  final String? expertName;
+  final int? expertId;
   final List<String> services;
 
   AppointmentReference({
@@ -74,8 +74,8 @@ class AppointmentReference {
     required this.endTime,
     required this.status,
     required this.amount,
-    this.barberName,
-    this.barberId,
+    this.expertName,
+    this.expertId,
     required this.services,
   });
 
@@ -86,8 +86,8 @@ class AppointmentReference {
       endTime: DateTime.parse(json['end_time'] as String),
       status: json['status'] as String,
       amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
-      barberName: json['barber_name'] as String?,
-      barberId: json['barber'] as int?,
+      expertName: json['expert_name'] as String?,
+      expertId: json['expert'] as int?,
       services: List<String>.from(json['services'] ?? []),
     );
   }
@@ -99,8 +99,8 @@ class AppointmentReference {
       'end_time': endTime.toIso8601String(),
       'status': status,
       'amount': amount,
-      'barber_name': barberName,
-      'barber': barberId,
+      'expert_name': expertName,
+      'expert': expertId,
       'services': services,
     };
   }

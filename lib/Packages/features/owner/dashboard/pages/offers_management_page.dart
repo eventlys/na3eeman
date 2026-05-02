@@ -239,7 +239,7 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
       child: ListView.separated(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         itemCount: _offers.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (_, i) => _OfferCard(offer: _offers[i]),
       ),
     );
@@ -255,7 +255,7 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
       child: ListView.separated(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         itemCount: _packages.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (_, i) => _PackageCard(package: _packages[i]),
       ),
     );

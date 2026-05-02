@@ -1,4 +1,3 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
 // import 'package:flutter_driver/flutter_driver.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import 'package:test/test.dart';
@@ -24,10 +23,10 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //       final loginButton = find.byValueKey('login_button');
 //
 //       await driver.tap(emailField);
-//       await driver.enterText(AppLocalizations.of(context)!.testExampleCom);
+//       await driver.enterText("test_example_com".tr());
 //
 //       await driver.tap(passwordField);
-//       await driver.enterText(AppLocalizations.of(context)!.test123);
+//       await driver.enterText("test123".tr());
 //
 //       await driver.tap(loginButton);
 //

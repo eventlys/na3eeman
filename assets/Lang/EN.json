@@ -147,7 +147,7 @@
   ],
   "roles": [
     "hairdresser",
-    "barber",
+    "expert",
     "stylist",
     "colorist",
     "technician",
@@ -205,7 +205,7 @@
   ],
   "furniture": [
     "salon_chair",
-    "barber_chair",
+    "expert_chair",
     "styling_station",
     "mirror_station",
     "waiting_area",
@@ -485,12 +485,12 @@
     "staff_list": "Our team",
     "staff_available": "Available staff",
     "staff_unavailable": "Selected staff is not available",
-    "choose_barber": "Choose your barber",
+    "choose_expert": "Choose your expert",
     "choose_stylist": "Choose your stylist",
     "view_profile": "View profile",
     "years_experience": "Years of experience",
     "ratings": "Customer ratings",
-    "no_staff": "No staff available at the moment"
+    "no_staff": "No experts available at the moment"
   },
   "packages": {
     "package_list": "Available packages",
@@ -901,6 +901,3 @@
     "modern"
   ]
 }
-
-
-

@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class EarningsChart extends StatelessWidget {
   final dynamic earningsData;
@@ -72,7 +71,7 @@ class EarningsChart extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(AppLocalizations.of(context)!.weeklyEarningsTrend,
+          Text("weekly_earnings_trend".tr(),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: textColor,
@@ -150,19 +149,19 @@ class EarningsChart extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _StatItem(
-          label: AppLocalizations.of(context)!.total,
+          label: "total".tr(),
           value: '\$${totalEarnings.toStringAsFixed(0)}',
           color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
           theme: theme,
         ),
         _StatItem(
-          label: AppLocalizations.of(context)!.appointments,
+          label: "appointments".tr(),
           value: totalAppointments.toString(),
           color: isDark ? AppColor.darkInfo : AppColor.lightInfo,
           theme: theme,
         ),
         _StatItem(
-          label: AppLocalizations.of(context)!.average,
+          label: "average".tr(),
           value: '\$${averagePerAppointment.toStringAsFixed(0)}',
           color: isDark ? AppColor.darkWarning : AppColor.lightWarning,
           theme: theme,
@@ -190,7 +189,7 @@ class EarningsChart extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Text(AppLocalizations.of(context)!.noEarningsDataAvailable,
+        child: Text("no_earnings_data_available".tr(),
           style: theme.textTheme.bodyLarge?.copyWith(
             color: textColor,
           ),

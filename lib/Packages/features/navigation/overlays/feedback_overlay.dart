@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class FeedbackOverlay extends StatefulWidget {
   const FeedbackOverlay({super.key});
@@ -18,7 +17,7 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.sendFeedback),
+      title: Text("send_feedback".tr()),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -28,7 +27,7 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
               TextFormField(
                 controller: _subjectController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.subject,
+                  labelText: "subject".tr(),
                   hintText: 'Brief description of your feedback',
                 ),
                 validator: (value) {
@@ -58,7 +57,7 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(AppLocalizations.of(context)!.rating),
+                  Text("rating".tr()),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -86,11 +85,11 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text("cancel".tr()),
         ),
         ElevatedButton(
           onPressed: _submitFeedback,
-          child: Text(AppLocalizations.of(context)!.sendFeedback),
+          child: Text("send_feedback".tr()),
         ),
       ],
     );

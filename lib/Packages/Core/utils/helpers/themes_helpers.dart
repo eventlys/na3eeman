@@ -113,11 +113,9 @@ class SharedThemeHelpers {
       colorScheme: const ColorScheme.light(
         primary: Colors.black,
         secondary: Colors.black,
-        background: Colors.white,
         surface: Colors.white,
       ),
-      dialogBackgroundColor: Colors.white,
-      cardColor: Colors.white,
+      cardColor: Colors.white, dialogTheme: DialogThemeData(backgroundColor: Colors.white),
     );
   }
 
@@ -129,11 +127,9 @@ class SharedThemeHelpers {
       colorScheme: const ColorScheme.dark(
         primary: Colors.white,
         secondary: Colors.white,
-        background: Colors.black,
         surface: Colors.black,
       ),
-      dialogBackgroundColor: Colors.black,
-      cardColor: Colors.black,
+      cardColor: Colors.black, dialogTheme: DialogThemeData(backgroundColor: Colors.black),
     );
   }
 

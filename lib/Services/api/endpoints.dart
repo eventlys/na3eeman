@@ -27,7 +27,7 @@ class Endpoints {
   // ==================== USER PROFILE ====================
   static const String currentUser = '/auth/me/';  // Current user profile (was /auth/profile)
   static const String profile = '/auth/me/';  // Alias for backward compatibility
-  static const String profileBarber = '/auth/profile/employee/';  // Fixed: backend uses /employee/ not /barber/
+  static const String profileExpert = '/auth/profile/expert/';  // Changed from expert/expert
   static const String profileOwner = '/auth/profile/owner/';
   static const String profilePicture = '/auth/profile/picture/';
   static const String profileLocation = '/auth/profile/location/';
@@ -49,7 +49,7 @@ class Endpoints {
   static const String checkEmail = '/auth/check/email/';
 
   // ==================== USER LISTS ====================
-  static const String usersBarbers = '/auth/users/barbers/';
+  static const String usersExperts = '/auth/users/experts/';
   static const String usersOwners = '/auth/users/owners/';
   static const String usersCustomers = '/auth/users/customers/';
   static const String usersStaff = '/auth/users/staff/';
@@ -60,8 +60,11 @@ class Endpoints {
   static String adminChangeUserRole(int userId) => '/auth/admin/change-role/$userId/';
   static const String adminUsers = '/auth/admin/users/';
   static String adminUserDetail(int userId) => '/auth/admin/users/$userId/';
-  static const String adminUserStats = '/auth/admin/stats/'; 
+  static const String adminUserStats = '/auth/admin/stats/';
+  static const String adminUserRequests = '/auth/admin/requests/';
 
+  // ==================== SUBSCRIPTIONS ====================
+  static const String subscriptionPlans = '/salons/subscription-plans/';
   // ==================== INTERN MANAGEMENT ====================
   static const String internTasks = '/auth/intern/tasks/';
   static String internTaskDetail(int id) => '/auth/intern/tasks/$id/';
@@ -92,10 +95,12 @@ class Endpoints {
   static String salonPackages(int salonId) => '/salons/salons/$salonId/packages/';
   static String salonProducts(int salonId) => '/salons/salons/$salonId/products/';
   static String salonInventory(int salonId) => '/salons/salons/$salonId/inventory/';
-  static String salonBarbers(int salonId) => '/salons/salons/$salonId/barbers/';
+  static String salonExperts(int salonId) => '/salons/salons/$salonId/experts/';
   static String salonReviews(int salonId) => '/salons/salons/$salonId/reviews/';
-  static String salonSchedule(int salonId) => '/salons/salons/$salonId/schedule/';  // If exists
+  static String salonGallery(int salonId) => '/salons/salons/$salonId/gallery/';
   static String salonServices(int salonId) => '/salons/salons/$salonId/options/';  // Same as options
+  static String salonSchedule(int salonId) => '/salons/salons/$salonId/schedule/';
+  static const String workingHours = '/salons/working-hours/';
 
   // ==================== APPOINTMENTS ====================
   static const String appointments = '/salons/appointments/';
@@ -118,7 +123,7 @@ class Endpoints {
   // ==================== SUBSCRIPTIONS ====================
   static const String subscriptions = '/salons/subscriptions/';
   static String subscriptionDetails(int id) => '/salons/subscriptions/$id/';
-  static const String platformSubscriptionPlans = '/auth/subscription-plans/';
+  static const String platformSubscriptionPlans = '/salons/subscription-plans/';
 
   // ==================== OWNER / SUBSCRIPTION MANAGEMENT ====================
   static const String ownerProfile = '/auth/profile/owner/';
@@ -140,8 +145,14 @@ class Endpoints {
   static const String loyaltyTransactions = '/loyalty/transactions/';
   static const String loyaltyRedeemFreeCut = '/loyalty/redeem-free-cut/';
   static const String loyaltyAwardPoints = '/loyalty/award-points/';
+  static const String loyaltyRules = '/loyalty/rules/';
   static const String loyaltyRedeemPoints = '/loyalty/redeem-points/';
   static const String loyaltyAdminAdjustPoints = '/loyalty/admin-adjust/';
+  static const String giftCardList = '/loyalty/gift-cards/';
+  static const String giftCardPurchase = '/loyalty/gift-cards/purchase/';
+  static const String userGiftCards = '/loyalty/my-gift-cards/';
+  static const String feedback = '/loyalty/feedback/';
+  static const String adminFeedbackReview = '/loyalty/admin/feedback-review/';
 
   // ==================== PAYMENTS ====================
   // Note: These endpoints may not exist yet in backend
@@ -160,7 +171,6 @@ class Endpoints {
   static String salonTeamLeaderboard(int salonId) => '/salons/salons/$salonId/team_leaderboard/';
   static String salonDailyEarnings(int salonId) => '/salons/salons/$salonId/daily_earnings/';
   static String salonResourceOccupancy(int salonId) => '/salons/salons/$salonId/resource_occupancy/';
-  static String salonEmployees(int salonId) => '/salons/salons/$salonId/employees/';
   static String salonPaymentConfig(int salonId) => '/salons/salons/$salonId/payment-config/';
   static const String vouchers = '/salons/vouchers/';
 
@@ -172,6 +182,15 @@ class Endpoints {
   // Campaigns
   static String salonOffers(int salonId) => '/salons/salons/$salonId/offers/';
   static String salonAdCampaigns(int salonId) => '/salons/salons/$salonId/campaigns/';
+
+  // ==================== CONTENT ====================
+  static const String faqs = '/content/faqs/';
+  static String faqDetails(int id) => '/content/faqs/$id/';
+  static const String rules = '/content/rules/';
+  static String rulesByRole(String role) => '/content/rules/by-role/$role/';
+  static const String guides = '/content/guides/';
+  static String guidesByRole(String role) => '/content/guides/by-role/$role/';
+  static const String privacyPolicy = '/content/privacy-policy/current/';
 
   // ==================== UTILITY ====================
   static const String health = '/health/';
@@ -209,7 +228,7 @@ class Endpoints {
   static String withPagination(String endpoint, {int page = 1, int? pageSize}) {
     return buildUrl(endpoint, {
       'page': page,
-      if (pageSize != null) 'page_size': pageSize,
+      'page_size': ?pageSize,
     });
   }
 
@@ -232,7 +251,7 @@ class Endpoints {
     return buildUrl(salons, {
       'lat': latitude,
       'lng': longitude,
-      if (radiusKm != null) 'radius': radiusKm,
+      'radius': ?radiusKm,
     });
   }
 
@@ -249,9 +268,9 @@ class Endpoints {
       'lat': latitude,
       'lng': longitude,
       'category': categoryId,
-      if (radiusKm != null) 'radius': radiusKm,
-      if (forGift != null) 'for_gift': forGift,
-      if (giftGender != null) 'gift_gender': giftGender,
+      'radius': ?radiusKm,
+      'for_gift': ?forGift,
+      'gift_gender': ?giftGender,
     });
   }
 

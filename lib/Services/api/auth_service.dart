@@ -377,6 +377,14 @@ class AuthService {
     await _secureStorage.clearAuthData();
   }
 
+  Future<Map<String, dynamic>> adminCreateStaff(Map<String, dynamic> staffData) async {
+    return await _authRepository.adminCreateStaff(staffData);
+  }
+
+  Future<List<dynamic>> adminFetchSalons() async {
+    return await _authRepository.adminFetchSalons();
+  }
+
   // Utility method to get social helper (if needed externally)
   SocialRegistrationHelper get socialHelper => _socialHelper;
 }

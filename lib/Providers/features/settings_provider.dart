@@ -11,22 +11,7 @@ class SettingsProvider extends BaseProvider {
   String get languageCode => _settings.languageCode;
 
   Future<void> loadSettings() async {
-    try {
-      setLoading(true);
-      clearError();
-
-      await _mockLoadSettings();
-      notifyListeners();
-    } catch (e) {
-      setError(e.toString());
-      rethrow;
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  Future<void> _mockLoadSettings() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    notifyListeners();
   }
 
   Future<void> updateSettings(AppSettings newSettings) async {
@@ -35,8 +20,6 @@ class SettingsProvider extends BaseProvider {
       clearError();
 
       _settings = newSettings;
-      await _mockSaveSettings();
-
       notifyListeners();
     } catch (e) {
       setError(e.toString());
@@ -44,10 +27,6 @@ class SettingsProvider extends BaseProvider {
     } finally {
       setLoading(false);
     }
-  }
-
-  Future<void> _mockSaveSettings() async {
-    await Future.delayed(const Duration(milliseconds: 300));
   }
 
   Future<void> toggleDarkMode() async {

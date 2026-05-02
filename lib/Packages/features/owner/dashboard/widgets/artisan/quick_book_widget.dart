@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 /// Quick appointment booking CTA (Artisan tier).
 class QuickBookWidget extends StatelessWidget {
@@ -41,14 +40,14 @@ class QuickBookWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppLocalizations.of(context)!.quickBook,
+                Text("quick_book".tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(AppLocalizations.of(context)!.addANewAppointment,
+                Text("add_a_new_appointment".tr(),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 13,

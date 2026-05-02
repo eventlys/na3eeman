@@ -40,7 +40,7 @@ class PendingConfirmation {
   final DateTime appointmentTime;
   final String? notes;
   final int appointmentId;
-  final int? barberId;
+  final int? expertId;
   final int salonId;
 
   PendingConfirmation({
@@ -51,7 +51,7 @@ class PendingConfirmation {
     required this.appointmentTime,
     this.notes,
     required this.appointmentId,
-    this.barberId,
+    this.expertId,
     required this.salonId,
   });
 
@@ -64,7 +64,7 @@ class PendingConfirmation {
       appointmentTime: DateTime.parse(json['appointment_time']),
       notes: json['notes'],
       appointmentId: json['appointment'] as int,
-      barberId: json['barber'] as int?,
+      expertId: json['expert'] as int?,
       salonId: json['salon'] as int,
     );
   }
@@ -78,7 +78,7 @@ class PendingConfirmation {
       'appointment_time': appointmentTime.toIso8601String(),
       'notes': notes,
       'appointment': appointmentId,
-      'barber': barberId,
+      'expert': expertId,
       'salon': salonId,
     };
   }

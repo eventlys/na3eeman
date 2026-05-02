@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import '../../theme/colors.dart';
 import '../buttons/styled_buttons.dart';
@@ -10,6 +10,7 @@ import '../../../../Providers/features/auth_provider.dart';
 class DashboardCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? margin;
   final Color? color;
   final BoxBorder? border; // Changed from Border to BoxBorder for correctness
   final double borderRadius;
@@ -18,6 +19,7 @@ class DashboardCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(20),
+    this.margin,
     this.color,
     this.border,
     this.borderRadius = 20,
@@ -29,6 +31,7 @@ class DashboardCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: padding,
+      margin: margin,
       decoration: BoxDecoration(
         color: color ?? (isDark ? AppColors.almostBlack600 : AppColors.white),
         borderRadius: BorderRadius.circular(borderRadius),
@@ -159,8 +162,8 @@ class GlobalSearchBar extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, isManagement ? '/staff' : '/salons'),
           decoration: InputDecoration(
             hintText: isManagement 
-                ? (AppLocalizations.of(context)?.employeeManagement ?? 'Staff Management')
-                : AppLocalizations.of(context)!.searchServicesSalons,
+                ? 'expert_management'.tr()
+                : "search_services_salons".tr(),
             hintStyle: TextStyle(
               fontSize: 13,
               color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
@@ -185,41 +188,128 @@ class FeedbackSection extends StatelessWidget {
   void _showFeedbackDialog(BuildContext context) {
     final TextEditingController feedbackController = TextEditingController();
     final apiService = ApiService();
-    
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.helpUsImprove),
-        content: TextField(
-          controller: feedbackController,
-          maxLines: 4,
-          decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)!.tellOthers,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.95,
+          constraints: const BoxConstraints(maxWidth: 800),
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : AppColors.white,
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "help_us_improve".tr(),
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "help_us_improve_description".tr(),
+                          style: TextStyle(
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              TextField(
+                controller: feedbackController,
+                maxLines: 8,
+                decoration: InputDecoration(
+                  hintText: 'feedback_hint'.tr(),
+                  hintStyle: TextStyle(color: Colors.grey.withOpacity(0.4)),
+                  filled: true,
+                  fillColor: isDark ? AppColors.almostBlack500 : Colors.grey[50],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.all(20),
+                ),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (feedbackController.text.isNotEmpty) {
+                      try {
+                        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                        final user = authProvider.user;
+
+                        await apiService.submitServiceRequest({
+                          'text': feedbackController.text,
+                          'type': 'FEEDBACK',
+                          'user_id': user?.id,
+                          'user_name': '${user?.firstName ?? ''} ${user?.lastName ?? ''}',
+                          'user_type': user?.role.name,
+                          'timestamp': DateTime.now().toIso8601String(),
+                          'email_recipient': 'w.t.f.azooz@gmail.com',
+                        });
+                        
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('feedback_success'.tr()),
+                              backgroundColor: AppColors.success,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                         if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('feedback_failed'.tr())),
+                          );
+                         }
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 0,
+                  ),
+                  child: Text('send_feedback'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (feedbackController.text.isNotEmpty) {
-                final response = await apiService.submitServiceRequest({'suggestion': feedbackController.text});
-                final bool success = response != null;
-                if (success) {
-                   if (context.mounted) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(AppLocalizations.of(context)!.success)),
-                      );
-                   }
-                }
-              }
-            },
-            child: Text(AppLocalizations.of(context)!.submit),
-          ),
-        ],
       ),
     );
   }
@@ -248,21 +338,21 @@ class FeedbackSection extends StatelessWidget {
               Icon(Icons.auto_awesome, color: Theme.of(context).primaryColor),
               const SizedBox(width: 12),
               Text(
-                AppLocalizations.of(context)!.helpUsImprove,
+                "help_us_improve".tr(),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context)!.requestNewService,
+            "request_new_service".tr(),
             style: TextStyle(
                 color: isDark ? AppColors.cream600 : AppColors.almostBlack400,
                 fontSize: 14),
           ),
           const SizedBox(height: 20),
           SecondaryButton(
-            text: AppLocalizations.of(context)!.submitSuggestion,
+            text: "submit_suggestion".tr(),
             onPressed: () => _showFeedbackDialog(context),
           ),
         ],

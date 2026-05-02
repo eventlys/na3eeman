@@ -1,18 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:na3eeman/Providers/features/auth_provider.dart';
-import 'package:na3eeman/Models/auth/user_model.dart';
-import 'package:na3eeman/Packages/Core/constants/app_roles.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:na3eeman/Services/ui/navigation_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
-import 'package:na3eeman/Providers/locale_provider.dart';
 import 'package:na3eeman/Services/security_service.dart';
 import 'package:na3eeman/Providers/main_providers.dart';
-import 'package:na3eeman/Helpers/login_helper.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
-import 'package:na3eeman/core/widgets/dashboard/dashboard_widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -79,26 +73,28 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                AppLocalizations.of(context)!.selectLanguage,
+                "select_language".tr(),
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             ListTile(
               leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
               title: const Text('English'),
-              trailing: localeProvider.locale.languageCode == 'en' ? Icon(Icons.check, color: AppColors.primary) : null,
-              onTap: () {
-                localeProvider.setLocale(const Locale('en'));
-                Navigator.pop(context);
+              trailing: context.locale.languageCode == 'en' ? Icon(Icons.check, color: AppColors.primary) : null,
+              onTap: () async {
+                await context.setLocale(const Locale('en', 'US'));
+                await localeProvider.setLocale(const Locale('en'));
+                if (mounted) Navigator.pop(this.context);
               },
             ),
             ListTile(
               leading: const Text('🇸🇦', style: TextStyle(fontSize: 24)),
               title: const Text('العربية'),
-              trailing: localeProvider.locale.languageCode == 'ar' ? Icon(Icons.check, color: AppColors.primary) : null,
-              onTap: () {
-                localeProvider.setLocale(const Locale('ar'));
-                Navigator.pop(context);
+              trailing: context.locale.languageCode == 'ar' ? Icon(Icons.check, color: AppColors.primary) : null,
+              onTap: () async {
+                await context.setLocale(const Locale('ar', 'EG'));
+                await localeProvider.setLocale(const Locale('ar'));
+                if (mounted) Navigator.pop(this.context);
               },
             ),
           ],
@@ -115,14 +111,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     if (!canCheck) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Biometrics not available on this device')),
+          SnackBar(content: Text('biometrics_not_available'.tr())),
         );
       }
       return;
     }
 
     final bool success = await securityService.authenticate(
-      reason: AppLocalizations.of(context)!.loginWithBiometrics,
+      reason: "login_with_biometrics".tr(),
     );
 
     if (success) {
@@ -135,7 +131,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please login with password first to enable biometrics')),
+            SnackBar(content: Text('enable_biometrics_message'.tr())),
           );
         }
       }
@@ -175,7 +171,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           NavigationService.navigateToHomeBasedOnRole(context, userRole, tier: tier);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid email or password')), 
+            SnackBar(content: Text('invalid_email_password'.tr())), 
           );
         }
       }
@@ -186,7 +182,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Stack(
@@ -250,7 +245,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                labelText: l10n.email,
+                                labelText: "email".tr(),
                                 prefixIcon: const Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -258,7 +253,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return l10n.emailIsRequired;
+                                  return "email_is_required".tr();
                                 }
                                 return null;
                               },
@@ -268,7 +263,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               controller: _passwordController,
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
-                                labelText: l10n.password,
+                                labelText: "password".tr(),
                                 prefixIcon: const Icon(Icons.lock_outline_rounded),
                                 suffixIcon: IconButton(
                                   icon: Icon(
@@ -284,7 +279,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return l10n.passwordIsRequired;
+                                  return "password_is_required".tr();
                                 }
                                 return null;
                               },
@@ -297,12 +292,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {},
-                          child: Text(l10n.forgotPassword),
+                          child: Text("forgot_password".tr()),
                         ),
                       ),
                       const SizedBox(height: 32),
                       PrimaryButton(
-                        text: l10n.signIn,
+                        text: "sign_in".tr(),
                         onPressed: _handleLogin,
                       ),
                       const SizedBox(height: 20),
@@ -315,17 +310,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         ),
                         onPressed: _handleBiometricLogin,
                         icon: const Icon(Icons.fingerprint_rounded),
-                        label: Text(l10n.loginWithBiometrics),
+                        label: Text("login_with_biometrics".tr()),
                       ),
                       
                       const SizedBox(height: 40),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(l10n.donTHaveAnAccountSignUp.split('?')[0] + '?'),
+                          Text('${"don_t_have_an_account_sign_up".tr().split('?')[0]}?'),
                           TextButton(
                             onPressed: () => Navigator.pushNamed(context, '/signup'),
-                            child: Text(l10n.signUp),
+                            child: Text("sign_up".tr()),
                           ),
                         ],
                       ),
@@ -357,7 +352,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                AppLocalizations.of(context)!.searchServicesSalons, // Using an existing key as a label for testing
+                "search_services_salons".tr(), // Using an existing key as a label for testing
                 style: TextStyle(color: AppColors.almostBlack400, fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
@@ -371,8 +366,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             isSelected: [_selectedGender == 'male', _selectedGender == 'female'],
             onPressed: (index) => setState(() => _selectedGender = index == 0 ? 'male' : 'female'),
             children: [
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(AppLocalizations.of(context)!.male)),
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(AppLocalizations.of(context)!.female)),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: Text("male".tr())),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: Text("female".tr())),
             ],
           ),
         ),
@@ -393,11 +388,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           onTap: () => _quickAccessLogin('${_selectedGender}_customer1@test.com'),
         ),
         _buildQuickAccessCard(
-          title: 'Employee / Barber',
+          title: 'Expert / Expert',
           subtitle: 'Operational dashboard',
           icon: Icons.content_cut_rounded,
           color: Colors.orange,
-          onTap: () => _quickAccessLogin('employee1@test.com'),
+          onTap: () => _quickAccessLogin('expert1@test.com'),
         ),
         _buildQuickAccessCard(
           title: 'Receptionist',

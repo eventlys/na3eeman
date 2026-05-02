@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class ContactUsOverlay extends StatefulWidget {
   const ContactUsOverlay({super.key});
@@ -170,7 +169,7 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
         TextFormField(
           controller: _emailController,
           decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.emailAddress,
+            labelText: "email_address".tr(),
             border: const OutlineInputBorder(),
             prefixIcon: const Icon(Icons.email, color: Color(0xFF806C99)),
           ),
@@ -188,7 +187,7 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
         TextFormField(
           controller: _subjectController,
           decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.subject,
+            labelText: "subject".tr(),
             border: const OutlineInputBorder(),
             prefixIcon: const Icon(Icons.subject, color: Color(0xFF806C99)),
           ),

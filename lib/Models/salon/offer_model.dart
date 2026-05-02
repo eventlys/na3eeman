@@ -9,6 +9,7 @@ class OfferModel {
   final String salonName;
   final String? imageUrl;
   final List<String>? includedServices;
+  final bool isActive;
 
   const OfferModel({
     required this.id,
@@ -21,6 +22,7 @@ class OfferModel {
     required this.salonName,
     this.imageUrl,
     this.includedServices,
+    this.isActive = true,
   });
 
   factory OfferModel.fromMap(Map<String, dynamic> map) {
@@ -37,6 +39,7 @@ class OfferModel {
       includedServices: map['included_services'] != null 
         ? List<String>.from(map['included_services'] as List) 
         : null,
+      isActive: map['is_active'] as bool? ?? true,
     );
   }
 
@@ -52,6 +55,7 @@ class OfferModel {
       'salon_name': salonName,
       'image_url': imageUrl,
       'included_services': includedServices,
+      'is_active': isActive,
     };
   }
 }

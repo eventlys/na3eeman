@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/features/offers_provider.dart';
@@ -8,7 +8,6 @@ import '../../../../Models/salon/ad_campaign_model.dart';
 import '../../../../core/theme/colors.dart';
 // import '../../../../core/widgets/buttons/styled_buttons.dart';
 // import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class CampaignManagement {
   static void showCampaignModal(BuildContext context, {VoidCallback? onRefresh}) {
@@ -27,7 +26,7 @@ class CampaignManagement {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.createPromotion, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text("create_promotion".tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             _buildModalActionButton(context, Icons.local_offer_rounded, 'Create Offer', AppColors.blue, () {
               Navigator.pop(context);
@@ -55,7 +54,7 @@ class CampaignManagement {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.createOffer, style: const TextStyle(fontWeight: FontWeight.bold)),
+          title: Text("create_offer".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -67,7 +66,7 @@ class CampaignManagement {
                 const SizedBox(height: 12),
                 _buildDialogField('Description', controller: descController, maxLines: 2),
                 const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.validityPeriod, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text("validity_period".tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: () async {
@@ -103,7 +102,7 @@ class CampaignManagement {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
             ElevatedButton(
               onPressed: () async {
                 final salonId = context.read<OwnerProvider>().activeSalonId;
@@ -139,7 +138,7 @@ class CampaignManagement {
                 }
               },
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-              child: Text(AppLocalizations.of(context)!.create),
+              child: Text("create".tr()),
             ),
           ],
         ),
@@ -156,7 +155,7 @@ class CampaignManagement {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.createAd, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("create_ad".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -172,7 +171,7 @@ class CampaignManagement {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
           ElevatedButton(
             onPressed: () async {
               final salonId = context.read<OwnerProvider>().activeSalonId;
@@ -205,7 +204,7 @@ class CampaignManagement {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-            child: Text(AppLocalizations.of(context)!.launch),
+            child: Text("launch".tr()),
           ),
         ],
       ),

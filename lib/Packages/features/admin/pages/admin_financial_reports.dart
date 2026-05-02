@@ -133,7 +133,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
     // Mocking payouts for now as backend doesn't have a payout model yet
     final payouts = [
       {'salon': 'Golden Scissors', 'amount': '420.00', 'status': 'Pending'},
-      {'salon': 'Elite Barbers', 'amount': '1,250.00', 'status': 'Processed'},
+      {'salon': 'Elite Experts', 'amount': '1,250.00', 'status': 'Processed'},
     ];
 
     return Column(

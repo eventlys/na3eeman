@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 // import 'package:easy_localization/easy_localization.dart';
@@ -38,7 +38,7 @@ class PendingConfirmations extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.of(context)!.pendingConfirmations,
+          Text("pending_confirmations".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -124,7 +124,7 @@ class _ConfirmationItem extends StatelessWidget {
               backgroundColor: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
               foregroundColor: AppColor.light,
             ),
-            child: Text(AppLocalizations.of(context)!.confirm),
+            child: Text("confirm".tr()),
           ),
         ],
       ),

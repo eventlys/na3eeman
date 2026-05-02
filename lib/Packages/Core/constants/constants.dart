@@ -6,7 +6,7 @@ class AppConstants {
   static const String playStoreLink = 'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
 
   // Staff Management Constants
-  static const List<String> barberSpecialties = [
+  static const List<String> expertSpecialties = [
     'Haircut',
     'Beard Trim',
     'Shave',

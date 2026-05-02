@@ -3,26 +3,26 @@
 
 /// Salon Type Enum
 enum SalonType {
-  barbershop,
+  expertshop,
   beautySalon,
   mensSpa,
   turkishBath,
-  hybridBarberSpa,
+  hybridExpertSpa,
   nailSalon,
   wellnessCenter;
 
   String toBackendString() {
     switch (this) {
-      case SalonType.barbershop:
-        return 'BARBERSALON';
+      case SalonType.expertshop:
+        return 'EXPERTSALON';
       case SalonType.beautySalon:
         return 'BEAUTY_SALON';
       case SalonType.mensSpa:
         return 'MENS_SPA';
       case SalonType.turkishBath:
         return 'TURKISH_BATH';
-      case SalonType.hybridBarberSpa:
-        return 'HYBRID_BARBER_SPA';
+      case SalonType.hybridExpertSpa:
+        return 'HYBRID_EXPERT_SPA';
       case SalonType.nailSalon:
         return 'NAIL_SALON';
       case SalonType.wellnessCenter:
@@ -32,29 +32,29 @@ enum SalonType {
 
   static SalonType fromBackendString(String value) {
     switch (value) {
-      case 'BARBERSALON':
-        return SalonType.barbershop;
+      case 'EXPERTSALON':
+        return SalonType.expertshop;
       case 'BEAUTY_SALON':
         return SalonType.beautySalon;
       case 'MENS_SPA':
         return SalonType.mensSpa;
       case 'TURKISH_BATH':
         return SalonType.turkishBath;
-      case 'HYBRID_BARBER_SPA':
-        return SalonType.hybridBarberSpa;
+      case 'HYBRID_EXPERT_SPA':
+        return SalonType.hybridExpertSpa;
       case 'NAIL_SALON':
         return SalonType.nailSalon;
       case 'WELLNESS_CENTER':
         return SalonType.wellnessCenter;
       default:
-        return SalonType.barbershop;
+        return SalonType.expertshop;
     }
   }
 
   String getDisplayName(String language) {
     if (language == 'ar') {
       switch (this) {
-        case SalonType.barbershop:
+        case SalonType.expertshop:
           return 'صالون حلاقة رجالي';
         case SalonType.beautySalon:
           return 'صالون تجميل نسائي';
@@ -62,7 +62,7 @@ enum SalonType {
           return 'سبا رجالي';
         case SalonType.turkishBath:
           return 'حمام تركي';
-        case SalonType.hybridBarberSpa:
+        case SalonType.hybridExpertSpa:
           return 'حلاقة + سبا';
         case SalonType.nailSalon:
           return 'صالون أظافر';
@@ -71,16 +71,16 @@ enum SalonType {
       }
     } else {
       switch (this) {
-        case SalonType.barbershop:
-          return 'Barbersalon';
+        case SalonType.expertshop:
+          return 'Expertsalon';
         case SalonType.beautySalon:
           return 'Beauty Salon';
         case SalonType.mensSpa:
           return "Men's Spa";
         case SalonType.turkishBath:
           return 'Turkish Bath';
-        case SalonType.hybridBarberSpa:
-          return 'Barbersalon + Spa';
+        case SalonType.hybridExpertSpa:
+          return 'Expertsalon + Spa';
         case SalonType.nailSalon:
           return 'Nail Salon';
         case SalonType.wellnessCenter:

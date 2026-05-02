@@ -16,12 +16,15 @@ import '../Packages/features/home/pages/category_selection_page.dart';
 import '../Models/salon/category_model.dart';
 
 // Staff
-import '../Packages/features/staff/pages/employee_dashboard.dart';
+import '../Packages/features/staff/pages/expert_dashboard.dart';
+import '../Packages/features/home/pages/expert_home_page.dart';
 import '../Packages/features/staff/pages/receptionist_dashboard.dart';
 import '../Packages/features/staff/pages/intern_dashboard.dart';
 import '../Packages/features/salon/pages/salon_owner_dashboard.dart';
-import '../Packages/features/staff/pages/employee_schedule_page.dart'; // Added
+import '../Packages/features/staff/pages/my_times_page.dart';
 import '../Packages/features/staff/pages/staff_profile_page.dart';
+import '../Packages/features/staff/pages/staff_schedules_page.dart';
+import '../Packages/features/Navigations/faq_page.dart';
 
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/owner_dashboard_page.dart';
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/owner_management_dashboard_page.dart';
@@ -29,8 +32,10 @@ import 'package:na3eeman/Packages/features/owner/dashboard/pages/campaign_manage
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/feedback_page.dart';
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/revenue_controls_page.dart';
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/voucher_management_page.dart';
+import 'package:na3eeman/Packages/features/owner/dashboard/pages/salon_management_page.dart';
 import 'package:na3eeman/Packages/features/staff/pages/receptionist/receptionist_inventory_page.dart';
 import 'package:na3eeman/Packages/features/staff/pages/receptionist/receptionist_products_page.dart';
+import 'package:na3eeman/Packages/features/staff/pages/receptionist/appointment_search_page.dart';
 import 'package:na3eeman/Packages/features/staff/pages/intern_activity_page.dart';
 
 // Navigations
@@ -74,6 +79,7 @@ import '../Packages/features/admin/pages/subscription_management_page.dart';
 import '../Packages/features/admin/pages/admin_compliance.dart';
 import '../Packages/features/admin/pages/admin_create_staff_page.dart';
 import '../Packages/features/admin/pages/admin_service_requests_page.dart';
+import '../Packages/features/admin/pages/feedback_review_page.dart';
 
 // ── NEW: Missing Pages ──
 import '../Packages/features/onboarding/pages/onboarding.dart';
@@ -145,10 +151,14 @@ class AppRoutes {
       return const ProfilePage();
     },
     '/settings': (context) => const SettingsPage(),
+    '/faq': (context) => const FAQPage(),
+    '/staff_schedules': (context) => const StaffSchedulesPage(),
 
     // ── Staff & Management ────────────────────────────────────────────────
-    '/employee_dashboard': (context) => const EmployeeDashboard(),
-    '/employee_schedule': (context) => const EmployeeSchedulePage(),
+    '/expert_home': (context) => const ExpertHomePage(),
+    '/expert_dashboard': (context) => const ExpertDashboard(),
+    '/expert_dashboard': (context) => const ExpertDashboard(), // For backward compatibility
+    '/my_times': (context) => const MyTimesPage(),
     '/receptionist_dashboard': (context) => const ReceptionistDashboard(),
     '/intern_dashboard': (context) => const InternDashboard(),
     '/intern_activity': (context) => const InternActivityPage(),
@@ -157,6 +167,7 @@ class AppRoutes {
     '/management_dashboard': (context) => const OwnerManagementDashboardPage(),
     '/management/revenue': (context) => const RevenueControlsPage(),
     '/management/vouchers': (context) => const VoucherManagementPage(),
+    '/management/salon': (context) => const SalonManagementPage(),
     '/management/inventory': (context) => const ReceptionistInventoryPage(),
     '/management/products': (context) => const ReceptionistProductsPage(),
     '/active_campaigns': (context) => const CampaignManagementPage(),
@@ -179,6 +190,7 @@ class AppRoutes {
     '/admin/subs': (context) => const AdminSubscriptionManagementPage(),
     '/admin/create-staff': (context) => const AdminCreateStaffPage(),
     '/admin/service-requests': (context) => const AdminServiceRequestsPage(),
+    '/admin/feedback-review': (context) => const FeedbackReviewPage(),
 
     // ── Shared / Utility ──────────────────────────────────────────────────
     '/report': (context) => const ReportsPage(),
@@ -199,6 +211,7 @@ class AppRoutes {
     '/management/analytics': (context) => const AnalyticsDashboardPage(),
     '/management/expenses': (context) => const ExpensesPage(),
     '/management/payroll': (context) => const PayrollPage(),
+    '/appointments/search': (context) => const AppointmentSearchPage(),
     '/management/data': (context) => const DataManagementPage(),
   };
 }

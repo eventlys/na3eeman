@@ -1,11 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:na3eeman/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/Models/salon/payment_config_model.dart';
 import '../../../../../../core/theme/colors.dart';
-import '../../../../../../core/widgets/buttons/styled_buttons.dart';
 
 class RevenueControlsPage extends StatefulWidget {
   const RevenueControlsPage({super.key});
@@ -39,7 +38,7 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading configuration: $e')),
+          SnackBar(content: Text('error_loading_config'.tr(args: [e.toString()]))),
         );
       }
     }
@@ -53,13 +52,13 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
       await _apiService.updateSalonPaymentConfig(_config!.salonId, _config!.toJson());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Configuration saved successfully!')),
+          SnackBar(content: Text('config_saved_success'.tr())),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving configuration: $e')),
+          SnackBar(content: Text('error_saving_config'.tr(args: [e.toString()]))),
         );
       }
     } finally {
@@ -75,14 +74,14 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Revenue & Payment Controls'),
+        title: Text('revenue_payment_controls'.tr()),
         actions: [
           if (_isSaving)
             const Center(child: Padding(padding: EdgeInsets.all(16.0), child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))))
           else
             TextButton(
               onPressed: _saveConfig,
-              child: const Text('SAVE', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('save'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
         ],
       ),
@@ -102,31 +101,31 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
 
   Widget _buildMethodSection() {
     return _buildCard(
-      title: 'Accepted Payment Methods',
+      title: 'accepted_payment_methods'.tr(),
       icon: Icons.payments_rounded,
       child: Column(
         children: [
           _buildToggle(
-            'Allow Cash (Pay at Salon)',
-            'Customers pay after the service',
+            'allow_cash'.tr(),
+            'customers_pay_after'.tr(),
             _config!.allowCash,
             (v) => setState(() => _config = _config!.copyWith(allowCash: v)),
           ),
           _buildToggle(
-            'Allow Online (Card/Apple Pay)',
-            'Requires Stripe/PayPal integration',
+            'allow_online'.tr(),
+            'requires_integration'.tr(),
             _config!.allowOnline,
             (v) => setState(() => _config = _config!.copyWith(allowOnline: v)),
           ),
           _buildToggle(
-            'Allow CliQ (Instant Transfer)',
-            'Jordan instant bank transfer',
+            'allow_cliq'.tr(),
+            'jordan_instant_transfer'.tr(),
             _config!.allowCliq,
             (v) => setState(() => _config = _config!.copyWith(allowCliq: v)),
           ),
           _buildToggle(
-            'Allow Loyalty Points',
-            'Allow redemption of earned points',
+            'allow_loyalty_points'.tr(),
+            'allow_redemption'.tr(),
             _config!.allowPoints,
             (v) => setState(() => _config = _config!.copyWith(allowPoints: v)),
           ),
@@ -137,21 +136,21 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
 
   Widget _buildDepositSection() {
     return _buildCard(
-      title: 'Prepayment & Deposit Rules',
+      title: 'prepayment_deposit_rules'.tr(),
       icon: Icons.security_rounded,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Define if customers must pay a deposit to secure their booking.',
-            style: TextStyle(color: AppColors.almostBlack300, fontSize: 13),
+          Text(
+            'define_deposit_rules'.tr(),
+            style: const TextStyle(color: AppColors.almostBlack300, fontSize: 13),
           ),
           const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
                 child: _buildChoiceChip(
-                  'Percentage (%)',
+                  'percentage'.tr(),
                   _config!.depositType == DepositType.percent,
                   () => setState(() => _config = _config!.copyWith(depositType: DepositType.percent)),
                 ),
@@ -159,7 +158,7 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildChoiceChip(
-                  'Fixed Amount',
+                  'fixed_amount'.tr(),
                   _config!.depositType == DepositType.fixed,
                   () => setState(() => _config = _config!.copyWith(depositType: DepositType.fixed)),
                 ),
@@ -171,7 +170,7 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
             initialValue: _config!.depositValue.toString(),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: _config!.depositType == DepositType.percent ? 'Percentage' : 'Amount (JOD)',
+              labelText: _config!.depositType == DepositType.percent ? 'percentage'.tr() : 'amount_jod'.tr(),
               prefixIcon: Icon(_config!.depositType == DepositType.percent ? Icons.percent_rounded : Icons.money_rounded),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -187,20 +186,20 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
 
   Widget _buildPolicySection() {
     return _buildCard(
-      title: 'Business Policies',
+      title: 'business_policies'.tr(),
       icon: Icons.gavel_rounded,
       child: Column(
         children: [
           _buildNumberField(
-            'Cancellation Window (Hours)',
-            'Customers can cancel/reschedule for free before this time',
+            'cancellation_window'.tr(),
+            'cancellation_subtitle'.tr(),
             _config!.cancellationWindowHours,
             (v) => setState(() => _config = _config!.copyWith(cancellationWindowHours: v)),
           ),
           const Divider(height: 32),
           _buildNumberField(
-            'No-Show Tolerance',
-            'Max no-shows before forced prepayment is triggered by AI',
+            'no_show_tolerance'.tr(),
+            'no_show_subtitle'.tr(),
             _config!.noShowEnforcementThreshold,
             (v) => setState(() => _config = _config!.copyWith(noShowEnforcementThreshold: v)),
           ),
@@ -244,7 +243,7 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
         value: value,
         onChanged: onChanged,
         contentPadding: EdgeInsets.zero,
-        activeColor: Theme.of(context).primaryColor,
+        activeThumbColor: Theme.of(context).primaryColor,
       ),
     );
   }

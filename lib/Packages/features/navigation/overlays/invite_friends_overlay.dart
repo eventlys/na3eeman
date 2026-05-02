@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
@@ -114,7 +114,7 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
               child: ElevatedButton.icon(
                 onPressed: _shareLink,
                 icon: const Icon(Icons.share, size: 18, color: Colors.black),
-                label: Text(AppLocalizations.of(context)!.share),
+                label: Text("share".tr()),
               ),
             ),
           ],

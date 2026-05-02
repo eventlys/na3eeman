@@ -31,7 +31,6 @@ class ErrorReporter {
   }
 
   void _reportToService(FlutterErrorDetails details) {
-    // Implement reporting to your preferred service (Sentry, Firebase Crashlytics, etc.)
     final errorInfo = {
       'message': details.exception.toString(),
       'stack_trace': details.stack?.toString(),
@@ -39,9 +38,6 @@ class ErrorReporter {
       'context': details.context?.toString(),
       'timestamp': DateTime.now().toIso8601String(),
     };
-
-    // Send to your crash reporting service
-    // CrashReportingService().reportError(details.exception, details.stack ?? StackTrace.current);
   }
 }
 

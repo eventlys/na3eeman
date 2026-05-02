@@ -12,7 +12,7 @@ class Branch {
   final int? lowStockItems;
   final String? email;
   final DateTime? openingDate;
-  final int? totalEmployees;
+  final int? totalExperts;
   final int salonId;
   final String? openingTime;
   final String? closingTime;
@@ -35,7 +35,7 @@ class Branch {
     this.lowStockItems,
     this.email,
     this.openingDate,
-    this.totalEmployees,
+    this.totalExperts,
     required this.salonId,
     this.openingTime,
     this.closingTime,
@@ -66,7 +66,7 @@ class Branch {
       openingDate: json['opening_date'] != null
           ? DateTime.tryParse(json['opening_date'].toString())
           : null,
-      totalEmployees: json['total_employees'] is int ? json['total_employees'] : int.tryParse(json['total_employees']?.toString() ?? '0'),
+      totalExperts: json['total_experts'] is int ? json['total_experts'] : int.tryParse(json['total_experts']?.toString() ?? '0'),
       salonId: json['salon'] as int? ?? 0,
       openingTime: json['opening_time'] as String?,
       closingTime: json['closing_time'] as String?,
@@ -92,7 +92,7 @@ class Branch {
       'low_stock_items': lowStockItems,
       'email': email,
       'opening_date': openingDate?.toIso8601String(),
-      'total_employees': totalEmployees,
+      'total_experts': totalExperts,
       'salon': salonId,
       'opening_time': openingTime,
       'closing_time': closingTime,
@@ -117,7 +117,7 @@ class Branch {
     int? lowStockItems,
     String? email,
     DateTime? openingDate,
-    int? totalEmployees,
+    int? totalExperts,
     int? salonId,
     String? openingTime,
     String? closingTime,
@@ -140,7 +140,7 @@ class Branch {
       lowStockItems: lowStockItems ?? this.lowStockItems,
       email: email ?? this.email,
       openingDate: openingDate ?? this.openingDate,
-      totalEmployees: totalEmployees ?? this.totalEmployees,
+      totalExperts: totalExperts ?? this.totalExperts,
       salonId: salonId ?? this.salonId,
       openingTime: openingTime ?? this.openingTime,
       closingTime: closingTime ?? this.closingTime,
@@ -183,7 +183,7 @@ class Branch {
   int get getTotalSales => totalSales ?? todayAppointments;
 
   int get totalStaff {
-    return totalEmployees ?? (staffCount ?? 5);
+    return totalExperts ?? (staffCount ?? 5);
   }
 
   String get operatingHours {

@@ -1,14 +1,15 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
-// import 'package:easy_localization/easy_localization.dart';
+import '../../../../Services/api/api_service.dart';
+import '../../../../Models/auth/user_model.dart';
 
 /// Super Admin — User Management Page.
-/// Lists all platform users (customers + barbers/staff) with ban/verify actions.
+/// Lists all platform users (customers + experts/staff) from backend.
 class AdminUserManagementPage extends StatefulWidget {
   const AdminUserManagementPage({super.key});
 
@@ -43,7 +44,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.userManagement),
+        title: Text("user_management".tr()),
         bottom: TabBar(
           controller: _tabs,
           labelColor: primary,
@@ -53,12 +54,12 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage>
           indicatorColor: primary,
           tabs: const [
             Tab(text: 'Customers'),
-            Tab(text: 'Staff / Barbers'),
+            Tab(text: 'Staff / Experts'),
           ],
         ),
       ),
       drawer: const AppDrawer(
-        role: UserRole.superAdmin,
+        role: UserRole.admin,
         currentRoute: '/admin/users',
       ),
       body: Column(
@@ -88,8 +89,8 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage>
             child: TabBarView(
               controller: _tabs,
               children: [
-                _UserList(role: 'customer', query: _query, isDark: isDark),
-                _UserList(role: 'staff', query: _query, isDark: isDark),
+                _UserList(role: 'CUSTOMER', query: _query, isDark: isDark),
+                _UserList(role: 'STAFF', query: _query, isDark: isDark),
               ],
             ),
           ),
@@ -99,106 +100,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage>
   }
 }
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
-
-class _UserModel {
-  const _UserModel({
-    required this.name,
-    required this.username,
-    required this.role,
-    required this.status,
-    required this.verified,
-    required this.joinDate,
-  });
-  final String name;
-  final String username;
-  final String role;
-  final String status; // 'active' | 'banned' | 'suspended'
-  final bool verified;
-  final String joinDate;
-}
-
-final _mockCustomers = [
-  const _UserModel(
-    name: 'Ahmed Al-Rashid',
-    username: '@ahmed.rashid',
-    role: 'customer',
-    status: 'active',
-    verified: true,
-    joinDate: 'Jan 2025',
-  ),
-  const _UserModel(
-    name: 'Sara Al-Otaibi',
-    username: '@sara.o',
-    role: 'customer',
-    status: 'active',
-    verified: false,
-    joinDate: 'Feb 2025',
-  ),
-  const _UserModel(
-    name: 'Khalid Ibrahim',
-    username: '@k.ibrahim',
-    role: 'customer',
-    status: 'banned',
-    verified: true,
-    joinDate: 'Nov 2024',
-  ),
-  const _UserModel(
-    name: 'Fatima Hassan',
-    username: '@fatima_h',
-    role: 'customer',
-    status: 'suspended',
-    verified: false,
-    joinDate: 'Mar 2025',
-  ),
-  const _UserModel(
-    name: 'Omar Saud',
-    username: '@omar_s99',
-    role: 'customer',
-    status: 'active',
-    verified: true,
-    joinDate: 'Dec 2024',
-  ),
-];
-
-final _mockStaff = [
-  const _UserModel(
-    name: 'Nasser Barber',
-    username: '@nasserstyle',
-    role: 'owner',
-    status: 'active',
-    verified: true,
-    joinDate: 'Jul 2024',
-  ),
-  const _UserModel(
-    name: 'Walid Ahmad',
-    username: '@walid.cuts',
-    role: 'barber',
-    status: 'active',
-    verified: true,
-    joinDate: 'Sep 2024',
-  ),
-  const _UserModel(
-    name: 'Majid Al-Enezi',
-    username: '@majid_mgr',
-    role: 'manager',
-    status: 'suspended',
-    verified: false,
-    joinDate: 'Oct 2024',
-  ),
-  const _UserModel(
-    name: 'Laila Salim',
-    username: '@lailasalon',
-    role: 'receptionist',
-    status: 'active',
-    verified: true,
-    joinDate: 'Jan 2025',
-  ),
-];
-
-// ── User list ─────────────────────────────────────────────────────────────────
-
-class _UserList extends StatelessWidget {
+class _UserList extends StatefulWidget {
   const _UserList({
     required this.role,
     required this.query,
@@ -209,48 +111,77 @@ class _UserList extends StatelessWidget {
   final bool isDark;
 
   @override
-  Widget build(BuildContext context) {
-    final list = role == 'customer' ? _mockCustomers : _mockStaff;
-    final filtered = list
-        .where(
-          (u) =>
-              u.name.toLowerCase().contains(query) ||
-              u.username.toLowerCase().contains(query),
-        )
-        .toList();
+  State<_UserList> createState() => _UserListState();
+}
 
-    if (filtered.isEmpty) {
-      return Center(
-        child: Text(
-          'No users found',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      );
+class _UserListState extends State<_UserList> {
+  late Future<List<User>> _usersFuture;
+  final ApiService _apiService = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  @override
+  void didUpdateWidget(_UserList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.query != widget.query) {
+      _loadUsers();
     }
+  }
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: filtered.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, i) => _UserTile(user: filtered[i], isDark: isDark),
+  void _loadUsers() {
+    setState(() {
+      _usersFuture = _apiService.getUsers(
+        role: widget.role == 'STAFF' ? null : widget.role, // Backend handles staff grouping if role is null or 'STAFF'
+        query: widget.query,
+      ).then((list) => list.map((e) => User.fromJson(e)).toList());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<User>>(
+      future: _usersFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        
+        final users = snapshot.data ?? [];
+
+        if (users.isEmpty) {
+          return const Center(child: Text('No users found'));
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async => _loadUsers(),
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            itemCount: users.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 8),
+            itemBuilder: (context, i) => _UserTile(user: users[i], isDark: widget.isDark),
+          ),
+        );
+      },
     );
   }
 }
 
 class _UserTile extends StatelessWidget {
   const _UserTile({required this.user, required this.isDark});
-  final _UserModel user;
+  final User user;
   final bool isDark;
 
   Color get _statusColor {
-    switch (user.status) {
-      case 'banned':
-        return AppColor.error;
-      case 'suspended':
-        return AppColor.warning;
-      default:
-        return AppColor.success;
-    }
+    if (!user.isActive) return AppColor.error;
+    // We can add more logic here if backend provides specific status
+    return AppColor.success;
   }
 
   @override
@@ -259,19 +190,17 @@ class _UserTile extends StatelessWidget {
       type: AppCardType.outlined,
       child: Row(
         children: [
-          // Avatar placeholder
           CircleAvatar(
             radius: 22,
-            backgroundColor: Theme.of(
-              context,
-            ).colorScheme.primary.withOpacity(0.1),
-            child: Text(
-              user.name[0],
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
+            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            backgroundImage: user.profilePic != null ? NetworkImage(user.profilePic!) : null,
+            child: user.profilePic == null 
+                ? Text(user.firstName[0],
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.primary,
+                    ))
+                : null,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -282,14 +211,14 @@ class _UserTile extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        user.name,
+                        user.fullName,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (user.verified) ...[
+                    if (user.isEmailVerified) ...[
                       const SizedBox(width: 4),
                       const Icon(
                         Icons.verified_rounded,
@@ -302,21 +231,18 @@ class _UserTile extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      user.username,
+                      '@${user.username}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 1,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                       decoration: BoxDecoration(
                         color: _statusColor.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
-                        user.status,
+                        user.isActive ? 'active' : 'inactive',
                         style: TextStyle(
                           fontSize: 10,
                           color: _statusColor,
@@ -329,7 +255,6 @@ class _UserTile extends StatelessWidget {
               ],
             ),
           ),
-          // Actions
           PopupMenuButton<String>(
             icon: Icon(
               Icons.more_vert_rounded,
@@ -340,20 +265,10 @@ class _UserTile extends StatelessWidget {
             ),
             onSelected: (action) => _handleAction(context, action),
             itemBuilder: (_) => [
-              if (user.status != 'banned')
+              if (user.isActive)
                 const PopupMenuItem(value: 'ban', child: Text('Ban User')),
-              if (user.status != 'active')
-                const PopupMenuItem(
-                  value: 'unban',
-                  child: Text('Unban / Restore'),
-                ),
-              if (user.status == 'active' && user.status != 'suspended')
-                const PopupMenuItem(value: 'suspend', child: Text('Suspend')),
-              if (!user.verified)
-                const PopupMenuItem(
-                  value: 'verify',
-                  child: Text('Verify Account'),
-                ),
+              if (!user.isActive)
+                const PopupMenuItem(value: 'unban', child: Text('Unban / Restore')),
               const PopupMenuItem(value: 'view', child: Text('View Profile')),
             ],
           ),
@@ -363,11 +278,11 @@ class _UserTile extends StatelessWidget {
   }
 
   void _handleAction(BuildContext context, String action) {
+    // In a real app, this would call ApiService.updateUserStatus
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Action: $action on ${user.name}'),
+        content: Text('Action $action initiated for ${user.fullName}'),
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
       ),
     );
   }

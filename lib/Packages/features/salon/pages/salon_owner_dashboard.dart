@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
@@ -9,7 +9,6 @@ import '../../../features/navigation/sidebar_controller.dart';
 import '../widgets/profit_graph.dart';
 import '../widgets/inventory_alert_card.dart';
 import '../widgets/offers_card.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class SalonOwnerDashboard extends StatefulWidget {
   const SalonOwnerDashboard({super.key});
@@ -52,7 +51,7 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.ownerDashboard, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("owner_dashboard".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButtonStyled(
@@ -123,7 +122,7 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
       ),
       floatingActionButton: FloatingActionButtonStyled(
         icon: Icons.add_rounded,
-        label: AppLocalizations.of(context)!.newAction,
+        label: "new_action".tr(),
         onPressed: () {},
       ),
         ),
@@ -142,7 +141,7 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
         ),
         TextButton(
           onPressed: onSeeAll,
-          child: Text(AppLocalizations.of(context)!.viewAll, style: TextStyle(color: Theme.of(context).primaryColor)),
+          child: Text("view_all".tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
         ),
       ],
     );

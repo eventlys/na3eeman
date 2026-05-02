@@ -2,7 +2,7 @@ enum StaffRole {
   owner('OWNER', 'Owner'),
   subOwner('SUB_OWNER', 'Sub Owner'),
   branchManager('BRANCH_MANAGER', 'Branch Manager'),
-  barber('BARBER', 'Barber'),
+  expert('EXPERT', 'Expert'),
   assistant('ASSISTANT', 'Assistant'),
   receptionist('RECEPTIONIST', 'Receptionist'),
   cleaner('CLEANER', 'Cleaner');
@@ -20,7 +20,7 @@ class StaffRoleExtension {
         return role;
       }
     }
-    return StaffRole.barber; // default
+    return StaffRole.expert; // default
   }
 
   static String toDisplayString(String value) {
@@ -34,7 +34,7 @@ class StaffRoleExtension {
   ];
 
   static List<StaffRole> get serviceRoles => [
-    StaffRole.barber,
+    StaffRole.expert,
     StaffRole.assistant,
   ];
 
@@ -52,7 +52,7 @@ class StaffRoleExtension {
       StaffRole.owner,
       StaffRole.subOwner,
       StaffRole.branchManager,
-      StaffRole.barber,
+      StaffRole.expert,
       StaffRole.receptionist,
     ].contains(role);
   }
@@ -62,7 +62,7 @@ class StaffRoleExtension {
       StaffRole.owner,
       StaffRole.subOwner,
       StaffRole.branchManager,
-      StaffRole.barber,
+      StaffRole.expert,
       StaffRole.receptionist,
     ].contains(role);
   }

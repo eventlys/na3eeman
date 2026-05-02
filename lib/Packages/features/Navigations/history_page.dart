@@ -1,9 +1,11 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Providers/main_providers.dart';
-// import 'package:easy_localization/easy_localization.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../core/widgets/dashboard/dashboard_widgets.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -28,537 +30,389 @@ class _HistoryPageState extends State<HistoryPage> {
     final appointmentProvider = context.read<AppointmentProvider>();
 
     if (!authProvider.isAuthenticated) {
-      setState(() {
-        _isLoading = false;
-        _error = 'Please login to view appointment history';
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = 'Please login to view appointment history';
+        });
+      }
       return;
     }
 
     try {
-      setState(() {
-        _isLoading = true;
-        _error = null;
-      });
-
-      // Use the appointment provider to load appointments
-      await appointmentProvider.loadAppointments();
-
-      // Get appointments based on user role using authProvider
-      if (authProvider.isCustomer) {
-        _appointments = _filterCustomerAppointments(appointmentProvider, authProvider);
-      } else if (authProvider.isBarber || authProvider.isOwner) {
-        _appointments = _filterStaffAppointments(appointmentProvider, authProvider);
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+          _error = null;
+        });
       }
 
-      setState(() {
-        _isLoading = false;
-      });
+      await appointmentProvider.loadAppointments();
+
+      if (mounted) {
+        setState(() {
+          // Filter to show only completed or cancelled for history
+          _appointments = appointmentProvider.appointments.where((appt) {
+            final apptCustomerId = _getAppointmentCustomerId(appt);
+            return apptCustomerId == authProvider.user?.id;
+          }).toList();
+          
+          // Sort by date descending
+          _appointments.sort((a, b) => _getAppointmentStartTime(b).compareTo(_getAppointmentStartTime(a)));
+          
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _error = 'Failed to load appointments: $e';
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = 'Failed to load appointments: $e';
+        });
+      }
     }
-  }
-
-  List<dynamic> _filterCustomerAppointments(AppointmentProvider provider, AuthProvider authProvider) {
-    // Filter appointments where current user is the customer
-    final user = authProvider.user;
-    if (user == null) return [];
-
-    return provider.appointments.where((appt) {
-      final customerId = _getAppointmentCustomerId(appt);
-      return customerId == user.id;
-    }).toList();
-  }
-
-  List<dynamic> _filterStaffAppointments(AppointmentProvider provider, AuthProvider authProvider) {
-    // For barbers/owners, show appointments assigned to them or in their salon
-    final user = authProvider.user;
-    if (user == null) return [];
-
-    if (authProvider.isBarber) {
-      return provider.appointments.where((appt) {
-        final barberId = _getAppointmentBarberId(appt);
-        return barberId == user.id;
-      }).toList();
-    } else if (authProvider.isOwner) {
-      // Owners can see all appointments in their salon(s)
-      return provider.appointments;
-    }
-
-    return [];
   }
 
   int _getAppointmentCustomerId(dynamic appointment) {
     if (appointment is Map) {
-      return appointment['customerId'] ?? appointment['customer'] ?? 0;
+      return appointment['customer'] ?? appointment['customerId'] ?? 0;
     }
-    // If using a model with customerId property
-    try {
-      return appointment.customerId as int;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  int? _getAppointmentBarberId(dynamic appointment) {
-    if (appointment is Map) {
-      return appointment['barberId'] ?? appointment['barber'];
-    }
-    // If using a model with barberId property
-    try {
-      return appointment.barberId as int?;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  String _getAppointmentStatus(dynamic appointment) {
-    if (appointment is Map) {
-      return appointment['status'] ?? 'scheduled';
-    }
-    try {
-      return appointment.status.toString().toLowerCase();
-    } catch (e) {
-      return 'scheduled';
-    }
+    return 0; // Simplified for robustness
   }
 
   DateTime _getAppointmentStartTime(dynamic appointment) {
     if (appointment is Map) {
-      final startTime = appointment['startTime'] ?? appointment['dateTime'];
-      if (startTime is DateTime) return startTime;
-      if (startTime is String) return DateTime.parse(startTime);
+      final dateTime = appointment['dateTime'] ?? appointment['startTime'];
+      if (dateTime is DateTime) return dateTime;
+      if (dateTime is String) return DateTime.tryParse(dateTime) ?? DateTime.now();
     }
-    try {
-      return appointment.startTime as DateTime;
-    } catch (e) {
-      return DateTime.now();
-    }
+    return DateTime.now();
   }
 
-  DateTime _getAppointmentEndTime(dynamic appointment) {
-    if (appointment is Map) {
-      final endTime = appointment['endTime'];
-      if (endTime is DateTime) return endTime;
-      if (endTime is String) return DateTime.parse(endTime);
-    }
-    try {
-      return appointment.endTime as DateTime;
-    } catch (e) {
-      return _getAppointmentStartTime(appointment).add(const Duration(hours: 1));
-    }
+  String _getSalonName(dynamic appointment) {
+    if (appointment is Map) return appointment['salonName'] ?? 'Na3eeman Salon';
+    return 'Na3eeman Salon';
   }
 
-  List<String> _getAppointmentServices(dynamic appointment) {
-    final List<String> services = [];
+  String _getExpertName(dynamic appointment) {
+    if (appointment is Map) return appointment['expertName'] ?? 'Any Specialist';
+    return 'Any Specialist';
+  }
 
+  String _getCost(dynamic appointment) {
+    if (appointment is Map) return '${appointment['price'] ?? '0.00'} JOD';
+    return '0.00 JOD';
+  }
+
+  List<String> _getServices(dynamic appointment) {
     if (appointment is Map) {
-      final servicesData = appointment['services'];
-      if (servicesData is List) {
-        for (var service in servicesData) {
-          if (service is Map) {
-            services.add(service['name']?.toString() ?? 'Service');
-          } else if (service is String) {
-            services.add(service);
-          }
-        }
+      final services = appointment['services'];
+      if (services is List) {
+        return services.map((s) => s is Map ? s['name'].toString() : s.toString()).toList();
       }
-      return services;
+      if (appointment['serviceName'] != null) return [appointment['serviceName']];
     }
-
-    try {
-      final servicesData = appointment.services;
-      if (servicesData is List) {
-        for (var service in servicesData) {
-          if (service is String) {
-            services.add(service);
-          } else {
-            services.add(service.toString());
-          }
-        }
-      }
-      return services;
-    } catch (e) {
-      return [];
-    }
+    return ['General Service'];
   }
 
-  String _getAppointmentId(dynamic appointment) {
-    if (appointment is Map) {
-      return appointment['id']?.toString() ?? 'Unknown';
-    }
-    try {
-      return appointment.id.toString();
-    } catch (e) {
-      return 'Unknown';
-    }
+  void _showDoItAgainPopup(dynamic appointment) {
+    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
+    TimeOfDay selectedTime = const TimeOfDay(hour: 10, minute: 0);
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: const Text('Do it again', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Select a new date and time for this appointment:'),
+              const SizedBox(height: 24),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                  child: Icon(Icons.calendar_today_rounded, color: Theme.of(context).primaryColor, size: 20),
+                ),
+                title: const Text('Date', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                subtitle: Text(DateFormat('EEEE, MMM d, yyyy').format(selectedDate), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 30)),
+                  );
+                  if (date != null) setState(() => selectedDate = date);
+                },
+              ),
+              const Divider(height: 32),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                  child: Icon(Icons.access_time_rounded, color: Theme.of(context).primaryColor, size: 20),
+                ),
+                title: const Text('Time', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                subtitle: Text(selectedTime.format(context), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                onTap: () async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: selectedTime,
+                  );
+                  if (time != null) setState(() => selectedTime = time);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // Proceed to payment / booking logic
+                Navigator.pushNamed(context, '/category_selection', arguments: {
+                  'rebookAppointment': appointment,
+                  'selectedDate': selectedDate,
+                  'selectedTime': selectedTime,
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Proceed to Payment'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  int _getAppointmentSalonId(dynamic appointment) {
-    if (appointment is Map) {
-      return appointment['salonId'] ?? appointment['salon'] ?? 0;
-    }
-    try {
-      return appointment.salonId as int;
-    } catch (e) {
-      return 0;
-    }
+  void _showRepeatPopup(dynamic appointment) {
+    String selectedFrequency = 'Once a week';
+    String selectedDuration = '3 months';
+    DateTime startDate = DateTime.now();
+
+    final frequencies = ['Twice a month', 'Once a week', 'Once a month', 'Once every 3 weeks'];
+    final durations = ['1 month', '3 months', '6 months', '9 months', '1 year', '2 years'];
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: const Text('Set Repeat Alarm', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Keep your routine consistent by setting a recurring appointment alarm.'),
+              const SizedBox(height: 24),
+              DropdownButtonFormField<String>(
+                initialValue: selectedFrequency,
+                decoration: InputDecoration(
+                  labelText: 'Frequency',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.repeat_rounded),
+                ),
+                items: frequencies.map((f) => DropdownMenuItem(value: f, child: Text(f))).toList(),
+                onChanged: (val) => setState(() => selectedFrequency = val!),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                initialValue: selectedDuration,
+                decoration: InputDecoration(
+                  labelText: 'For how long?',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.timer_rounded),
+                ),
+                items: durations.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+                onChanged: (val) => setState(() => selectedDuration = val!),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                tileColor: Theme.of(context).primaryColor.withOpacity(0.05),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                title: const Text('Starting Date', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                subtitle: Text(DateFormat('MMMM d, yyyy').format(startDate), style: const TextStyle(fontWeight: FontWeight.bold)),
+                trailing: const Icon(Icons.calendar_month_rounded),
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: startDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 90)),
+                  );
+                  if (date != null) setState(() => startDate = date);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Recurring appointment set for $selectedFrequency for $selectedDuration'),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Set Alarm'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.appointmentHistory),
+        title: const Text('Appointment History', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadAppointments,
-          ),
-        ],
+        centerTitle: true,
       ),
-      body: _buildBody(authProvider),
+      body: _isLoading 
+          ? Center(child: CircularProgressIndicator(color: primaryColor))
+          : _error != null
+              ? Center(child: Text(_error!, style: const TextStyle(color: Colors.red)))
+              : _appointments.isEmpty
+                  ? Center(child: _buildEmptyState(isDark))
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(20),
+                      itemCount: _appointments.length,
+                      itemBuilder: (context, index) {
+                        final appt = _appointments[index];
+                        return _buildAppointmentHistoryCard(appt, isDark, primaryColor);
+                      },
+                    ),
     );
   }
 
-  Widget _buildBody(AuthProvider authProvider) {
-    if (!authProvider.isAuthenticated) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.login,
-              size: 64,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Login Required',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Please login to view your appointment history',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Error Loading Appointments',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _error!,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadAppointments,
-              child: Text(AppLocalizations.of(context)!.tryAgain),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_appointments.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.history,
-              size: 64,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 16),
-            Text(
-              'No Appointments',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'You don\'t have any appointments yet',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: _loadAppointments,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _appointments.length,
-        itemBuilder: (context, index) {
-          final appointment = _appointments[index];
-          return _buildAppointmentCard(appointment, authProvider);
-        },
-      ),
-    );
-  }
-
-  Widget _buildAppointmentCard(dynamic appointment, AuthProvider authProvider) {
-    final status = _getAppointmentStatus(appointment);
-    final startTime = _getAppointmentStartTime(appointment);
-    final endTime = _getAppointmentEndTime(appointment);
-    final services = _getAppointmentServices(appointment);
-    final appointmentId = _getAppointmentId(appointment);
-    final salonId = _getAppointmentSalonId(appointment);
-    final customerId = _getAppointmentCustomerId(appointment);
-    final barberId = _getAppointmentBarberId(appointment);
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with Status and Date
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildStatusChip(status),
-                Text(
-                  _formatDate(startTime),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // Time
-            Row(
-              children: [
-                const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                const SizedBox(width: 8),
-                Text(
-                  '${_formatTime(startTime)} - ${_formatTime(endTime)}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Services
-            if (services.isNotEmpty) ...[
-              Text(
-                'Services: ${services.join(', ')}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-
-            // Role-specific information
-            if (authProvider.isCustomer) ..._buildCustomerInfo(salonId, barberId),
-            if (authProvider.isBarber || authProvider.isOwner) ..._buildStaffInfo(customerId, salonId),
-
-            // Appointment ID
-            Text(
-              'ID: $appointmentId',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-                fontFamily: 'monospace',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildCustomerInfo(int salonId, int? barberId) {
-    return [
-      const Row(
-        children: [
-          Icon(Icons.store, size: 16, color: Colors.grey),
-          SizedBox(width: 8),
-          Text(
-            'Salon Information',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 4),
-      Text(
-        'Salon ID: $salonId',
-        style: const TextStyle(fontSize: 14),
-      ),
-      if (barberId != null) ...[
+  Widget _buildEmptyState(bool isDark) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.history_rounded, size: 80, color: Colors.grey.withOpacity(0.3)),
+        const SizedBox(height: 24),
         Text(
-          'Barber ID: $barberId',
-          style: const TextStyle(fontSize: 14),
+          'No history yet',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : AppColors.almostBlack,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Your past appointments will appear here.',
+          style: TextStyle(color: Colors.grey[600]),
         ),
       ],
-      const SizedBox(height: 8),
-    ];
+    );
   }
 
-  List<Widget> _buildStaffInfo(int customerId, int salonId) {
-    return [
-      const Row(
+  Widget _buildAppointmentHistoryCard(dynamic appt, bool isDark, Color primaryColor) {
+    final startTime = _getAppointmentStartTime(appt);
+    final salonName = _getSalonName(appt);
+    final expertName = _getExpertName(appt);
+    final cost = _getCost(appt);
+    final services = _getServices(appt);
+
+    return DashboardCard(
+      padding: const EdgeInsets.all(24),
+      borderRadius: 24,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.person, size: 16, color: Colors.grey),
-          SizedBox(width: 8),
-          Text(
-            'Customer Information',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      salonName,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      DateFormat('EEE, MMM d • hh:mm a').format(startTime),
+                      style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(cost, style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Divider(),
+          const SizedBox(height: 16),
+          _infoRow(Icons.person_rounded, 'Professional', expertName, isDark),
+          const SizedBox(height: 12),
+          _infoRow(Icons.cut_rounded, 'Services', services.join(', '), isDark),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: SecondaryButton(
+                  text: 'Repeat',
+                  onPressed: () => _showRepeatPopup(appt),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: PrimaryButton(
+                  text: 'Do it again',
+                  onPressed: () => _showDoItAgainPopup(appt),
+                ),
+              ),
+            ],
           ),
         ],
-      ),
-      const SizedBox(height: 4),
-      Text(
-        'Customer ID: $customerId',
-        style: const TextStyle(fontSize: 14),
-      ),
-      Text(
-        'Salon ID: $salonId',
-        style: const TextStyle(fontSize: 14),
-      ),
-      const SizedBox(height: 8),
-    ];
-  }
-
-  Widget _buildStatusChip(String status) {
-    Color backgroundColor;
-    Color textColor;
-    String statusText;
-
-    switch (status.toLowerCase()) {
-      case 'scheduled':
-      case 'SCHEDULED':
-        backgroundColor = Colors.blue[50]!;
-        textColor = Colors.blue[800]!;
-        statusText = 'Scheduled';
-        break;
-      case 'checked_in':
-      case 'CHECKED_IN':
-        backgroundColor = Colors.green[50]!;
-        textColor = Colors.green[800]!;
-        statusText = 'Checked In';
-        break;
-      case 'pending':
-      case 'PENDING':
-        backgroundColor = Colors.orange[50]!;
-        textColor = Colors.orange[800]!;
-        statusText = 'Pending';
-        break;
-      case 'completed':
-      case 'COMPLETED':
-        backgroundColor = Colors.green[50]!;
-        textColor = Colors.green[800]!;
-        statusText = 'Completed';
-        break;
-      case 'cancelled':
-      case 'CANCELLED':
-        backgroundColor = Colors.red[50]!;
-        textColor = Colors.red[800]!;
-        statusText = 'Cancelled';
-        break;
-      case 'no_show':
-      case 'NO_SHOW':
-        backgroundColor = Colors.orange[50]!;
-        textColor = Colors.orange[800]!;
-        statusText = 'No Show';
-        break;
-      default:
-        backgroundColor = Colors.grey[50]!;
-        textColor = Colors.grey[800]!;
-        statusText = status;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        statusText,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: textColor,
-        ),
       ),
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
-
-  String _formatTime(DateTime date) {
-    return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+  Widget _infoRow(IconData icon, String label, String value, bool isDark) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: Colors.grey),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: TextStyle(color: Colors.grey[500], fontSize: 11)),
+            Text(value, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+          ],
+        ),
+      ],
+    );
   }
 }

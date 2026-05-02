@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/auth/role_permission_manager.dart';
@@ -10,7 +10,6 @@ import '../../../Core/constants/app_roles.dart';
 import '../widgets/salon_gallary.dart';
 import '../widgets/salon_info_section.dart';
 import '../widgets/services_section.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class SalonDetailsPage extends StatefulWidget {
   final Map<String, dynamic> salonData;
@@ -41,11 +40,11 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
   }
 
   void _loadData() {
-    final barberProvider = context.read<BarberProvider>();
+    final expertProvider = context.read<ExpertProvider>();
     final salonId = widget.salonData['id'] ?? widget.salonData['_id'];
     if (salonId != null) {
       final id = int.tryParse(salonId.toString());
-      if (id != null) barberProvider.loadBarbers(salonId: id);
+      if (id != null) expertProvider.loadExperts(salonId: id);
     }
   }
 
@@ -126,13 +125,13 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
               IconButton(
                 icon: const Icon(Icons.favorite_border, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.addedToFavorites)));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("added_to_favorites".tr())));
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.shareDialogOpened)));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("share_dialog_opened".tr())));
                 },
               ),
               if (RolePermissionManager.canEditSalonInfo(context.read<AuthProvider>().user?.role ?? UserRole.customer))
@@ -141,7 +140,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                   onPressed: () {
                      Navigator.pushNamed(context, '/edit_salon', arguments: {'salonData': widget.salonData});
                   },
-                  tooltip: AppLocalizations.of(context)!.editSalon,
+                  tooltip: "edit_salon".tr(),
                 ),
             ],
           ),
@@ -176,7 +175,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.catigories,
+                    Text("catigories".tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
@@ -203,13 +202,13 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.packages,
+                    Text("packages".tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
                       tileColor: AppColors.almostBlack50,
-                      title: Text(AppLocalizations.of(context)!.packagesAndBundlesComingSoon),
+                      title: Text("packages_and_bundles_coming_soon".tr()),
                       leading: Icon(Icons.card_giftcard),
                     ),
                   ],
@@ -223,13 +222,13 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.products,
+                    Text("products".tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
                       tileColor: AppColors.almostBlack50,
-                      title: Text(AppLocalizations.of(context)!.salonProductsCatalogComingSoon),
+                      title: Text("salon_products_catalog_coming_soon".tr()),
                       leading: Icon(Icons.shopping_bag_outlined),
                     ),
                   ],
@@ -243,13 +242,13 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.offersGroups,
+                    Text("offers_groups".tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
                       tileColor: AppColors.almostBlack50,
-                      title: Text(AppLocalizations.of(context)!.exclusiveOffersComingSoon),
+                      title: Text("exclusive_offers_coming_soon".tr()),
                       leading: Icon(Icons.local_offer_outlined),
                     ),
                   ],
@@ -263,7 +262,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.salonFeedback,
+                    Text("salon_feedback".tr(),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
@@ -271,9 +270,9 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                       children: [
                         const Icon(Icons.star, color: Colors.orange, size: 30),
                         const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.key485, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        Text("key485".tr(), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.key120Reviews, style: TextStyle(color: Colors.grey)),
+                        Text("key120_reviews".tr(), style: TextStyle(color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -291,7 +290,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                             children: [
                               CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
                               SizedBox(width: 8),
-                              Text(AppLocalizations.of(context)!.ahmedM, style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text("ahmed_m".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
                               Spacer(),
                               Icon(Icons.star, color: Colors.orange, size: 16),
                               Icon(Icons.star, color: Colors.orange, size: 16),
@@ -301,17 +300,17 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text(AppLocalizations.of(context)!.greatServiceCompletelyTransformedMyLookHighl),
+                          Text("great_service_completely_transformed_my_look_highl".tr()),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
                       onPressed: () {
-                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.feedbackEntryDialog)));
+                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("feedback_entry_dialog".tr())));
                       },
                       icon: const Icon(Icons.rate_review),
-                      label: Text(AppLocalizations.of(context)!.addYourFeedback),
+                      label: Text("add_your_feedback".tr()),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size.fromHeight(48),
                         side: BorderSide(color: Theme.of(context).primaryColor),
@@ -359,7 +358,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
               ),
               const SizedBox(height: 16),
               PrimaryButton(
-                text: AppLocalizations.of(context)!.bookAppointment,
+                text: "book_appointment".tr(),
                 onPressed: () {
                   Navigator.pushNamed(context, '/book_appointment', arguments: {
                     'salonData': widget.salonData,

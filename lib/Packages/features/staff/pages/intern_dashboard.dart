@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
@@ -10,10 +9,9 @@ import '../../../features/navigation/sidebar_controller.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/attach_feedback_dialog.dart';
 import '../widgets/task_todo_bottom_sheet.dart';
-import '../widgets/weekly_progress_chart.dart';
 import '../widgets/monthly_target_widget.dart';
 import '../../../../Providers/features/intern_provider.dart';
-import '../../../../Providers/features/barber_provider.dart';
+import '../../../../Providers/features/expert_provider.dart';
 
 class InternDashboard extends StatefulWidget {
   const InternDashboard({super.key});
@@ -37,10 +35,10 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     // Initial data fetch
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final internProvider = context.read<InternProvider>();
-      final barberProvider = context.read<BarberProvider>();
+      final expertProvider = context.read<ExpertProvider>();
       
       await internProvider.initInternDashboard(null);
-      await barberProvider.loadBarbers(refresh: true, salonId: internProvider.salonId);
+      await expertProvider.loadExperts(refresh: true, salonId: internProvider.salonId);
     });
   }
 
@@ -57,7 +55,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     final internProvider = context.watch<InternProvider>();
-    final barberProvider = context.watch<BarberProvider>();
+    final expertProvider = context.watch<ExpertProvider>();
 
     return Stack(
       children: [
@@ -103,22 +101,22 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
 
                   // Active Assignments / Mentors Section
                   DashboardSectionHeader(
-                    title: AppLocalizations.of(context)!.activeAssignments,
-                    actionText: barberProvider.isLoading ? AppLocalizations.of(context)!.loading : AppLocalizations.of(context)!.refresh,
-                    onPressed: () => barberProvider.loadBarbers(refresh: true, salonId: internProvider.salonId),
+                    title: "active_assignments".tr(),
+                    actionText: expertProvider.isLoading ? "loading".tr() : "refresh".tr(),
+                    onPressed: () => expertProvider.loadExperts(refresh: true, salonId: internProvider.salonId),
                   ),
                   const SizedBox(height: 16),
-                  if (barberProvider.isLoading && barberProvider.barbers.isEmpty)
+                  if (expertProvider.isLoading && expertProvider.experts.isEmpty)
                     const Center(child: CircularProgressIndicator())
                   else
-                    _buildMentorsList(context, barberProvider, internProvider),
+                    _buildMentorsList(context, expertProvider, internProvider),
 
                   const SizedBox(height: 32),
 
                   // ToDo Tasks Section
                   DashboardSectionHeader(
-                    title: AppLocalizations.of(context)!.dailyTasks, 
-                    actionText: AppLocalizations.of(context)!.addTask,
+                    title: "daily_tasks".tr(), 
+                    actionText: "add_task".tr(),
                     onPressed: () => _showAddTaskSheet(context),
                   ),
                   const SizedBox(height: 16),
@@ -126,24 +124,6 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                     const Center(child: CircularProgressIndicator())
                   else
                     _buildTaskPreview(context, internProvider),
-
-                  const SizedBox(height: 32),
-
-                  // Weekly Progress Section (Chart)
-                  DashboardSectionHeader(title: AppLocalizations.of(context)!.weeklyTraining),
-                  const SizedBox(height: 16),
-                  const WeeklyProgressChart(),
-
-                  const SizedBox(height: 32),
-
-                  // Monthly Targets Section
-                  DashboardSectionHeader(
-                    title: AppLocalizations.of(context)!.monthlyTargets, 
-                    actionText: isNumericView ? AppLocalizations.of(context)!.showPct : AppLocalizations.of(context)!.showNum,
-                    onPressed: () => setState(() => isNumericView = !isNumericView),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTargetsList(internProvider),
 
                   const SizedBox(height: 32),
                   const FeedbackSection(),
@@ -325,7 +305,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: provider.targets.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
+        separatorBuilder: (_, _) => const SizedBox(width: 16),
         itemBuilder: (context, index) {
           return MonthlyTargetWidget(
             target: provider.targets[index],
@@ -336,8 +316,8 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     );
   }
 
-  Widget _buildMentorsList(BuildContext context, BarberProvider bProvider, InternProvider iProvider) {
-    if (bProvider.barbers.isEmpty && !bProvider.isLoading) {
+  Widget _buildMentorsList(BuildContext context, ExpertProvider bProvider, InternProvider iProvider) {
+    if (bProvider.experts.isEmpty && !bProvider.isLoading) {
       return Container(
         padding: const EdgeInsets.all(24),
         width: double.infinity,
@@ -349,7 +329,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
           children: [
             Icon(Icons.people_outline_rounded, color: AppColors.almostBlack300, size: 40),
             SizedBox(height: 12),
-            Text('No employees found in the salon', style: TextStyle(color: AppColors.almostBlack300)),
+            Text('No experts found in the salon', style: TextStyle(color: AppColors.almostBlack300)),
           ],
         ),
       );
@@ -359,7 +339,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     final isShadowingAnyone = iProvider.assignedMentor != null;
 
     return Column(
-      children: bProvider.barbers.map((mentor) {
+      children: bProvider.experts.map((mentor) {
         final isShadowing = iProvider.assignedMentor == mentor.name;
         return _buildMentorCard(
           context, 

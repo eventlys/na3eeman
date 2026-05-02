@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Providers/main_providers.dart';
 import '../../../../../core/theme/colors.dart';
-import '../../salon/widgets/inventory_manager.dart';
+import '../pages/tools_inventory_page.dart';
 
 class ToolsAndInventoryOverview extends StatefulWidget {
   const ToolsAndInventoryOverview({super.key});
@@ -151,15 +151,11 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
   }
 
   void _navigateInventory(BuildContext context, String? category) {
-    final authProvider = context.read<AuthProvider>();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Scaffold(
-          body: InventoryManager(
-            currentUser: authProvider.user?.toJson() ?? {},
-            category: category,
-          ),
+        builder: (context) => ToolsAndInventoryPage(
+          initialCategory: category,
         ),
       ),
     );

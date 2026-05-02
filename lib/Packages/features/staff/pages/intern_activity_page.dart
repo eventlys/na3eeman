@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../Providers/features/intern_provider.dart';
 import '../../../../core/theme/colors.dart';
 
@@ -29,7 +28,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.internActivity, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("intern_activity".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: RefreshIndicator(
         onRefresh: () => provider.fetchInternActivity(),
@@ -74,7 +73,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
           const SizedBox(height: 24),
         ],
         if (feedbacks.isNotEmpty) ...[
-          _SectionHeader(title: 'Feedback'.toUpperCase(), color: AppColors.success),
+          _SectionHeader(title: 'feedback'.tr().toUpperCase(), color: AppColors.success),
           const SizedBox(height: 12),
           ...feedbacks.map((item) => _buildActivityItem(context, item, 'feedback', AppColors.success, isDark)),
         ],
@@ -120,7 +119,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(type.toUpperCase(), style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                    Text(type.tr().toUpperCase(), style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
                     Text(date, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11)),
                   ],
                 ),

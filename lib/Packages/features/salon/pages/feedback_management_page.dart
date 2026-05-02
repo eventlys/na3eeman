@@ -1,10 +1,9 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../../Services/api/api_service.dart';
 import '../../../../../Services/api/endpoints.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class FeedbackManagementPage extends StatefulWidget {
   const FeedbackManagementPage({super.key});
@@ -74,7 +73,7 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.customerFeedback, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("customer_feedback".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -85,13 +84,13 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DashboardSectionHeader(title: AppLocalizations.of(context)!.feedbackReviews),
+                  DashboardSectionHeader(title: "feedback_reviews".tr()),
                   const SizedBox(height: 12),
                   _buildFilters(),
                   const SizedBox(height: 24),
                   Expanded(
                     child: filteredReviews.isEmpty 
-                        ? Center(child: Text(AppLocalizations.of(context)!.noReviewsFound))
+                        ? Center(child: Text("no_reviews_found".tr()))
                         : ListView.builder(
                             itemCount: filteredReviews.length,
                             itemBuilder: (context, index) {

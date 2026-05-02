@@ -1,4 +1,4 @@
-// import 'package:na3eeman/l10n/app_localizations.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../themes/app_theme.dart';
 import '../../constants/app_color.dart';
@@ -9,8 +9,8 @@ enum AppCardType { elevated, outlined, gradient }
 /// Themed card widget with three visual styles.
 ///
 /// ```dart
-/// AppCard(child: Text(AppLocalizations.of(context)!.hello))
-/// AppCard(type: AppCardType.gradient, child: Text(AppLocalizations.of(context)!.gold))
+/// AppCard(child: Text("hello".tr()))
+/// AppCard(type: AppCardType.gradient, child: Text("gold".tr()))
 /// ```
 class AppCard extends StatelessWidget {
   const AppCard({
@@ -59,7 +59,7 @@ class AppCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         elevation: isDark ? 0 : 2,
         shadowColor: AppColor.dark.withOpacity(0.06),
-        child: _Content(child: child, padding: padding),
+        child: _Content(padding: padding, child: child),
       ),
     );
   }
@@ -76,7 +76,7 @@ class AppCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: border, width: 1),
         ),
-        child: _Content(child: child, padding: padding),
+        child: _Content(padding: padding, child: child),
       ),
     );
   }
@@ -106,7 +106,7 @@ class AppCard extends StatelessWidget {
             ),
           ],
         ),
-        child: _Content(child: child, padding: padding),
+        child: _Content(padding: padding, child: child),
       ),
     );
   }

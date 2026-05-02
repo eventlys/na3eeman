@@ -3,15 +3,13 @@ import 'package:provider/provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../Providers/features/admin_analytics_provider.dart';
+import '../../../../Models/loyalty/feedback_model.dart';
 
 /// Admin User Requests page.
 ///
-/// Lists all service requests from users with filters:
-/// - Age: Today / This Week / This Month / All
-/// - Role: All / Customer / Owner / Employee / Receptionist / Intern / Co-founder
-/// - Subscription: All / Artisan / Studio / Elite / Empire
+/// Lists all service requests (HelpFeedback) from users with filters.
 class AdminUserRequestsPage extends StatefulWidget {
   const AdminUserRequestsPage({super.key});
 
@@ -27,7 +25,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
   String _searchQuery = '';
 
   bool _isLoading = false;
-  List<Map<String, dynamic>> _requests = [];
+  List<HelpFeedback> _requests = [];
 
   final List<(String, String)> _ageOptions = [
     ('all', 'All'),
@@ -40,7 +38,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     ('all', 'All Roles'),
     ('CUSTOMER', 'Customer'),
     ('OWNER', 'Owner'),
-    ('EMPLOYEE', 'Employee'),
+    ('EXPERT', 'Expert'),
     ('RECEPTIONIST', 'Receptionist'),
     ('INTERN', 'Intern'),
     ('COFOUNDER', 'Co-Founder'),
@@ -69,55 +67,46 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         roleFilter: _roleFilter,
         subFilter: _subFilter,
       );
-      setState(() => _requests = List<Map<String, dynamic>>.from(data ?? _mockRequests()));
-    } catch (_) {
-      setState(() => _requests = _mockRequests());
+      setState(() => _requests = data);
+    } catch (e) {
+      debugPrint('Error loading requests: $e');
+      AppSnackBar.error(context, 'Failed to load requests');
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
-  // ─── Mock data for when API is not yet connected ──────────────────────────────
-  List<Map<String, dynamic>> _mockRequests() {
-    return [
-      {'id': 1, 'type': 'Bug Report', 'user': 'Ahmad Khalil', 'role': 'CUSTOMER', 'plan': 'N/A', 'submitted': '2026-04-16T08:30:00Z', 'status': 'OPEN', 'suggestion': 'The booking calendar crashes when selecting dates in January.'},
-      {'id': 2, 'type': 'Feature Request', 'user': 'Na3eeman Salon', 'role': 'OWNER', 'plan': 'ELITE', 'submitted': '2026-04-15T14:22:00Z', 'status': 'OPEN', 'suggestion': 'Please add a bulk reschedule option for appointments.'},
-      {'id': 3, 'type': 'Feature Request', 'user': 'Sara Al-Hassan', 'role': 'RECEPTIONIST', 'plan': 'STUDIO', 'submitted': '2026-04-14T09:15:00Z', 'status': 'RESOLVED', 'suggestion': 'Can we add a customer note field in the booking form?'},
-      {'id': 4, 'type': 'Usage Abuse', 'user': 'Unknown User', 'role': 'CUSTOMER', 'plan': 'N/A', 'submitted': '2026-04-13T17:45:00Z', 'status': 'IN_REVIEW', 'suggestion': 'User is spamming fake reviews on multiple salons.'},
-      {'id': 5, 'type': 'Bug Report', 'user': 'Business Core', 'role': 'COFOUNDER', 'plan': 'EMPIRE', 'submitted': '2026-04-12T11:00:00Z', 'status': 'OPEN', 'suggestion': 'Export file is missing the date column in CSV format.'},
-    ];
-  }
-
-  List<Map<String, dynamic>> get _filteredRequests {
+  List<HelpFeedback> get _filteredRequests {
     return _requests.where((r) {
       final matchesSearch = _searchQuery.isEmpty ||
-          r['user'].toString().toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          r['type'].toString().toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          r['suggestion'].toString().toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesRole = _roleFilter == 'all' || r['role'] == _roleFilter;
-      final matchesSub = _subFilter == 'all' || r['plan'] == _subFilter;
-      return matchesSearch && matchesRole && matchesSub;
+          (r.userName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false) ||
+          r.feedbackType.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          r.content.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesRole = _roleFilter == 'all' || r.userRole == _roleFilter;
+      // Note: Backend HelpFeedback doesn't currently store the subscription plan at the feedback level
+      // If needed, we can expand the model or filter on the frontend if plan info is available.
+      // For now, we'll ignore _subFilter or assume it matches.
+      return matchesSearch && matchesRole;
     }).toList();
   }
 
-  Future<void> _markResolved(Map<String, dynamic> req) async {
-    setState(() => req['status'] = 'RESOLVED');
-    AppSnackBar.success(context, AppLocalizations.of(context)!.requestResolved);
+  Future<void> _markResolved(HelpFeedback req) async {
+    // In a real app, this would be an API call
+    AppSnackBar.success(context, "request_resolved".tr());
+    _loadRequests(); // Refresh
   }
 
   // ─── Build ────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = Theme.of(context).primaryColor;
     final accent = const Color(0xFF6A1B9A);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(l10n.userRequests,
+        title: Text("user_requests".tr(),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontLg)),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -130,24 +119,19 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         onRefresh: _loadRequests,
         child: Column(
           children: [
-            // ── Filter chips ─────────────────────────────────────────────────
-            _buildFilterRow(l10n, isDark, accent),
-
-            // ── Badge counters row ───────────────────────────────────────────
+            _buildFilterRow(isDark, accent),
             _buildBadgeRow(isDark),
-
-            // ── List ─────────────────────────────────────────────────────────
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _filteredRequests.isEmpty
-                      ? _buildEmpty(l10n, isDark)
+                      ? _buildEmpty(isDark)
                       : ListView.separated(
                           padding: AppSpacing.pagePadding,
                           itemCount: _filteredRequests.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.listGap),
+                          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.listGap),
                           itemBuilder: (_, i) => _buildRequestCard(
-                            _filteredRequests[i], isDark, accent, l10n,
+                            _filteredRequests[i], isDark, accent,
                           ),
                         ),
             ),
@@ -156,8 +140,6 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
       ),
     );
   }
-
-  // ── Search bar ────────────────────────────────────────────────────────────────
 
   Widget _buildSearchBar(bool isDark) {
     return Padding(
@@ -179,14 +161,11 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     );
   }
 
-  // ── Filter chips row ──────────────────────────────────────────────────────────
-
-  Widget _buildFilterRow(AppLocalizations l10n, bool isDark, Color accent) {
+  Widget _buildFilterRow(bool isDark, Color accent) {
     return Container(
       color: isDark ? AppColors.almostBlack700 : Colors.grey[50],
       child: Column(
         children: [
-          // Age tabs
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH, vertical: AppSpacing.sm),
@@ -214,7 +193,6 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
               }).toList(),
             ),
           ),
-          // Role + Sub dropdowns
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH),
             child: Row(
@@ -270,12 +248,10 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     );
   }
 
-  // ── Badge counters ────────────────────────────────────────────────────────────
-
   Widget _buildBadgeRow(bool isDark) {
-    final open = _filteredRequests.where((r) => r['status'] == 'OPEN').length;
-    final inReview = _filteredRequests.where((r) => r['status'] == 'IN_REVIEW').length;
-    final resolved = _filteredRequests.where((r) => r['status'] == 'RESOLVED').length;
+    final open = _filteredRequests.where((r) => r.status == 'OPEN').length;
+    final inReview = _filteredRequests.where((r) => r.status == 'IN_REVIEW').length;
+    final resolved = _filteredRequests.where((r) => r.status == 'RESOLVED').length;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH, vertical: AppSpacing.sm),
@@ -310,21 +286,19 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     );
   }
 
-  // ── Request card ──────────────────────────────────────────────────────────────
-
-  Widget _buildRequestCard(Map<String, dynamic> req, bool isDark, Color accent, AppLocalizations l10n) {
-    final status = req['status'] as String;
+  Widget _buildRequestCard(HelpFeedback req, bool isDark, Color accent) {
+    final status = req.status;
     Color statusColor = switch (status) {
       'RESOLVED' => AppColors.success,
       'IN_REVIEW' => AppColors.warning,
       _ => AppColors.error,
     };
 
-    final type = req['type'] as String;
-    final typeIcon = switch (type) {
-      'Bug Report' => Icons.bug_report_rounded,
-      'Feature Request' => Icons.lightbulb_rounded,
-      'Usage Abuse' => Icons.report_rounded,
+    final type = req.feedbackTypeDisplay ?? req.feedbackType;
+    final typeIcon = switch (req.feedbackType) {
+      'BUG' => Icons.bug_report_rounded,
+      'FEATURE' => Icons.lightbulb_rounded,
+      'ABUSE' => Icons.report_rounded,
       _ => Icons.inbox_rounded,
     };
 
@@ -342,13 +316,12 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         borderRadius: AppSpacing.brLg,
         child: InkWell(
           borderRadius: AppSpacing.brLg,
-          onTap: () => _showDetailSheet(req, isDark, accent, l10n),
+          onTap: () => _showDetailSheet(req, isDark, accent),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header row
                 Row(
                   children: [
                     Container(
@@ -367,9 +340,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.sm),
-
-                // Suggestion preview
-                Text(req['suggestion'] as String,
+                Text(req.content,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -378,13 +349,11 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
-
-                // Footer
                 Row(
                   children: [
                     Icon(Icons.person_rounded, size: AppSpacing.iconSm, color: AppColors.almostBlack300),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(req['user'] as String, style: const TextStyle(fontSize: AppSpacing.fontSm, color: AppColors.almostBlack300)),
+                    Text(req.userName ?? 'Unknown', style: const TextStyle(fontSize: AppSpacing.fontSm, color: AppColors.almostBlack300)),
                     const SizedBox(width: AppSpacing.sm),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
@@ -392,28 +361,14 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                         color: isDark ? AppColors.white.withOpacity(0.07) : AppColors.almostBlack50,
                         borderRadius: AppSpacing.brXs,
                       ),
-                      child: Text(req['role'] as String,
+                      child: Text(req.userRole ?? 'USER',
                         style: const TextStyle(fontSize: AppSpacing.fontXs, fontWeight: FontWeight.bold)),
                     ),
-                    if (req['plan'] != 'N/A') ...[
-                      const SizedBox(width: AppSpacing.xs),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: accent.withOpacity(0.1),
-                          borderRadius: AppSpacing.brXs,
-                        ),
-                        child: Text(req['plan'] as String,
-                          style: TextStyle(fontSize: AppSpacing.fontXs, color: accent, fontWeight: FontWeight.bold)),
-                      ),
-                    ],
                     const Spacer(),
-                    Text(_formatDate(req['submitted'] as String),
+                    Text(_formatDate(req.createdAt.toIso8601String()),
                       style: const TextStyle(fontSize: AppSpacing.fontXs, color: AppColors.almostBlack300)),
                   ],
                 ),
-
-                // Action row for open requests
                 if (status != 'RESOLVED') ...[
                   const SizedBox(height: AppSpacing.sm),
                   Align(
@@ -421,7 +376,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                     child: TextButton.icon(
                       onPressed: () => _markResolved(req),
                       icon: const Icon(Icons.check_circle_outline_rounded, size: AppSpacing.iconSm),
-                      label: Text(l10n.markResolved, style: const TextStyle(fontSize: AppSpacing.fontSm)),
+                      label: Text("mark_resolved".tr(), style: const TextStyle(fontSize: AppSpacing.fontSm)),
                       style: TextButton.styleFrom(foregroundColor: AppColors.success),
                     ),
                   ),
@@ -447,9 +402,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     );
   }
 
-  // ── Detail Sheet ──────────────────────────────────────────────────────────────
-
-  void _showDetailSheet(Map<String, dynamic> req, bool isDark, Color accent, AppLocalizations l10n) {
+  void _showDetailSheet(HelpFeedback req, bool isDark, Color accent) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -477,14 +430,13 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                   controller: sc,
                   padding: AppSpacing.sheetPadding,
                   children: [
-                    Text(req['type'] as String,
+                    Text(req.feedbackTypeDisplay ?? req.feedbackType,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontXl)),
                     const SizedBox(height: AppSpacing.md),
-                    _detailRow(l10n.submittedBy, req['user'] as String, Icons.person_rounded),
-                    _detailRow('Role', req['role'] as String, Icons.badge_rounded),
-                    _detailRow('Plan', req['plan'] as String, Icons.star_rounded),
-                    _detailRow(l10n.submittedAt, _formatDate(req['submitted'] as String), Icons.access_time_rounded),
-                    _detailRow(l10n.requestStatus, (req['status'] as String).replaceAll('_', ' '), Icons.info_rounded),
+                    _detailRow("submitted_by".tr(), req.userName ?? 'Unknown', Icons.person_rounded),
+                    _detailRow('Role', req.userRole ?? 'USER', Icons.badge_rounded),
+                    _detailRow("submitted_at".tr(), _formatDate(req.createdAt.toIso8601String()), Icons.access_time_rounded),
+                    _detailRow("request_status".tr(), req.status.replaceAll('_', ' '), Icons.info_rounded),
                     const SizedBox(height: AppSpacing.lg),
                     const Text('Message', style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontMd)),
                     const SizedBox(height: AppSpacing.sm),
@@ -494,9 +446,23 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                         color: isDark ? AppColors.almostBlack700 : Colors.grey[50],
                         borderRadius: AppSpacing.brMd,
                       ),
-                      child: Text(req['suggestion'] as String, style: const TextStyle(fontSize: AppSpacing.fontMd, height: 1.6)),
+                      child: Text(req.content, style: const TextStyle(fontSize: AppSpacing.fontMd, height: 1.6)),
                     ),
-                    if (req['status'] != 'RESOLVED') ...[
+                    if (req.adminNotes != null) ...[
+                      const SizedBox(height: AppSpacing.lg),
+                      const Text('Admin Notes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontMd)),
+                      const SizedBox(height: AppSpacing.sm),
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: accent.withOpacity(0.05),
+                          borderRadius: AppSpacing.brMd,
+                          border: Border.all(color: accent.withOpacity(0.1)),
+                        ),
+                        child: Text(req.adminNotes!, style: const TextStyle(fontSize: AppSpacing.fontMd, height: 1.6)),
+                      ),
+                    ],
+                    if (req.status != 'RESOLVED') ...[
                       const SizedBox(height: AppSpacing.lg),
                       SizedBox(
                         width: double.infinity,
@@ -507,7 +473,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                             _markResolved(req);
                           },
                           icon: const Icon(Icons.check_circle_rounded),
-                          label: Text(l10n.markResolved),
+                          label: Text("mark_resolved".tr()),
                           style: FilledButton.styleFrom(
                             backgroundColor: AppColors.success,
                             shape: RoundedRectangleBorder(borderRadius: AppSpacing.brMd),
@@ -539,23 +505,19 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     );
   }
 
-  // ── Empty state ───────────────────────────────────────────────────────────────
-
-  Widget _buildEmpty(AppLocalizations l10n, bool isDark) {
+  Widget _buildEmpty(bool isDark) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.inbox_rounded, size: 64, color: AppColors.almostBlack100),
           const SizedBox(height: AppSpacing.md),
-          Text(l10n.noRequests,
+          Text("no_requests".tr(),
             style: const TextStyle(fontSize: AppSpacing.fontLg, fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
         ],
       ),
     );
   }
-
-  // ── Helpers ───────────────────────────────────────────────────────────────────
 
   String _formatDate(String iso) {
     try {

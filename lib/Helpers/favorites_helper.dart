@@ -37,7 +37,7 @@ class FavoritesHelper {
   static String getSalonIcon(Map<String, dynamic> salon) {
     final type = salon['type']?.toString().toLowerCase() ?? '';
 
-    if (type.contains('barber') || type.contains('hair')) {
+    if (type.contains('expert') || type.contains('hair')) {
       return 'assets/icons/scissors.png'; // Update with your actual icon path
     } else if (type.contains('spa') || type.contains('salon')) {
       return 'assets/icons/spa.png'; // Update with your actual icon path

@@ -4,7 +4,7 @@ class AppColor {
   AppColor._();
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Core Brand Colors — Clean, Modern Barber App
+  // Core Brand Colors — Clean, Modern Expert App
   // ─────────────────────────────────────────────────────────────────────────
   static const Color primaryBlue   = Color(0xFF144EA0);    // Royal Blue
   static const Color dustyPink     = Color(0xFFD097AE);    // Mauve/Pink
@@ -111,7 +111,7 @@ class AppColor {
   // ─────────────────────────────────────────────────────────────────────────
   static const Color roleOwner        = primaryBlue;
   static const Color roleManager      = dustyPink;
-  static const Color roleEmployee     = primaryBlue;
+  static const Color roleExpert     = primaryBlue;
   static const Color roleReceptionist = dustyPink;
   static const Color roleHelper       = primaryBlue;
   static const Color roleSuperAdmin   = charcoal;
@@ -187,11 +187,11 @@ class AppColor {
   // Misc Legacy Aliases
   // ─────────────────────────────────────────────────────────────────────────
   static const Color bananaCream2          = offWhite;
-  static const Color lightBarber           = primaryBlue;
+  static const Color lightExpert           = primaryBlue;
   static const Color lightManager          = dustyPink;
   static const Color lightAssistant        = dustyPink;
   static const Color lightReceptionist     = primaryBlue;
-  static const Color darkBarber            = primaryBlue;
+  static const Color darkExpert            = primaryBlue;
   static const Color darkManager           = dustyPink;
   static const Color darkAssistant         = dustyPink;
   static const Color darkReceptionist      = primaryBlue;

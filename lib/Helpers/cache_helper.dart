@@ -9,7 +9,7 @@ class CacheKeys {
   static const String appointments = 'user_appointments';
   static const String loyaltyBalance = 'loyalty_balance';
   static const String salonDetailsPrefix = 'salon_details_';
-  static const String barberDetailsPrefix = 'barber_details_';
+  static const String expertDetailsPrefix = 'expert_details_';
   static const String serviceListPrefix = 'services_';
 }
 

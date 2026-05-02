@@ -335,7 +335,6 @@ class NotificationHelper {
         );
 
       case NotificationType.general:
-      default:
         return const NotificationDetails(
           android: AndroidNotificationDetails(
             'general_channel',

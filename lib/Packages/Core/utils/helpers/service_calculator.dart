@@ -113,7 +113,9 @@ class ServiceCalculator {
 
   static int getTotalDurationInMinutes(List<SalonService> services) {
     int totalMinutes = 0;
-    for (var service in services) totalMinutes += parseDuration(service.duration);
+    for (var service in services) {
+      totalMinutes += parseDuration(service.duration);
+    }
     return totalMinutes;
   }
 }

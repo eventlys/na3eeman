@@ -3,6 +3,7 @@ class InventoryItem {
   final int productId;
   final int salonId;
   final int quantityInStock;
+  final int lowStockThreshold;
   final DateTime lastUpdated;
   final String? productName;
   final String? productDescription;
@@ -13,6 +14,7 @@ class InventoryItem {
     required this.productId,
     required this.salonId,
     required this.quantityInStock,
+    required this.lowStockThreshold,
     required this.lastUpdated,
     this.productName,
     this.productDescription,
@@ -25,6 +27,7 @@ class InventoryItem {
       productId: json['product'] as int,
       salonId: json['salon'] as int,
       quantityInStock: json['quantity_in_stock'] as int? ?? 0,
+      lowStockThreshold: json['low_stock_threshold'] as int? ?? 5,
       lastUpdated: DateTime.parse(json['last_updated'] as String),
       productName: json['product_name'] as String?,
       productDescription: json['product_description'] as String?,
@@ -38,6 +41,7 @@ class InventoryItem {
       'product': productId,
       'salon': salonId,
       'quantity_in_stock': quantityInStock,
+      'low_stock_threshold': lowStockThreshold,
       'last_updated': lastUpdated.toIso8601String(),
     };
   }
@@ -47,6 +51,7 @@ class InventoryItem {
     int? productId,
     int? salonId,
     int? quantityInStock,
+    int? lowStockThreshold,
     DateTime? lastUpdated,
     String? productName,
     String? productDescription,
@@ -57,6 +62,7 @@ class InventoryItem {
       productId: productId ?? this.productId,
       salonId: salonId ?? this.salonId,
       quantityInStock: quantityInStock ?? this.quantityInStock,
+      lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       productName: productName ?? this.productName,
       productDescription: productDescription ?? this.productDescription,
@@ -64,8 +70,8 @@ class InventoryItem {
     );
   }
 
-  bool get isLowStock => quantityInStock < 5;
-  bool get isCriticalStock => quantityInStock <= 2;
+  bool get isLowStock => quantityInStock <= lowStockThreshold;
+  bool get isCriticalStock => quantityInStock <= (lowStockThreshold / 2).ceil();
 }
 
 class Product {

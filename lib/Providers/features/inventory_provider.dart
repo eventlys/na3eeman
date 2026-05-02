@@ -88,6 +88,39 @@ class InventoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addInventoryItem({
+    int? productId,
+    String? productName,
+    double? productPrice,
+    String? category,
+    required int salonId,
+    required int initialQuantity,
+    String? notes,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final newItem = await _inventoryService.addInventoryItem(
+        productId: productId,
+        productName: productName,
+        productPrice: productPrice,
+        category: category,
+        salonId: salonId,
+        initialQuantity: initialQuantity,
+        notes: notes,
+      );
+      _inventoryItems.add(newItem);
+    } catch (e) {
+      _error = 'Failed to add inventory item: ${e.toString()}';
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> loadLowStockItems({int? salonId}) async {
     _isLoading = true;
     _error = null;

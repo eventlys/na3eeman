@@ -64,8 +64,12 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
       case 'owner':
         Navigator.pushReplacementNamed(context, '/owner_dashboard');
         break;
-      case 'employee':
-        Navigator.pushReplacementNamed(context, '/employee_dashboard');
+      case 'manager':
+      case 'ownerExpert':
+      case 'owner_expert':
+      case 'cofounder':
+      case 'expert':
+        Navigator.pushReplacementNamed(context, '/expert_dashboard');
         break;
       case 'receptionist':
         Navigator.pushReplacementNamed(context, '/receptionist_dashboard');

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -142,7 +142,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightError,
           ),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.failedToLoadSubscriptions,
+          Text("failed_to_load_subscriptions".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                   : AppColor.lightPrimary,
               foregroundColor: AppColor.light,
             ),
-            child: Text(AppLocalizations.of(context)!.tryAgain),
+            child: Text("try_again".tr()),
           ),
         ],
       ),
@@ -190,7 +190,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightTextHint,
           ),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.noSubscriptionsAvailable,
+          Text("no_subscriptions_available".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -200,7 +200,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
             ),
           ),
           SizedBox(height: 8),
-          Text(AppLocalizations.of(context)!.thereAreNoSubscriptionPlansAvailableAtTheM,
+          Text("there_are_no_subscription_plans_available_at_the_m".tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).brightness == Brightness.dark
@@ -236,7 +236,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
         // Header
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Text(AppLocalizations.of(context)!.subscribeToTheSalon,
+          child: Text("subscribe_to_the_salon".tr(),
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -281,7 +281,7 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                   vertical: 12,
                 ),
               ),
-              child: Text(AppLocalizations.of(context)!.showMore),
+              child: Text("show_more".tr()),
             ),
           ),
 

@@ -4,6 +4,8 @@ import '../core/theme/app_theme.dart';
 import '../core/theme/colors.dart';
 import '../core/enums/app_enums.dart';
 import '../Packages/Core/utils/helpers/themes_helpers.dart';
+import 'features/auth_provider.dart';
+import '../Services/enums/gender.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // THEME PROVIDER
@@ -32,6 +34,29 @@ class ThemeProvider extends ChangeNotifier {
     if (_gender == gender) return;
     _gender = gender;
     notifyListeners();
+  }
+
+  /// Update from AuthProvider
+  void updateAuth(AuthProvider auth) {
+    if (auth.isAuthenticated && auth.user != null) {
+      final gender = auth.user!.gender;
+      UserGender themeGender;
+      switch (gender) {
+        case Gender.male:
+          themeGender = UserGender.male;
+          break;
+        case Gender.female:
+          themeGender = UserGender.female;
+          break;
+        case Gender.nonBinary:
+          themeGender = UserGender.nonBinary;
+          break;
+      }
+      setGender(themeGender);
+    } else {
+      // Default fallback
+      setGender(UserGender.male);
+    }
   }
 
   /// Switch between light and dark mode.
@@ -84,23 +109,35 @@ class RBACProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update from AuthProvider
+  void updateAuth(AuthProvider auth) {
+    if (auth.isAuthenticated && auth.user != null) {
+      setUser(
+        role: auth.user!.role,
+        tier: auth.user!.subscriptionTier ?? SubscriptionTier.basic,
+      );
+    } else {
+      clear();
+    }
+  }
+
   // ── Permission helpers ────────────────────────────────────────────────────
 
   bool can(AppPermission permission) => _role.can(permission);
 
   bool hasSubscription(SubscriptionTier required) => _tier.meets(required);
 
-  bool get isSuperAdmin => _role == UserRole.superAdmin;
-  bool get isOwner => _role == UserRole.owner || _role == UserRole.ownerEmployee || _role == UserRole.ownerOwner;
+  bool get isAdmin => _role == UserRole.admin;
+  bool get isOwner => _role == UserRole.owner || _role == UserRole.ownerExpert || _role == UserRole.owner;
   bool get isManager => _role == UserRole.manager;
   bool get isStaff => _role.isStaff;
   bool get isCustomer => _role == UserRole.customer;
 
   /// Returns true if the user can see any admin UI at all.
   bool get canAccessAdmin =>
-      _role == UserRole.superAdmin ||
+      _role == UserRole.admin ||
       _role == UserRole.owner ||
-      _role == UserRole.ownerEmployee ||
-      _role == UserRole.ownerOwner ||
+      _role == UserRole.ownerExpert ||
+      _role == UserRole.owner ||
       _role == UserRole.manager;
 }

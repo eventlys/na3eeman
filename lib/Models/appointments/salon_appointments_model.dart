@@ -6,7 +6,7 @@ class SalonAppointment {
   final String id;
   final int customerId;
   final int salonId;
-  final int? barberId;
+  final int? expertId;
   final DateTime startTime;
   final DateTime endTime;
   final DateTime? arrivalTime;
@@ -29,6 +29,8 @@ class SalonAppointment {
   final String? giftLink;
   final double? totalAmount;
   final double? depositAmount;
+  final String? customerName;
+  final String? expertName;
 
   String get paymentStatus => payment?.status ?? 'PENDING';
 
@@ -36,7 +38,7 @@ class SalonAppointment {
     required this.id,
     required this.customerId,
     required this.salonId,
-    this.barberId,
+    this.expertId,
     required this.startTime,
     required this.endTime,
     this.arrivalTime,
@@ -59,6 +61,8 @@ class SalonAppointment {
     this.giftLink,
     this.totalAmount,
     this.depositAmount,
+    this.customerName,
+    this.expertName,
   });
 
   factory SalonAppointment.fromJson(Map<String, dynamic> json) {
@@ -66,7 +70,7 @@ class SalonAppointment {
       id: json['id']?.toString() ?? '',
       customerId: json['customer'] as int? ?? 0,
       salonId: json['salon'] as int? ?? 0,
-      barberId: json['barber'] as int?,
+      expertId: json['expert'] as int?,
       startTime: DateTime.parse(json['start_time'] as String),
       endTime: DateTime.parse(json['end_time'] as String),
       arrivalTime: json['arrival_time'] != null
@@ -99,13 +103,15 @@ class SalonAppointment {
       giftLink: json['gift_link'] as String?,
       totalAmount: (json['total_amount'] as num?)?.toDouble(),
       depositAmount: (json['deposit_amount'] as num?)?.toDouble(),
+      customerName: json['customer'] is Map ? "${json['customer']['first_name']} ${json['customer']['last_name']}" : null,
+      expertName: json['expert_info'] is Map ? "${json['expert_info']['first_name']} ${json['expert_info']['last_name']}" : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'salon': salonId,
-      'barber': barberId,
+      'expert': expertId,
       'start_time': startTime.toIso8601String(),
       'end_time': endTime.toIso8601String(),
       'attendee_type': attendeeType.value,

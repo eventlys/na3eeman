@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_roles.dart';
@@ -174,7 +174,7 @@ class _LockOverlay extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Text(AppLocalizations.of(context)!.upgradeToUnlock,
+          Text("upgrade_to_unlock".tr(),
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: Colors.white70),
@@ -194,7 +194,7 @@ class _LockOverlay extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
-              child: Text(AppLocalizations.of(context)!.upgradeNow,
+              child: Text("upgrade_now".tr(),
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ),

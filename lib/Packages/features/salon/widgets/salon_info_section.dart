@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
@@ -43,7 +42,7 @@ class SalonInfoSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.salonDetails,
+              Text("salon_details".tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -71,7 +70,7 @@ class SalonInfoSection extends StatelessWidget {
           _buildInfoRow(
             context: context,
             icon: Icons.location_on_rounded,
-            title: AppLocalizations.of(context)!.location,
+            title: "location".tr(),
             subTitle: location,
             iconColor: Theme.of(context).primaryColor,
           ),
@@ -79,7 +78,7 @@ class SalonInfoSection extends StatelessWidget {
           _buildInfoRow(
             context: context,
             icon: Icons.access_time_filled_rounded,
-            title: AppLocalizations.of(context)!.workingHours,
+            title: "working_hours".tr(),
             subTitle: workingHours,
             iconColor: AppColors.pink,
           ),
@@ -88,7 +87,7 @@ class SalonInfoSection extends StatelessWidget {
           _buildInfoRow(
             context: context,
             icon: Icons.phone_rounded,
-            title: AppLocalizations.of(context)!.phone,
+            title: "phone".tr(),
             subTitle: salonData['salonPhoneNumber'] ?? salonData['phoneNumber'] ?? 'Click for info',
             iconColor: AppColors.success,
           ),
@@ -98,7 +97,7 @@ class SalonInfoSection extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () => _openMap(location),
               icon: const Icon(Icons.map_outlined),
-              label: Text(AppLocalizations.of(context)!.showOnMap),
+              label: Text("show_on_map".tr()),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'config/environment.dart';
 import 'Helpers/config.dart';
@@ -10,7 +10,6 @@ import 'Providers/app_providers.dart';
 import 'Providers/main_providers.dart';
 import 'Providers/provider_wrapper.dart';
 import 'Routes/routes.dart';
-import 'Providers/locale_provider.dart';
 import 'Services/api/api_service.dart';
 import 'Services/core/performance_service.dart';
 import 'Services/general_service.dart';
@@ -26,23 +25,24 @@ import 'package:showcaseview/showcaseview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  // Initialize environment first (defaults to dev if not specified)
+  await Environment.init(flavor: AppFlavor.dev);
 
   try {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: 'mock-api-key',
-        appId: '1:1234567890:android:mockappid',
-        messagingSenderId: '1234567890',
-        projectId: 'mock-project-id',
+      options: FirebaseOptions(
+        apiKey: Environment.config.firebaseApiKey,
+        appId: Environment.config.firebaseAppId,
+        messagingSenderId: Environment.config.firebaseMessagingSenderId,
+        projectId: Environment.config.firebaseProjectId,
       ),
     );
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   } catch (e) {
-    AppLogger.error('Firebase initialization failed: \$e');
+    AppLogger.error('Firebase initialization failed: $e');
   }
-
-  // Initialize environment first (defaults to dev if not specified)
-  await Environment.init(flavor: AppFlavor.dev);
 
   // Log environment info
   if (AppConfig.enableLogging) {
@@ -88,12 +88,17 @@ void main() async {
   await SecurityService().allowScreenshots();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ...providers,
-        ChangeNotifierProvider(create: (_) => PointsProvider(ApiService())),
-      ],
-      child: const MyApp(),
+    EasyLocalization(
+      supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
+      path: 'assets/Lang', 
+      fallbackLocale: const Locale('en', 'US'),
+      child: MultiProvider(
+        providers: [
+          ...providers,
+          ChangeNotifierProvider(create: (_) => PointsProvider(ApiService())),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -108,7 +113,7 @@ class MyApp extends StatelessWidget {
         builder: (context, themeProvider, localeProvider, _) {
           return ErrorBoundary(
             isDarkMode: themeProvider.isDark,
-            userGender: null, 
+            userGender: themeProvider.gender, 
             onRetry: () {
               Navigator.of(SideNavigationService.navigatorKey.currentContext!).pushReplacementNamed('/');
             },
@@ -120,9 +125,9 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: AppConfig.showDebugBanner,
               
               // Localization Configuration
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: localeProvider.locale,
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
 
               theme: themeProvider.currentTheme,
               darkTheme: themeProvider.isDark ? themeProvider.currentTheme : null,
@@ -134,4 +139,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

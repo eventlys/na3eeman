@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
@@ -10,10 +10,10 @@ import 'receptionist/receptionist_feedback_page.dart'; // Added
 import 'receptionist/receptionist_salon_profile_page.dart'; // Added
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/features/appointment_provider.dart';
-import '../../../../Models/appointments/salon_appointments_model.dart';
+import '../../../../Services/enums/appointment_status.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class ReceptionistDashboard extends StatefulWidget {
   const ReceptionistDashboard({super.key});
@@ -84,8 +84,8 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
 
             const SizedBox(height: 32),
 
-            // FAQs & User Guide Section (Point 4) - Arabic with tips/hints
-            _buildFAQAndGuideSection(context),
+            // Prominent Today's Schedule Card (Point 6)
+            _buildBigTodayScheduleCard(context),
 
             const SizedBox(height: 32),
 
@@ -99,40 +99,16 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
               childAspectRatio: 1.5,
               children: [
                 _buildQuickAction(
-                  AppLocalizations.of(context)!.bookForCustomer, 
+                  "book_for_customer".tr(), 
                   Icons.person_add_alt_1_rounded, 
                   Theme.of(context).primaryColor,
-                  onTap: () => _showBookForCustomerModal(context),
+                  onTap: () => Navigator.pushNamed(context, '/pos'),
                 ),
                 _buildQuickAction(
-                  'Revenue Setup', 
-                  Icons.account_balance_rounded, 
-                  Colors.green,
-                  onTap: () => Navigator.pushNamed(context, '/management/revenue'),
-                ),
-                _buildQuickAction(
-                   AppLocalizations.of(context)!.searchAppointments, 
+                   "search_appointments".tr(), 
                   Icons.search_rounded, 
                   AppColors.blue,
-                  onTap: () => _showSearchAppointmentsModal(context),
-                ),
-                _buildQuickAction(
-                  'Vouchers', 
-                  Icons.confirmation_num_rounded, 
-                  Colors.orange,
-                  onTap: () => Navigator.pushNamed(context, '/management/vouchers'),
-                ),
-                _buildQuickAction(
-                  'Our Products', 
-                  Icons.shopping_basket_rounded,
-                  AppColors.pink,
-                  onTap: () => _navigateToProductsPage(context),
-                ),
-                _buildQuickAction(
-                  AppLocalizations.of(context)!.feedback, 
-                  Icons.assessment_rounded, 
-                  AppColors.cream600,
-                  onTap: () => _navigateToFeedbackPage(context, false),
+                  onTap: () => Navigator.pushNamed(context, '/appointments/search'),
                 ),
               ],
             ),
@@ -140,20 +116,25 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             const SizedBox(height: 32),
 
             // Pending Payments Widget
-            DashboardSectionHeader(title: AppLocalizations.of(context)!.pendingPayments, actionText: 'View All'),
+            DashboardSectionHeader(title: "pending_payments".tr(), actionText: 'View All'),
             const SizedBox(height: 16),
             Consumer<AppointmentProvider>(
               builder: (context, provider, _) {
-                final pendingAppts = provider.appointments.where((a) => a.paymentStatus == 'PENDING').toList();
+                // Show appointments that are ACTIVE or DONE but payment is PENDING
+                final pendingAppts = provider.appointments.where((a) => 
+                  (a.status == AppointmentStatus.scheduled || a.status == AppointmentStatus.completed) && 
+                  a.paymentStatus == 'PENDING'
+                ).toList();
+                
                 if (pendingAppts.isEmpty) {
-                  return const Center(child: Text('No pending payments', style: TextStyle(color: Colors.grey)));
+                  return const Center(child: Text('No pending payments for active/done appointments', style: TextStyle(color: Colors.grey)));
                 }
                 return Column(
                   children: pendingAppts.map((appt) => _buildPendingPaymentItem(
                     appt.id,
                     'Customer #${appt.customerId}', 
                     '${appt.totalAmount ?? appt.depositAmount ?? 0.0} JOD', 
-                    (appt.services as List<AppointmentServiceModel>).map((s) => s.name).join(', ')
+                    (appt.services).map((s) => s.name).join(', ')
                   )).toList(),
                 );
               },
@@ -161,17 +142,17 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
 
             const SizedBox(height: 32),
 
-            // Barber Schedules Overview
+            // Expert Schedules Overview
             const DashboardSectionHeader(title: 'Staff Timeline', actionText: 'Schedule'),
             const SizedBox(height: 16),
-            _buildBarberStatusItem('Jafar', 'Busy', AppColors.error, 'Finishing in 10m'),
-            _buildBarberStatusItem('Yousif', 'Available', AppColors.success, 'Next @ 2:00 PM'),
-            _buildBarberStatusItem('Karim', 'On Break', AppColors.warning, 'Back in 15m'),
+            _buildExpertStatusItem('Jafar', 'Busy', AppColors.error, 'Finishing in 10m'),
+            _buildExpertStatusItem('Yousif', 'Available', AppColors.success, 'Next @ 2:00 PM'),
+            _buildExpertStatusItem('Karim', 'On Break', AppColors.warning, 'Back in 15m'),
 
             const SizedBox(height: 32),
 
             // Inventory Count Preview
-            DashboardSectionHeader(title: AppLocalizations.of(context)!.inventoryManagement),
+            DashboardSectionHeader(title: "inventory_management".tr()),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -198,20 +179,36 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                     ),
                   ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _navigateToProductsPage(context),
+                    child: DashboardSummaryCard(
+                      title: 'Our Products',
+                      value: '24 Available',
+                      icon: Icons.shopping_basket_rounded,
+                      color: Colors.orange,
+                    ),
+                  ),
+                ),
               ],
             ),
 
             const SizedBox(height: 32),
 
             // Campaigns (Offers/Ads) Section
-            DashboardSectionHeader(title: AppLocalizations.of(context)!.activeCampaigns),
+            DashboardSectionHeader(
+              title: "active_campaigns".tr(),
+              actionText: 'Manage All',
+              onPressed: () => Navigator.pushNamed(context, '/active_campaigns'),
+            ),
             const SizedBox(height: 16),
             _buildCampaignList(context),
 
             const SizedBox(height: 32),
 
             // Salon Management Section
-            DashboardSectionHeader(title: AppLocalizations.of(context)!.manageSalon),
+            DashboardSectionHeader(title: "manage_salon".tr()),
             const SizedBox(height: 16),
             _buildSalonManagementCard(context),
 
@@ -222,11 +219,11 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButtonStyled(
-        icon: Icons.campaign_rounded,
-        label: 'Promotions',
-        onPressed: () => _showCampaignModal(context),
-      ),
+      // floatingActionButton: FloatingActionButtonStyled(
+      //   icon: Icons.campaign_rounded,
+      //   label: 'Promotions',
+      //   onPressed: () => _showCampaignModal(context),
+      // ),
         ),
         Sidebar(controller: sidebarController),
       ],
@@ -249,7 +246,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.createPromotion, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text("create_promotion".tr(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             _buildModalActionButton(context, Icons.local_offer_rounded, 'Create Offer', AppColors.blue, () {
               Navigator.pop(context);
@@ -287,7 +284,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             _buildDetailRow(context, 'Duration', '7 Days', Theme.of(context).primaryColor),
             _buildDetailRow(context, 'Standard Price', '\$12.00', Theme.of(context).primaryColor),
             const SizedBox(height: 24),
-            PrimaryButton(text: AppLocalizations.of(context)!.close, onPressed: () => Navigator.pop(context)),
+            PrimaryButton(text: "close".tr(), onPressed: () => Navigator.pop(context)),
           ],
         ),
       ),
@@ -385,7 +382,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.createOffer, style: TextStyle(fontWeight: FontWeight.bold)),
+          title: Text("create_offer".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -396,7 +393,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                 _buildDialogField('Special Price (\$)', keyboard: TextInputType.number),
                 const SizedBox(height: 16),
                 
-                Text(AppLocalizations.of(context)!.includeOptions, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text("include_options".tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 4, runSpacing: 4,
@@ -409,8 +406,11 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                       checkmarkColor: Colors.white,
                       onSelected: (selected) {
                         setDialogState(() {
-                          if (selected) selectedServices.add(service);
-                          else selectedServices.remove(service);
+                          if (selected) {
+                            selectedServices.add(service);
+                          } else {
+                            selectedServices.remove(service);
+                          }
                         });
                       },
                     );
@@ -418,7 +418,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                 ),
 
                 const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.validityPeriod, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text("validity_period".tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: () async {
@@ -454,14 +454,14 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.offerSuccess)));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("offer_success".tr())));
               },
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-              child: Text(AppLocalizations.of(context)!.create),
+              child: Text("create".tr()),
             ),
           ],
         ),
@@ -473,7 +473,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.createAd, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("create_ad".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -487,14 +487,14 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.cancel)),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.adCampaignLaunched)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ad_campaign_launched".tr())));
             },
             style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-            child: Text(AppLocalizations.of(context)!.launch),
+            child: Text("launch".tr()),
           ),
         ],
       ),
@@ -518,7 +518,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(AppLocalizations.of(context)!.manageSalon, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text("manage_salon".tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const Text('Location, products & descriptions', style: TextStyle(color: AppColors.almostBlack300, fontSize: 13)),
                 ],
               ),
@@ -571,14 +571,14 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             child: ListView(
               children: [
                 _buildAppointmentListItem(
-                  employee: 'Karim (Barber)',
+                  expert: 'Karim (Expert)',
                   dateTime: 'Today @ 3:00 PM',
                   price: '\$45.00',
                   products: 'Hair wax, Face cream',
                   offer: 'None',
                 ),
                 _buildAppointmentListItem(
-                  employee: 'Jafar (Barber)',
+                  expert: 'Jafar (Expert)',
                   dateTime: 'Today @ 4:30 PM',
                   price: '\$35.00',
                   products: 'None',
@@ -593,7 +593,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
   }
 
   Widget _buildAppointmentListItem({
-    required String employee,
+    required String expert,
     required String dateTime,
     required String price,
     required String products,
@@ -614,7 +614,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(employee, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(expert, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               Text(price, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
             ],
           ),
@@ -694,21 +694,61 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                }
             }),
             const SizedBox(height: 12),
-            _buildModalActionButton(context, Icons.notification_important_rounded, 'Remind Customer', AppColors.pink, () {
+            _buildModalActionButton(context, Icons.phone_in_talk_rounded, 'Call Customer', AppColors.blue, () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification reminder sent!')));
             }),
             const SizedBox(height: 12),
-            _buildModalActionButton(context, Icons.person_search_rounded, 'Check With Employee', Theme.of(context).primaryColor, () {
+            _buildModalActionButton(context, Icons.phone_forwarded_rounded, 'Call Expert', Colors.indigo, () {
               Navigator.pop(context);
             }),
             const SizedBox(height: 12),
             _buildModalActionButton(context, Icons.report_problem_rounded, 'Report Customer', AppColors.error, () {
               Navigator.pop(context);
+              _showReportReasonDialog(context, appointmentId);
             }),
             const SizedBox(height: 16),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showReportReasonDialog(BuildContext context, String appointmentId) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Report Customer'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Reporting will deduct points and apply a late penalty.'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(hintText: 'Reason for reporting...'),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              final reason = controller.text;
+              if (reason.isEmpty) return;
+              Navigator.pop(context);
+              try {
+                await context.read<AppointmentProvider>().reportCustomer(appointmentId, reason);
+                if (context.mounted) AppSnackBar.success(context, 'Customer reported successfully');
+              } catch (e) {
+                if (context.mounted) AppSnackBar.error(context, 'Failed to report: $e');
+              }
+            },
+            child: const Text('Report', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }
@@ -833,7 +873,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     );
   }
 
-  Widget _buildBarberStatusItem(String name, String status, Color statusColor, String note) {
+  Widget _buildExpertStatusItem(String name, String status, Color statusColor, String note) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () => _showStaffTimelineModal(context, name, status, statusColor, note),
@@ -890,29 +930,21 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DashboardSectionHeader(title: AppLocalizations.of(context)!.performanceAnalytics),
+        DashboardSectionHeader(title: "performance_analytics".tr()),
         const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 3,
+            SizedBox(
+              width: double.infinity,
               child: _buildBookingStatsCard(context),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 2,
-              child: _buildTodayScheduleCard(context),
-            ),
-          ],
-        ),
       ],
     );
   }
 
   Widget _buildBookingStatsCard(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/staff_schedules'),
+      child: Container(
+        padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(24),
@@ -930,17 +962,17 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.bookingsSummary, 
+              Text("bookings_summary".tr(), 
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
               const Icon(Icons.trending_up_rounded, color: Colors.white, size: 20),
             ],
           ),
           const SizedBox(height: 20),
-          _buildStatRow(AppLocalizations.of(context)!.today, '24'),
+          _buildStatRow("today".tr(), '24'),
           const Divider(color: Colors.white24, height: 16),
-          _buildStatRow(AppLocalizations.of(context)!.thisWeek, '142'),
+          _buildStatRow("this_week".tr(), '142'),
           const Divider(color: Colors.white24, height: 16),
-          _buildStatRow(AppLocalizations.of(context)!.thisMonth, '580'),
+          _buildStatRow("this_month".tr(), '580'),
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => _showLatestAppointmentsModal(context),
@@ -952,7 +984,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(AppLocalizations.of(context)!.viewHistory, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text("view_history".tr(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 4),
                 const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 14),
               ],
@@ -960,6 +992,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -973,31 +1006,83 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
     );
   }
 
-  Widget _buildTodayScheduleCard(BuildContext context) {
+  Widget _buildBigTodayScheduleCard(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/employee_schedule'),
+      onTap: () => Navigator.pushNamed(context, '/staff_schedules'),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        width: double.infinity,
+        padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.almostBlack600 : AppColors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: isDark ? AppColors.white.withValues(alpha: 0.1) : AppColors.almostBlack50),
+          gradient: LinearGradient(
+            colors: isDark 
+                ? [AppColors.almostBlack500, AppColors.almostBlack600] 
+                : [Colors.white, AppColors.almostBlack50.withOpacity(0.5)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
         child: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: AppColors.pink.withValues(alpha: 0.1), shape: BoxShape.circle),
-              child: const Icon(Icons.calendar_month_rounded, color: AppColors.pink, size: 28),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.pink.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(Icons.calendar_today_rounded, color: AppColors.pink, size: 32),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "today_schedule".tr(), 
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
+                      ),
+                      const Text(
+                        'View all experts & timelines', 
+                        style: TextStyle(color: AppColors.almostBlack300, fontSize: 14)
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.almostBlack200, size: 18),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.todaySchedule, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            const Text('8 Active', style: TextStyle(color: AppColors.pink, fontWeight: FontWeight.bold, fontSize: 12)),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildScheduleQuickStat('Morning', '8', Colors.blue),
+                _buildScheduleQuickStat('Afternoon', '12', Colors.orange),
+                _buildScheduleQuickStat('Evening', '4', Colors.purple),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildScheduleQuickStat(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(value, style: TextStyle(color: color, fontWeight: FontWeight.w900, fontSize: 24)),
+        Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+      ],
     );
   }
 
@@ -1007,27 +1092,30 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
       children: [
         DashboardSectionHeader(
           title: 'FAQs & User Guides', 
-          actionText: 'عرض الكل',
-          onPressed: () {},
+          actionText: "view_all".tr(),
+          onPressed: () => Navigator.pushNamed(context, '/faq'),
         ),
         const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.pink.withValues(alpha: 0.05), Theme.of(context).primaryColor.withValues(alpha: 0.05)],
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/faq'),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.pink.withValues(alpha: 0.05), Theme.of(context).primaryColor.withValues(alpha: 0.05)],
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.pink.withValues(alpha: 0.1)),
             ),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.pink.withValues(alpha: 0.1)),
-          ),
-          child: Column(
-            children: [
-              _buildGuideLink(context, 'كيفية إضافة موعد جديد؟', 'أضف العملاء يدوياً من خلال قسم البحث'),
-              const Divider(height: 24),
-              _buildGuideLink(context, 'تأكيد الدفع والتحقق من الهوية', 'تأكد من مطابقة إيصال الدفع قبل التأكيد'),
-              const Divider(height: 24),
-              _buildGuideLink(context, 'إدارة الموظفين والمتدربين', 'تابع تقدم الموظفين الحاليين والمهام الموكلة'),
-            ],
+            child: Column(
+              children: [
+                _buildGuideLink(context, 'How to add a new appointment?', 'Add customers manually through search'),
+                const Divider(height: 24),
+                _buildGuideLink(context, 'Confirming payment & identity', 'Match receipt before confirming'),
+                const Divider(height: 24),
+                _buildGuideLink(context, 'Managing staff & interns', 'Track progress and assigned tasks'),
+              ],
+            ),
           ),
         ),
       ],
@@ -1062,38 +1150,38 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
 
   // --- NEW MODALS ---
 
-  void _showBookForCustomerModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            Text(AppLocalizations.of(context)!.bookForCustomer, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 24),
-            _buildDialogField('Customer Name or Phone'),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildCustomerSearchItem('Azeez Jordan', '+962 79 000 0000'),
-                  _buildCustomerSearchItem('Hassan Ali', '+962 78 111 1111'),
-                ],
-              ),
-            ),
-            PrimaryButton(text: 'Proceed to Booking', onPressed: () {}),
-          ],
-        ),
-      ),
-    );
-  }
+  // void _showBookForCustomerModal(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (context) => Container(
+  //       height: MediaQuery.of(context).size.height * 0.8,
+  //       decoration: BoxDecoration(
+  //         color: Theme.of(context).scaffoldBackgroundColor,
+  //         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+  //       ),
+  //       padding: const EdgeInsets.all(24),
+  //       child: Column(
+  //         children: [
+  //           Text("book_for_customer".tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+  //           const SizedBox(height: 24),
+  //           _buildDialogField('Customer Name or Phone'),
+  //           const SizedBox(height: 16),
+  //           Expanded(
+  //             child: ListView(
+  //               children: [
+  //                 _buildCustomerSearchItem('Azeez Jordan', '+962 79 000 0000'),
+  //                 _buildCustomerSearchItem('Hassan Ali', '+962 78 111 1111'),
+  //               ],
+  //             ),
+  //           ),
+  //           PrimaryButton(text: 'Proceed to Booking', onPressed: () {}),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildCustomerSearchItem(String name, String phone) {
     return ListTile(
@@ -1119,7 +1207,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            Text(AppLocalizations.of(context)!.searchAppointments, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text("search_appointments".tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             _buildDialogField('Search by name, phone, or ID'),
             const SizedBox(height: 16),

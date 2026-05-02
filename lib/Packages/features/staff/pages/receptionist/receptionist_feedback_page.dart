@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ReceptionistFeedbackPage extends StatefulWidget {
   final bool startWithStaff;
@@ -32,7 +31,7 @@ class _ReceptionistFeedbackPageState extends State<ReceptionistFeedbackPage> wit
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: AppLocalizations.of(context)!.customerFeedback),
+            Tab(text: "customer_feedback".tr()),
             Tab(text: 'Staff Feedback'),
           ],
         ),
@@ -64,14 +63,14 @@ class _ReceptionistFeedbackPageState extends State<ReceptionistFeedbackPage> wit
       padding: const EdgeInsets.all(16),
       children: [
         _buildFeedbackCard(
-          author: isStaff ? 'Karim (Barber)' : 'Mohammed Ali',
+          author: isStaff ? 'Karim (Expert)' : 'Mohammed Ali',
           content: isStaff ? 'The salon needs new towels as currently stock feeling heavy.' : 'Very nice haircut and friendly staff! Highly recommend!',
           rating: isStaff ? 4.0 : 5.0,
-          target: isStaff ? 'To Owner' : 'To Barber Jafar',
+          target: isStaff ? 'To Owner' : 'To Expert Jafar',
           dateTime: 'Today @ 11:30 AM',
         ),
         _buildFeedbackCard(
-          author: isStaff ? 'Jafar (Barber)' : 'Zaid Hassan',
+          author: isStaff ? 'Jafar (Expert)' : 'Zaid Hassan',
           content: isStaff ? 'Air conditioning requires maintenance session soon.' : 'Waiting time was a bit long but service felt premium.',
           rating: isStaff ? 3.5 : 4.0,
           target: isStaff ? 'To Salon' : 'To Salon',

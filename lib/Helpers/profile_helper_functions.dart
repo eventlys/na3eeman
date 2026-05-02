@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/main_providers.dart';
@@ -84,7 +84,7 @@ class ProfileHelperFunctions {
       await _updateProviderState(profile, authProvider, context);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.profileUpdatedSuccessfully)),
+        SnackBar(content: Text("profile_updated_successfully".tr())),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -134,7 +134,7 @@ class ProfileHelperFunctions {
       );
 
       // Update the provider
-      authProvider.updateProfile(updatedUser);
+      authProvider.updateProfile(updatedUser: updatedUser);
 
       // Optionally refresh the user data from the server to ensure consistency
       await authProvider.refreshUserData();
@@ -155,20 +155,20 @@ class ProfileHelperFunctions {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.deleteProfile),
-          content: Text(AppLocalizations.of(context)!.areYouSureYouWantToDeleteYourProfileThis,
+          title: Text("delete_profile".tr()),
+          content: Text("are_you_sure_you_want_to_delete_your_profile_this".tr(),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(AppLocalizations.of(context)!.cancel),
+              child: Text("cancel".tr()),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onConfirm();
               },
-              child: Text(AppLocalizations.of(context)!.delete,
+              child: Text("delete".tr(),
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -192,7 +192,7 @@ class ProfileHelperFunctions {
       await authProvider.logout();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.profileDeletedSuccessfully)),
+        SnackBar(content: Text("profile_deleted_successfully".tr())),
       );
 
       onSuccess();
@@ -216,7 +216,7 @@ class ProfileHelperFunctions {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: Text(AppLocalizations.of(context)!.chooseFromGallery),
+                title: Text("choose_from_gallery".tr()),
                 onTap: () {
                   Navigator.of(context).pop();
                   // Implement gallery picker
@@ -224,7 +224,7 @@ class ProfileHelperFunctions {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: Text(AppLocalizations.of(context)!.takeAPhoto),
+                title: Text("take_a_photo".tr()),
                 onTap: () {
                   Navigator.of(context).pop();
                   // Implement camera
@@ -244,8 +244,8 @@ class ProfileHelperFunctions {
     final role = userData['role']?.toString().toLowerCase() ?? 'customer';
 
     switch (role) {
-      case 'barber':
-        return 'Barber';
+      case 'expert':
+        return 'Expert';
       case 'owner':
         return 'Salon Owner';
       case 'admin':

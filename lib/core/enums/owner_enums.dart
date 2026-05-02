@@ -2,6 +2,7 @@
 ///
 /// These enums replace the previous loose `String` / mismatched `SubscriptionTier`
 /// values scattered across the codebase with a single, type-safe source of truth.
+library;
 
 // ---------------------------------------------------------------------------
 // OWNER SUBSCRIPTION TIER
@@ -89,8 +90,8 @@ extension OwnerSubscriptionTierExtension on OwnerSubscriptionTier {
 
 /// How the owner relates to their own salon operations.
 enum OwnerType {
-  /// Owner who also works as a practitioner (e.g., barber-owner).
-  employeeOwner,
+  /// Owner who also works as a practitioner (e.g., expert-owner).
+  expertOwner,
 
   /// Owner who manages but does not perform services.
   pureOwner,
@@ -102,8 +103,8 @@ enum OwnerType {
 extension OwnerTypeExtension on OwnerType {
   String get value {
     switch (this) {
-      case OwnerType.employeeOwner:
-        return 'EMPLOYEE_OWNER';
+      case OwnerType.expertOwner:
+        return 'EXPERT_OWNER';
       case OwnerType.pureOwner:
         return 'PURE_OWNER';
       case OwnerType.soloFreelancer:
@@ -113,8 +114,8 @@ extension OwnerTypeExtension on OwnerType {
 
   String get displayName {
     switch (this) {
-      case OwnerType.employeeOwner:
-        return 'Owner-Practitioner';
+      case OwnerType.expertOwner:
+        return 'Owner-Expert';
       case OwnerType.pureOwner:
         return 'Manager-Owner';
       case OwnerType.soloFreelancer:
@@ -124,14 +125,15 @@ extension OwnerTypeExtension on OwnerType {
 
   static OwnerType fromString(String? raw) {
     switch ((raw ?? '').toUpperCase()) {
+      case 'EXPERT_OWNER':
       case 'EMPLOYEE_OWNER':
-        return OwnerType.employeeOwner;
+        return OwnerType.expertOwner;
       case 'PURE_OWNER':
         return OwnerType.pureOwner;
       case 'SOLO_FREELANCER':
         return OwnerType.soloFreelancer;
       default:
-        return OwnerType.employeeOwner;
+        return OwnerType.expertOwner;
     }
   }
 }
@@ -236,4 +238,8 @@ enum FeatureKey {
   paymentManagement,   // Configure deposits, CliQ, etc.
   aiNoShowRisk,        // Predict no-show probability
   vouchers,            // Prepaid packages & gift cards
+  marketingAds,        // Marketing Campaigns
+  analyticsElite,      // Elite Analytics
+  ownerControls,       // Owner Controls
+  financialControls,   // Financial Controls
 }

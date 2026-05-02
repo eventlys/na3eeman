@@ -3,6 +3,7 @@ class Salon {
   final String salonName;
   final String salonPhonNum;
   final String salonDescription;
+  final String? slogan;
   final String location;
   final double lat;
   final double lng;
@@ -21,6 +22,7 @@ class Salon {
     required this.salonName,
     required this.salonPhonNum,
     required this.salonDescription,
+    this.slogan,
     required this.location,
     required this.lat,
     required this.lng,
@@ -41,6 +43,7 @@ class Salon {
       salonName: json['salon_name'] as String,
       salonPhonNum: json['salon_phon_num'] as String,
       salonDescription: json['salon_description'] as String,
+      slogan: json['slogan'] as String?,
       location: json['location'] as String,
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
@@ -64,6 +67,7 @@ class Salon {
       'salon_name': salonName,
       'salon_phon_num': salonPhonNum,
       'salon_description': salonDescription,
+      'slogan': slogan,
       'location': location,
       'lat': lat,
       'lng': lng,

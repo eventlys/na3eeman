@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
@@ -83,7 +83,7 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
                         dropdownColor: Color(0xffffffff),
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.issueType,
+                          labelText: "issue_type".tr(),
                           border: const OutlineInputBorder(),
                           prefixIcon: const Icon(
                               Icons.warning,
@@ -95,7 +95,7 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
                       TextFormField(
                         controller: _salonNameController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.salonName,
+                          labelText: "salon_name".tr(),
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.store, color: Color(0xb3c25858)),
                         ),
@@ -142,7 +142,7 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
                   shadowColor: Colors.transparent,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(AppLocalizations.of(context)!.submitReport,
+                child: Text("submit_report".tr(),
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),

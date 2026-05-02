@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../Helpers/subscription_helper.dart';
@@ -50,7 +50,6 @@ class SubscriptionItemWidget extends StatelessWidget {
     }
 
     final size = MediaQuery.of(context).size;
-    final isSmallScreen = size.width < 600;
     
     return Card(
       shadowColor: Colors.transparent,
@@ -219,7 +218,7 @@ class SubscriptionItemWidget extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(AppLocalizations.of(context)!.popular,
+            child: Text("popular".tr(),
               style: TextStyle(
                 fontSize: 12,
                 color: AppColor.light,
@@ -560,7 +559,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
   Widget _buildErrorState(bool isDark, {String? error}) {
     return EmptyState.error(
       context: context,
-      title: AppLocalizations.of(context)!.failedToLoadSubscriptions,
+      title: "failed_to_load_subscriptions".tr(),
       description: error ?? _error ?? 'Please check your connection and try again.',
       onRetry: _loadSubscriptions,
       gender: widget.gender,
@@ -570,7 +569,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
   Widget _buildEmptyState(bool isDark) {
     return EmptyState.noItems(
       context: context,
-      title: AppLocalizations.of(context)!.noSubscriptionsAvailable,
+      title: "no_subscriptions_available".tr(),
       description: widget.showFeaturedOnly 
           ? 'There are no featured subscriptions at the moment.'
           : 'There are no subscription plans available right now.',
@@ -580,7 +579,7 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
           backgroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
           foregroundColor: AppColor.light,
         ),
-        child: Text(AppLocalizations.of(context)!.refresh),
+        child: Text("refresh".tr()),
       ),
       gender: widget.gender,
     );

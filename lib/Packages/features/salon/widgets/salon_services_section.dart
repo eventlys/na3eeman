@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/service_models_helper.dart';
@@ -7,7 +7,6 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../pages/salon_schedule_page.dart';
 import '../../../../Services/business_service.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ServicesSection extends StatelessWidget {
   final Map<String, dynamic> salonData;
@@ -133,7 +132,7 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.servicesPrices,
+              Text("services_prices".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -171,7 +170,7 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.servicesPrices,
+              Text("services_prices".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -189,7 +188,7 @@ class ServicesSection extends StatelessWidget {
               border: Border.all(color: AppColor.borderLight),
             ),
             child: Center(
-              child: Text(AppLocalizations.of(context)!.unableToLoadServicesPleaseTryAgain,
+              child: Text("unable_to_load_services_please_try_again".tr(),
                 style: TextStyle(
                   color: AppColor.lightTextSecondary,
                   fontSize: 14,
@@ -227,7 +226,7 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.servicesPrices,
+              Text("services_prices".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -244,7 +243,7 @@ class ServicesSection extends StatelessWidget {
               context: context,
               service: service,
               serviceProvider: serviceProvider,
-            )).toList(),
+            )),
         ],
       ),
     );
@@ -259,7 +258,7 @@ class ServicesSection extends StatelessWidget {
         border: Border.all(color: AppColor.borderLight),
       ),
       child: Center(
-        child: Text(AppLocalizations.of(context)!.noServicesAvailable,
+        child: Text("no_services_available".tr(),
           style: TextStyle(
             color: AppColor.lightTextSecondary,
             fontSize: 14,

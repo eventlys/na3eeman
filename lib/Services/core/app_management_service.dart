@@ -1,5 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +13,6 @@ import '../security_service.dart';
 import '../storage_service.dart';
 import 'user_service.dart';
 import '../ui/sidebar_navigation_service.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AppManagementService with WidgetsBindingObserver {
   static final AppManagementService _instance = AppManagementService._internal();
@@ -481,7 +479,7 @@ class AppManagementService with WidgetsBindingObserver {
 
       await _notifications.show(
         id: appointmentId.hashCode,
-        title: AppLocalizations.of(context)!.appointmentReminder,
+        title: "appointment_reminder".tr(),
         body: 'You have an upcoming appointment',
         notificationDetails: platformDetails,
       );

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../Providers/main_providers.dart';
 import '../../../Services/enums/gender.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class NavItem {
   final String id;
@@ -25,7 +24,7 @@ class NavigationConfig {
     if (appStateProvider.isCustomer) {
       return '/customer_home';
     } else {
-      return '/barber_home';
+      return '/expert_home';
     }
   }
 
@@ -51,7 +50,7 @@ class NavigationConfig {
         activeIconPath: 'assets/icons/home_view.png',
         inactiveIconPath: 'assets/icons/home_front.png',
         route: getHomeRoute(appStateProvider),
-        label: AppLocalizations.of(context)!.home,
+        label: "home".tr(),
       ),
       NavItem(
         id: 'search',
@@ -65,28 +64,28 @@ class NavigationConfig {
         activeIconPath: 'assets/icons/clock_view.png',
         inactiveIconPath: 'assets/icons/clock.png',
         route: '/history',
-        label: AppLocalizations.of(context)!.history,
+        label: "history".tr(),
       ),
       NavItem(
         id: 'admin',
         activeIconPath: 'assets/icons/admin_view.png',
         inactiveIconPath: 'assets/icons/admin.png',
         route: '/owner',
-        label: AppLocalizations.of(context)!.admin,
+        label: "admin".tr(),
       ),
       NavItem(
         id: 'staff',
         activeIconPath: 'assets/icons/staff_view.png',
         inactiveIconPath: 'assets/icons/staff.png',
         route: '/staff',
-        label: AppLocalizations.of(context)!.staff,
+        label: "staff".tr(),
       ),
       NavItem(
         id: 'profile',
         activeIconPath: getProfileAvatar(appStateProvider, currentRoute == '/profile'),
         inactiveIconPath: getProfileAvatar(appStateProvider, false),
         route: '/profile',
-        label: AppLocalizations.of(context)!.profile,
+        label: "profile".tr(),
       ),
     ];
 

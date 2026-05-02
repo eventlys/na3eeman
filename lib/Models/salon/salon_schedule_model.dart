@@ -6,7 +6,7 @@ class SalonScheduleSlot {
   final TimeOfDay time;
   final SalonService salonService;
   final bool isAvailable;
-  final int? barberId;
+  final int? expertId;
   final int salonId;
 
   const SalonScheduleSlot({
@@ -14,7 +14,7 @@ class SalonScheduleSlot {
     required this.time,
     required this.salonService,
     this.isAvailable = true,
-    this.barberId,
+    this.expertId,
     required this.salonId,
   });
 
@@ -41,7 +41,7 @@ class SalonScheduleSlot {
       'time': '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
       'service': salonService.toMap(),
       'is_available': isAvailable,
-      'barber': barberId,
+      'expert': expertId,
       'salon': salonId,
     };
   }
@@ -52,7 +52,7 @@ class SalonScheduleSlot {
       time: _parseTime(json['time']),
       salonService: SalonService.fromMap(Map<String, dynamic>.from(json['service'])),
       isAvailable: json['is_available'] ?? true,
-      barberId: json['barber'] as int?,
+      expertId: json['expert'] as int?,
       salonId: json['salon'] as int,
     );
   }
@@ -144,9 +144,9 @@ class SalonScheduleData {
   }
 }
 
-class BarberWorkingHours {
-  final int barberId;
-  final String barberName;
+class ExpertWorkingHours {
+  final int expertId;
+  final String expertName;
   final List<String> workingDays;
   final String startTime;
   final String endTime;
@@ -154,9 +154,9 @@ class BarberWorkingHours {
   final String? breakEnd;
   final bool isAvailable;
 
-  BarberWorkingHours({
-    required this.barberId,
-    required this.barberName,
+  ExpertWorkingHours({
+    required this.expertId,
+    required this.expertName,
     required this.workingDays,
     required this.startTime,
     required this.endTime,
@@ -165,10 +165,10 @@ class BarberWorkingHours {
     this.isAvailable = true,
   });
 
-  factory BarberWorkingHours.fromJson(Map<String, dynamic> json) {
-    return BarberWorkingHours(
-      barberId: json['barber_id'] as int,
-      barberName: json['barber_name'] as String,
+  factory ExpertWorkingHours.fromJson(Map<String, dynamic> json) {
+    return ExpertWorkingHours(
+      expertId: json['expert_id'] as int,
+      expertName: json['expert_name'] as String,
       workingDays: List<String>.from(json['working_days'] ?? []),
       startTime: json['start_time'] as String,
       endTime: json['end_time'] as String,
@@ -180,8 +180,8 @@ class BarberWorkingHours {
 
   Map<String, dynamic> toJson() {
     return {
-      'barber_id': barberId,
-      'barber_name': barberName,
+      'expert_id': expertId,
+      'expert_name': expertName,
       'working_days': workingDays,
       'start_time': startTime,
       'end_time': endTime,

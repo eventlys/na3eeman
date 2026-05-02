@@ -140,8 +140,10 @@ class AuthRepository {
 
   Future<User> getCurrentUser() async {
     try {
-      final response = await _apiService.get('/auth/me');
-      return User.fromJson(response['data']);
+      final response = await _apiService.get('/auth/me/');
+      // Handling both direct response and wrapped response if any
+      final userData = response is Map && response.containsKey('data') ? response['data'] : response;
+      return User.fromJson(userData);
     } catch (error) {
       AppLogger.error('Get current user failed', error: error);
       throw ErrorHandler.handleException(error);
@@ -154,7 +156,8 @@ class AuthRepository {
         '/auth/me/',
         data: profileData,
       );
-      return User.fromJson(response['data']);
+      final userData = response is Map && response.containsKey('data') ? response['data'] : response;
+      return User.fromJson(userData);
     } catch (error) {
       AppLogger.error('Update profile failed', error: error);
       throw ErrorHandler.handleException(error);
@@ -329,6 +332,25 @@ class AuthRepository {
       return response;
     } catch (error) {
       AppLogger.error('Verify email OTP failed', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+  Future<Map<String, dynamic>> adminCreateStaff(Map<String, dynamic> staffData) async {
+    try {
+      AppLogger.debug('Admin creating staff for: ${staffData['email']}');
+      return await _apiService.post('/auth/admin/create-staff/', data: staffData);
+    } catch (error) {
+      AppLogger.error('Admin staff creation failed', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
+  Future<List<dynamic>> adminFetchSalons() async {
+    try {
+      final response = await _apiService.get('/salons/salons/');
+      return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    } catch (error) {
+      AppLogger.error('Admin fetch salons failed', error: error);
       throw ErrorHandler.handleException(error);
     }
   }

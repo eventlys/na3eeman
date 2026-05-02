@@ -1,11 +1,10 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/enums/owner_enums.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class SubscriptionDetailsModal extends StatelessWidget {
   const SubscriptionDetailsModal({super.key});
@@ -31,7 +30,7 @@ class SubscriptionDetailsModal extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.subscriptionDetails,
+              Text("subscription_details".tr(),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : AppColors.almostBlack,
@@ -50,7 +49,7 @@ class SubscriptionDetailsModal extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Features List
-          Text(AppLocalizations.of(context)!.planFeatures,
+          Text("plan_features".tr(),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white70 : AppColors.almostBlack400,
@@ -79,13 +78,13 @@ class SubscriptionDetailsModal extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: Text(AppLocalizations.of(context)!.close),
+                  child: Text("close".tr()),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: PrimaryButton(
-                  text: AppLocalizations.of(context)!.upgradePlan,
+                  text: "upgrade_plan".tr(),
                   onPressed: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/subscription/upgrade');

@@ -4,7 +4,7 @@ class EarningsData {
   final int appointments;
   final double tips;
   final int salonId;
-  final int? barberId;
+  final int? expertId;
 
   EarningsData({
     required this.date,
@@ -12,7 +12,7 @@ class EarningsData {
     required this.appointments,
     this.tips = 0.0,
     required this.salonId,
-    this.barberId,
+    this.expertId,
   });
 
   factory EarningsData.fromJson(Map<String, dynamic> json) {
@@ -22,7 +22,7 @@ class EarningsData {
       appointments: json['appointments'] ?? 0,
       tips: (json['tips'] ?? 0).toDouble(),
       salonId: json['salon'] as int,
-      barberId: json['barber'] as int?,
+      expertId: json['expert'] as int?,
     );
   }
 
@@ -33,7 +33,7 @@ class EarningsData {
       'appointments': appointments,
       'tips': tips,
       'salon': salonId,
-      'barber': barberId,
+      'expert': expertId,
     };
   }
 }

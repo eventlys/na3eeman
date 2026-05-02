@@ -90,7 +90,7 @@ class SidebarItem extends StatelessWidget {
         width: 20,
         height: 20,
         color: Theme.of(context).primaryColor,
-        errorBuilder: (_, __, ___) => Icon(Icons.circle, size: 20, color: Theme.of(context).primaryColor),
+        errorBuilder: (_, _, _) => Icon(Icons.circle, size: 20, color: Theme.of(context).primaryColor),
       );
     }
     return Icon(icon ?? Icons.circle, size: 20, color: Theme.of(context).primaryColor);

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
@@ -69,103 +70,152 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Analytics Dashboard'),
+        title: Text('analytics_dashboard'.tr()),
         actions: [
-          // Period selector
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.date_range_rounded),
-            initialValue: _period,
-            onSelected: (v) {
-              setState(() => _period = v);
-              _load();
-            },
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: '7d', child: Text('Last 7 days')),
-              PopupMenuItem(value: '30d', child: Text('Last 30 days')),
-              PopupMenuItem(value: '90d', child: Text('Last 3 months')),
-            ],
-          ),
           IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _load),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: CustomScrollView(
-                slivers: [
-                  // KPI Cards Row
-                  SliverToBoxAdapter(child: _buildKpiRow(theme)),
+          : Stack(
+              children: [
+                RefreshIndicator(
+                  onRefresh: _load,
+                  child: CustomScrollView(
+                    slivers: [
+                      // KPI Cards Row
+                      SliverToBoxAdapter(child: _buildKpiRow(theme)),
 
-                  // AI Smart Insights
-                  if (_insights.isNotEmpty) ...[
-                    SliverToBoxAdapter(child: _SectionHeader(title: '✦ AI Smart Insights', icon: Icons.auto_awesome_rounded)),
-                    SliverToBoxAdapter(child: _buildInsightCards(theme)),
-                  ],
+                      // AI Smart Insights
+                      if (_insights.isNotEmpty) ...[
+                        SliverToBoxAdapter(child: _SectionHeader(title: 'AI Smart Insights'.tr(), icon: Icons.auto_awesome_rounded)),
+                        SliverToBoxAdapter(child: _buildInsightCards(theme)),
+                      ],
 
-                  // Top Services
-                  if (_topServices.isNotEmpty) ...[
-                    SliverToBoxAdapter(child: _SectionHeader(title: 'Top Services', icon: Icons.content_cut_rounded)),
-                    SliverToBoxAdapter(child: _buildTopServices(theme)),
-                  ],
+                      // Top Services
+                      if (_topServices.isNotEmpty) ...[
+                        SliverToBoxAdapter(child: _SectionHeader(title: 'Top Services'.tr(), icon: Icons.content_cut_rounded)),
+                        SliverToBoxAdapter(child: _buildTopServices(theme)),
+                      ],
 
-                  // Staff KPIs
-                  if (_staffKpis.isNotEmpty) ...[
-                    SliverToBoxAdapter(child: _SectionHeader(title: 'Staff Performance', icon: Icons.people_rounded)),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (_, i) => _StaffKpiTile(kpi: _staffKpis[i]),
-                        childCount: _staffKpis.length,
-                      ),
-                    ),
-                  ],
+                      // Staff KPIs
+                      if (_staffKpis.isNotEmpty) ...[
+                        SliverToBoxAdapter(child: _SectionHeader(title: 'Staff Performance'.tr(), icon: Icons.people_rounded)),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (_, i) => _StaffKpiTile(kpi: _staffKpis[i]),
+                            childCount: _staffKpis.length,
+                          ),
+                        ),
+                      ],
 
-                  // Spacer
-                  const SliverToBoxAdapter(child: SizedBox(height: 40)),
-                ],
-              ),
+                      // Spacer for bottom filter
+                      const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                    ],
+                  ),
+                ),
+                _buildBottomFilter(theme),
+              ],
             ),
+    );
+  }
+
+  Widget _buildBottomFilter(ThemeData theme) {
+    return Positioned(
+      bottom: 24,
+      left: 20,
+      right: 20,
+      child: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+          ],
+        ),
+        child: Row(
+          children: [
+            _buildFilterButton('7d', 'daily'.tr()),
+            _buildFilterButton('30d', 'weekly'.tr()),
+            _buildFilterButton('90d', 'monthly'.tr()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterButton(String value, String label) {
+    final isSelected = _period == value;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() => _period = value);
+          _load();
+        },
+        child: Container(
+          height: 52,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(26),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.white : AppColors.almostBlack300,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildKpiRow(ThemeData theme) {
     final revenue = (_summary?['total_revenue'] as num?)?.toDouble() ?? 0.0;
+    final expenses = (_summary?['total_expenses'] as num?)?.toDouble() ?? 450.0; // Mocked
+    final netProfit = revenue - expenses;
     final appointments = (_summary?['total_appointments'] as num?)?.toInt() ?? 0;
-    final newCustomers = (_summary?['new_customers'] as num?)?.toInt() ?? 0;
-    final avgRating = (_summary?['avg_rating'] as num?)?.toDouble() ?? 0.0;
 
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.8,
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+    return Column(
       children: [
-        _KpiCard(
-          label: 'Revenue',
-          value: '${revenue.toStringAsFixed(0)} JOD',
-          gradient: const [Color(0xFF6C63FF), Color(0xFF3B82F6)],
-          icon: Icons.account_balance_wallet_rounded,
-        ),
-        _KpiCard(
-          label: 'Appointments',
-          value: '$appointments',
-          gradient: const [Color(0xFF10B981), Color(0xFF059669)],
-          icon: Icons.calendar_today_rounded,
-        ),
-        _KpiCard(
-          label: 'New Customers',
-          value: '$newCustomers',
-          gradient: const [Color(0xFFEC4899), Color(0xFFF43F5E)],
-          icon: Icons.person_add_rounded,
-        ),
-        _KpiCard(
-          label: 'Avg Rating',
-          value: avgRating > 0 ? '${avgRating.toStringAsFixed(1)} ★' : 'N/A',
-          gradient: const [Color(0xFFF59E0B), Color(0xFFEF4444)],
-          icon: Icons.star_rounded,
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1.8,
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+          children: [
+            _KpiCard(
+              label: 'total_income'.tr(),
+              value: '${revenue.toStringAsFixed(0)} JOD',
+              gradient: const [Color(0xFF6C63FF), Color(0xFF3B82F6)],
+              icon: Icons.add_chart_rounded,
+            ),
+            _KpiCard(
+              label: 'appointments_kpi'.tr(),
+              value: '$appointments',
+              gradient: const [Color(0xFF10B981), Color(0xFF059669)],
+              icon: Icons.calendar_today_rounded,
+            ),
+            _KpiCard(
+              label: 'expenses_kpi'.tr(),
+              value: '${expenses.toStringAsFixed(0)} JOD',
+              gradient: const [Color(0xFFEC4899), Color(0xFFF43F5E)],
+              icon: Icons.money_off_rounded,
+            ),
+            _KpiCard(
+              label: 'net_profit'.tr(),
+              value: '${netProfit.toStringAsFixed(0)} JOD',
+              gradient: const [Color(0xFFF59E0B), Color(0xFFEF4444)],
+              icon: Icons.account_balance_rounded,
+            ),
+          ],
         ),
       ],
     );
@@ -178,7 +228,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
         itemCount: _insights.length.clamp(0, 4),
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, i) {
           final insight = _insights[i];
           final tip = insight['tip'] as String? ?? insight['message'] as String? ?? 'No tip available';
@@ -249,7 +299,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                         const SizedBox(width: 10),
                         Text(name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                       ]),
-                      Text('$count bookings  |  ${revenue.toStringAsFixed(0)} JOD',
+                      Text('bookings_count'.tr(args: [count.toString()]) + '  |  ${revenue.toStringAsFixed(0)} JOD',
                           style: theme.textTheme.labelSmall?.copyWith(color: theme.hintColor)),
                     ],
                   ),
@@ -332,7 +382,7 @@ class _StaffKpiTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final name = kpi['name'] as String? ?? kpi['employee_name'] as String? ?? 'Staff';
+    final name = kpi['name'] as String? ?? kpi['expert_name'] as String? ?? 'Staff';
     final appts = (kpi['appointments'] as num?)?.toInt() ?? 0;
     final rating = (kpi['rating'] as num?)?.toDouble() ?? 0.0;
     final revenue = (kpi['revenue'] as num?)?.toDouble() ?? 0.0;

@@ -1,4 +1,4 @@
-// import 'package:na3eeman/l10n/app_localizations.dart';
+// import 'package:easy_localization/easy_localization.dart';
 // import 'package:flutter/material.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import '../../../Helpers/customized/cart_helpers.dart';
@@ -69,7 +69,7 @@
 //         actions: [
 //           TextButton(
 //             onPressed: () => Navigator.pop(context),
-//             child: Text(AppLocalizations.of(context)!.cancel),
+//             child: Text("cancel".tr()),
 //           ),
 //           ElevatedButton(
 //             onPressed: () {
@@ -81,7 +81,7 @@
 //                 const SnackBar(content: Text('Order placed successfully!')),
 //               );
 //             },
-//             child: Text(AppLocalizations.of(context)!.confirm),
+//             child: Text("confirm".tr()),
 //           ),
 //         ],
 //       ),

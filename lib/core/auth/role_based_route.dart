@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Providers/features/auth_provider.dart';
@@ -37,11 +37,11 @@ class RoleBasedRoute extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text(AppLocalizations.of(context)!.noPermissionMessage),
+            Text("no_permission_message".tr()),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-              child: Text(AppLocalizations.of(context)!.backToHome),
+              child: Text("back_to_home".tr()),
             ),
           ],
         ),

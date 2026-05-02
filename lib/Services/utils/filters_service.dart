@@ -44,7 +44,7 @@ class FilterService {
           'status': null,
           'date_range': null,
           'salon_id': null,
-          'barber_id': null,
+          'expert_id': null,
           'sort_by': 'date',
           'sort_order': 'desc',
         };
@@ -166,11 +166,11 @@ class FilterService {
       }).toList();
     }
 
-    if (filters['barber_id'] != null) {
-      final barberId = filters['barber_id'] as int;
+    if (filters['expert_id'] != null) {
+      final expertId = filters['expert_id'] as int;
       filteredItems = filteredItems.where((item) {
-        final itemBarberId = (item['barber'] ?? item['barber_id']) as int?;
-        return itemBarberId == barberId;
+        final itemExpertId = (item['expert'] ?? item['expert_id']) as int?;
+        return itemExpertId == expertId;
       }).toList();
     }
 
@@ -367,8 +367,8 @@ class FilterService {
     final salonIds = items.map((item) => (item['salon'] ?? item['salon_id']) as int).toSet().toList();
     filters['salon_ids'] = salonIds..sort();
 
-    final barberIds = items.map((item) => (item['barber'] ?? item['barber_id']) as int).toSet().toList();
-    filters['barber_ids'] = barberIds..sort();
+    final expertIds = items.map((item) => (item['expert'] ?? item['expert_id']) as int).toSet().toList();
+    filters['expert_ids'] = expertIds..sort();
   }
 
   void _extractStaffFilters(Map<String, List<dynamic>> filters, List<dynamic> items) {
@@ -660,8 +660,8 @@ class SocialSharingService {
   SocialSharingService._internal();
 
   Future<void> shareApp() async {
-    const shareText = 'Check out Na3eeman - The best barber salon app! '
-        'Find the perfect barber, book appointments, and earn loyalty points. '
+    const shareText = 'Check out Na3eeman - The best expert salon app! '
+        'Find the perfect expert, book appointments, and earn loyalty points. '
         'Download now and get your perfect haircut! ✂️';
     const shareUrl = 'https://na3eeman.com/download';
 
@@ -670,7 +670,7 @@ class SocialSharingService {
 
   Future<void> shareSalon(String salonName, String salonId) async {
     final shareText = 'Check out $salonName on Na3eeman! '
-        'They provide excellent haircut services with professional barbers. '
+        'They provide excellent haircut services with professional experts. '
         'Book your appointment now! 💈';
     final shareUrl = 'https://na3eeman.com/salon/$salonId';
 
@@ -679,7 +679,7 @@ class SocialSharingService {
 
   Future<void> shareAppointment(String appointmentId) async {
     final shareText = 'I just booked an appointment using Na3eeman! '
-        'The app makes it so easy to find great barbers and book appointments. '
+        'The app makes it so easy to find great experts and book appointments. '
         'You should try it too! 📅';
     final shareUrl = 'https://na3eeman.com/appointment/$appointmentId';
 
@@ -711,10 +711,10 @@ class SocialSharingService {
 
   Future<void> inviteFriends(String referralCode) async {
     final inviteText = '''
-Join me on Na3eeman - The ultimate barber salon experience! ✂️
+Join me on Na3eeman - The ultimate expert salon experience! ✂️
 
 🌟 Why you'll love it:
-• Find the best barbers in your area
+• Find the best experts in your area
 • Book appointments easily
 • Earn loyalty points and free haircuts
 • Get exclusive offers and discounts
@@ -724,7 +724,7 @@ Get 50 bonus points when you sign up! 🎁
 
 Download now: https://na3eeman.com/download
 
-#Na3eeman #BarberApp #HaircutApp
+#Na3eeman #ExpertApp #HaircutApp
     ''';
 
     await _shareContent(inviteText, 'Friends invited with code: $referralCode', 'Failed to invite friends');
@@ -742,7 +742,7 @@ Download now: https://na3eeman.com/download
   Future<void> shareReview(String salonName, int rating) async {
     final stars = '⭐' * rating;
     final shareText = 'I just rated $salonName $rating stars on Na3eeman! $stars\n\n'
-        'The app makes it so easy to find and review great barber salons. '
+        'The app makes it so easy to find and review great expert salons. '
         'Check it out if you\'re looking for a fresh cut! 💈';
     const shareUrl = 'https://na3eeman.com';
 

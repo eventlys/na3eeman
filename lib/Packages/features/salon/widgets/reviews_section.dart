@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,15 +6,14 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/enums/app_enums.dart';
 import '../../profile/widgets/rating_with_points_widget.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ReviewsSection extends StatefulWidget {
   final Map<String, dynamic> salonData;
 
   const ReviewsSection({
-    Key? key,
+    super.key,
     required this.salonData, // Add this parameter
-  }) : super(key: key);
+  });
 
 
   @override
@@ -101,14 +100,14 @@ class ReviewsSectionState extends State<ReviewsSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.customerReviews,
+              Text("customer_reviews".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFFFFFFF),
                 ),
               ),
-              Text(AppLocalizations.of(context)!.seeAll,
+              Text("see_all".tr(),
                 style: TextStyle(
                   color: Color(0xFF2196F3),
                   fontWeight: FontWeight.w500,
@@ -134,7 +133,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppLocalizations.of(context)!.addYourReview,
+                Text("add_your_review".tr(),
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontSize: 16,
@@ -166,7 +165,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
                   maxLines: 3,
                   style: TextStyle(color: Color(0xFFFFFFFF)),
                   decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.writeYourReviewHere,
+                    hintText: "write_your_review_here".tr(),
                     hintStyle: TextStyle(color: Color(0xFFCCCCCC)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -195,7 +194,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text(AppLocalizations.of(context)!.submitReview),
+                    child: Text("submit_review".tr()),
                   ),
                 ),
               ],

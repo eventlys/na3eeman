@@ -62,7 +62,7 @@ class OffersHorizontalList extends StatelessWidget {
                     context, 
                     '/book_appointment', 
                     arguments: {
-                      'salonData': {'id': offer['salon_id'], 'salonName': offer['salonName'] ?? 'Barber Salon'},
+                      'salonData': {'id': offer['salon_id'], 'salonName': offer['salonName'] ?? 'Expert Salon'},
                       'selectedOffer': offer,
                     },
                   );

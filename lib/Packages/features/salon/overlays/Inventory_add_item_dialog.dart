@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class AddItemDialog extends StatefulWidget {
   const AddItemDialog({super.key});
@@ -26,7 +25,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.addNewItem),
+      title: Text("add_new_item".tr()),
       content: Form(
         key: _formKey,
         child: Column(
@@ -35,7 +34,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.itemName,
+                labelText: "item_name".tr(),
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -49,7 +48,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
             TextFormField(
               controller: _countController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.initialCount,
+                labelText: "initial_count".tr(),
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
@@ -68,7 +67,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
             TextFormField(
               controller: _descriptionController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.descriptionOptional,
+                labelText: "description_optional".tr(),
                 border: OutlineInputBorder(),
               ),
               maxLines: 2,
@@ -79,7 +78,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text("cancel".tr()),
         ),
         ElevatedButton(
           onPressed: () {
@@ -95,7 +94,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
               });
             }
           },
-          child: Text(AppLocalizations.of(context)!.addItem),
+          child: Text("add_item".tr()),
         ),
       ],
     );

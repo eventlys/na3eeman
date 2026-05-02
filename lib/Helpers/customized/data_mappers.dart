@@ -92,7 +92,7 @@ class DataMappers {
       'id': appointment.id,
       'customer': appointment.customerId,
       'salon': appointment.salonId,
-      'barber': appointment.barberId,
+      'expert': appointment.expertId,
       'start_time': appointment.startTime.toIso8601String(),
       'end_time': appointment.endTime.toIso8601String(),
       'arrival_time': appointment.arrivalTime?.toIso8601String(),
@@ -114,7 +114,7 @@ class DataMappers {
       id: json['id']?.toString() ?? '',
       customerId: (json['customer'] as num?)?.toInt() ?? 0,
       salonId: (json['salon'] as num?)?.toInt() ?? 0,
-      barberId: (json['barber'] as num?)?.toInt(),
+      expertId: (json['expert'] as num?)?.toInt(),
       startTime: DateTime.parse(json['start_time']?.toString() ?? DateTime.now().toIso8601String()),
       endTime: DateTime.parse(json['end_time']?.toString() ?? DateTime.now().toIso8601String()),
       arrivalTime: json['arrival_time'] != null

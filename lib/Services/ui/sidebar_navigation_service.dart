@@ -47,9 +47,9 @@ class SideNavigationService {
     navigatorKey.currentState?.pushNamed('/salon/$salonId');
   }
 
-  static void navigateToBarberDetail(int barberId) {
-    _logNavigation('Barber Detail $barberId');
-    navigatorKey.currentState?.pushNamed('/barber/$barberId');
+  static void navigateToExpertDetail(int expertId) {
+    _logNavigation('Expert Detail $expertId');
+    navigatorKey.currentState?.pushNamed('/expert/$expertId');
   }
 
   static void navigateToLoyalty() {

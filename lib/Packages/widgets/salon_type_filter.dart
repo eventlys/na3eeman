@@ -9,11 +9,11 @@ class SalonTypeFilter extends StatelessWidget {
   final String language;
 
   const SalonTypeFilter({
-    Key? key,
+    super.key,
     required this.selectedType,
     required this.onTypeSelected,
     this.language = 'ar',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,8 @@ class SalonTypeFilter extends StatelessWidget {
             ),
           ),
 
-          // Barbersalon filter
-          _buildFilterChip(context, SalonType.barbershop),
+          // Expertsalon filter
+          _buildFilterChip(context, SalonType.expertshop),
 
           // Beauty Salon filter
           _buildFilterChip(context, SalonType.beautySalon),
@@ -52,7 +52,7 @@ class SalonTypeFilter extends StatelessWidget {
           _buildFilterChip(context, SalonType.mensSpa),
 
           // Hybrid filter
-          _buildFilterChip(context, SalonType.hybridBarberSpa),
+          _buildFilterChip(context, SalonType.hybridExpertSpa),
         ],
       ),
     );

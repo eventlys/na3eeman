@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
 import '../../../../../../Providers/features/inventory_provider.dart';
@@ -56,7 +55,7 @@ class ComplianceTrackerWidget extends StatelessWidget {
             const Icon(Icons.verified_user_rounded,
                 size: 18, color: Colors.green),
             const SizedBox(width: 8),
-            Text(AppLocalizations.of(context)!.complianceTracker,
+            Text("compliance_tracker".tr(),
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),

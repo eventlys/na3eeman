@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import '../../../../core/theme/colors.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ModernSalonGallery extends StatefulWidget {
   final int imageCount;
@@ -36,12 +35,12 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(AppLocalizations.of(context)!.showcase,
+            Text("showcase".tr(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () {},
-              child: Text(AppLocalizations.of(context)!.viewAll, style: TextStyle(color: Theme.of(context).primaryColor)),
+              child: Text("view_all".tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
             ),
           ],
         ),

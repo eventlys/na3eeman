@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class LogoutConfirmationOverlay extends StatelessWidget {
   final VoidCallback onConfirm;
@@ -14,7 +13,7 @@ class LogoutConfirmationOverlay extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(AppLocalizations.of(context)!.areYouSureYouWantToLogout,
+            Text("are_you_sure_you_want_to_logout".tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -31,7 +30,7 @@ class LogoutConfirmationOverlay extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       side: BorderSide(color: Colors.grey.shade300),
                     ),
-                    child: Text(AppLocalizations.of(context)!.cancel,
+                    child: Text("cancel".tr(),
                       style: TextStyle(color: Color(0x80000000)),
                     ),
                   ),
@@ -47,7 +46,7 @@ class LogoutConfirmationOverlay extends StatelessWidget {
                       backgroundColor: Color(0xffab1f1f),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Text(AppLocalizations.of(context)!.logout,
+                    child: Text("logout".tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

@@ -215,7 +215,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               child: ListView.separated(
                                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
                                 itemCount: _expenses.length,
-                                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                separatorBuilder: (_, _) => const SizedBox(height: 10),
                                 itemBuilder: (_, i) => _ExpenseCard(expense: _expenses[i], categories: _categories),
                               ),
                             ),

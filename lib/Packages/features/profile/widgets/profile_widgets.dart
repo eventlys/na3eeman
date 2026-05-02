@@ -20,14 +20,28 @@ class ProfileWidgets {
     required VoidCallback onDeleteProfile,
     required VoidCallback onChangeProfilePicture,
   }) {
-    final isDark = false; // Will be handled by Theme.of in sub-widgets
+    final isCustomer = userData['role']?.toString().toLowerCase() == 'customer';
 
     return Form(
       key: formKey,
       child: Column(
         children: [
-          _buildProfileHeader(userData, isEditing, onChangeProfilePicture),
-          const SizedBox(height: 32),
+          if (!isCustomer) _buildProfileHeader(userData, isEditing, onChangeProfilePicture),
+          if (isCustomer) ...[
+             const SizedBox(height: 16),
+             Text(
+              '${userData['firstName']} ${userData['lastName']}',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Builder(builder: (context) {
+              return Text(
+                '@${userData['username']}',
+                style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
+              );
+            }),
+            const SizedBox(height: 32),
+          ],
+          const SizedBox(height: 16),
           _buildInfoSection(userData, isEditing, controllers, getAccountType, onDeleteProfile),
         ],
       ),
@@ -91,6 +105,8 @@ class ProfileWidgets {
     String Function() getAccountType,
     VoidCallback onDelete,
   ) {
+    final isCustomer = userData['role']?.toString().toLowerCase() == 'customer';
+
     return Column(
       children: [
         _buildSectionCard(
@@ -99,29 +115,32 @@ class ProfileWidgets {
           children: [
             _buildField('First Name', controllers['firstName']!, isEditing),
             _buildField('Last Name', controllers['lastName']!, isEditing),
+            if (isCustomer) _buildField('Nickname', controllers['nickname']!, isEditing),
             _buildField('Email', controllers['email']!, isEditing, keyboardType: TextInputType.emailAddress),
             _buildField('Phone', controllers['phone']!, isEditing, keyboardType: TextInputType.phone),
           ],
         ),
-        const SizedBox(height: 16),
-        _buildSectionCard(
-          title: 'Profile Details',
-          icon: Icons.info_outline_rounded,
-          children: [
-            _buildField('Bio', controllers['bio']!, isEditing, maxLines: 3),
-            _buildField('Location', controllers['location']!, isEditing),
-          ],
-        ),
-        const SizedBox(height: 16),
-        _buildSectionCard(
-          title: 'Account Status',
-          icon: Icons.verified_user_outlined,
-          children: [
-            _buildReadOnlyRow('Account Type', getAccountType()),
-            _buildReadOnlyRow('Subscription', userData['isSubscribed'] == true ? 'Premium' : 'Free'),
-            _buildReadOnlyRow('Role', userData['role'].toString().toUpperCase()),
-          ],
-        ),
+        if (!isCustomer) ...[
+          const SizedBox(height: 16),
+          _buildSectionCard(
+            title: 'Profile Details',
+            icon: Icons.info_outline_rounded,
+            children: [
+              _buildField('Bio', controllers['bio']!, isEditing, maxLines: 3),
+              _buildField('Location', controllers['location']!, isEditing),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildSectionCard(
+            title: 'Account Status',
+            icon: Icons.verified_user_outlined,
+            children: [
+              _buildReadOnlyRow('Account Type', getAccountType()),
+              _buildReadOnlyRow('Subscription', userData['isSubscribed'] == true ? 'Premium' : 'Free'),
+              _buildReadOnlyRow('Role', userData['role'].toString().toUpperCase()),
+            ],
+          ),
+        ],
         const SizedBox(height: 32),
         if (!isEditing)
           DangerButton(

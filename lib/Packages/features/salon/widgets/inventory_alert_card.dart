@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class InventoryAlertCard extends StatelessWidget {
   const InventoryAlertCard({super.key});
@@ -35,7 +34,7 @@ class InventoryAlertCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.warning_amber_rounded, color: AppColors.error),
                   const SizedBox(width: 8),
-                  Text(AppLocalizations.of(context)!.lowStockAlerts,
+                  Text("low_stock_alerts".tr(),
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -60,7 +59,7 @@ class InventoryAlertCard extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () {},
-              child: Text(AppLocalizations.of(context)!.manageInventory, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+              child: Text("manage_inventory".tr(), style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

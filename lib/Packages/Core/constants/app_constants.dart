@@ -3,7 +3,7 @@
 class AppConstants {
   // App Information
   static const String appName = 'Na3eeman';
-  static const String appTagline = 'Premium Barber Experience';
+  static const String appTagline = 'Premium Expert Experience';
   static const String appVersion = '1.0.0';
   static const String appBuildNumber = '1';
   
@@ -45,7 +45,7 @@ class AppConstants {
   static const String userProfileByIdEndpoint = '/usr/profiles/{id}/';
   static const String userByIdEndpoint = '/usr/users/{id}/';
   static const String changeUserRoleEndpoint = '/usr/users/change-role/';
-  static const String barbersEndpoint = '/usr/barbers/';
+  static const String expertsEndpoint = '/usr/experts/';
   static const String customersEndpoint = '/usr/customers/';
 
   // Salon Endpoints
@@ -58,7 +58,7 @@ class AppConstants {
   static const String salonPackagesEndpoint = '/salon/packages';
   static const String salonProductsEndpoint = '/salon/products';
   static const String salonInventoryEndpoint = '/salon/inventory';
-  static const String salonBarbersEndpoint = '/salon/barbers';
+  static const String salonExpertsEndpoint = '/salon/experts';
 
   // Loyalty Endpoints
   static const String loyaltyBalanceEndpoint = '/loyalty/balance';
@@ -130,7 +130,7 @@ class AppConstants {
   static const int maxServicesPerSalon = 20;
 
   // Staff Management Constants
-  static const List<String> barberSpecialties = [
+  static const List<String> expertSpecialties = [
     'Haircut',
     'Beard Trim',
     'Shave',

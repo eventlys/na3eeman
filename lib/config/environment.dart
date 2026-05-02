@@ -1,9 +1,4 @@
-// import 'package:flutter/foundation.dart';
-
-/// Application Environment Configuration
-///
-/// This file defines the environment configuration for the app.
-/// Different environments (dev, staging, prod) can be selected at build time.
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 enum AppFlavor { dev, staging, prod }
 
@@ -15,15 +10,10 @@ class Environment {
   static EnvironmentConfig get config => _config;
 
   /// Initialize the environment configuration
-  ///
-  /// Call this in main() before runApp()
-  ///
-  /// Example:
-  /// ```dart
-  /// await Environment.init(flavor: AppFlavor.prod);
-  /// ```
   static Future<void> init({required AppFlavor flavor}) async {
     _flavor = flavor;
+    
+    await dotenv.load(fileName: ".env");
 
     switch (flavor) {
       case AppFlavor.dev:
@@ -41,6 +31,11 @@ class Environment {
   static bool get isDevelopment => _flavor == AppFlavor.dev;
   static bool get isStaging => _flavor == AppFlavor.staging;
   static bool get isProduction => _flavor == AppFlavor.prod;
+
+  // Helper to get env variables with defaults
+  static String getEnv(String key, {String defaultValue = ''}) {
+    return dotenv.env[key] ?? defaultValue;
+  }
 }
 
 /// Base configuration interface
@@ -64,22 +59,21 @@ abstract class EnvironmentConfig {
 
   // Payment
   String? get stripePublishableKey;
+
+  // Firebase
+  String get firebaseApiKey;
+  String get firebaseAppId;
+  String get firebaseMessagingSenderId;
+  String get firebaseProjectId;
 }
 
 /// Development environment configuration
 class DevConfig implements EnvironmentConfig {
-  // --- Connection Options ---
-  // 1. Android Emulator: 'http://10.0.2.2:8080/api/v1'
-  // 2. iOS Simulator:   'http://localhost:8080/api/v1'
-  // 3. Local LAN IP:     'http://192.168.1.90:8080/api/v1' (Change to your PC's IP)
-  // 4. Remote Tunnel:   'https://xxxx.ngrok-free.app/api/v1' (Use for remote testing)
-  
   @override
-  String get apiBaseUrl => const String.fromEnvironment(
-    'API_BASE_URL',
-    // Change this defaultValue to switch connection types
-    defaultValue: 'https://diedra-stedfast-clint.ngrok-free.dev/api/v1',
-  );
+  String get apiBaseUrl => Environment.getEnv(
+        'API_BASE_URL',
+        defaultValue: 'https://diedra-stedfast-clint.ngrok-free.dev/api/v1',
+      );
 
   @override
   String get appName => 'Na3eeman (Dev)';
@@ -96,7 +90,6 @@ class DevConfig implements EnvironmentConfig {
   @override
   int get maxRetries => 3;
 
-  // Feature flags for dev
   @override
   bool get enableBiometricAuth => true;
 
@@ -104,32 +97,40 @@ class DevConfig implements EnvironmentConfig {
   bool get enableSocialLogin => true;
 
   @override
-  bool get enableCrashReporting => false; // Don't send dev crashes to Sentry
+  bool get enableCrashReporting => false;
 
   @override
-  bool get enableAnalytics => false; // Don't track dev usage
+  bool get enableAnalytics => false;
 
   @override
-  String? get googleClientId =>
-      const String.fromEnvironment('GOOGLE_CLIENT_ID');
+  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID');
 
   @override
-  String? get appleClientId => const String.fromEnvironment('APPLE_CLIENT_ID');
+  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey => const String.fromEnvironment(
-    'STRIPE_PUBLISHABLE_KEY',
-    defaultValue: 'pk_test_...', // Test key for development
-  );
+  String? get stripePublishableKey => Environment.getEnv(
+        'STRIPE_PUBLISHABLE_KEY',
+        defaultValue: 'pk_test_...',
+      );
+
+  @override
+  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
+  @override
+  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
+  @override
+  String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+  @override
+  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
 }
 
 /// Staging environment configuration
 class StagingConfig implements EnvironmentConfig {
   @override
-  String get apiBaseUrl => const String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://staging-api.na3eeman.com/api/v1',
-  );
+  String get apiBaseUrl => Environment.getEnv(
+        'API_BASE_URL',
+        defaultValue: 'localhost:8000/api/v1',
+      );
 
   @override
   String get appName => 'Na3eeman (Staging)';
@@ -153,30 +154,37 @@ class StagingConfig implements EnvironmentConfig {
   bool get enableSocialLogin => true;
 
   @override
-  bool get enableCrashReporting => true; // Log staging crashes
+  bool get enableCrashReporting => true;
 
   @override
-  bool get enableAnalytics => true; // Track staging usage
+  bool get enableAnalytics => true;
 
   @override
-  String? get googleClientId =>
-      const String.fromEnvironment('GOOGLE_CLIENT_ID');
+  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID');
 
   @override
-  String? get appleClientId => const String.fromEnvironment('APPLE_CLIENT_ID');
+  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey =>
-      const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
+  String? get stripePublishableKey => Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
+
+  @override
+  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
+  @override
+  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
+  @override
+  String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+  @override
+  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
 }
 
 /// Production environment configuration
 class ProdConfig implements EnvironmentConfig {
   @override
-  String get apiBaseUrl => const String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://api.na3eeman.com/api/v1',
-  );
+  String get apiBaseUrl => Environment.getEnv(
+        'API_BASE_URL',
+        defaultValue: 'localhost:8000/api/v1',
+      );
 
   @override
   String get appName => 'Na3eeman';
@@ -185,7 +193,7 @@ class ProdConfig implements EnvironmentConfig {
   bool get showDebugBanner => false;
 
   @override
-  bool get enableLogging => false; // Minimize logging in production
+  bool get enableLogging => false;
 
   @override
   Duration get apiTimeout => const Duration(seconds: 15);
@@ -206,13 +214,20 @@ class ProdConfig implements EnvironmentConfig {
   bool get enableAnalytics => true;
 
   @override
-  String? get googleClientId =>
-      const String.fromEnvironment('GOOGLE_CLIENT_ID');
+  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID');
 
   @override
-  String? get appleClientId => const String.fromEnvironment('APPLE_CLIENT_ID');
+  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey =>
-      const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
+  String? get stripePublishableKey => Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
+
+  @override
+  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
+  @override
+  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
+  @override
+  String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+  @override
+  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
 }

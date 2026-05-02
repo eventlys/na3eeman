@@ -4,7 +4,7 @@ class ServiceSelection {
   final SalonService mainService;
   final List<SalonService> additionalServices;
   final int? salonId;
-  final int? barberId;
+  final int? expertId;
   final DateTime? selectedDate;
   final String? selectedTime;
 
@@ -12,7 +12,7 @@ class ServiceSelection {
     required this.mainService,
     this.additionalServices = const [],
     this.salonId,
-    this.barberId,
+    this.expertId,
     this.selectedDate,
     this.selectedTime,
   });
@@ -60,7 +60,7 @@ class ServiceSelection {
     SalonService? mainService,
     List<SalonService>? additionalServices,
     int? salonId,
-    int? barberId,
+    int? expertId,
     DateTime? selectedDate,
     String? selectedTime,
   }) {
@@ -68,7 +68,7 @@ class ServiceSelection {
       mainService: mainService ?? this.mainService,
       additionalServices: additionalServices ?? this.additionalServices,
       salonId: salonId ?? this.salonId,
-      barberId: barberId ?? this.barberId,
+      expertId: expertId ?? this.expertId,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedTime: selectedTime ?? this.selectedTime,
     );
@@ -93,7 +93,7 @@ class ServiceSelection {
   Map<String, dynamic> toAppointmentData() {
     return {
       'salon': salonId,
-      'barber': barberId,
+      'expert': expertId,
       'start_time': selectedDate != null && selectedTime != null
           ? '${selectedDate!.toIso8601String().split('T')[0]}T$selectedTime'
           : null,

@@ -1,11 +1,10 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Helpers/service_models_helper.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/utils/helpers/service_calculator.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ServiceDetailsSection extends StatelessWidget {
   final ServiceProvider serviceProvider;
@@ -49,7 +48,7 @@ class ServiceDetailsSection extends StatelessWidget {
                         color: AppColor.lightSecondary,
                       ),
                       const SizedBox(width: 8),
-                      Text(AppLocalizations.of(context)!.addAdditionalServices,
+                      Text("add_additional_services".tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -120,7 +119,7 @@ class ServiceDetailsSection extends StatelessWidget {
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text(AppLocalizations.of(context)!.close,
+                      child: Text("close".tr(),
                         style: TextStyle(
                           color: AppColor.lightSecondary,
                           fontSize: 16,
@@ -164,7 +163,7 @@ class ServiceDetailsSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.serviceDetails,
+            Text("service_details".tr(),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -194,7 +193,7 @@ class ServiceDetailsSection extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context)!.mainService,
+                        Text("main_service".tr(),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColor.lightSecondary,
@@ -222,7 +221,7 @@ class ServiceDetailsSection extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(AppLocalizations.of(context)!.additionalServices,
+                  Text("additional_services".tr(),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -288,7 +287,7 @@ class ServiceDetailsSection extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppLocalizations.of(context)!.totalDuration,
+                      Text("total_duration".tr(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColor.lightText,
@@ -307,7 +306,7 @@ class ServiceDetailsSection extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppLocalizations.of(context)!.totalPrice,
+                      Text("total_price".tr(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColor.lightText,
@@ -349,7 +348,7 @@ class ServiceDetailsSection extends StatelessWidget {
                     height: 20,
                     color: AppColor.lightSecondary,
                   ),
-                  label: Text(AppLocalizations.of(context)!.addMoreServices,
+                  label: Text("add_more_services".tr(),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -385,7 +384,7 @@ class ServiceDetailsSection extends StatelessWidget {
               color: AppColor.lightSecondary,
             ),
             SizedBox(height: 8),
-            Text(AppLocalizations.of(context)!.noServiceSelected,
+            Text("no_service_selected".tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -393,7 +392,7 @@ class ServiceDetailsSection extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            Text(AppLocalizations.of(context)!.pleaseSelectAMainServiceToContinue,
+            Text("please_select_a_main_service_to_continue".tr(),
               style: TextStyle(
                 color: AppColor.lightTextSecondary,
               ),

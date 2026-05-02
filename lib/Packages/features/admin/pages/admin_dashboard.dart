@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/theme/colors.dart';
@@ -11,6 +11,7 @@ import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import 'admin_user_requests_page.dart';
+import 'admin_faq_management.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -41,7 +42,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final adminProvider = context.watch<AdminAnalyticsProvider>();
     final overview = adminProvider.overview;
@@ -51,7 +51,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
       children: [
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: _buildAppBar(l10n, adminProvider),
+          appBar: _buildAppBar(adminProvider),
           body: RefreshIndicator(
             onRefresh: () => adminProvider.fetchOverview(),
             child: SingleChildScrollView(
@@ -75,15 +75,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   Row(
                     children: [
                       Expanded(child: _buildKpiCard(
-                        l10n.totalUsers,
+                        "total_users".tr(),
                         overview?['total_users']?.toString() ?? '—',
                         Icons.people_rounded,
                         primary,
-                        growth: '+${overview?['new_users_7d'] ?? 0} this week',
+                        growth: 'this_week_growth'.tr(args: [overview?['new_users_7d']?.toString() ?? '0']),
                       )),
                       const SizedBox(width: AppSpacing.cardGap),
                       Expanded(child: _buildKpiCard(
-                        l10n.activeSalons,
+                        "active_salons".tr(),
                         overview?['total_salons']?.toString() ?? '—',
                         Icons.storefront_rounded,
                         AppColors.pink,
@@ -96,16 +96,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   Row(
                     children: [
                       Expanded(child: _buildKpiCard(
-                        l10n.appointments,
+                        "appointments".tr(),
                         overview?['total_appointments']?.toString() ?? '—',
                         Icons.calendar_month_rounded,
                         AppColors.success,
-                        growth: '+${overview?['new_appointments_7d'] ?? 0} this week',
+                        growth: 'this_week_growth'.tr(args: [overview?['new_appointments_7d']?.toString() ?? '0']),
                       )),
                       const SizedBox(width: AppSpacing.cardGap),
                       Expanded(child: _buildKpiCard(
-                        l10n.revenue,
-                        '${overview?['total_revenue'] ?? 0} JOD',
+                        "revenue".tr(),
+                        'amount_jod_value'.tr(args: [overview?['total_revenue']?.toString() ?? '0']),
                         Icons.payments_rounded,
                         AppColors.cream600,
                       )),
@@ -114,30 +114,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── Real-Time Monitoring ───────────────────────────────────
-                  _buildSectionHeader(l10n.realtimeMetrics, null),
+                  _buildSectionHeader("realtime_metrics".tr(), null),
                   const SizedBox(height: AppSpacing.sectionGap),
                   _buildMonitoringRow(isDark),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── System Health ──────────────────────────────────────────
-                  _buildSectionHeader(l10n.systemHealth, l10n.viewApiLogs),
+                  _buildSectionHeader("system_health".tr(), "view_api_logs".tr()),
                   const SizedBox(height: AppSpacing.sectionGap),
-                  _buildHealthTile(l10n.apiStatus, '99.9% Uptime', AppColors.success, Icons.cloud_done_rounded, isDark),
-                  _buildHealthTile(l10n.cacheStatus, 'Connected', AppColors.success, Icons.memory_rounded, isDark),
-                  _buildHealthTile(l10n.dbStatus, 'Active', AppColors.success, Icons.storage_rounded, isDark),
+                  _buildHealthTile("api_status".tr(), '99.9% Uptime', AppColors.success, Icons.cloud_done_rounded, isDark),
+                  _buildHealthTile("cache_status".tr(), 'Connected', AppColors.success, Icons.memory_rounded, isDark),
+                  _buildHealthTile("db_status".tr(), 'Active', AppColors.success, Icons.storage_rounded, isDark),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── Admin Modules ──────────────────────────────────────────
-                  _buildSectionHeader(l10n.adminModules, null),
+                  _buildSectionHeader("admin_modules".tr(), null),
                   const SizedBox(height: AppSpacing.sectionGap),
-                  _buildModuleGrid(l10n),
+                  _buildModuleGrid(),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── Insights ───────────────────────────────────────────────
-                  _buildSectionHeader(l10n.insights, l10n.analyzeTrends),
+                  _buildSectionHeader("insights".tr(), "analyze_trends".tr()),
                   const SizedBox(height: AppSpacing.sectionGap),
-                  _buildInsightCard(l10n.growthInsight, Icons.trending_up_rounded, AppColors.success, isDark),
-                  _buildInsightCard(l10n.topCategoriesInsight, Icons.bar_chart_rounded, primary, isDark),
+                  _buildInsightCard("growth_insight".tr(), Icons.trending_up_rounded, AppColors.success, isDark),
+                  _buildInsightCard("top_categories_insight".tr(), Icons.bar_chart_rounded, primary, isDark),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── Feedback ───────────────────────────────────────────────
@@ -155,7 +155,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   // ─── AppBar ──────────────────────────────────────────────────────────────────
 
-  PreferredSizeWidget _buildAppBar(AppLocalizations l10n, AdminAnalyticsProvider provider) {
+  PreferredSizeWidget _buildAppBar(AdminAnalyticsProvider provider) {
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
@@ -173,7 +173,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
           icon: const Icon(Icons.refresh_rounded),
           onPressed: () {
             provider.fetchOverview();
-            AppSnackBar.info(context, 'Dashboard refreshed');
+            AppSnackBar.info(context, 'dashboard_refreshed'.tr());
           },
         ),
         const SizedBox(width: AppSpacing.sm),
@@ -245,10 +245,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   Widget _buildMonitoringRow(bool isDark) {
     final metrics = [
-      ('247',  AppLocalizations.of(context)!.activeUsers,   Icons.person_rounded,            AppColors.blue),
-      ('68%',  AppLocalizations.of(context)!.conversionRate, Icons.sync_alt_rounded,          AppColors.success),
-      ('3.2%', AppLocalizations.of(context)!.churnRate,      Icons.trending_down_rounded,     AppColors.error),
-      ('4m32s', AppLocalizations.of(context)!.avgSessionTime, Icons.timer_rounded,            Theme.of(context).primaryColor),
+      ('247',  "active_users".tr(),   Icons.person_rounded,            AppColors.blue),
+      ('68%',  "conversion_rate".tr(), Icons.sync_alt_rounded,          AppColors.success),
+      ('3.2%', "churn_rate".tr(),      Icons.trending_down_rounded,     AppColors.error),
+      ('4m32s', "avg_session_time".tr(), Icons.timer_rounded,            Theme.of(context).primaryColor),
     ];
 
     return SizedBox(
@@ -256,7 +256,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: metrics.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.cardGap),
+        separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.cardGap),
         itemBuilder: (_, i) {
           final (value, label, icon, color) = metrics[i];
           return Container(
@@ -320,17 +320,19 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   // ─── Module Grid ─────────────────────────────────────────────────────────────
 
-  Widget _buildModuleGrid(AppLocalizations l10n) {
+  Widget _buildModuleGrid() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).primaryColor;
 
     final modules = [
-      (l10n.totalUsers,       Icons.manage_accounts_rounded, '/admin/users',            primary),
-      (l10n.revenue,          Icons.account_balance_rounded, '/admin/finance',           AppColors.success),
-      (l10n.insights,         Icons.insights_rounded,        '/admin/analytics',         AppColors.blue),
-      (l10n.compliance,       Icons.verified_user_rounded,   '/admin/compliance',        AppColors.warning),
-      (l10n.serviceRequests,  Icons.auto_awesome_rounded,    '/admin/service-requests',  AppColors.pink),
-      (l10n.userRequests,     Icons.inbox_rounded,           'user-requests',            const Color(0xFF6A1B9A)),
+      ("total_users".tr(),       Icons.manage_accounts_rounded, '/admin/users',            primary),
+      ("revenue".tr(),          Icons.account_balance_rounded, '/admin/finance',           AppColors.success),
+      ("insights".tr(),         Icons.insights_rounded,        '/admin/analytics',         AppColors.blue),
+      ("compliance".tr(),       Icons.verified_user_rounded,   '/admin/compliance',        AppColors.warning),
+      ("service_requests".tr(),  Icons.auto_awesome_rounded,    '/admin/service-requests',  AppColors.pink),
+      ('customer_feedback'.tr(),   Icons.rate_review_rounded,     '/admin/feedback-review',   Colors.teal),
+      ("user_requests".tr(),     Icons.inbox_rounded,           'user-requests',            const Color(0xFF6A1B9A)),
+      ('manage_faqs'.tr(),         Icons.help_outline_rounded,    'manage-faqs',              Colors.orange),
     ];
 
     return GridView.builder(
@@ -349,6 +351,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
           onTap: () {
             if (route == 'user-requests') {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminUserRequestsPage()));
+            } else if (route == 'manage-faqs') {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminFAQManagementPage()));
             } else {
               Navigator.pushNamed(context, route);
             }

@@ -3,32 +3,9 @@ import '../../Models/salon/salon_schedule_model.dart';
 // import '../Models/salon_service_model.dart';
 
 class ScheduleHelper {
-  // Mock data - replace with actual API calls
-  static final List<DateTime> _unavailableDates = [
-    DateTime.now().add(Duration(days: 1)),
-    DateTime.now().add(Duration(days: 3)),
-    DateTime.now().add(Duration(days: 5)),
-  ];
-
-  static final List<TimeOfDay> _availableTimeSlots = [
-    TimeOfDay(hour: 9, minute: 0),
-    TimeOfDay(hour: 10, minute: 0),
-    TimeOfDay(hour: 11, minute: 0),
-    TimeOfDay(hour: 14, minute: 0),
-    TimeOfDay(hour: 15, minute: 0),
-    TimeOfDay(hour: 16, minute: 0),
-  ];
-
-  static final Map<DateTime, List<TimeOfDay>> _bookedSlots = {
-    DateTime.now().add(Duration(days: 2)): [
-      TimeOfDay(hour: 10, minute: 0),
-      TimeOfDay(hour: 14, minute: 0),
-    ],
-    DateTime.now().add(Duration(days: 4)): [
-      TimeOfDay(hour: 9, minute: 0),
-      TimeOfDay(hour: 15, minute: 0),
-    ],
-  };
+  static final List<DateTime> _unavailableDates = [];
+  static final List<TimeOfDay> _availableTimeSlots = [];
+  static final Map<DateTime, List<TimeOfDay>> _bookedSlots = {};
 
   static List<DateTime> get unavailableDates => _unavailableDates;
   static List<TimeOfDay> get availableTimeSlots => _availableTimeSlots;

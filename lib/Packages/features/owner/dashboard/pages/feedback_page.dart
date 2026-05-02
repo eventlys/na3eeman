@@ -1,7 +1,6 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../../Providers/features/owner_provider.dart';
 import '../../../../../Services/business_service.dart';
 import '../../../../../Models/salon/review_model.dart';
@@ -60,7 +59,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.feedback, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("feedback".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: _buildBody(),
     );
@@ -80,7 +79,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             const SizedBox(height: 16),
             Text(_error!, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: _loadReviews, child: Text(AppLocalizations.of(context)!.retry)),
+            ElevatedButton(onPressed: _loadReviews, child: Text("retry".tr())),
           ],
         ),
       );

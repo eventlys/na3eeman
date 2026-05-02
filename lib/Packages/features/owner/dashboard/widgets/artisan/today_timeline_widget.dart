@@ -1,7 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/appointment_provider.dart';
 
@@ -25,12 +23,11 @@ class TodayTimelineWidget extends StatelessWidget {
 
     // Filter appointments for today
     final todayAppointments = appointmentProvider.appointments.where((appt) {
-      if (appt.startTime == null) return false;
-      return appt.startTime!.year == now.year &&
-          appt.startTime!.month == now.month &&
-          appt.startTime!.day == now.day;
+      return appt.startTime.year == now.year &&
+          appt.startTime.month == now.month &&
+          appt.startTime.day == now.day;
     }).toList()
-      ..sort((a, b) => a.startTime!.compareTo(b.startTime!));
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,18 +54,18 @@ class TodayTimelineWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Center(
-                child: Text(AppLocalizations.of(context)!.noAppointmentsScheduled,
+                child: Text("no_appointments_scheduled".tr(),
                     style: TextStyle(color: theme.hintColor, fontSize: 12))),
           ),
         ...todayAppointments.map((appt) {
-          final timeStr = DateFormat('HH:mm').format(appt.startTime!);
+          final timeStr = DateFormat('HH:mm').format(appt.startTime);
           // The API might be sending customer logic differently depending on who is requesting.
           // Fallback to "Client" if ID is not available
           final client = 'Client #${appt.customerId ?? 0}';
           // Status drives color
           final isCompleted = appt.status.name.toUpperCase() == 'COMPLETED';
           final isCurrent = appt.status.name.toUpperCase() == 'CHECKED_IN' ||
-              (now.isAfter(appt.startTime!) && now.isBefore(appt.endTime!));
+              (now.isAfter(appt.startTime) && now.isBefore(appt.endTime));
           
           return _SlotTile(
             time: timeStr,
@@ -151,7 +148,7 @@ class _SlotTile extends StatelessWidget {
                 color: theme.primaryColor,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(AppLocalizations.of(context)!.now,
+              child: Text("now".tr(),
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 11,

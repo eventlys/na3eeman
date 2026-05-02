@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../Models/salon/offer_model.dart';
 import '../../Models/salon/ad_campaign_model.dart';
 import '../../Services/business_service.dart';
-// import 'package:easy_localization/easy_localization.dart';
 
 class OffersProvider with ChangeNotifier {
   final OffersService _offersService = OffersService();
@@ -17,8 +16,6 @@ class OffersProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   
-  /// Loads all campaigns (Offers & Ads) for a specific salon.
-  /// Used by Owner Dashboard and Specific Salon pages.
   Future<void> loadCampaigns(int salonId) async {
     _isLoading = true;
     _error = null;
@@ -32,7 +29,6 @@ class OffersProvider with ChangeNotifier {
       _adCampaigns = adsData.map((e) => AdCampaignModel.fromMap(e as Map<String, dynamic>)).toList();
     } catch (e) {
       _error = 'Failed to load campaigns: $e';
-      // No fallback to mock as per Sprint 2 rules
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -90,6 +86,26 @@ class OffersProvider with ChangeNotifier {
     } catch (e) {
       _error = 'Failed to delete ad campaign: $e';
       notifyListeners();
+    }
+  }
+
+  Future<void> toggleOfferStatus(int salonId, int offerId, bool isActive) async {
+    try {
+      await _offersService.updateOffer(salonId, offerId, {'is_active': isActive});
+      await loadCampaigns(salonId);
+    } catch (e) {
+       _error = 'Failed to toggle offer: $e';
+       notifyListeners();
+    }
+  }
+
+  Future<void> toggleAdStatus(int salonId, int adId, bool isActive) async {
+    try {
+      await _offersService.updateAdCampaign(salonId, adId, {'is_active': isActive});
+      await loadCampaigns(salonId);
+    } catch (e) {
+       _error = 'Failed to toggle ad: $e';
+       notifyListeners();
     }
   }
 

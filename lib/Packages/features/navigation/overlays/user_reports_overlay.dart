@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import '../../../../core/enums/app_enums.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +68,6 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
 
   Future<List<dynamic>> _fetchReportsAboutUser(int userId) async {
     try {
-      // This would be your actual API endpoint to get reports about a user
       final response = await ApiService().get(
         '/reports/about-user/$userId',
         queryParams: {'include_resolved': 'false'},
@@ -77,48 +76,11 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
       if (response['data'] != null) {
         return response['data'] as List<dynamic>;
       }
-
-      // Fallback to mock data if API fails
-      return _getMockReports();
+      return [];
     } catch (e) {
-      // Fallback to mock data
-      return _getMockReports();
+      print('Error fetching reports: $e');
+      return [];
     }
-  }
-
-  List<Map<String, dynamic>> _getMockReports() {
-    return [
-      {
-        'id': '1',
-        'reporter_name': 'Barber John',
-        'reporter_role': 'BARBER',
-        'description': 'Customer was consistently late for appointments',
-        'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-        'type': 'user',
-        'status': 'pending',
-        'reporter_id': 2,
-      },
-      {
-        'id': '2',
-        'reporter_name': 'Salon Owner',
-        'reporter_role': 'OWNER',
-        'description': 'Inappropriate behavior in waiting area',
-        'date': DateTime.now().subtract(const Duration(days: 5)).toIso8601String(),
-        'type': 'content',
-        'status': 'new',
-        'reporter_id': 3,
-      },
-      {
-        'id': '3',
-        'reporter_name': 'Barber Mike',
-        'reporter_role': 'BARBER',
-        'description': 'No-show for scheduled appointment without notice',
-        'date': DateTime.now().subtract(const Duration(days: 7)).toIso8601String(),
-        'type': 'user',
-        'status': 'resolved',
-        'reporter_id': 4,
-      },
-    ];
   }
 
   @override
@@ -285,7 +247,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _loadUserReports,
-              child: Text(AppLocalizations.of(context)!.retry),
+              child: Text("retry".tr()),
             ),
           ],
         ),
@@ -515,7 +477,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.close),
+            child: Text("close".tr()),
           ),
           if (status != 'resolved')
             ElevatedButton(

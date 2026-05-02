@@ -1,9 +1,8 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class PointsTrackerWidget extends StatelessWidget {
   const PointsTrackerWidget({super.key});
@@ -108,7 +107,7 @@ class PointsTrackerWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.quickActions,
+        Text("quick_actions".tr(),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.grey.shade800,
@@ -225,7 +224,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text("cancel".tr()),
           ),
         ],
       ),
@@ -238,7 +237,7 @@ class PointsTrackerWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.appFeedback),
+        title: Text("app_feedback".tr()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -257,7 +256,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text("cancel".tr()),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -278,7 +277,7 @@ class PointsTrackerWidget extends StatelessWidget {
                 }
               }
             },
-            child: Text(AppLocalizations.of(context)!.submit),
+            child: Text("submit".tr()),
           ),
         ],
       ),
@@ -309,7 +308,7 @@ class PointsTrackerWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text("cancel".tr()),
           ),
           ElevatedButton(
             onPressed: () async {

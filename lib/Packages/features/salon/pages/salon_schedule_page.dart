@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/service_models_helper.dart';
@@ -6,7 +6,6 @@ import '../../../../Providers/main_providers.dart';
 import '../../../Core/backgrounds/bd_faded.dart';
 import '../../../Core/themes/glass_appbar.dart';
 import '../../../Core/widgets/common/date_time_pickers.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class SalonSchedulePage extends StatefulWidget {
   final Map<String, dynamic> serviceData;
@@ -125,7 +124,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   children: [
                     Icon(Icons.calendar_today, color: const Color(0xffc25858)),
                     const SizedBox(width: 8),
-                    Text(AppLocalizations.of(context)!.scheduleType,
+                    Text("schedule_type".tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -143,8 +142,8 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   children: [
                     _buildScheduleOption(
                       context,
-                      title: AppLocalizations.of(context)!.oneTimeOnly,
-                      subtitle: AppLocalizations.of(context)!.scheduleThisAppointmentOnce,
+                      title: "one_time_only".tr(),
+                      subtitle: "schedule_this_appointment_once".tr(),
                       icon: Icons.event,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -157,8 +156,8 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                     const SizedBox(height: 12),
                     _buildScheduleOption(
                       context,
-                      title: AppLocalizations.of(context)!.biWeekly,
-                      subtitle: AppLocalizations.of(context)!.repeatEvery2Weeks,
+                      title: "bi_weekly".tr(),
+                      subtitle: "repeat_every2_weeks".tr(),
                       icon: Icons.repeat,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -171,8 +170,8 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                     const SizedBox(height: 12),
                     _buildScheduleOption(
                       context,
-                      title: AppLocalizations.of(context)!.monthly,
-                      subtitle: AppLocalizations.of(context)!.repeatEveryMonth,
+                      title: "monthly".tr(),
+                      subtitle: "repeat_every_month".tr(),
                       icon: Icons.calendar_month,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -199,7 +198,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   ),
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(AppLocalizations.of(context)!.cancel,
+                    child: Text("cancel".tr(),
                       style: TextStyle(
                         color: const Color(0xffc25858),
                         fontSize: 16,
@@ -268,7 +267,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
     if (_selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.pleaseSelectBothDateAndTime),
+          content: Text("please_select_both_date_and_time".tr()),
           backgroundColor: Colors.red,
         ),
       );
@@ -299,7 +298,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
         body: CustomScrollView(
           slivers: [
             GlassSliverAppBar(
-              title: AppLocalizations.of(context)!.bookAHaircut,
+              title: "book_a_haircut".tr(),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
@@ -337,7 +336,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                             ),
-                            child: Text(AppLocalizations.of(context)!.confirmSchedule,
+                            child: Text("confirm_schedule".tr(),
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -369,7 +368,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.of(context)!.selectedServices,
+          Text("selected_services".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -384,7 +383,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
           // Additional Services
           if (additionalServices.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text(AppLocalizations.of(context)!.additionalServices,
+            Text("additional_services".tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -397,7 +396,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
           const SizedBox(height: 12),
 
           // Available Additional Services
-          Text(AppLocalizations.of(context)!.addMoreServices,
+          Text("add_more_services".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 // Add this simple dialog class before your ReportsPage class
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,7 @@ class SimpleReportDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.reportOptions),
+      title: Text("report_options".tr()),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,11 +29,11 @@ class SimpleReportDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text("cancel".tr()),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(initialRequest),
-          child: Text(AppLocalizations.of(context)!.generate),
+          child: Text("generate".tr()),
         ),
       ],
     );

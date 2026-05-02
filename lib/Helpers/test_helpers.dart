@@ -30,7 +30,7 @@ class TestData {
   static Map<String, dynamic> getTestSalon() {
     return {
       'id': 'salon_123',
-      'title': 'Test Barber Salon',
+      'title': 'Test Expert Salon',
       'workingHours': '9:00 - 18:00',
       'salonLocation': '123 Test Street',
       'salonRating': 4.5,

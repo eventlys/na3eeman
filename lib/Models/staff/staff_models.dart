@@ -1,4 +1,4 @@
-class BarberPerformance {
+class ExpertPerformance {
   final String staffId;
   final DateTime date;
   final int appointmentsCompleted;
@@ -8,7 +8,7 @@ class BarberPerformance {
   final Map<String, int> servicesBreakdown;
   final int salonId;
 
-  BarberPerformance({
+  ExpertPerformance({
     required this.staffId,
     required this.date,
     required this.appointmentsCompleted,
@@ -22,8 +22,8 @@ class BarberPerformance {
   double get earnings => totalRevenue + tips;
   double get averageEarningPerAppointment => appointmentsCompleted > 0 ? earnings / appointmentsCompleted : 0;
 
-  factory BarberPerformance.fromJson(Map<String, dynamic> json) {
-    return BarberPerformance(
+  factory ExpertPerformance.fromJson(Map<String, dynamic> json) {
+    return ExpertPerformance(
       staffId: json['staff_id'] ?? json['staffId'] ?? '',
       date: DateTime.parse(json['date']),
       appointmentsCompleted: json['appointments_completed'] ?? json['appointmentsCompleted'] ?? 0,

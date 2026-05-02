@@ -103,38 +103,9 @@ class PasswordHelper {
     };
   }
 
-  /// Simulates password reset (for development/testing)
-  Future<Map<String, dynamic>> simulatePasswordReset({
-    required String token,
-    required String newPassword,
-    int delaySeconds = 2,
-  }) async {
-    _logger.i('Simulating password reset');
-
-    await Future.delayed(Duration(seconds: delaySeconds));
-
-    // Mock reset logic
-    if (newPassword.length >= 8) {
-      return {
-        'success': true,
-        'message': 'Password reset successfully',
-      };
-    } else {
-      return {
-        'success': false,
-        'message': 'Password must be at least 8 characters',
-      };
-    }
-  }
-
   /// Validates reset token format
   bool validateResetToken(String token) {
-    if (token.isEmpty) {
-      return false;
-    }
-
-    // Basic token validation - adjust based on your token format
-    return token.length >= 10 && token.contains('reset');
+    return token.isNotEmpty && token.length >= 6;
   }
 
   /// Handles post-reset navigation

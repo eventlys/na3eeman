@@ -85,16 +85,6 @@ class Sidebar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              // User Profile
-              // UserProfileSection(controller: controller),
-
-              // const SizedBox(height: 24),
-              // const Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 24.0),
-              //   child: Divider(color: AppColors.almostBlack50),
-              // ),
-              // const SizedBox(height: 16),
-
               // Menu Items
               Expanded(
                 child: _buildMenuItems(context),
@@ -151,100 +141,64 @@ class Sidebar extends StatelessWidget {
           requiresAuth: true,
           requiredRoles: [UserRole.owner, UserRole.admin],
         ),
-      if (role == UserRole.owner || role == UserRole.admin)
-        MenuItem(
-          title: 'management'.tr(),
-          assetIcon: 'assets/icons/setting.png',
-          delay: 1,
-          onTap: () => Navigator.pushNamed(context, '/management_dashboard'),
-          requiresAuth: true,
-          requiredRoles: [UserRole.owner, UserRole.admin],
-        ),
       MenuItem(
-        title: 'my_schedule'.tr(),
-        assetIcon: 'assets/icons/plus.png',
-        delay: 1,
-        onTap: () => Navigator.pushNamed(context, '/employee_schedule'),
-        requiresAuth: true,
-        requiredRoles: [UserRole.employee],
-      ),
-      MenuItem(
-        title: 'intern_activity'.tr(),
+        title: 'management'.tr(),
         assetIcon: 'assets/icons/setting.png',
         delay: 1,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/intern_activity');
-        },
+        onTap: () => Navigator.pushNamed(context, '/management_dashboard'),
         requiresAuth: true,
-        requiredRoles: [UserRole.intern],
-      ),
-      // ── Owner / Cofounder features ────────────────────────────────
-      MenuItem(
-        title: 'active_campaigns'.tr(),
-        assetIcon: 'assets/icons/plus.png',
-        delay: 2,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/active_campaigns');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
+        requiredRoles: [
+          UserRole.owner, 
+          UserRole.admin, 
+          UserRole.ownerExpert, 
+          UserRole.cofounder, 
+          UserRole.manager
+        ],
       ),
       MenuItem(
-        title: 'offers_packages'.tr(),
-        assetIcon: 'assets/icons/plus.png',
-        delay: 2,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/offers');
-        },
+        title: 'My Times'.tr(),
+        assetIcon: 'assets/icons/clock.png',
+        delay: 1,
+        onTap: () => Navigator.pushNamed(context, '/my_times'),
         requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+        requiredRoles: [
+          UserRole.expert,
+          UserRole.intern,
+          UserRole.ownerExpert,
+        ],
       ),
       MenuItem(
-        title: 'analytics'.tr(),
-        assetIcon: 'assets/icons/setting.png',
-        delay: 2,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/analytics');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
-      ),
-      MenuItem(
-        title: 'expenses'.tr(),
-        assetIcon: 'assets/icons/money.png',
-        delay: 2,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/expenses');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
-      ),
-      MenuItem(
-        title: 'payroll'.tr(),
-        assetIcon: 'assets/icons/wallet.png',
-        delay: 2,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/payroll');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
-      ),
-      MenuItem(
-        title: 'data_management'.tr(),
-        assetIcon: 'assets/icons/details.png',
-        delay: 2,
+        title: 'Data Management'.tr(),
+        assetIcon: 'assets/icons/report.png',
+        delay: 1,
         onTap: () {
           controller.closeSidebar();
           Navigator.pushNamed(context, '/management/data');
         },
         requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder],
+        requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder, UserRole.manager],
+      ),
+      MenuItem(
+        title: 'Expenses'.tr(),
+        assetIcon: 'assets/icons/money.png',
+        delay: 1,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/expenses');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder, UserRole.manager],
+      ),
+      MenuItem(
+        title: 'Payroll'.tr(),
+        assetIcon: 'assets/icons/wallet.png',
+        delay: 1,
+        onTap: () {
+          controller.closeSidebar();
+          Navigator.pushNamed(context, '/management/payroll');
+        },
+        requiresAuth: true,
+        requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder, UserRole.manager],
       ),
       // ── Receptionist POS ─────────────────────────────────────────
       MenuItem(
@@ -256,9 +210,9 @@ class Sidebar extends StatelessWidget {
           Navigator.pushNamed(context, '/pos');
         },
         requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
+        requiredRoles: [UserRole.owner, UserRole.ownerExpert, UserRole.cofounder, UserRole.receptionist],
       ),
-      // ── Customer loyalty / referral ──────────────────────────────
+      // ── Help & Rules ─────────────────────────────────────────────
       MenuItem(
         title: 'application_rules'.tr(),
         assetIcon: 'assets/icons/secure.png',
@@ -277,94 +231,36 @@ class Sidebar extends StatelessWidget {
           RulesGuideSheet.showGuideSheet(context);
         },
       ),
-      if (role == UserRole.owner || role == UserRole.admin || role == UserRole.cofounder)
-        MenuItem(
-          title: 'enhanced_features'.tr(),
-          assetIcon: 'assets/icons/premium.png',
-          delay: 3,
-          onTap: () {
-            controller.closeSidebar();
-            // Show a summary or navigate to a special dashboard
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Accessing Enhanced Feature Suite...'))
-            );
-          },
-          requiresAuth: true,
-          requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder],
-        ),
       MenuItem(
-        title: 'my_points'.tr(),
-        assetIcon: 'assets/icons/plus.png',
+        title: 'FAQs'.tr(),
+        assetIcon: 'assets/icons/info.png',
         delay: 3,
         onTap: () {
           controller.closeSidebar();
-          Navigator.pushNamed(context, '/loyalty/history');
+          Navigator.pushNamed(context, '/faq');
         },
-        requiresAuth: true,
-        requiredRoles: [UserRole.customer],
       ),
       MenuItem(
-        title: 'Refer a Friend',
-        assetIcon: 'assets/icons/plus.png',
+        title: 'history'.tr(),
+        assetIcon: 'assets/icons/info.png',
         delay: 3,
         onTap: () {
           controller.closeSidebar();
-          Navigator.pushNamed(context, '/loyalty/referral');
+          Navigator.pushNamed(context, '/history');
         },
         requiresAuth: true,
         requiredRoles: [UserRole.customer],
-      ),
-      MenuItem(
-        title: 'Gift Cards',
-        assetIcon: 'assets/icons/plus.png',
-        delay: 3,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/gift-card');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.customer],
-      ),
-      MenuItem(
-        title: 'feedback'.tr(),
-        assetIcon: 'assets/icons/setting.png',
-        delay: 4,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('feedback_display'.tr())));
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerEmployee, UserRole.ownerOwner, UserRole.cofounder, UserRole.receptionist],
       ),
       MenuItem(
         title: 'settings'.tr(),
         assetIcon: 'assets/icons/setting.png',
-        delay: 3,
-        onTap: controller.navigateToSettings,
-      ),
-      MenuItem(
-        title: 'tell_others'.tr(),
-        assetIcon: 'assets/icons/plus.png',
         delay: 4,
-        onTap: controller.showInviteFriends,
-      ),
-      MenuItem(
-        title: 'share_link'.tr(),
-        assetIcon: 'assets/icons/plus.png',
-        delay: 5,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('shop_link_copied'.tr())));
-        },
-      ),
-      MenuItem(
-        title: 'privacy_policy'.tr(),
-        assetIcon: 'assets/icons/lock.png',
-        delay: 6,
-        onTap: controller.showPrivacyPolicy,
+        onTap: controller.navigateToSettings,
       ),
       MenuItem(
         title: 'logout'.tr(),
         assetIcon: 'assets/icons/exit.png',
-        delay: 7,
+        delay: 5,
         onTap: controller.showLogoutConfirmation,
       ),
     ];

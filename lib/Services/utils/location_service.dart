@@ -150,7 +150,7 @@ class LocationService with ChangeNotifier {
     double endLng,
   ) async {
     try {
-      final distance = await Geolocator.distanceBetween(
+      final distance = Geolocator.distanceBetween(
         startLat, startLng, endLat, endLng,
       );
 
@@ -260,6 +260,7 @@ class LocationService with ChangeNotifier {
   }
 
   // Dispose method
+  @override
   void dispose() {
     locationEnabledNotifier.dispose();
     currentPositionNotifier.dispose();

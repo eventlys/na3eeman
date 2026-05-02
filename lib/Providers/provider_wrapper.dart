@@ -17,7 +17,7 @@ import 'features/cart_provider.dart';
 import 'features/staff_provider.dart';
 import 'features/subscription_provider.dart';
 import 'features/favorites_provider.dart';
-import 'features/barber_provider.dart';
+import 'features/expert_provider.dart';
 import 'features/profit_provider.dart';
 import 'features/settings_provider.dart';
 // import 'features/points_provider.dart';
@@ -28,6 +28,7 @@ import 'features/intern_provider.dart'; // Added
 import 'features/notification_provider.dart';
 import 'features/admin_analytics_provider.dart';
 import 'features/admin_service_provider.dart';
+import 'features/schedule_provider.dart';
 import '../Helpers/inventory_helpers.dart'; // Added
 import 'locale_provider.dart';
 
@@ -50,18 +51,23 @@ class DependencyInjection {
 
 // Provider List for MultiProvider
 List<SingleChildWidget> providers = [
-  // ── Theme & RBAC (must be first — everything depends on these) ──
-  ChangeNotifierProvider(
-    create: (_) =>
-        ThemeProvider(brightness: Brightness.light),
+  // ── Auth (must be first as many others depend on it) ──
+  ChangeNotifierProvider(create: (_) => AuthProvider()),
+
+  // ── Theme & RBAC (now depends on Auth to sync gender & roles) ──
+  ChangeNotifierProxyProvider<AuthProvider, ThemeProvider>(
+    create: (_) => ThemeProvider(brightness: Brightness.light),
+    update: (_, authProvider, themeProvider) => themeProvider!..updateAuth(authProvider),
   ),
-  ChangeNotifierProvider(create: (_) => RBACProvider()),
+  ChangeNotifierProxyProvider<AuthProvider, RBACProvider>(
+    create: (_) => RBACProvider(),
+    update: (_, authProvider, rbacProvider) => rbacProvider!..updateAuth(authProvider),
+  ),
   ChangeNotifierProvider(create: (_) => LocaleProvider()),
 
   // Independent providers
   ChangeNotifierProvider(create: (_) => AppStateProvider()),
   ChangeNotifierProvider(create: (_) => SettingsProvider()),
-  ChangeNotifierProvider(create: (_) => AuthProvider()),
 
   // Dependent providers - depend on AuthProvider
   ChangeNotifierProxyProvider<AuthProvider, SalonProvider>(
@@ -108,10 +114,10 @@ List<SingleChildWidget> providers = [
         ownerProvider!..updateAuth(authProvider),
   ),
 
-  // ── BarberProvider ───────────────────────────────────────────────────────────
+  // ── ExpertProvider ───────────────────────────────────────────────────────────
   // Registered here so any route deep in the tree can call
-  // Provider.of<BarberProvider>(context) without a ProviderNotFoundException.
-  ChangeNotifierProvider(create: (_) => BarberProvider()),
+  // Provider.of<ExpertProvider>(context) without a ProviderNotFoundException.
+  ChangeNotifierProvider(create: (_) => ExpertProvider()),
 
   // ── ProfitProvider ───────────────────────────────────────────────────────────
   ChangeNotifierProvider(
@@ -138,5 +144,6 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider(create: (_) => AdminAnalyticsProvider()),
   ChangeNotifierProvider(create: (_) => AdminServiceProvider()),
   ChangeNotifierProvider(create: (_) => NotificationProvider()),
+  ChangeNotifierProvider(create: (_) => ScheduleProvider()),
 ];
 

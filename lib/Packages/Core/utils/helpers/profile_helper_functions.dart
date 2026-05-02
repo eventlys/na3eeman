@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Services/core/user_service.dart';
@@ -84,19 +84,19 @@ class ProfileHelperFunctions {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.deleteProfile),
-        content: Text(AppLocalizations.of(context)!.areYouSureYouWantToDeleteYourProfileThis),
+        title: Text("delete_profile".tr()),
+        content: Text("are_you_sure_you_want_to_delete_your_profile_this".tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text("cancel".tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onConfirm();
             },
-            child: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: Colors.red)),
+            child: Text("delete".tr(), style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -118,7 +118,7 @@ class ProfileHelperFunctions {
       // await ApiService.deleteProfile();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.profileDeleted)),
+        SnackBar(content: Text("profile_deleted".tr())),
       );
 
       onSuccess();
@@ -142,22 +142,22 @@ class ProfileHelperFunctions {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.changeProfilePicture),
-        content: Text(AppLocalizations.of(context)!.chooseAnOption),
+        title: Text("change_profile_picture".tr()),
+        content: Text("choose_an_option".tr()),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _pickImageFromGallery();
             },
-            child: Text(AppLocalizations.of(context)!.gallery),
+            child: Text("gallery".tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _takePhoto();
             },
-            child: Text(AppLocalizations.of(context)!.camera),
+            child: Text("camera".tr()),
           ),
         ],
       ),

@@ -61,14 +61,14 @@ class User {
   String get fullName => '$firstName $lastName';
 
   bool get isCustomer => role == UserRole.customer;
-  bool get isBarber => role == UserRole.barber || role == UserRole.employee;
-  bool get isEmployee => role == UserRole.employee;
+  bool get isExpert => role == UserRole.expert;
   bool get isReceptionist => role == UserRole.receptionist;
   bool get isIntern => role == UserRole.intern;
-  bool get isAdmin => role == UserRole.admin || role == UserRole.superAdmin;
+  bool get isOwner => [UserRole.owner, UserRole.manager, UserRole.ownerExpert, UserRole.cofounder].contains(role);
+  bool get isManager => role == UserRole.manager;
+  bool get isOwnerExpert => role == UserRole.ownerExpert;
+  bool get isAdmin => role == UserRole.admin;
   bool get isStaffMember => role != UserRole.customer;
-  bool get isOwner => role == UserRole.owner || role == UserRole.ownerEmployee || role == UserRole.ownerOwner;
-  bool get isAdminRole => role == UserRole.admin || role == UserRole.superAdmin;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(

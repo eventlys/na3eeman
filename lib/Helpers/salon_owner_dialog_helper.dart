@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 // Helpers/ui/dialog_helper.dart
 import 'package:flutter/material.dart';
 // import 'package:easy_localization/easy_localization.dart';
@@ -12,24 +12,24 @@ class DialogHelper {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.upgradeSubscription),
+        title: Text("upgrade_subscription".tr()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(AppLocalizations.of(context)!.enterprisePlan),
+              title: Text("enterprise_plan".tr()),
               subtitle: const Text('\$199.99/month'),
               trailing: ElevatedButton(
                 onPressed: onEnterpriseUpgrade,
-                child: Text(AppLocalizations.of(context)!.upgrade),
+                child: Text("upgrade".tr()),
               ),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.premiumPlan),
+              title: Text("premium_plan".tr()),
               subtitle: const Text('\$149.99/month'),
               trailing: ElevatedButton(
                 onPressed: onPremiumUpgrade,
-                child: Text(AppLocalizations.of(context)!.upgrade),
+                child: Text("upgrade".tr()),
               ),
             ),
           ],
@@ -37,7 +37,7 @@ class DialogHelper {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text("cancel".tr()),
           ),
         ],
       ),

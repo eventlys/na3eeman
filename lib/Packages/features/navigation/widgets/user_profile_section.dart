@@ -124,12 +124,12 @@ class UserProfileSection extends StatelessWidget {
   // Get appropriate icon based on role and gender
   IconData _getProfileIcon(Gender gender, UserRole role) {
     switch (role) {
-      case UserRole.employee:
-        return Icons.content_cut; // Scissors icon for barber
+      case UserRole.expert:
+        return Icons.content_cut; // Scissors icon for expert
       case UserRole.admin:
       case UserRole.owner:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
+      case UserRole.ownerExpert:
+      case UserRole.owner:
         return Icons.business; // Business icon for owner
       case UserRole.customer:
       default:
@@ -158,12 +158,11 @@ class UserProfileSection extends StatelessWidget {
     switch (appStateProvider.userRole) {
       case UserRole.customer:
         return 'Customer';
-      case UserRole.employee:
+      case UserRole.expert:
         return 'Staff';
-      case UserRole.owner:
       case UserRole.admin:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
+      case UserRole.ownerExpert:
+      case UserRole.owner:
         return 'Salon Owner';
       default:
         return 'User';
@@ -174,12 +173,11 @@ class UserProfileSection extends StatelessWidget {
     switch (role) {
       case UserRole.customer:
         return Colors.blue;
-      case UserRole.employee:
+      case UserRole.expert:
         return Colors.green;
       case UserRole.admin:
+      case UserRole.ownerExpert:
       case UserRole.owner:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
         return Colors.purple;
       default:
         return Colors.grey;
@@ -190,12 +188,11 @@ class UserProfileSection extends StatelessWidget {
     switch (role) {
       case UserRole.customer:
         return 'Customer';
-      case UserRole.employee:
+      case UserRole.expert:
         return 'Staff';
       case UserRole.admin:
+      case UserRole.ownerExpert:
       case UserRole.owner:
-      case UserRole.ownerEmployee:
-      case UserRole.ownerOwner:
         return 'Salon Owner';
       default:
         return 'User';

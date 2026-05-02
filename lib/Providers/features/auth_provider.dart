@@ -4,19 +4,18 @@ import '../../Packages/Core/constants/app_roles.dart';
 import '../base_provider.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
-import '../../Models/auth/barber_profile.dart';
+import '../../Models/auth/expert_profile.dart';
 import 'package:na3eeman/Models/auth/owner_profile.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/auth_service.dart';
 import '../../Services/repositories/auth_repository.dart';
 import '../../Services/enums/gender.dart';
 import '../../core/enums/app_enums.dart';
-import '../../core/enums/owner_enums.dart';
 import '../../core/auth/role_permission_manager.dart';
 
 class AuthProvider extends BaseProvider {
   User? _user;
-  BarberProfile? _barberProfile;
+  ExpertProfile? _expertProfile;
   OwnerProfile? _ownerProfile;
   bool _isAuthenticated = false;
   // Cached in-memory token so widgets can read it synchronously.
@@ -31,7 +30,7 @@ class AuthProvider extends BaseProvider {
 
   // Getters
   User? get user => _user;
-  BarberProfile? get barberProfile => _barberProfile;
+  ExpertProfile? get expertProfile => _expertProfile;
   OwnerProfile? get ownerProfile => _ownerProfile;
   bool get isAuthenticated => _isAuthenticated;
   UserRole? get userType => _user?.role;
@@ -81,8 +80,8 @@ class AuthProvider extends BaseProvider {
             ? Map<String, dynamic>.from(json.decode(userData)) 
             : Map<String, dynamic>.from(userData);
             
-        if (_user?.isBarber == true || _user?.isOwner == true) {
-          _barberProfile = BarberProfile.fromJson(data['barber_profile'] ?? data);
+        if (_user?.isExpert == true || _user?.isOwner == true) {
+          _expertProfile = ExpertProfile.fromJson(data['expert_profile'] ?? data['expert_profile'] ?? data);
         }
         if (_user?.isOwner == true) {
           _ownerProfile = OwnerProfile.fromJson(data['owner_profile'] ?? data);
@@ -121,15 +120,14 @@ class AuthProvider extends BaseProvider {
 
   // Role-based convenience getters
   bool get isCustomer => _user?.isCustomer ?? false;
-  bool get isEmployee => _user?.isEmployee ?? false;
-  bool get isBarber => _user?.isBarber ?? false;
+  bool get isExpert => _user?.isExpert ?? false;
   bool get isOwner => _user?.isOwner ?? false;
   bool get isReceptionist => _user?.isReceptionist ?? false;
   bool get isIntern => _user?.isIntern ?? false;
   bool get isAdmin => _user?.isAdmin ?? false;
 
   // Profile completion status
-  bool get hasBarberProfile => _barberProfile != null;
+  bool get hasExpertProfile => _expertProfile != null;
   bool get hasOwnerProfile => _ownerProfile != null;
 
   // Combined role checks
@@ -137,92 +135,6 @@ class AuthProvider extends BaseProvider {
   bool get canManageAppointments => RolePermissionManager.canManageAppointments(_user?.role ?? UserRole.customer);
   bool get canManageInventory => RolePermissionManager.canManageInventory(_user?.role ?? UserRole.customer);
   bool get canManageFinancials => RolePermissionManager.canManageFinancials(_user?.role ?? UserRole.customer);
-
-  void _setCustomerUser() {
-    _user = User(
-      id: 1,
-      email: 'customer@example.com',
-      username: 'john_doe',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: UserRole.customer,
-      gender: Gender.male,
-      location: 'Amman, Jordan',
-      lat: 31.963158,
-      lng: 35.930359,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-  }
-
-  void _setBarberUser() {
-    _user = User(
-      id: 2,
-      email: 'barber@example.com',
-      username: 'mike_barber',
-      firstName: 'Mike',
-      lastName: 'Johnson',
-      role: UserRole.employee,
-      gender: Gender.male,
-      location: 'Amman, Jordan',
-      lat: 31.963158,
-      lng: 35.930359,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    _barberProfile = BarberProfile(
-      id: 1,
-      barberId: 2,
-      bio: 'Professional barber with 5 years experience',
-      specialties: 'Haircuts, Beard Trims, Shaves',
-      contactPhone: '+962791234567',
-      hasAccess: true,
-      avgRating: 4.5,
-    );
-  }
-
-  void _setOwnerUser() {
-    _user = User(
-      id: 3,
-      email: 'owner@example.com',
-      username: 'sarah_owner',
-      firstName: 'Sarah',
-      lastName: 'Wilson',
-      role: UserRole.owner,
-      gender: Gender.female,
-      location: 'Amman, Jordan',
-      lat: 31.963158,
-      lng: 35.930359,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    _barberProfile = BarberProfile(
-      id: 2,
-      barberId: 3,
-      bio: 'Salon owner and master barber',
-      specialties: 'All Services',
-      contactPhone: '+962791234568',
-      hasAccess: true,
-      avgRating: 4.8,
-    );
-
-    _ownerProfile = OwnerProfile(
-      id: 1,
-      barberProfileId: 2,
-      ownerType: OwnerType.employeeOwner,
-      isOwner: true,
-      isWorker: true,
-      isSubscribed: true,
-      hasBranches: true,
-      hasOffers: true,
-      avgRating: 4.8,
-      subscriptionTier: OwnerSubscriptionTier.elite, // was 'PREMIUM' string
-      subscriptionStartDate: DateTime.now().subtract(const Duration(days: 30)),
-      subscriptionEndDate: DateTime.now().add(const Duration(days: 335)),
-    );
-  }
 
   // Enhanced login method combining both
   Future<bool> login({
@@ -337,8 +249,8 @@ class AuthProvider extends BaseProvider {
     _user = User.fromJson(userData);
 
     // Update additional profiles based on role
-    if (_user?.isBarber == true || _user?.isOwner == true) {
-      _barberProfile = BarberProfile.fromJson(userData['barber_profile'] as Map<String, dynamic>? ?? userData);
+    if (_user?.isExpert == true || _user?.isOwner == true) {
+      _expertProfile = ExpertProfile.fromJson(userData['expert_profile'] as Map<String, dynamic>? ?? userData['expert_profile'] as Map<String, dynamic>? ?? userData);
     }
 
     if (_user?.isOwner == true) {
@@ -425,7 +337,7 @@ class AuthProvider extends BaseProvider {
       AppLogger.error('Logout service error: $e');
     } finally {
       _user = null;
-      _barberProfile = null;
+      _expertProfile = null;
       _ownerProfile = null;
       _isAuthenticated = false;
 
@@ -436,10 +348,12 @@ class AuthProvider extends BaseProvider {
   }
 
   /// Check if user exists with social credentials
-  Future<bool> checkSocialUserExists(String provider, String socialId) async {
-    // Implement API call to check if social user exists
-    await Future.delayed(const Duration(milliseconds: 500));
-    return false; // Mock implementation
+  Future<bool> checkSocialUserExists(String provider, String socialId, String email) async {
+    return await _authService.checkSocialUserExists(
+      provider: provider,
+      socialId: socialId,
+      email: email,
+    );
   }
 
   bool hasAccessTo(String feature) {
@@ -473,17 +387,41 @@ class AuthProvider extends BaseProvider {
     }
   }
 
-  /// Update user profile locally and optionally sync with backend
-  Future<void> updateProfile(User updatedUser) async {
+  /// Update user profile locally and sync with backend
+  Future<void> updateProfile({
+    User? updatedUser,
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? specialization,
+    String? bio,
+  }) async {
+    if (updatedUser != null) {
+      _user = updatedUser;
+      await secureStorage.saveUserData(updatedUser.toJson());
+      notifyListeners();
+      return;
+    }
     try {
+      setLoading(true);
+      final Map<String, dynamic> updateData = {};
+      if (firstName != null) updateData['first_name'] = firstName;
+      if (lastName != null) updateData['last_name'] = lastName;
+      if (phone != null) updateData['phone'] = phone;
+      if (specialization != null) updateData['specialization'] = specialization;
+      if (bio != null) updateData['bio'] = bio;
+
+      final updatedUser = await _authService.updateProfile(updateData);
       _user = updatedUser;
 
       // Save to local storage
       await secureStorage.saveUserData(updatedUser.toJson());
 
       notifyListeners();
+      setLoading(false);
     } catch (e) {
-      print('Error updating profile in provider: $e');
+      setLoading(false);
+      AppLogger.error('Error updating profile: $e');
       rethrow;
     }
   }
@@ -503,18 +441,29 @@ class AuthProvider extends BaseProvider {
     }
   }
 
-  /// DEBUG ONLY: Manually override the current user and profiles for testing.
-  void debugSetOwnerProfile({
-    required User user,
-    BarberProfile? barberProfile,
-    OwnerProfile? ownerProfile,
-  }) {
-    _user = user;
-    _barberProfile = barberProfile;
-    _ownerProfile = ownerProfile;
-    _isAuthenticated = true;
-    _currentToken = 'debug_token';
-    notifyListeners();
-    AppLogger.warning('DEBUG: Auth system overridden for testing');
+  Future<bool> adminCreateStaff(Map<String, dynamic> staffData) async {
+    try {
+      setLoading(true);
+      final response = await _authService.adminCreateStaff(staffData);
+      setLoading(false);
+      return response != null;
+    } catch (e) {
+      setLoading(false);
+      AppLogger.error('Admin create staff failed', error: e);
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> fetchSalons() async {
+    try {
+      setLoading(true);
+      final salons = await _authService.adminFetchSalons();
+      setLoading(false);
+      return salons;
+    } catch (e) {
+      setLoading(false);
+      AppLogger.error('Fetch salons failed', error: e);
+      return [];
+    }
   }
 }

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class _ReportsPageState extends State<ReportsPage> {
   @override
   Widget build(BuildContext context) {
     return GlassPage(
-      title: AppLocalizations.of(context)!.reports,
+      title: "reports".tr(),
       showBackButton: true,
       user: Provider.of<AuthProvider>(context, listen: false).user,
       glassExpandedHeight: 180,
@@ -63,7 +63,7 @@ class _ReportsPageState extends State<ReportsPage> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<ReportTime>(
-              value: _selectedTime,
+              initialValue: _selectedTime,
               onChanged: (time) {
                 setState(() {
                   _selectedTime = time!;
@@ -103,8 +103,8 @@ class _ReportsPageState extends State<ReportsPage> {
         (context, index) {
           final reports = [
             _ReportItem(
-              title: AppLocalizations.of(context)!.staffPerformanceReport,
-              description: 'Detailed analysis of barber performance',
+              title: "staff_performance_report".tr(),
+              description: 'Detailed analysis of expert performance',
               icon: AppImages.file_star,
               color: AppColor.lightInfo,
               darkColor: AppColor.darkInfo,
@@ -225,7 +225,7 @@ class _ReportsPageState extends State<ReportsPage> {
       if (updatedRequest != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.generatingReport),
+            content: Text("generating_report".tr()),
             backgroundColor: AppColor.primary,
           ),
         );
@@ -251,7 +251,7 @@ class _ReportsPageState extends State<ReportsPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.reportSuccess),
+            content: Text("report_success".tr()),
             backgroundColor: AppColor.lightSuccess,
           ),
         );

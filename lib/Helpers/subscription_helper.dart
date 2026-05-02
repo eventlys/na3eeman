@@ -24,8 +24,7 @@ class SubscriptionHelper {
 
     } catch (e) {
       print('Error fetching subscriptions from service: $e');
-      // Fallback to mock data if service fails
-      return _getMockSubscriptions();
+      rethrow;
     }
   }
 
@@ -121,77 +120,6 @@ class SubscriptionHelper {
     return 'green';
   }
 
-  // Mock data fallback (keep your existing mock data)
-  static List<SalonSubscription> _getMockSubscriptions() {
-    return [
-      SalonSubscription(
-        id: '1',
-        name: 'Basic Plan',
-        description: 'Perfect for casual salonpers',
-        price: 9.99,
-        duration: 'MONTHLY',
-        features: [
-          '10% discount on all items',
-          'Free shipping on orders over \$50',
-          'Early access to sales',
-        ],
-      ),
-      SalonSubscription(
-        id: '2',
-        name: 'Premium Plan',
-        description: 'Best value for frequent salonpers',
-        price: 19.99,
-        duration: 'MONTHLY',
-        features: [
-          '20% discount on all items',
-          'Free shipping on all orders',
-          'Exclusive member-only products',
-          'Priority customer support',
-          'Monthly free gift',
-        ],
-        isPopular: true,
-      ),
-      SalonSubscription(
-        id: '3',
-        name: 'Annual Plan',
-        description: 'Save big with yearly subscription',
-        price: 199.99,
-        duration: 'YEARLY',
-        features: [
-          '25% discount on all items',
-          'Free express shipping',
-          'VIP customer support',
-          'Birthday bonus',
-          'Quarterly surprise boxes',
-        ],
-      ),
-      SalonSubscription(
-        id: '4',
-        name: 'Family Plan',
-        description: 'Share benefits with your family',
-        price: 29.99,
-        duration: 'MONTHLY',
-        features: [
-          '15% discount for up to 4 members',
-          'Family shared benefits',
-          'Separate order tracking',
-        ],
-      ),
-      SalonSubscription(
-        id: '5',
-        name: 'Student Plan',
-        description: 'Special discount for students',
-        price: 7.99,
-        duration: 'MONTHLY',
-        features: [
-          '15% student discount',
-          'Free shipping on orders over \$30',
-          'Extended return period',
-        ],
-      ),
-    ];
-  }
-
   // Get featured/popular subscriptions
   static Future<List<SalonSubscription>> getFeaturedSubscriptions() async {
     final allSubscriptions = await getSubscriptions();
@@ -209,9 +137,12 @@ class SubscriptionHelper {
   // Find subscription by ID
   static Future<SalonSubscription?> getSubscriptionById(String id) async {
     final allSubscriptions = await getSubscriptions();
-    return allSubscriptions.firstWhere(
-      (sub) => sub.id == id,
-      orElse: () => _getMockSubscriptions().firstWhere((sub) => sub.id == id),
-    );
+    try {
+      return allSubscriptions.firstWhere(
+        (sub) => sub.id == id,
+      );
+    } catch (e) {
+      return null;
+    }
   }
 }

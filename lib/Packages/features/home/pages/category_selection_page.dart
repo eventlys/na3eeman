@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../Models/salon/category_model.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../Services/enums/gender.dart';
-import '../../../../core/theme/colors.dart';
 import '../widgets/category_card.dart';
 
 class CategorySelectionPage extends StatefulWidget {

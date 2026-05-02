@@ -1,8 +1,7 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AssignTipModal extends StatefulWidget {
   const AssignTipModal({super.key});
@@ -53,14 +52,14 @@ class _AssignTipModalState extends State<AssignTipModal> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.assignDailyTip, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text("assign_daily_tip".tr(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
             
             // Intern Selection
             DropdownButtonFormField<String>(
-              value: selectedIntern,
+              initialValue: selectedIntern,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.selectIntern,
+                labelText: "select_intern".tr(),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               items: interns.map((intern) => DropdownMenuItem(value: intern, child: Text(intern))).toList(),
@@ -85,14 +84,14 @@ class _AssignTipModalState extends State<AssignTipModal> {
             TextFormField(
               controller: _noteController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.optionalNote,
+                labelText: "optional_note".tr(),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             const SizedBox(height: 32),
 
             PrimaryButton(
-              text: AppLocalizations.of(context)!.assignTip,
+              text: "assign_tip".tr(),
               onPressed: _handleAssign,
             ),
             const SizedBox(height: 16),

@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
@@ -8,7 +8,6 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/loading_indicator.dart';
 import '../widgets/branch_card_2.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class BranchesPage extends StatefulWidget {
   const BranchesPage({super.key});
@@ -52,7 +51,7 @@ class _BranchesPageState extends State<BranchesPage> {
                 color: AppColor.light,
               ),
               SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.youDoNotHavePermissionToAddBranches),
+              Text("you_do_not_have_permission_to_add_branches".tr()),
             ],
           ),
           backgroundColor: AppColor.lightError,
@@ -74,7 +73,7 @@ class _BranchesPageState extends State<BranchesPage> {
               color: AppColor.light,
             ),
             SizedBox(width: 8),
-            Text(AppLocalizations.of(context)!.addNewBranchFunctionalityComingSoon),
+            Text("add_new_branch_functionality_coming_soon".tr()),
           ],
         ),
         backgroundColor: AppColor.lightInfo,
@@ -125,7 +124,7 @@ class _BranchesPageState extends State<BranchesPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.close,
+            child: Text("close".tr(),
               style: TextStyle(color: AppColor.lightTextSecondary),
             ),
           ),
@@ -149,7 +148,7 @@ class _BranchesPageState extends State<BranchesPage> {
                 color: AppColor.light,
               ),
               SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.youDoNotHavePermissionToAssignManagers),
+              Text("you_do_not_have_permission_to_assign_managers".tr()),
             ],
           ),
           backgroundColor: AppColor.lightError,
@@ -162,7 +161,7 @@ class _BranchesPageState extends State<BranchesPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.assignManager,
+        title: Text("assign_manager".tr(),
           style: TextStyle(color: AppColor.lightText),
         ),
         backgroundColor: AppColor.lightCard,
@@ -173,7 +172,7 @@ class _BranchesPageState extends State<BranchesPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.cancel,
+            child: Text("cancel".tr(),
               style: TextStyle(color: AppColor.lightTextSecondary),
             ),
           ),
@@ -203,7 +202,7 @@ class _BranchesPageState extends State<BranchesPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColor.lightPrimary,
             ),
-            child: Text(AppLocalizations.of(context)!.assign,
+            child: Text("assign".tr(),
               style: TextStyle(color: AppColor.light),
             ),
           ),
@@ -219,7 +218,7 @@ class _BranchesPageState extends State<BranchesPage> {
       child: Scaffold(
         backgroundColor: AppColor.lightBackground,
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.branches,
+          title: Text("branches".tr(),
             style: TextStyle(
               color: AppColor.lightText,
               fontWeight: FontWeight.bold,
@@ -251,7 +250,7 @@ class _BranchesPageState extends State<BranchesPage> {
         body: Consumer<BranchService>(
           builder: (context, branchService, child) {
             if (branchService.isLoading && branchService.branches.isEmpty) {
-              return LoadingIndicator(message: AppLocalizations.of(context)!.loadingBranches);
+              return LoadingIndicator(message: "loading_branches".tr());
             }
 
             if (branchService.error != null) {
@@ -266,7 +265,7 @@ class _BranchesPageState extends State<BranchesPage> {
                       color: AppColor.lightError,
                     ),
                     const SizedBox(height: 16),
-                    Text(AppLocalizations.of(context)!.failedToLoadBranches,
+                    Text("failed_to_load_branches".tr(),
                       style: TextStyle(
                         color: AppColor.lightText,
                         fontSize: 16,
@@ -287,7 +286,7 @@ class _BranchesPageState extends State<BranchesPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.lightPrimary,
                       ),
-                      child: Text(AppLocalizations.of(context)!.retry,
+                      child: Text("retry".tr(),
                         style: TextStyle(color: AppColor.light),
                       ),
                     ),
@@ -310,7 +309,7 @@ class _BranchesPageState extends State<BranchesPage> {
                       color: AppColor.lightTextSecondary,
                     ),
                     const SizedBox(height: 16),
-                    Text(AppLocalizations.of(context)!.noBranchesFound,
+                    Text("no_branches_found".tr(),
                       style: TextStyle(
                         color: AppColor.lightTextSecondary,
                         fontSize: 16,
@@ -325,7 +324,7 @@ class _BranchesPageState extends State<BranchesPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColor.lightPrimary,
                             ),
-                            child: Text(AppLocalizations.of(context)!.addFirstBranch,
+                            child: Text("add_first_branch".tr(),
                               style: TextStyle(color: AppColor.light),
                             ),
                           );

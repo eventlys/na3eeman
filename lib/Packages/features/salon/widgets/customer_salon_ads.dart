@@ -1,11 +1,10 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Models/salon/offer_model.dart';
 import '../../../../Providers/features/offers_provider.dart';
 // import '../../../../core/theme/colors.dart';
 import '../pages/offer_details_page.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class HorizontalSalonScroll extends StatefulWidget {
   const HorizontalSalonScroll({super.key});
@@ -44,7 +43,7 @@ class _HorizontalSalonScrollState extends State<HorizontalSalonScroll> {
     if (offers.isEmpty) {
       return SizedBox(
         height: 170,
-        child: Center(child: Text(AppLocalizations.of(context)!.noOffersAvailableAtThisMoment)),
+        child: Center(child: Text("no_offers_available_at_this_moment".tr())),
       );
     }
 
@@ -154,7 +153,7 @@ class OfferCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      offer.price + ' JOD',
+                      '${offer.price} JOD',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,

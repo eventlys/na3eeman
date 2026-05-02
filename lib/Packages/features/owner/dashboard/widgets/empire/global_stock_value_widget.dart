@@ -1,6 +1,5 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/inventory_provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
@@ -53,7 +52,7 @@ class GlobalStockValueWidget extends StatelessWidget {
             children: [
               Icon(Icons.inventory_rounded, size: 18, color: theme.primaryColor),
               const SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.globalStockValue,
+              Text("global_stock_value".tr(),
                   style: theme.textTheme.labelMedium
                       ?.copyWith(color: theme.hintColor)),
               const Spacer(),

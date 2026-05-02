@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/storage_service.dart';
 import '../../Services/enums/points_types.dart';
+import '../../Models/loyalty/loyalty_program_model.dart';
 
 class PointsProvider with ChangeNotifier {
   final ApiService _loyaltyService;
   int _currentBalance = 0;
   bool _isLoading = false;
+  LoyaltyProgram? _rules;
 
   PointsProvider(this._loyaltyService);
 
@@ -20,6 +22,15 @@ class PointsProvider with ChangeNotifier {
 
     try {
       final targetCustomerId = customerId ?? (await UnifiedStorageService().getUserProfile())?.id;
+      
+      // Load rules first if not loaded
+      if (_rules == null) {
+        final rulesData = await _loyaltyService.getLoyaltyRules();
+        if (rulesData.isNotEmpty) {
+          _rules = LoyaltyProgram.fromJson(rulesData.first as Map<String, dynamic>);
+        }
+      }
+
       if (targetCustomerId == null) return;
 
       final balance = await _loyaltyService.getLoyaltyBalance(targetCustomerId);
@@ -64,9 +75,9 @@ class PointsProvider with ChangeNotifier {
     try {
       // Get customer ID from storage or user profile
       final userProfile = await UnifiedStorageService().getUserProfile();
-      if (userProfile != null && userProfile.id != null) {
+      if (userProfile != null) {
         await addPoints(
-          customerId: userProfile.id!,
+          customerId: userProfile.id,
           type: PointsType.makeAppointment,
         );
       }
@@ -84,8 +95,8 @@ class PointsProvider with ChangeNotifier {
   }) async {
     final metadata = {
       'salon_name': salonName,
-      if (review != null) 'review': review,
-      if (rating != null) 'rating': rating,
+      'review': ?review,
+      'rating': ?rating,
     };
 
     await addPoints(
@@ -150,13 +161,33 @@ class PointsProvider with ChangeNotifier {
   int calculatePointsValue(double jod) => (jod * 1000).toInt();
 
   int _getPointsValue(PointsType type) {
+    if (_rules == null) return _getFallbackPointsValue(type);
+    
+    switch (type) {
+      case PointsType.invite: return _rules!.pointsPerInvite;
+      case PointsType.referral: return _rules!.pointsPerInvite;
+      case PointsType.gifting: return _rules!.pointsPerGift;
+      case PointsType.appointmentComplete: return _rules!.pointsPerAppointment;
+      case PointsType.arriveOnTime: return _rules!.pointsPerEarlyArrival;
+      case PointsType.tip: return _rules!.pointsPerTipDollar.toInt();
+      case PointsType.lateArrival: return _rules!.pointsPerLate5min;
+      case PointsType.delay5Min: return _rules!.pointsPenaltyDelay5min;
+      case PointsType.delay10Min: return _rules!.pointsPenaltyDelay10min;
+      case PointsType.delay15Min: return _rules!.pointsPenaltyDelay15min;
+      case PointsType.signup: return 100; // Default
+      case PointsType.milestoneReached: return 200; // Default
+      default: return 0;
+    }
+  }
+
+  int _getFallbackPointsValue(PointsType type) {
     switch (type) {
       case PointsType.invite: return 100;
       case PointsType.referral: return 50;
       case PointsType.gifting: return 30;
       case PointsType.appointmentComplete: return 25;
       case PointsType.arriveOnTime: return 15;
-      case PointsType.tip: return 100; // per 1 JOS
+      case PointsType.tip: return 100; // per 1 JOD
       case PointsType.lateArrival: return -10;
       case PointsType.delay5Min: return -10;
       case PointsType.delay10Min: return -20;
@@ -174,7 +205,7 @@ class PointsProvider with ChangeNotifier {
       case PointsType.gifting: return 'GIFT';
       case PointsType.rateSalon: return 'REVIEW_SALON';
       case PointsType.rateApp: return 'RATING_APP';
-      case PointsType.employeeFeedback: return 'EMPLOYEE_REVIEW_GOOD';
+      case PointsType.expertFeedback: return 'EMPLOYEE_REVIEW_GOOD';
       case PointsType.appointmentComplete: return 'APPOINTMENT';
       case PointsType.arriveOnTime: return 'EARLY';
       case PointsType.lateArrival: return 'LATE';

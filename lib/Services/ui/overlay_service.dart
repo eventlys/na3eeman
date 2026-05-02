@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 // import 'package:flutter/material.dart';
 // import 'package:na3eeman/Services/ui/sidebar_navigation_service.dart';
 //
@@ -16,7 +16,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 // class OverlayService {
 //   static void showPrivacyPolicy() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.privacyPolicy,
+//       title: "privacy_policy".tr(),
 //       icon: 'assets/icons/lock.png',
 //       content: PrivacyPolicyOverlay(),
 //     );
@@ -24,7 +24,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showSecurityPolicy() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.securityPolicy,
+//       title: "security_policy".tr(),
 //       icon: 'assets/icons/secure.png',
 //       content: SecurityPolicyOverlay(),
 //     );
@@ -32,7 +32,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showAppRules() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.applicationRules,
+//       title: "application_rules".tr(),
 //       icon: 'assets/icons/report.png',
 //       content: AppRulesOverlay(),
 //     );
@@ -40,7 +40,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showInviteFriends() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.inviteFriends,
+//       title: "invite_friends".tr(),
 //       icon: 'assets/icons/plus.png',
 //       content: InviteFriendsOverlay(),
 //     );
@@ -48,7 +48,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showContactUs() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.contactUs,
+//       title: "contact_us".tr(),
 //       icon: 'assets/icons/mail_view.png',
 //       content: ContactUsOverlay(),
 //       isForm: true,
@@ -57,7 +57,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showReportSalon() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.reportSalon,
+//       title: "report_salon".tr(),
 //       icon: 'assets/icons/report.png',
 //       content: ReportSalonOverlay(),
 //       isForm: true,
@@ -66,7 +66,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showReportProblem() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.reportAProblem,
+//       title: "report_a_problem".tr(),
 //       icon: 'assets/icons/report.png',
 //       content: ReportProblemOverlay(),
 //       isForm: true,
@@ -75,7 +75,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //     static void showFeedback() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.yourFeedbackMatters,
+//       title: "your_feedback_matters".tr(),
 //       icon: 'assets/icons/chat_text.png',
 //       content: FeedbackOverlay(),
 //       isForm: true,
@@ -84,7 +84,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showUserReports() {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.userReports,
+//       title: "user_reports".tr(),
 //       icon: 'assets/icons/file_star_view.png',
 //       content: UserReportsOverlay(),
 //     );
@@ -92,7 +92,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //
 //   static void showLogoutConfirmation({required VoidCallback onConfirm}) {
 //     _showDialog(
-//       title: AppLocalizations.of(context)!.logout,
+//       title: "logout".tr(),
 //       icon: 'assets/icons/exit.png',
 //       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
 //     );
@@ -171,14 +171,14 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //   //   return Column(
 //   //     mainAxisSize: MainAxisSize.min,
 //   //     children: [
-//   //       Text(AppLocalizations.of(context)!.areYouSureYouWantToLogout),
+//   //       Text("are_you_sure_you_want_to_logout".tr()),
 //   //       const SizedBox(height: 16),
 //   //       Row(
 //   //         children: [
 //   //           Expanded(
 //   //             child: OutlinedButton(
 //   //               onPressed: () => Navigator.of(SideNavigationService.navigatorKey.currentContext!).pop(),
-//   //               child: Text(AppLocalizations.of(context)!.cancel),
+//   //               child: Text("cancel".tr()),
 //   //             ),
 //   //           ),
 //   //           const SizedBox(width: 8),
@@ -191,7 +191,7 @@ import 'package:na3eeman/l10n/app_localizations.dart';
 //   //               style: ElevatedButton.styleFrom(
 //   //                 backgroundColor: Colors.red,
 //   //               ),
-//   //               child: Text(AppLocalizations.of(context)!.logout),
+//   //               child: Text("logout".tr()),
 //   //             ),
 //   //           ),
 //   //         ],
@@ -213,7 +213,6 @@ import '../../Packages/features/navigation/overlays/report_salon_overlay.dart';
 import '../../Packages/features/navigation/overlays/security_policy_overlay.dart';
 import '../../Packages/features/navigation/overlays/user_reports_overlay.dart';
 import 'sidebar_navigation_service.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class OverlayService {
   static final OverlayService _instance = OverlayService._internal();
@@ -226,7 +225,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.privacyPolicy,
+      title: "privacy_policy".tr(),
       icon: 'assets/icons/lock.png',
       content: PrivacyPolicyOverlay(),
     );
@@ -236,7 +235,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.securityPolicy,
+      title: "security_policy".tr(),
       icon: 'assets/icons/secure.png',
       content: SecurityPolicyOverlay(),
     );
@@ -246,7 +245,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.applicationRules,
+      title: "application_rules".tr(),
       icon: 'assets/icons/report.png',
       content: AppRulesOverlay(),
     );
@@ -256,7 +255,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.inviteFriends,
+      title: "invite_friends".tr(),
       icon: 'assets/icons/plus.png',
       content: InviteFriendsOverlay(),
     );
@@ -266,7 +265,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.contactUs,
+      title: "contact_us".tr(),
       icon: 'assets/icons/mail_view.png',
       content: ContactUsOverlay(),
       isForm: true,
@@ -277,7 +276,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.reportSalon,
+      title: "report_salon".tr(),
       icon: 'assets/icons/report.png',
       content: ReportSalonOverlay(),
       isForm: true,
@@ -288,7 +287,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.reportAProblem,
+      title: "report_a_problem".tr(),
       icon: 'assets/icons/report.png',
       content: ReportProblemOverlay(),
       isForm: true,
@@ -299,7 +298,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.yourFeedbackMatters,
+      title: "your_feedback_matters".tr(),
       icon: 'assets/icons/chat_text.png',
       content: FeedbackOverlay(),
       isForm: true,
@@ -310,7 +309,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.userReports,
+      title: "user_reports".tr(),
       icon: 'assets/icons/file_star_view.png',
       content: UserReportsOverlay(),
     );
@@ -320,7 +319,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.logout,
+      title: "logout".tr(),
       icon: 'assets/icons/exit.png',
       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
     );
@@ -335,7 +334,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.bookAppointment,
+      title: "book_appointment".tr(),
       icon: 'assets/icons/calendar.png',
       content: AppointmentBookingOverlay(
         salonId: salonId,
@@ -356,7 +355,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.completePayment,
+      title: "complete_payment".tr(),
       icon: 'assets/icons/payment.png',
       content: PaymentOverlay(
         amount: amount,
@@ -376,7 +375,7 @@ class OverlayService {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
-      title: AppLocalizations.of(context)!.loyaltyPointsEarned,
+      title: "loyalty_points_earned".tr(),
       icon: 'assets/icons/star.png',
       content: LoyaltyPointsOverlay(
         points: points,
@@ -479,7 +478,7 @@ class AppointmentBookingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.maxFinite,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -491,7 +490,7 @@ class AppointmentBookingOverlay extends StatelessWidget {
               Navigator.of(context).pop();
               onBookingComplete?.call();
             },
-            child: Text(AppLocalizations.of(context)!.confirmBooking),
+            child: Text("confirm_booking".tr()),
           ),
         ],
       ),
@@ -515,7 +514,7 @@ class PaymentOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.maxFinite,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -531,7 +530,7 @@ class PaymentOverlay extends StatelessWidget {
                     Navigator.of(context).pop();
                     onPaymentFailure('Payment cancelled');
                   },
-                  child: Text(AppLocalizations.of(context)!.cancel),
+                  child: Text("cancel".tr()),
                 ),
               ),
               const SizedBox(width: 8),
@@ -541,7 +540,7 @@ class PaymentOverlay extends StatelessWidget {
                     Navigator.of(context).pop();
                     onPaymentSuccess('payment_123');
                   },
-                  child: Text(AppLocalizations.of(context)!.payNow),
+                  child: Text("pay_now".tr()),
                 ),
               ),
             ],
@@ -564,7 +563,7 @@ class LoyaltyPointsOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.maxFinite,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -587,7 +586,7 @@ class LoyaltyPointsOverlay extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.awesome),
+            child: Text("awesome".tr()),
           ),
         ],
       ),

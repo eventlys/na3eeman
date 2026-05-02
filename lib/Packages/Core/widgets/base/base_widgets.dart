@@ -1,4 +1,4 @@
-import 'package:na3eeman/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Helpers/error_handler.dart';
 import '../../constants/app_color.dart';
@@ -57,13 +57,12 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       setError(errorMessage);
 
       final handledError = ErrorHandler.handleException(e);
-      if (onError != null && handledError is AppError) {
+      if (onError != null) {
         onError(handledError);
-      } else if (handledError is AppError) {
-        _showErrorSnackbar(handledError.message);
       } else {
-        _showErrorSnackbar(errorMessage);
+        _showErrorSnackbar(handledError.message);
       }
+    
     } finally {
       if (showLoading) setLoading(false);
     }
@@ -106,7 +105,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
             valueColor: AlwaysStoppedAnimation<Color>(_getIconColor()),
           ),
           const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.loading,
+          Text("loading".tr(),
             style: TextStyle(
               color: isDarkMode ? AppColor.darkText : AppColor.lightText,
               fontSize: 16,
@@ -133,7 +132,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
               color: _getErrorColor(),
             ),
             const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.oopsSomethingWentWrong,
+            Text("oops_something_went_wrong".tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -156,7 +155,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
                 Icons.refresh,
                 color: _getIconColor(),
               ),
-              label: Text(AppLocalizations.of(context)!.tryAgain,
+              label: Text("try_again".tr(),
                 style: TextStyle(
                   color: isDarkMode ? AppColor.darkText : AppColor.lightText,
                 ),

@@ -36,11 +36,11 @@ class StaffMember {
   factory StaffMember.fromJson(Map<String, dynamic> json) {
     return StaffMember(
       id: json['id']?.toString() ?? '',
-      userId: json['barber'] as int? ?? json['user'] as int? ?? 0,
-      name: json['barber_name'] as String? ?? json['name'] as String? ?? '',
-      email: json['barber_email'] as String? ?? json['email'] as String? ?? '',
+      userId: json['expert'] as int? ?? json['user'] as int? ?? 0,
+      name: json['expert_name'] as String? ?? json['name'] as String? ?? '',
+      email: json['expert_email'] as String? ?? json['email'] as String? ?? '',
       phone: json['phone'] as String?,
-      role: StaffRoleExtension.fromString(json['role']?.toString() ?? 'barber'),
+      role: StaffRoleExtension.fromString(json['role']?.toString() ?? 'expert'),
       joinDate: DateTime.parse(json['hired_at']?.toString() ?? json['join_date']?.toString() ?? DateTime.now().toString()),
       profileImage: json['profile_image'] as String?,
       salonId: json['salon'] as int?,
@@ -58,9 +58,9 @@ class StaffMember {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'barber': userId,
-      'barber_name': name,
-      'barber_email': email,
+      'expert': userId,
+      'expert_name': name,
+      'expert_email': email,
       'phone': phone,
       'role': role.value,
       'hired_at': joinDate.toIso8601String(),
@@ -74,31 +74,31 @@ class StaffMember {
   }
 }
 
-class SalonBarber {
+class SalonExpert {
   final int id;
-  final int barberId;
-  final String barberName;
-  final String barberEmail;
+  final int expertId;
+  final String expertName;
+  final String expertEmail;
   final int salonId;
   final bool isActive;
   final DateTime hiredAt;
 
-  SalonBarber({
+  SalonExpert({
     required this.id,
-    required this.barberId,
-    required this.barberName,
-    required this.barberEmail,
+    required this.expertId,
+    required this.expertName,
+    required this.expertEmail,
     required this.salonId,
     required this.isActive,
     required this.hiredAt,
   });
 
-  factory SalonBarber.fromJson(Map<String, dynamic> json) {
-    return SalonBarber(
+  factory SalonExpert.fromJson(Map<String, dynamic> json) {
+    return SalonExpert(
       id: json['id'] as int,
-      barberId: json['barber'] as int,
-      barberName: json['barber_name'] as String,
-      barberEmail: json['barber_email'] as String,
+      expertId: json['expert'] as int,
+      expertName: json['expert_name'] as String,
+      expertEmail: json['expert_email'] as String,
       salonId: json['salon'] as int,
       isActive: json['is_active'] as bool? ?? true,
       hiredAt: DateTime.parse(json['hired_at'] as String),

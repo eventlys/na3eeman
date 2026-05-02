@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../Services/barber_service.dart';
-import '../../Helpers/barber_list_helper.dart';
+import '../../Services/expert_service.dart';
+import '../../Helpers/expert_list_helper.dart';
 
 class PerformanceProvider with ChangeNotifier {
-  final BarberService _barberService;
+  final ExpertService _expertService;
   final PerformanceHelper _performanceHelper;
 
-  List<BarberPerformanceData> _performanceData = [];
+  List<ExpertPerformanceData> _performanceData = [];
   bool _isLoading = false;
   String? _error;
 
   PerformanceProvider({
-    required BarberService barberService,
+    required ExpertService expertService,
     required PerformanceHelper performanceHelper,
-  }) : _barberService = barberService,
+  }) : _expertService = expertService,
        _performanceHelper = performanceHelper;
 
-  List<BarberPerformanceData> get performanceData => _performanceData;
+  List<ExpertPerformanceData> get performanceData => _performanceData;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -26,9 +26,9 @@ class PerformanceProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final barbers = await _barberService.getBarbers();
+      final experts = await _expertService.getExperts();
       _performanceData = _performanceHelper.calculatePerformanceMetrics(
-        barbers,
+        experts,
       );
     } catch (e) {
       _error = 'Failed to load performance data: $e';
