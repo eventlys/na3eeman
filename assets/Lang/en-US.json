@@ -480,9 +480,6 @@
   "management": "Management",
   "enhanced_features": "Enhanced Features",
   "shop_link_copied": "Shop Link Copied to Clipboard!",
-
-
-  "__Settings Page___": "__Settings Page___",
   "settings": "Settings",
   "profile": "Profile",
   "changePassword": "Change Password",
@@ -507,10 +504,6 @@
   "report_a_problem": "Report a Problem",
   "privacy_security": "Privacy & Security",
   "app_rules": "App Rules",
-
-
-
-  "__Owner Management dashboard_": "__Owner Management dashboard_",
   "staff_operations": "Staff & Operations",
   "scheduling": "Scheduling",
   "manage_staff_schedules_rotations": "Manage staff schedules & rotations",
@@ -540,111 +533,57 @@
   "track_products_sales": "Track products and sales",
   "stock_management": "Stock Management",
   "manage_salon_supplies": "Manage salon supplies",
-
-
-  "__analytics_dashboard_page": "__analytics_dashboard_page",
   "AI Smart Insights": "✦ AI Smart Insights",
   "Top Services": "Top Services",
   "Staff Performance": "Staff Performance",
-
-
-  "__data_management_page": "__data_management_page",
   "What to Export": "What to Export",
   "Format": "Format",
   "Date Range (optional)": "Date Range (optional)",
   "Select File": "Select File",
   "Conflict Mode": "Conflict Mode",
-
-
-
-  "__appointment_accordion": "__appointment_accordion",
   "Total Price": "Total Price",
   "Expert Number": "Expert Number",
   "Expert Salon": "Expert Salon",
   "Payment Status": "Payment Status",
   "Method": "Method",
-
-
-  "__revenue_controls_page": "__revenue_controls_page",
   "Accepted Payment Methods": "Accepted Payment Methods",
   "Prepayment & Deposit Rules": "Prepayment & Deposit Rules",
   "Business Policies": "Business Policies",
-
-
-  "__book_appointment_page": "__book_appointment_page",
   "Cash (Pay at Salon)": "Cash (Pay at Salon)",
   "Visa / Mastercard": "Visa / Mastercard",
   "CliQ": "CliQ",
   "Na3eeman Points": "Na3eeman Points",
   "Digital Voucher": "Digital Voucher",
-
-  "__cart_page": "__cart_page",
   "Salonping Cart": "Salonping Cart",
-
-  "__admin_analytics": "__admin_analytics",
   "Admin Analytics": "Admin Analytics",
-
-
-  "__receptionist_dashboard": "__receptionist_dashboard",
   "Staff Timeline": "Staff Timeline",
   "Schedule": "Schedule",
   "Staff Items": "Staff Items",
   "Shared Items": "Shared Items",
   "Our Products": "Our Products",
   "FAQs & User Guides": "FAQs & User Guides",
-
-
-  "__receptionist_products_page": "__receptionist_products_page",
   "Total items": "Total items",
   "Low Stock": "Low Stock",
-
-  "__reports_list_page": "__reports_list_page",
   "Financial Report": "Financial Report",
   "Appointment Report": "Appointment Report",
   "Inventory Report": "Inventory Report",
-
-  "__favorites_list_page": "__favorites_list_page",
   "Favorite Salons": "Favorite Salons",
-
-  "__experts_list_page": "__experts_list_page",
   "Experts": "Experts",
-
-  "__expert_home_page": "__expert_home_page",
   "Expert Dash": "Expert Dash",
-
-  "__customer_home": "__customer_home",
   "Redeem Points": "Redeem Points",
   "Points History": "Points History",
-
-
-  "__helpers": "__helpers",
   "Debug Banner": "Debug Banner",
   "Performance Overlay": "Performance Overlay",
   "Slow Animations": "Slow Animations",
   "Debug Logging": "Debug Logging", 
-
-
-  "__reset_password_page": "__reset_password_page",
   "Create New Password": "Create New Password",
-
-  "__profile_widgets": "__profile_widgets",
   "Personal Information": "Personal Information",
   "Profile Details": "Profile Details",
   "Account Status": "Account Status",
-
-  "__expert_performance_page": "__expert_performance_page",
   "Performance": "Performance",
-
-  "__appointments_page": "__appointments_page",
   "My Appointments": "My Appointments",
-
-
-  "__intern_activity_page": "__intern_activity_page",
   "Tasks": "Tasks",
   "Targets": "Targets",
-
-
-  "__artisan_widgets": "__artisan_widgets",
   "Daily Earnings": "Daily Earnings",
   "account_settings": "Account Settings",
   "subscription_management": "Subscription Management",
