@@ -22,7 +22,6 @@ migrate_working_dir/
 .env
 .env.example
 .metadata
-lib/config/environment.dart
 
 
 # The .vscode folder contains launch configuration and tasks you configure in
