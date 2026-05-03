@@ -16,6 +16,7 @@ class Salon {
   final String? salonLogo;
   final double? avgRating;
   final List<Review>? reviews;
+  final List<SalonGalleryImage>? galleryImages;
 
   Salon({
     required this.id,
@@ -35,28 +36,32 @@ class Salon {
     this.salonLogo,
     this.avgRating,
     this.reviews,
+    this.galleryImages,
   });
 
   factory Salon.fromJson(Map<String, dynamic> json) {
     return Salon(
       id: json['id'] as int,
-      salonName: json['salon_name'] as String,
-      salonPhonNum: json['salon_phon_num'] as String,
-      salonDescription: json['salon_description'] as String,
-      slogan: json['slogan'] as String?,
-      location: json['location'] as String,
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
-      openingTime: json['opening_time'] as String,
-      closingTime: json['closing_time'] as String,
-      salonSeats: json['salon_seats'] as int? ?? 0,
-      salonStaff: json['salon_staff'] as int? ?? 0,
+      salonName: json['salonName'] ?? json['salon_name'] ?? '',
+      salonPhonNum: json['salonPhoneNum'] ?? json['salon_phone_num'] ?? '',
+      salonDescription: json['salonDescription'] ?? json['salon_description'] ?? '',
+      slogan: json['slogan'] ?? json['salon_slogan'],
+      location: json['location'] ?? '',
+      lat: (json['lat'] as num?)?.toDouble() ?? 0.0,
+      lng: (json['lng'] as num?)?.toDouble() ?? 0.0,
+      openingTime: json['openingTime'] ?? json['opening_time'] ?? '09:00',
+      closingTime: json['closingTime'] ?? json['closing_time'] ?? '21:00',
+      salonSeats: json['salonSeats'] ?? json['salon_seats'] ?? 0,
+      salonStaff: json['salonStaff'] ?? json['salon_staff'] ?? 0,
       confirmedPhone: json['confirmed_phone'] as bool? ?? false,
-      ownerId: json['owner'] as int? ?? 0,
+      ownerId: json['owner_id'] ?? json['owner'] ?? 0,
       salonLogo: json['salon_logo'] as String?,
-      avgRating: (json['avg_rating'] as num?)?.toDouble(),
+      avgRating: (json['salonRating'] ?? json['salon_rating'] as num?)?.toDouble(),
       reviews: json['reviews'] != null
           ? (json['reviews'] as List).map((r) => Review.fromJson(r)).toList()
+          : null,
+      galleryImages: json['gallery_images'] != null
+          ? (json['gallery_images'] as List).map((i) => SalonGalleryImage.fromJson(i)).toList()
           : null,
     );
   }
@@ -65,9 +70,9 @@ class Salon {
     return {
       'id': id,
       'salon_name': salonName,
-      'salon_phon_num': salonPhonNum,
+      'salon_phone_num': salonPhonNum,
       'salon_description': salonDescription,
-      'slogan': slogan,
+      'salon_slogan': slogan,
       'location': location,
       'lat': lat,
       'lng': lng,
@@ -79,6 +84,22 @@ class Salon {
       'owner': ownerId,
       'salon_logo': salonLogo,
     };
+  }
+}
+
+class SalonGalleryImage {
+  final int id;
+  final String image;
+  final String? altText;
+
+  SalonGalleryImage({required this.id, required this.image, this.altText});
+
+  factory SalonGalleryImage.fromJson(Map<String, dynamic> json) {
+    return SalonGalleryImage(
+      id: json['id'] as int,
+      image: json['image'] as String,
+      altText: json['alt_text'] as String?,
+    );
   }
 }
 
@@ -104,12 +125,12 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       id: json['id'] as int,
-      customerId: json['customer'] as int,
-      salonId: json['salon'] as int,
+      customerId: json['customer'] as int? ?? (json['customerId'] as int? ?? 0),
+      salonId: json['salon'] as int? ?? (json['salonId'] as int? ?? 0),
       appointmentId: json['appointment'] as int?,
-      rating: json['rating'] as int,
-      comment: json['comment'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      rating: json['rating'] as int? ?? 0,
+      comment: json['comment'] as String? ?? '',
+      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
     );
   }
 }

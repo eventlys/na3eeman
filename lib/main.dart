@@ -6,7 +6,6 @@ import 'config/environment.dart';
 import 'Helpers/config.dart';
 import 'Helpers/customized/error_reporter.dart';
 import 'Helpers/logger.dart';
-import 'Providers/app_providers.dart';
 import 'Providers/main_providers.dart';
 import 'Providers/provider_wrapper.dart';
 import 'Routes/routes.dart';

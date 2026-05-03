@@ -50,20 +50,21 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
 
     final lowStockConsumables = allItems.where((item) {
       final category = item['category'] ?? (item['product'] is Map ? item['product']['category'] : null);
-      final stock = item['quantity_in_stock'] ?? 0;
-      return category == 'Consumables' && stock <= 2;
+      final stock = item['quantityInStock'] ?? item['quantity_in_stock'] ?? 0;
+      final threshold = item['lowStockThreshold'] ?? item['low_stock_threshold'] ?? 10;
+      return category == 'CONSUMABLE' && stock <= threshold;
     }).toList();
 
     final kitItems = allItems.where((item) {
       final category = item['category'] ?? (item['product'] is Map ? item['product']['category'] : null);
-      return category == 'Personal Kit';
+      return category == 'EQUIPMENT';
     }).toList();
 
     final consumablesAlert = lowStockConsumables.isNotEmpty
         ? 'Low Stock: ${lowStockConsumables.first['product_name'] ?? (lowStockConsumables.first['product'] is Map ? lowStockConsumables.first['product']['product_name'] : 'Item')}'
         : 'All items stocked';
 
-    final kitReady = kitItems.where((item) => (item['quantity_in_stock'] ?? 0) > 0).length;
+    final kitReady = kitItems.where((item) => (item['quantityInStock'] ?? item['quantity_in_stock'] ?? 0) > 0).length;
     final kitTotal = kitItems.length;
     final kitSubtitle = kitTotal > 0 ? '$kitReady/$kitTotal Items Ready' : 'No items added';
 
@@ -74,7 +75,7 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
           'Personal Kit',
           kitSubtitle,
           Icons.handyman_rounded,
-          onTap: () => _navigateInventory(context, 'Personal Kit'),
+          onTap: () => _navigateInventory(context, 'EQUIPMENT'),
         ),
         const SizedBox(height: 12),
         _buildToolCard(
@@ -83,7 +84,7 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
           consumablesAlert,
           Icons.inventory_2_rounded,
           isAlert: lowStockConsumables.isNotEmpty,
-          onTap: () => _navigateInventory(context, 'Consumables'),
+          onTap: () => _navigateInventory(context, 'CONSUMABLE'),
         ),
       ],
     );

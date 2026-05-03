@@ -7,11 +7,11 @@ import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
-import '../widgets/attach_feedback_dialog.dart';
+// import '../widgets/attach_feedback_dialog.dart';
 import '../widgets/task_todo_bottom_sheet.dart';
-import '../widgets/monthly_target_widget.dart';
+import '../widgets/time_clock_widget.dart';
 import '../../../../Providers/features/intern_provider.dart';
-import '../../../../Providers/features/expert_provider.dart';
+// import '../../../../Providers/features/expert_provider.dart';
 
 class InternDashboard extends StatefulWidget {
   const InternDashboard({super.key});
@@ -22,7 +22,6 @@ class InternDashboard extends StatefulWidget {
 
 class _InternDashboardState extends State<InternDashboard> with SingleTickerProviderStateMixin {
   late SidebarController sidebarController;
-  bool isNumericView = true;
   bool isTasksExpanded = false;
   bool isShowingAllTasks = false;
 
@@ -35,10 +34,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     // Initial data fetch
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final internProvider = context.read<InternProvider>();
-      final expertProvider = context.read<ExpertProvider>();
-      
-      await internProvider.initInternDashboard(null);
-      await expertProvider.loadExperts(refresh: true, salonId: internProvider.salonId);
+      await internProvider.initInternDashboard();
     });
   }
 
@@ -55,7 +51,6 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     final internProvider = context.watch<InternProvider>();
-    final expertProvider = context.watch<ExpertProvider>();
 
     return Stack(
       children: [
@@ -86,7 +81,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
           body: RefreshIndicator(
             onRefresh: () async {
               await internProvider.fetchTasks();
-              await internProvider.fetchTargets();
+              await internProvider.fetchInternActivity();
             },
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -95,21 +90,26 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Mentorship Status Card
-                  _buildMentorshipStatus(context, internProvider.assignedMentor),
+                  // _buildMentorshipStatus(context, internProvider.assignedMentor),
 
-                  const SizedBox(height: 32),
+                  // const SizedBox(height: 32),
 
-                  // Active Assignments / Mentors Section
-                  DashboardSectionHeader(
-                    title: "active_assignments".tr(),
-                    actionText: expertProvider.isLoading ? "loading".tr() : "refresh".tr(),
-                    onPressed: () => expertProvider.loadExperts(refresh: true, salonId: internProvider.salonId),
-                  ),
-                  const SizedBox(height: 16),
-                  if (expertProvider.isLoading && expertProvider.experts.isEmpty)
-                    const Center(child: CircularProgressIndicator())
-                  else
-                    _buildMentorsList(context, expertProvider, internProvider),
+                  // // Active Assignments / Mentors Section
+                  // DashboardSectionHeader(
+                  //   title: "active_assignments".tr(),
+                  //   actionText: expertProvider.isLoading ? "loading".tr() : "refresh".tr(),
+                  //   onPressed: () => expertProvider.loadExperts(refresh: true, salonId: internProvider.salonId),
+                  // ),
+                  // const SizedBox(height: 16),
+                  // if (expertProvider.isLoading && expertProvider.experts.isEmpty)
+                  //   const Center(child: CircularProgressIndicator())
+                  // else
+                  //   _buildMentorsList(context, expertProvider, internProvider),
+
+                  // const SizedBox(height: 32),
+
+                  // Time Clock Section
+                  const TimeClockWidget(),
 
                   const SizedBox(height: 32),
 
@@ -296,154 +296,154 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     );
   }
 
-  Widget _buildTargetsList(InternProvider provider) {
-    if (provider.targets.isEmpty) {
-      return const Center(child: Text('No targets set for this month', style: TextStyle(color: AppColors.almostBlack300)));
-    }
-    return SizedBox(
-      height: 130,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: provider.targets.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 16),
-        itemBuilder: (context, index) {
-          return MonthlyTargetWidget(
-            target: provider.targets[index],
-            isNumericView: isNumericView,
-          );
-        },
-      ),
-    );
-  }
+  // Widget _buildTargetsList(InternProvider provider) {
+  //   if (provider.targets.isEmpty) {
+  //     return const Center(child: Text('No targets set for this month', style: TextStyle(color: AppColors.almostBlack300)));
+  //   }
+  //   return SizedBox(
+  //     height: 130,
+  //     child: ListView.separated(
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: provider.targets.length,
+  //       separatorBuilder: (_, _) => const SizedBox(width: 16),
+  //       itemBuilder: (context, index) {
+  //         return MonthlyTargetWidget(
+  //           target: provider.targets[index],
+  //           isNumericView: isNumericView,
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget _buildMentorsList(BuildContext context, ExpertProvider bProvider, InternProvider iProvider) {
-    if (bProvider.experts.isEmpty && !bProvider.isLoading) {
-      return Container(
-        padding: const EdgeInsets.all(24),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark ? AppColors.almostBlack700 : AppColors.almostBlack50,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: const Column(
-          children: [
-            Icon(Icons.people_outline_rounded, color: AppColors.almostBlack300, size: 40),
-            SizedBox(height: 12),
-            Text('No experts found in the salon', style: TextStyle(color: AppColors.almostBlack300)),
-          ],
-        ),
-      );
-    }
+  // Widget _buildMentorsList(BuildContext context, ExpertProvider bProvider, InternProvider iProvider) {
+  //   if (bProvider.experts.isEmpty && !bProvider.isLoading) {
+  //     return Container(
+  //       padding: const EdgeInsets.all(24),
+  //       width: double.infinity,
+  //       decoration: BoxDecoration(
+  //         color: Theme.of(context).brightness == Brightness.dark ? AppColors.almostBlack700 : AppColors.almostBlack50,
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //       child: const Column(
+  //         children: [
+  //           Icon(Icons.people_outline_rounded, color: AppColors.almostBlack300, size: 40),
+  //           SizedBox(height: 12),
+  //           Text('No experts found in the salon', style: TextStyle(color: AppColors.almostBlack300)),
+  //         ],
+  //       ),
+  //     );
+  //   }
 
-    final allTasksCompleted = iProvider.tasks.every((t) => t.isCompleted);
-    final isShadowingAnyone = iProvider.assignedMentor != null;
+  //   final allTasksCompleted = iProvider.tasks.every((t) => t.isCompleted);
+  //   final isShadowingAnyone = iProvider.assignedMentor != null;
 
-    return Column(
-      children: bProvider.experts.map((mentor) {
-        final isShadowing = iProvider.assignedMentor == mentor.name;
-        return _buildMentorCard(
-          context, 
-          iProvider, 
-          mentor.id, 
-          mentor.name, 
-          mentor.specialties.isNotEmpty ? mentor.specialties.first : 'Staff Member', 
-          mentor.isActive ? 'Active' : 'Inactive', 
-          isShadowing,
-          isShadowingAnyone,
-          allTasksCompleted
-        );
-      }).toList(),
-    );
-  }
+  //   return Column(
+  //     children: bProvider.experts.map((mentor) {
+  //       final isShadowing = iProvider.assignedMentor == mentor.name;
+  //       return _buildMentorCard(
+  //         context, 
+  //         iProvider, 
+  //         mentor.id, 
+  //         mentor.name, 
+  //         mentor.specialties.isNotEmpty ? mentor.specialties.first : 'Staff Member', 
+  //         mentor.isActive ? 'Active' : 'Inactive', 
+  //         isShadowing,
+  //         isShadowingAnyone,
+  //         allTasksCompleted
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
-  Widget _buildMentorCard(
-    BuildContext context, 
-    InternProvider iProvider, 
-    String id,
-    String name, 
-    String role, 
-    String status, 
-    bool isShadowing,
-    bool isShadowingAnyone,
-    bool allTasksCompleted
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final canAttach = !isShadowingAnyone || allTasksCompleted;
+  // Widget _buildMentorCard(
+  //   BuildContext context, 
+  //   InternProvider iProvider, 
+  //   String id,
+  //   String name, 
+  //   String role, 
+  //   String status, 
+  //   bool isShadowing,
+  //   bool isShadowingAnyone,
+  //   bool allTasksCompleted
+  // ) {
+  //   final isDark = Theme.of(context).brightness == Brightness.dark;
+  //   final canAttach = !isShadowingAnyone || allTasksCompleted;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isShadowing ? Theme.of(context).primaryColor.withOpacity(0.05) : (isDark ? AppColors.almostBlack700 : AppColors.white),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isShadowing 
-            ? Theme.of(context).primaryColor.withOpacity(0.3) 
-            : (isDark ? AppColors.almostBlack100.withOpacity(0.1) : AppColors.almostBlack50)
-        ),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            child: Icon(Icons.person, color: Theme.of(context).primaryColor),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text('$role • $status', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
-              ],
-            ),
-          ),
-          if (isShadowing)
-            const ShadowingBadge()
-          else
-            Column(
-              children: [
-                OutlinedButton(
-                  onPressed: canAttach ? () => _attachToMentor(context, iProvider, id, name) : null,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    side: BorderSide(color: canAttach ? Theme.of(context).primaryColor : AppColors.almostBlack100),
-                  ),
-                  child: const Text('Attach', style: TextStyle(fontSize: 12)),
-                ),
-                if (!canAttach)
-                  const Text('Finish Tasks', style: TextStyle(fontSize: 8, color: Colors.redAccent)),
-              ],
-            ),
-        ],
-      ),
-    );
-  }
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 12),
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: isShadowing ? Theme.of(context).primaryColor.withOpacity(0.05) : (isDark ? AppColors.almostBlack700 : AppColors.white),
+  //       borderRadius: BorderRadius.circular(20),
+  //       border: Border.all(
+  //         color: isShadowing 
+  //           ? Theme.of(context).primaryColor.withOpacity(0.3) 
+  //           : (isDark ? AppColors.almostBlack100.withOpacity(0.1) : AppColors.almostBlack50)
+  //       ),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         CircleAvatar(
+  //           backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+  //           child: Icon(Icons.person, color: Theme.of(context).primaryColor),
+  //         ),
+  //         const SizedBox(width: 16),
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+  //               Text('$role • $status', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+  //             ],
+  //           ),
+  //         ),
+  //         if (isShadowing)
+  //           const ShadowingBadge()
+  //         else
+  //           Column(
+  //             children: [
+  //               OutlinedButton(
+  //                 onPressed: canAttach ? () => _attachToMentor(context, iProvider, id, name) : null,
+  //                 style: OutlinedButton.styleFrom(
+  //                   padding: const EdgeInsets.symmetric(horizontal: 12),
+  //                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  //                   side: BorderSide(color: canAttach ? Theme.of(context).primaryColor : AppColors.almostBlack100),
+  //                 ),
+  //                 child: const Text('Attach', style: TextStyle(fontSize: 12)),
+  //               ),
+  //               if (!canAttach)
+  //                 const Text('Finish Tasks', style: TextStyle(fontSize: 8, color: Colors.redAccent)),
+  //             ],
+  //           ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  void _attachToMentor(BuildContext context, InternProvider provider, String mentorId, String mentorName) async {
-    final feedback = await showDialog<String>(
-      context: context,
-      builder: (context) => AttachFeedbackDialog(staffName: mentorName),
-    );
+  // void _attachToMentor(BuildContext context, InternProvider provider, String mentorId, String mentorName) async {
+  //   final feedback = await showDialog<String>(
+  //     context: context,
+  //     builder: (context) => AttachFeedbackDialog(staffName: mentorName),
+  //   );
     
-    if (feedback != null) {
-      try {
-        await provider.attachToMentor(int.tryParse(mentorId) ?? 0, feedback, mentorName);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Succesfully attached to $mentorName')),
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to update mentor: $e')),
-          );
-        }
-      }
-    }
-  }
+  //   if (feedback != null) {
+  //     try {
+  //       await provider.attachToMentor(int.tryParse(mentorId) ?? 0, feedback, mentorName);
+  //       if (mounted) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Succesfully attached to $mentorName')),
+  //         );
+  //       }
+  //     } catch (e) {
+  //       if (mounted) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Failed to update mentor: $e')),
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
 
   void _showAddTaskSheet(BuildContext context) {
     showModalBottomSheet(
@@ -451,6 +451,107 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const TaskTodoBottomSheet(),
+    );
+  }
+}
+
+class FeedbackSection extends StatelessWidget {
+  const FeedbackSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final internProvider = context.watch<InternProvider>();
+    final feedbacks = internProvider.feedbacks;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DashboardSectionHeader(
+          title: "recent_feedback".tr(),
+          actionText: "view_all".tr(),
+          onPressed: () {},
+        ),
+        const SizedBox(height: 16),
+        if (feedbacks.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.almostBlack700 : AppColors.almostBlack50,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              children: [
+                Icon(Icons.feedback_outlined, size: 48, color: AppColors.almostBlack300.withOpacity(0.5)),
+                const SizedBox(height: 12),
+                Text(
+                  "No feedback yet",
+                  style: TextStyle(color: AppColors.almostBlack300, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          )
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: feedbacks.take(3).length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final feedback = feedbacks[index];
+              return Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.almostBlack700 : AppColors.almostBlack50,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: AppColors.primary.withOpacity(0.1),
+                          child: Text(
+                            feedback.expertName?[0] ?? 'E',
+                            style: TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                feedback.expertName ?? "Expert",
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              Text(
+                                DateFormat('MMM dd, yyyy').format(feedback.createdAt),
+                                style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const ShadowingBadge(),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      feedback.feedbackText,
+                      style: TextStyle(
+                        color: isDark ? Colors.white70 : AppColors.almostBlack400,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+      ],
     );
   }
 }
@@ -463,14 +564,17 @@ class ShadowingBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Text(
+      child: Text(
         'SHADOWING',
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(
+          fontSize: 10, 
+          fontWeight: FontWeight.bold, 
+          color: Theme.of(context).primaryColor
+        ),
       ),
     );
   }
 }
-

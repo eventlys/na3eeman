@@ -108,38 +108,72 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     }
   }
 
+  bool _isOverdue() {
+    final status = widget.appointment['status']?.toString().toLowerCase();
+    if (status != 'scheduled' && status != 'checked_in') return false;
+    if (widget.appointment['isPaid'] == true) return false;
+
+    final dateTime = widget.appointment['dateTime'] ?? widget.appointment['start_time'];
+    if (dateTime == null) return false;
+    
+    final start = dateTime is DateTime ? dateTime : DateTime.tryParse(dateTime.toString());
+    if (start == null) return false;
+
+    return DateTime.now().difference(start).inHours >= 24;
+  }
+
   Widget _buildStatusChip(String status) {
     final statusColor = _getStatusColor(status);
+    final isOverdue = _isOverdue();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border.all(
-          color: statusColor.withValues(alpha: 0.3),
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _getStatusIcon(status),
-            color: statusColor,
-            size: 16,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            status.toUpperCase(),
-            style: TextStyle(
-              color: statusColor,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(
+              color: statusColor.withValues(alpha: 0.3),
+              width: 1,
             ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _getStatusIcon(status),
+                color: statusColor,
+                size: 16,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                status.toUpperCase(),
+                style: TextStyle(
+                  color: statusColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (isOverdue) ...[
+          const SizedBox(height: 4),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.warning_amber_rounded, size: 14, color: Colors.red),
+              const SizedBox(width: 4),
+              Text(
+                'PAYMENT OVERDUE (>24h)'.tr(),
+                style: const TextStyle(color: Colors.red, fontSize: 10, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
         ],
-      ),
+      ],
     );
   }
   //

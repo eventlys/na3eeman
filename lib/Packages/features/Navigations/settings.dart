@@ -15,6 +15,8 @@ import '../../../Providers/locale_provider.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../../core/widgets/rules/rules_guide_sheet.dart';
 
+import '../../../../core/widgets/feedback/feedback_dialog.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -156,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildCleanTile(
             icon: Icons.feedback_outlined,
             title: 'send_feedback'.tr(),
-            onTap: () => OverlayService.showFeedback(),
+            onTap: () => FeedbackDialog.show(context),
           ),
           _buildCleanTile(
             icon: Icons.report_problem_outlined,
@@ -177,6 +179,11 @@ class _SettingsPageState extends State<SettingsPage> {
             icon: Icons.rule_rounded,
             title: 'app_rules'.tr(),
             onTap: () => _showAppRules(),
+          ),
+          _buildCleanTile(
+            icon: Icons.help_outline_rounded,
+            title: 'user_guides'.tr(),
+            onTap: () => _showUserGuide(),
           ),
 
           const SizedBox(height: 48),
@@ -450,5 +457,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _showAppRules() {
     RulesGuideSheet.showRulesSheet(context);
+  }
+
+  void _showUserGuide() {
+    RulesGuideSheet.showGuideSheet(context);
   }
 }

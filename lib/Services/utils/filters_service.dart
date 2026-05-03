@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Helpers/logger.dart';
+import '../../Packages/Core/constants/app_constants.dart';
 
 class UnifiedService {
   static final UnifiedService _instance = UnifiedService._internal();
@@ -663,7 +664,7 @@ class SocialSharingService {
     const shareText = 'Check out Na3eeman - The best expert salon app! '
         'Find the perfect expert, book appointments, and earn loyalty points. '
         'Download now and get your perfect haircut! ✂️';
-    const shareUrl = 'https://na3eeman.com/download';
+    final shareUrl = '${AppConstants.webAppUrl}/download';
 
     await _shareContent('$shareText\n\n$shareUrl', 'App shared successfully', 'Failed to share app');
   }
@@ -672,7 +673,7 @@ class SocialSharingService {
     final shareText = 'Check out $salonName on Na3eeman! '
         'They provide excellent haircut services with professional experts. '
         'Book your appointment now! 💈';
-    final shareUrl = 'https://na3eeman.com/salon/$salonId';
+    final shareUrl = '${AppConstants.webAppUrl}/salon/$salonId';
 
     await _shareContent('$shareText\n\n$shareUrl', 'Salon shared: $salonName', 'Failed to share salon');
   }
@@ -681,7 +682,7 @@ class SocialSharingService {
     final shareText = 'I just booked an appointment using Na3eeman! '
         'The app makes it so easy to find great experts and book appointments. '
         'You should try it too! 📅';
-    final shareUrl = 'https://na3eeman.com/appointment/$appointmentId';
+    final shareUrl = '${AppConstants.webAppUrl}/appointment/$appointmentId';
 
     await _shareContent('$shareText\n\n$shareUrl', 'Appointment shared: $appointmentId', 'Failed to share appointment');
   }
@@ -689,10 +690,9 @@ class SocialSharingService {
   Future<void> openSocialMedia(String platform) async {
     final urls = {
       'facebook': 'https://facebook.com/na3eeman',
-      'twitter': 'https://twitter.com/na3eeman',
+      // 'twitter': 'https://twitter.com/na3eeman',
       'instagram': 'https://instagram.com/na3eeman',
-      'linkedin': 'https://linkedin.com/company/na3eeman',
-      'tiktok': 'https://tiktok.com/@na3eeman',
+      // 'linkedin': 'https://linkedin.com/company/na3eeman',
     };
 
     final url = urls[platform.toLowerCase()];
@@ -722,7 +722,7 @@ Join me on Na3eeman - The ultimate expert salon experience! ✂️
 Use my referral code: $referralCode
 Get 50 bonus points when you sign up! 🎁
 
-Download now: https://na3eeman.com/download
+Download now: ${AppConstants.webAppUrl}/download
 
 #Na3eeman #ExpertApp #HaircutApp
     ''';
@@ -734,7 +734,7 @@ Download now: https://na3eeman.com/download
     final shareText = 'I just earned $points loyalty points on Na3eeman for $achievement! '
         'The loyalty program is amazing - you get points for bookings, reviews, and more! '
         'Join me and start earning free haircuts! 🏆';
-    const shareUrl = 'https://na3eeman.com/loyalty';
+    final shareUrl = '${AppConstants.webAppUrl}/loyalty';
 
     await _shareContent('$shareText\n\n$shareUrl', 'Loyalty achievement shared: $points points', 'Failed to share loyalty achievement');
   }
@@ -744,7 +744,7 @@ Download now: https://na3eeman.com/download
     final shareText = 'I just rated $salonName $rating stars on Na3eeman! $stars\n\n'
         'The app makes it so easy to find and review great expert salons. '
         'Check it out if you\'re looking for a fresh cut! 💈';
-    const shareUrl = 'https://na3eeman.com';
+    final shareUrl = AppConstants.webAppUrl;
 
     await _shareContent('$shareText\n\n$shareUrl', 'Review shared for: $salonName', 'Failed to share review');
   }
@@ -755,7 +755,7 @@ Download now: https://na3eeman.com/download
         '$description\n\n'
         'Download the app and enjoy your discount! '
         'Perfect haircuts are just a tap away! ✂️';
-    const shareUrl = 'https://na3eeman.com/download';
+    final shareUrl = '${AppConstants.webAppUrl}/download';
 
     await _shareContent('$shareText\n\n$shareUrl', 'Promo code shared: $promoCode', 'Failed to share promo code');
   }

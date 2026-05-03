@@ -19,3 +19,4 @@ export 'features/admin_analytics_provider.dart';
 export 'features/admin_service_provider.dart';
 export 'features/schedule_provider.dart';
 export 'locale_provider.dart';
+export 'app_providers.dart';

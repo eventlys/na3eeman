@@ -20,7 +20,7 @@ class _ToolsAndInventoryPageState extends State<ToolsAndInventoryPage> with Sing
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    if (widget.initialCategory == 'Consumables') {
+    if (widget.initialCategory == 'CONSUMABLE') {
       _tabController.index = 1;
     }
   }
@@ -62,11 +62,11 @@ class _ToolsAndInventoryPageState extends State<ToolsAndInventoryPage> with Sing
         children: [
           InventoryManager(
             currentUser: authProvider.user?.toJson() ?? {},
-            category: 'Personal Kit',
+            category: 'EQUIPMENT',
           ),
           InventoryManager(
             currentUser: authProvider.user?.toJson() ?? {},
-            category: 'Consumables',
+            category: 'CONSUMABLE',
           ),
         ],
       ),

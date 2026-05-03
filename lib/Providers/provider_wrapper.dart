@@ -29,6 +29,7 @@ import 'features/notification_provider.dart';
 import 'features/admin_analytics_provider.dart';
 import 'features/admin_service_provider.dart';
 import 'features/schedule_provider.dart';
+import 'features/gift_card_provider.dart';
 import '../Helpers/inventory_helpers.dart'; // Added
 import 'locale_provider.dart';
 
@@ -145,5 +146,6 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider(create: (_) => AdminServiceProvider()),
   ChangeNotifierProvider(create: (_) => NotificationProvider()),
   ChangeNotifierProvider(create: (_) => ScheduleProvider()),
+  ChangeNotifierProvider(create: (_) => GiftCardProvider(ApiService())),
 ];
 

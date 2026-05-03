@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 // import '../../../../Helpers/profile_helper_functions.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
-import '../../../../core/widgets/buttons/styled_buttons.dart';
+// import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/profile_widgets.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -132,61 +132,91 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text("profile".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          if (!_isEditing)
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () => Navigator.pushNamed(context, '/settings'),
-            ),
-          const SizedBox(width: 8),
-        ],
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isLadies = themeProvider.gender == UserGender.female;
+    final primaryColor = isLadies ? AppColors.pink : AppColors.blue;
+    final isDark = themeProvider.isDark;
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        primaryColor: primaryColor,
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+          primary: primaryColor,
+        ),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  ProfileWidgets.buildProfileContent(
-                    formKey: _formKey,
-                    userData: _userData!,
-                    isEditing: _isEditing,
-                    controllers: {
-                      'firstName': _firstNameController,
-                      'lastName': _lastNameController,
-                      'username': _usernameController,
-                      'nickname': _nicknameController,
-                      'email': _emailController,
-                      'phone': _phoneController,
-                      'bio': _bioController,
-                      'location': _locationController,
-                      'specialties': _specialtiesController,
-                    },
-                    getAccountType: () => _userData!['role'],
-                    onDeleteProfile: () {},
-                    onChangeProfilePicture: () {},
-                  ),
-                  const SizedBox(height: 32),
-                  PrimaryButton(
-                    text: _isEditing ? 'Save Changes' : 'Edit Profile',
-                    onPressed: _isEditing ? _saveChanges : _toggleEdit,
-                  ),
-                  if (_isEditing) ...[
-                    const SizedBox(height: 12),
-                    TextButton(
-                      onPressed: _toggleEdit,
-                      child: Text("cancel".tr(), style: TextStyle(color: AppColors.almostBlack400)),
-                    ),
-                  ],
-                ],
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          title: Text("profile".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+            onPressed: () => Navigator.pop(context),
+          ),
+          actions: [
+            if (!_isEditing)
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () => Navigator.pushNamed(context, '/settings'),
               ),
-            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: _isLoading
+            ? Center(child: CircularProgressIndicator(color: primaryColor))
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    ProfileWidgets.buildProfileContent(
+                      formKey: _formKey,
+                      userData: _userData!,
+                      isEditing: _isEditing,
+                      controllers: {
+                        'firstName': _firstNameController,
+                        'lastName': _lastNameController,
+                        'username': _usernameController,
+                        'nickname': _nicknameController,
+                        'email': _emailController,
+                        'phone': _phoneController,
+                        'bio': _bioController,
+                        'location': _locationController,
+                        'specialties': _specialtiesController,
+                      },
+                      getAccountType: () => _userData!['role'],
+                      onDeleteProfile: () {},
+                      onChangeProfilePicture: () {},
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: _isEditing ? _saveChanges : _toggleEdit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          _isEditing ? 'Save Changes' : 'Edit Profile',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    if (_isEditing) ...[
+                      const SizedBox(height: 12),
+                      TextButton(
+                        onPressed: _toggleEdit,
+                        child: Text("cancel".tr(), style: TextStyle(color: isDark ? Colors.grey[400] : AppColors.almostBlack400)),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+      ),
     );
   }
 }

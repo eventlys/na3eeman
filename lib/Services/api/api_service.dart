@@ -167,7 +167,7 @@ class ApiService {
       'customer_id': customerId,
       'points': points,
       'source': source,
-      'metadata': ?metadata,
+      'metadata': metadata,
     });
   }
 
@@ -185,9 +185,11 @@ class ApiService {
     return data.map((e) => GiftCard.fromJson(e)).toList();
   }
 
-  Future<dynamic> purchaseGiftCard(int giftCardId) async {
+  Future<dynamic> purchaseGiftCard(int giftCardId, {String? receiverPhone, String? message}) async {
     return await post(Endpoints.giftCardPurchase, data: {
       'gift_card_id': giftCardId,
+      'receiver_phone': receiverPhone,
+      'message': message,
     });
   }
 
@@ -195,6 +197,10 @@ class ApiService {
     final response = await get(Endpoints.userGiftCards);
     final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
     return data.map((e) => UserGiftCard.fromJson(e)).toList();
+  }
+
+  Future<Map<String, dynamic>> verifyGiftCard(String code) async {
+    return await post('/loyalty/gift-cards/verify/', data: {'code': code});
   }
 
   // Feedback
@@ -267,6 +273,32 @@ class ApiService {
     return true;
   }
 
+  Future<dynamic> updateSalonWithImages({
+    required int salonId,
+    required Map<String, String> fields,
+    List<File>? images,
+  }) async {
+    final uri = Uri.parse('$baseUrl/salons/salons/$salonId/');
+    final request = http.MultipartRequest('PATCH', uri);
+    
+    final token = await _storage.getAuthToken();
+    if (token != null) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+    
+    request.fields.addAll(fields);
+    
+    if (images != null && images.isNotEmpty) {
+      for (var image in images) {
+        request.files.add(await http.MultipartFile.fromPath('images', image.path));
+      }
+    }
+    
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    return _handleResponse(response);
+  }
+
   Future<List<dynamic>> getSalonExperts(int salonId) async {
     final response = await get(Endpoints.salonExperts(salonId));
     return response is List ? response : (response['results'] ?? response['data'] ?? []);
@@ -292,15 +324,15 @@ class ApiService {
   Future<dynamic> confirmPayment(dynamic appointmentId, {String? voucherCode}) async {
     final id = appointmentId is int ? appointmentId : int.tryParse(appointmentId.toString()) ?? 0;
     return await post(Endpoints.appointmentConfirmCashPayment(id), data: {
-      'voucher_code': ?voucherCode,
+      'voucher_code': voucherCode,
     });
   }
 
   Future<Map<String, dynamic>> getAppointments({int? customerId, String? status, int? pageSize}) async {
     return await get(Endpoints.appointments, queryParams: {
-      'customer': ?customerId,
-      'status': ?status,
-      'page_size': ?pageSize,
+      'customer': customerId,
+      'status': status,
+      'page_size': pageSize,
     });
   }
 
@@ -356,13 +388,13 @@ class ApiService {
     Map<String, dynamic>? filters,
   }) async {
     return await get(Endpoints.salons, queryParams: {
-      'category': ?categoryId,
-      'page': ?page,
-      'limit': ?limit,
-      'search': ?search,
-      'min_rating': ?minRating,
-      'location': ?location,
-      'open_now': ?openNow,
+      'category': categoryId,
+      'page': page,
+      'limit': limit,
+      'search': search,
+      'min_rating': minRating,
+      'location': location,
+      'open_now': openNow,
       if (filters != null) ...filters,
     });
   }
@@ -491,11 +523,26 @@ class ApiService {
     return response is List ? response : (response['results'] ?? response['data'] ?? []);
   }
 
+  Future<dynamic> createRecurringBooking(Map<String, dynamic> data) async {
+    return await post('/salons/recurring-bookings/', data: data);
+  }
+
   Future<List<dynamic>> getWorkingHours({int? salonId, int? expertId}) async {
     final response = await get(Endpoints.workingHours, queryParams: {
-      'salon_id': ?salonId,
-      'expert_id': ?expertId,
+      'salon_id': salonId,
+      'expert_id': expertId,
     });
     return response is List ? response : (response['results'] ?? []);
+  }
+  
+  Future<List<dynamic>> getPTORequests({int? salonId}) async {
+    final response = await get(Endpoints.pto, queryParams: {
+      if (salonId != null) 'salon_id': salonId,
+    });
+    return response is List ? response : (response['results'] ?? []);
+  }
+
+  Future<dynamic> submitPTORequest(Map<String, dynamic> data) async {
+    return await post(Endpoints.pto, data: data);
   }
 }

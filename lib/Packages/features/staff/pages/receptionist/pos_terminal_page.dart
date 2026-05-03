@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
+import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/points_provider.dart';
 
 class PosTerminalPage extends StatefulWidget {
   const PosTerminalPage({super.key});
@@ -89,6 +92,21 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
 
   void _clearCart() => setState(() => _cartItems.clear());
 
+  Future<void> _verifyVoucher(StateSetter setModalState) async {
+    if (_voucherCtrl.text.isEmpty) return;
+    try {
+      final res = await ApiService().verifyGiftCard(_voucherCtrl.text);
+      if (mounted) {
+        setModalState(() {
+          _voucherCode = _voucherCtrl.text;
+        });
+        AppSnackBar.success(context, 'Voucher applied! Balance: ${res['balance']} JOD');
+      }
+    } catch (e) {
+      if (mounted) AppSnackBar.error(context, 'Invalid voucher code');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -134,10 +152,72 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
             ],
           ),
           const SizedBox(height: 12),
-          _buildTextField(_phoneCtrl, 'Phone Number', Icons.phone_rounded, keyboardType: TextInputType.phone),
+          Row(
+            children: [
+              Expanded(child: _buildTextField(_phoneCtrl, 'Phone Number', Icons.phone_rounded, keyboardType: TextInputType.phone)),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: _lookupCustomer,
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: const Text('Verify'),
+                ),
+              ),
+            ],
+          ),
+          if (_customerBalance != null) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: _hasCustomerPenalty ? Colors.red.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _hasCustomerPenalty ? Colors.red.withValues(alpha: 0.3) : Colors.green.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(_hasCustomerPenalty ? Icons.warning_amber_rounded : Icons.stars_rounded, 
+                       color: _hasCustomerPenalty ? Colors.red : Colors.green),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Loyalty Balance: $_customerBalance pts', 
+                             style: TextStyle(fontWeight: FontWeight.bold, color: _hasCustomerPenalty ? Colors.red : Colors.green)),
+                        if (_hasCustomerPenalty)
+                          const Text('⚠️ Pending Penalty Detected (>24h delay)', 
+                                     style: TextStyle(fontSize: 11, color: Colors.red, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  int? _customerBalance;
+  bool _hasCustomerPenalty = false;
+
+  Future<void> _lookupCustomer() async {
+    if (_phoneCtrl.text.isEmpty) return;
+    try {
+      final res = await ApiService().get('/loyalty/balance-by-phone/', queryParams: {'phone': _phoneCtrl.text});
+      setState(() {
+        _customerBalance = res['points'];
+        _hasCustomerPenalty = res['has_pending_penalty'] ?? false;
+      });
+      AppSnackBar.success(context, 'Customer found!');
+    } catch (e) {
+      AppSnackBar.error(context, 'Customer not found');
+    }
   }
 
   Widget _buildTextField(TextEditingController ctrl, String label, IconData icon, {TextInputType keyboardType = TextInputType.text}) {
@@ -321,26 +401,64 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
                 spacing: 12, runSpacing: 12,
                 children: _paymentMethods.map((m) {
                   final isSelected = _selectedMethod == m['value'];
+                  final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+                  final pointsNeeded = (_subtotal * 200).toInt();
+                  final canPayWithPoints = pointsProvider.currentBalance >= pointsNeeded;
+
                   return GestureDetector(
-                    onTap: () => setModalState(() => _selectedMethod = m['value'] as String),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(m['icon'] as IconData, size: 18, color: isSelected ? Colors.white : null),
-                          const SizedBox(width: 8),
-                          Text(m['label'] as String, style: TextStyle(color: isSelected ? Colors.white : null, fontWeight: FontWeight.bold)),
-                        ],
+                    onTap: () {
+                      if (m['value'] == 'POINTS' && !canPayWithPoints) {
+                        AppSnackBar.error(context, 'Insufficient points balance');
+                        return;
+                      }
+                      setModalState(() => _selectedMethod = m['value'] as String);
+                    },
+                    child: Opacity(
+                      opacity: (m['value'] == 'POINTS' && !canPayWithPoints) ? 0.5 : 1.0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(m['icon'] as IconData, size: 18, color: isSelected ? Colors.white : null),
+                            const SizedBox(width: 8),
+                            Text(m['label'] as String, style: TextStyle(color: isSelected ? Colors.white : null, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
                     ),
                   );
                 }).toList(),
               ),
+              if (_selectedMethod == 'POINTS') ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(color: Colors.amber.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.stars_rounded, color: Colors.amber),
+                      const SizedBox(width: 12),
+                      Text('Required: ${(_subtotal * 200).toInt()} Points', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ],
+              if (_selectedMethod == 'VOUCHER') ...[
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _voucherCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Voucher Code',
+                    suffixIcon: TextButton(onPressed: () => _verifyVoucher(setModalState), child: const Text('Verify')),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ],
               const SizedBox(height: 32),
               PrimaryButton(
                 text: 'Complete Booking',

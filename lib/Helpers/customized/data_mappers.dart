@@ -1,5 +1,7 @@
 import 'package:na3eeman/Services/enums/gender.dart';
-import 'package:na3eeman/core/enums/app_enums.dart';
+// import 'package:na3eeman/core/enums/app_enums.dart';
+import 'package:na3eeman/core/enums/user_type.dart';
+// import 'package:na3eeman/Packages/Core/constants/app_roles.dart';
 
 import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Models/auth/user_model.dart';
@@ -18,7 +20,7 @@ class DataMappers {
       'first_name': user.firstName,
       'last_name': user.lastName,
       'profile_pic': user.profilePic,
-      'role': user.role.value,
+      'role': user.role,
       'gender': user.gender.value,
       'location': user.location,
       'lat': user.lat,
@@ -44,7 +46,7 @@ class DataMappers {
       firstName: json['first_name']?.toString() ?? '',
       lastName: json['last_name']?.toString() ?? '',
       profilePic: json['profile_pic']?.toString(),
-      role: UserRoleExtension.fromString(json['role']?.toString() ?? 'CUSTOMER'),
+      userType: UserType.fromString(json['role']?.toString() ?? json['user_type']?.toString() ?? 'CUSTOMER'),
       gender: GenderExtension.fromString(json['gender']?.toString() ?? 'MALE'),
       location: json['location']?.toString() ?? 'amman, Jordan',
       lat: (json['lat'] as num?)?.toDouble() ?? 31.963158,

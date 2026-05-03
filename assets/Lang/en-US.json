@@ -752,5 +752,12 @@
   "gift_service_subtitle": "Perfect for friends and loved ones",
   "gift_cards": "Gift Cards",
   "gift_him": "GIFT HIM",
-  "gift_her": "GIFT HER"
+  "gift_her": "GIFT HER",
+  "use_loyalty_points": "Use Loyalty Points",
+  "use_gift_card": "Use Gift Card",
+  "select_gift_card": "Select Gift Card",
+  "no_active_gift_cards": "No active gift cards found",
+  "apply_discounts": "Apply Discounts",
+  "final_total": "Final Total",
+  "balance": "Balance"
 }

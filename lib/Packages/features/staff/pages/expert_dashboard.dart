@@ -8,7 +8,6 @@ import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
-import '../widgets/tools_inventory_overview.dart';
 import '../widgets/today_appointments_overview.dart';
 import '../widgets/time_clock_widget.dart';
 // import 'package:intl/intl.dart';
@@ -199,12 +198,6 @@ class _ExpertDashboardState extends State<ExpertDashboard> with SingleTickerProv
               
               const SizedBox(height: 32),
 
-              // Inventory & Tools Section
-              DashboardSectionHeader(title: "tools_inventory".tr()),
-              const SizedBox(height: 16),
-              const ToolsAndInventoryOverview(),
-
-              const SizedBox(height: 32),
               const FeedbackSection(),
 
               const SizedBox(height: 48),

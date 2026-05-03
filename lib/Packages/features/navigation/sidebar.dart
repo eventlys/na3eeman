@@ -9,7 +9,7 @@ import '../../../core/theme/colors.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
-import '../../../core/widgets/rules/rules_guide_sheet.dart';
+// import '../../../core/widgets/rules/rules_guide_sheet.dart';
 
 class Sidebar extends StatelessWidget {
   final SidebarController controller;
@@ -121,7 +121,7 @@ class Sidebar extends StatelessWidget {
   Widget _buildMenuItems(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final user = authProvider.user;
-    final role = user?.role ?? UserRole.customer;
+    final role = user?.userRole ?? UserRole.customer;
 
     final List<MenuItem> allItems = [
       MenuItem(
@@ -152,6 +152,7 @@ class Sidebar extends StatelessWidget {
           UserRole.admin, 
           UserRole.ownerExpert, 
           UserRole.cofounder, 
+          UserRole.cofounderExpert,
           UserRole.manager
         ],
       ),
@@ -211,25 +212,6 @@ class Sidebar extends StatelessWidget {
         },
         requiresAuth: true,
         requiredRoles: [UserRole.owner, UserRole.ownerExpert, UserRole.cofounder, UserRole.receptionist],
-      ),
-      // ── Help & Rules ─────────────────────────────────────────────
-      MenuItem(
-        title: 'application_rules'.tr(),
-        assetIcon: 'assets/icons/secure.png',
-        delay: 3,
-        onTap: () {
-          controller.closeSidebar();
-          RulesGuideSheet.showRulesSheet(context);
-        },
-      ),
-      MenuItem(
-        title: 'user_guides'.tr(),
-        assetIcon: 'assets/icons/info.png',
-        delay: 3,
-        onTap: () {
-          controller.closeSidebar();
-          RulesGuideSheet.showGuideSheet(context);
-        },
       ),
       MenuItem(
         title: 'FAQs'.tr(),

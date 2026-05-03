@@ -50,7 +50,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
 
   void _toggleService(Map<String, dynamic> service) {
     final authProvider = context.read<AuthProvider>();
-    if (!RolePermissionManager.canBookAppointments(authProvider.user?.role ?? UserRole.customer)) {
+    if (!RolePermissionManager.canBookAppointments(authProvider.user?.userRole ?? UserRole.customer)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Staff members cannot book appointments')),
       );
@@ -134,7 +134,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("share_dialog_opened".tr())));
                 },
               ),
-              if (RolePermissionManager.canEditSalonInfo(context.read<AuthProvider>().user?.role ?? UserRole.customer))
+              if (RolePermissionManager.canEditSalonInfo(context.read<AuthProvider>().user?.userRole ?? UserRole.customer))
                 IconButton(
                   icon: const Icon(Icons.edit_note_rounded, color: AppColors.white),
                   onPressed: () {
@@ -327,7 +327,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
           ),
         ],
       ),
-      bottomNavigationBar: _selectedServices.isNotEmpty && RolePermissionManager.canBookAppointments(context.watch<AuthProvider>().user?.role ?? UserRole.customer) ? Container(
+      bottomNavigationBar: _selectedServices.isNotEmpty && RolePermissionManager.canBookAppointments(context.watch<AuthProvider>().user?.userRole ?? UserRole.customer) ? Container(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,

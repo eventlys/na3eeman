@@ -33,7 +33,7 @@ class AuthProvider extends BaseProvider {
   ExpertProfile? get expertProfile => _expertProfile;
   OwnerProfile? get ownerProfile => _ownerProfile;
   bool get isAuthenticated => _isAuthenticated;
-  UserRole? get userType => _user?.role;
+  UserRole? get userType => _user?.userRole;
   Gender? get userGender => _user?.gender;
   /// The currently active JWT access token. Null if not logged in.
   String? get currentToken => _currentToken;
@@ -131,10 +131,10 @@ class AuthProvider extends BaseProvider {
   bool get hasOwnerProfile => _ownerProfile != null;
 
   // Combined role checks
-  bool get canManageSalon => RolePermissionManager.canAccessSalonManagement(_user?.role ?? UserRole.customer);
-  bool get canManageAppointments => RolePermissionManager.canManageAppointments(_user?.role ?? UserRole.customer);
-  bool get canManageInventory => RolePermissionManager.canManageInventory(_user?.role ?? UserRole.customer);
-  bool get canManageFinancials => RolePermissionManager.canManageFinancials(_user?.role ?? UserRole.customer);
+  bool get canManageSalon => RolePermissionManager.canAccessSalonManagement(_user?.userRole ?? UserRole.customer);
+  bool get canManageAppointments => RolePermissionManager.canManageAppointments(_user?.userRole ?? UserRole.customer);
+  bool get canManageInventory => RolePermissionManager.canManageInventory(_user?.userRole ?? UserRole.customer);
+  bool get canManageFinancials => RolePermissionManager.canManageFinancials(_user?.userRole ?? UserRole.customer);
 
   // Enhanced login method combining both
   Future<bool> login({
@@ -357,7 +357,7 @@ class AuthProvider extends BaseProvider {
   }
 
   bool hasAccessTo(String feature) {
-    final role = _user?.role ?? UserRole.customer;
+    final role = _user?.userRole ?? UserRole.customer;
     switch (feature) {
       case 'salon_management':
         return RolePermissionManager.canAccessSalonManagement(role);

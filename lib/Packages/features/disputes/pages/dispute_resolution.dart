@@ -5,6 +5,7 @@ import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_button.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/common/app_text_field.dart';
+import '../../../../Packages/Core/constants/app_constants.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
 /// Dispute/Issue Resolution Page.
@@ -226,7 +227,7 @@ class _NewReportTab extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'For payment disputes, please attach your receipt or screenshot via email to support@na3eeman.com',
+                      'For payment disputes, please attach your receipt or screenshot via email to ${AppConstants.supportEmail}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),

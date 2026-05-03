@@ -1,4 +1,4 @@
-// import 'dart:ui';
+import '../../../config/environment.dart';
 
 class AppConstants {
   // App Information
@@ -12,7 +12,10 @@ class AppConstants {
   static const String playStoreLink = 'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
 
   // API Constants
-  static const String baseUrl = 'https://api.na3eeman.com';
+  static String get baseUrl => Environment.config.apiBaseUrl;
+  static String get webAppUrl => Environment.config.webAppUrl;
+  static String get adminEmail => Environment.config.adminEmail;
+  static String get supportEmail => Environment.config.supportEmail;
   static const int apiTimeout = 30000; // 30 seconds
   static const int maxRetryAttempts = 3;
 

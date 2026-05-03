@@ -7,25 +7,22 @@ class InternProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
   List<InternTask> _tasks = [];
-  List<InternTarget> _targets = [];
+  List<InternFeedback> _feedbacks = [];
   bool _isLoading = false;
-  String? _assignedMentor;
   int? _salonId;
   Map<String, dynamic> _activityData = {};
 
   List<InternTask> get tasks => _tasks;
-  List<InternTarget> get targets => _targets;
+  List<InternFeedback> get feedbacks => _feedbacks;
   bool get isLoading => _isLoading;
-  String? get assignedMentor => _assignedMentor;
   int? get salonId => _salonId;
   Map<String, dynamic> get activityData => _activityData;
 
   // Initialize data
-  Future<void> initInternDashboard(String? currentMentor) async {
-    _assignedMentor = currentMentor;
+  Future<void> initInternDashboard() async {
     await fetchProfile();
     await fetchTasks();
-    await fetchTargets();
+    await fetchInternActivity(); // This fetches feedbacks too if included in dashboard response
   }
 
   // Profile Operations
@@ -114,41 +111,6 @@ class InternProvider with ChangeNotifier {
     }
   }
 
-  // Target Operations
-  Future<void> fetchTargets() async {
-    try {
-      final response = await _apiService.get(Endpoints.internTargets);
-      final List<dynamic> data = response['results'] ?? response['data'] ?? response;
-      _targets = data.map((json) => InternTarget.fromJson(json)).toList();
-    } catch (e) {
-      debugPrint('Error fetching intern targets: $e');
-    } finally {
-      notifyListeners();
-    }
-  }
-
-  // Mentorship attachment
-  Future<void> attachToMentor(int mentorId, String? feedback, String mentorName) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      
-      await _apiService.post(Endpoints.internAttach, data: {
-        'mentor_id': mentorId,
-        'feedback': feedback,
-      });
-
-      _assignedMentor = mentorName;
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error attaching to mentor: $e');
-      rethrow;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
   // Activity Feed
   Future<void> fetchInternActivity() async {
     _isLoading = true;
@@ -156,6 +118,12 @@ class InternProvider with ChangeNotifier {
     try {
       final response = await _apiService.getInternActivity();
       _activityData = response;
+      
+      // Extract feedbacks if present
+      if (response['feedbacks'] != null) {
+        final List<dynamic> feedbackList = response['feedbacks'];
+        _feedbacks = feedbackList.map((json) => InternFeedback.fromJson(json)).toList();
+      }
     } catch (e) {
       debugPrint('Error fetching intern activity: $e');
     } finally {

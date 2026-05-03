@@ -38,6 +38,41 @@ class ScheduleProvider with ChangeNotifier {
     }
   }
 
+  List<dynamic> _ptoRequests = [];
+  List<dynamic> get ptoRequests => _ptoRequests;
+
+  Future<void> fetchPTORequests({int? salonId}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final List<dynamic> data = await _api.getPTORequests(salonId: salonId);
+      _ptoRequests = data;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  Future<bool> submitPTORequest(Map<String, dynamic> data) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _api.submitPTORequest(data);
+      await fetchPTORequests(); // Refresh list
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> updateWorkingHours(int id, Map<String, dynamic> data) async {
     try {
       await _api.patch('/salons/working-hours/$id/', data: data);

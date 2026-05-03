@@ -9,12 +9,14 @@ class PointsProvider with ChangeNotifier {
   final ApiService _loyaltyService;
   int _currentBalance = 0;
   bool _isLoading = false;
+  bool _hasPendingPenalty = false;
   LoyaltyProgram? _rules;
 
   PointsProvider(this._loyaltyService);
 
   int get currentBalance => _currentBalance;
   bool get isLoading => _isLoading;
+  bool get hasPendingPenalty => _hasPendingPenalty;
 
   Future<void> loadBalance([int? customerId]) async {
     _isLoading = true;
@@ -35,6 +37,7 @@ class PointsProvider with ChangeNotifier {
 
       final balance = await _loyaltyService.getLoyaltyBalance(targetCustomerId);
       _currentBalance = balance.points;
+      _hasPendingPenalty = balance.hasPendingPenalty;
     } catch (error) {
       // Handle error appropriately
       debugPrint('Error loading balance: $error');
@@ -64,6 +67,7 @@ class PointsProvider with ChangeNotifier {
           balance['points'] as int? ??
           balance['balance'] as int? ??
           _currentBalance;
+      _hasPendingPenalty = balance['has_pending_penalty'] as bool? ?? _hasPendingPenalty;
       notifyListeners();
     } catch (error) {
       debugPrint('Error adding points: $error');
@@ -95,8 +99,8 @@ class PointsProvider with ChangeNotifier {
   }) async {
     final metadata = {
       'salon_name': salonName,
-      'review': ?review,
-      'rating': ?rating,
+      'review': review,
+      'rating': rating,
     };
 
     await addPoints(
@@ -158,67 +162,47 @@ class PointsProvider with ChangeNotifier {
     }
   }
 
-  int calculatePointsValue(double jod) => (jod * 1000).toInt();
+  int calculatePointsValue(double jod) => (jod * 200).toInt();
 
   int _getPointsValue(PointsType type) {
     if (_rules == null) return _getFallbackPointsValue(type);
     
     switch (type) {
-      case PointsType.invite: return _rules!.pointsPerInvite;
-      case PointsType.referral: return _rules!.pointsPerInvite;
-      case PointsType.gifting: return _rules!.pointsPerGift;
-      case PointsType.appointmentComplete: return _rules!.pointsPerAppointment;
-      case PointsType.arriveOnTime: return _rules!.pointsPerEarlyArrival;
-      case PointsType.tip: return _rules!.pointsPerTipDollar.toInt();
-      case PointsType.lateArrival: return _rules!.pointsPerLate5min;
-      case PointsType.delay5Min: return _rules!.pointsPenaltyDelay5min;
-      case PointsType.delay10Min: return _rules!.pointsPenaltyDelay10min;
-      case PointsType.delay15Min: return _rules!.pointsPenaltyDelay15min;
-      case PointsType.signup: return 100; // Default
-      case PointsType.milestoneReached: return 200; // Default
+      case PointsType.invite: return 100;
+      case PointsType.referral: return 100;
+      case PointsType.gifting: return 100;
+      case PointsType.salonFeedback: return 50;
+      case PointsType.expertFeedback: return 25;
+      case PointsType.rateApp: return 100;
+      case PointsType.arriveOnTime: return 50;
+      case PointsType.booking: return 50;
+      case PointsType.makeAppointment: return 50;
+      case PointsType.delay5Min: return -10;
+      case PointsType.delay10Min: return -20;
+      case PointsType.delay15Min: return -30;
       default: return 0;
     }
   }
 
   int _getFallbackPointsValue(PointsType type) {
-    switch (type) {
-      case PointsType.invite: return 100;
-      case PointsType.referral: return 50;
-      case PointsType.gifting: return 30;
-      case PointsType.appointmentComplete: return 25;
-      case PointsType.arriveOnTime: return 15;
-      case PointsType.tip: return 100; // per 1 JOD
-      case PointsType.lateArrival: return -10;
-      case PointsType.delay5Min: return -10;
-      case PointsType.delay10Min: return -20;
-      case PointsType.delay15Min: return -30;
-      case PointsType.signup: return 100;
-      case PointsType.milestoneReached: return 200;
-      default: return 0;
-    }
+    return _getPointsValue(type);
   }
 
   String _getSourceString(PointsType type) {
     switch (type) {
       case PointsType.invite: return 'INVITE';
-      case PointsType.review: return 'REVIEW_SALON';
-      case PointsType.gifting: return 'GIFT';
-      case PointsType.rateSalon: return 'REVIEW_SALON';
-      case PointsType.rateApp: return 'RATING_APP';
+      case PointsType.referral: return 'INVITE';
+      case PointsType.salonFeedback: return 'REVIEW_SALON';
       case PointsType.expertFeedback: return 'EMPLOYEE_REVIEW_GOOD';
-      case PointsType.appointmentComplete: return 'APPOINTMENT';
+      case PointsType.rateApp: return 'RATING_APP';
       case PointsType.arriveOnTime: return 'EARLY';
-      case PointsType.lateArrival: return 'LATE';
+      case PointsType.booking: return 'APPOINTMENT';
+      case PointsType.makeAppointment: return 'APPOINTMENT';
+      case PointsType.gifting: return 'GIFT';
       case PointsType.delay5Min: return 'DELAY_REQUEST';
       case PointsType.delay10Min: return 'DELAY_REQUEST';
       case PointsType.delay15Min: return 'DELAY_REQUEST';
-      case PointsType.referral: return 'INVITE';
-      case PointsType.booking: return 'APPOINTMENT';
       case PointsType.redeem: return 'PAYMENT_REDEEM';
-      case PointsType.tip: return 'TIP';
-      case PointsType.signup: return 'SIGNUP';
-      case PointsType.milestoneReached: return 'MILESTONE';
-      case PointsType.other: return 'ADMIN';
       default: return 'ADMIN';
     }
   }

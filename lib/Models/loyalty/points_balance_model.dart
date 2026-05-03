@@ -3,6 +3,7 @@ class LoyaltyBalance {
   final int freeHaircutCounter;
   final int freeHaircutsAvailable;
   final String freeHaircutProgress;
+  final bool hasPendingPenalty;
   final List<PointTransaction> transactions;
 
   LoyaltyBalance({
@@ -10,6 +11,7 @@ class LoyaltyBalance {
     required this.freeHaircutCounter,
     required this.freeHaircutsAvailable,
     required this.freeHaircutProgress,
+    required this.hasPendingPenalty,
     required this.transactions,
   });
 
@@ -19,6 +21,7 @@ class LoyaltyBalance {
       freeHaircutCounter: json['free_haircut_counter'] as int? ?? 0,
       freeHaircutsAvailable: json['free_haircuts_available'] as int? ?? 0,
       freeHaircutProgress: json['free_haircut_progress'] as String? ?? '0/0',
+      hasPendingPenalty: json['has_pending_penalty'] as bool? ?? false,
       transactions: json['transactions'] != null
           ? (json['transactions'] as List).map((t) => PointTransaction.fromJson(t)).toList()
           : [],
@@ -31,6 +34,7 @@ class LoyaltyBalance {
       'free_haircut_counter': freeHaircutCounter,
       'free_haircuts_available': freeHaircutsAvailable,
       'free_haircut_progress': freeHaircutProgress,
+      'has_pending_penalty': hasPendingPenalty,
       'transactions': transactions.map((t) => t.toJson()).toList(),
     };
   }

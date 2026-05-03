@@ -69,8 +69,9 @@ class InventoryManagerState extends State<InventoryManager> {
     final inventoryService = Provider.of<InventoryService>(context, listen: false);
 
     try {
-      final currentCount = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+      final currentCount = item['quantityInStock'] ?? item['quantity_in_stock'] ?? item['current_stock'] ?? 0;
       final itemId = item['id']?.toString() ?? item['_id']?.toString();
+      final itemName = item['product_name'] ?? item['name'] ?? 'Item';
 
       if (itemId == null) {
         throw Exception('Item ID not found');
@@ -90,18 +91,20 @@ class InventoryManagerState extends State<InventoryManager> {
       await _loadItems();
 
       if (mounted) {
+        final itemName = item['product_name'] ?? item['name'] ?? 'Item';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Increased ${item['name']} count to ${currentCount + 1}'),
+            content: Text('Increased $itemName count to ${currentCount + 1}'),
             backgroundColor: AppColor.lightSuccess,
           ),
         );
       }
     } catch (e) {
       if (mounted) {
+        final itemName = item['product_name'] ?? item['name'] ?? 'Item';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update ${item['name']}: ${e.toString()}'),
+            content: Text('Failed to update $itemName: ${e.toString()}'),
             backgroundColor: AppColor.lightError,
           ),
         );

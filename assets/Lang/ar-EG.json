@@ -731,5 +731,12 @@
   "feedback_success": "شكراً لك! تم إرسال تعليقاتك.",
   "feedback_failed": "فشل إرسال التعليقات. يرجى المحاولة مرة أخرى.",
   "request_new_service": "طلب خدمة جديدة",
-  "submit_suggestion": "إرسال اقتراح"
+  "submit_suggestion": "إرسال اقتراح",
+  "use_loyalty_points": "استخدام نقاط الولاء",
+  "use_gift_card": "استخدام بطاقة هدايا",
+  "select_gift_card": "اختر بطاقة الهدايا",
+  "no_active_gift_cards": "لا توجد بطاقات هدايا نشطة",
+  "apply_discounts": "تطبيق الخصومات",
+  "final_total": "الإجمالي النهائي",
+  "balance": "الرصيد"
 }

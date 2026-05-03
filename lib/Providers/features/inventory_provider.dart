@@ -25,12 +25,15 @@ class InventoryProvider with ChangeNotifier {
 
   List<dynamic> get items => _inventoryItems;
   List<dynamic> get consumables => _inventoryItems.where((i) {
-    if (i is Map) return i['category'] == 'CONSUMABLE';
-    // Fallback for typed objects if applicable
+    if (i is Map) return i['category'] == 'CONSUMABLE' || i['category'] == 'Consumables';
     return false;
   }).toList();
   List<dynamic> get personalKitItems => _inventoryItems.where((i) {
-    if (i is Map) return i['category'] == 'EQUIPMENT';
+    if (i is Map) return i['category'] == 'EQUIPMENT' || i['category'] == 'Personal Kit';
+     return false;
+  }).toList();
+  List<dynamic> get generalItems => _inventoryItems.where((i) {
+    if (i is Map) return i['category'] == 'GENERAL' || i['category'] == 'General';
      return false;
   }).toList();
   List<dynamic> get inventoryItems => _inventoryItems;

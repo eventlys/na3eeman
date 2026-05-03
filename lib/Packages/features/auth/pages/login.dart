@@ -8,6 +8,8 @@ import 'package:na3eeman/Services/security_service.dart';
 import 'package:na3eeman/Providers/main_providers.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 
+import '../../../Core/constants/app_constants.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -378,7 +380,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           subtitle: 'Full platform control',
           icon: Icons.admin_panel_settings_outlined,
           color: Colors.blue,
-          onTap: () => _quickAccessLogin('admin@na3eeman.com'),
+          onTap: () => _quickAccessLogin(AppConstants.adminEmail),
         ),
         _buildQuickAccessCard(
           title: 'Customer',

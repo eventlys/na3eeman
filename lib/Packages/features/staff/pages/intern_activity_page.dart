@@ -41,10 +41,10 @@ class _InternActivityPageState extends State<InternActivityPage> {
 
   Widget _buildBody(BuildContext context, InternProvider provider, bool isDark) {
     final tasks = provider.activityData['tasks'] as List? ?? [];
-    final targets = provider.activityData['targets'] as List? ?? [];
     final feedbacks = provider.activityData['feedbacks'] as List? ?? [];
+    final attendance = provider.activityData['attendance'] as List? ?? [];
 
-    if (tasks.isEmpty && targets.isEmpty && feedbacks.isEmpty) {
+    if (tasks.isEmpty && feedbacks.isEmpty && attendance.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -60,16 +60,16 @@ class _InternActivityPageState extends State<InternActivityPage> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        if (tasks.isNotEmpty) ...[
-          _SectionHeader(title: 'Tasks'.toUpperCase(), color: AppColors.blue),
+        if (attendance.isNotEmpty) ...[
+          _SectionHeader(title: 'Attendance'.tr().toUpperCase(), color: Colors.green),
           const SizedBox(height: 12),
-          ...tasks.map((item) => _buildActivityItem(context, item, 'task', AppColors.blue, isDark)),
+          ...attendance.map((item) => _buildActivityItem(context, item, 'attendance', Colors.green, isDark)),
           const SizedBox(height: 24),
         ],
-        if (targets.isNotEmpty) ...[
-          _SectionHeader(title: 'Targets'.toUpperCase(), color: AppColors.pink),
+        if (tasks.isNotEmpty) ...[
+          _SectionHeader(title: 'Tasks'.tr().toUpperCase(), color: AppColors.blue),
           const SizedBox(height: 12),
-          ...targets.map((item) => _buildActivityItem(context, item, 'target', AppColors.pink, isDark)),
+          ...tasks.map((item) => _buildActivityItem(context, item, 'task', AppColors.blue, isDark)),
           const SizedBox(height: 24),
         ],
         if (feedbacks.isNotEmpty) ...[
@@ -82,16 +82,34 @@ class _InternActivityPageState extends State<InternActivityPage> {
   }
 
   Widget _buildActivityItem(BuildContext context, Map<String, dynamic> item, String type, Color color, bool isDark) {
-    final String title = item['title'] ?? item['description'] ?? item['comment'] ?? 'Activity';
-    final String date = item['created_at']?.toString().split('T')[0] ?? '';
-    final String status = item['status'] ?? (item['is_completed'] == true ? 'Completed' : (type == 'task' ? 'Pending' : ''));
-    
+    String title = '';
+    String date = '';
+    String status = '';
     IconData icon;
+
     switch (type) {
-      case 'task': icon = Icons.assignment_rounded; break;
-      case 'target': icon = Icons.track_changes_rounded; break;
-      case 'feedback': icon = Icons.chat_bubble_rounded; break;
-      default: icon = Icons.notifications_rounded;
+      case 'attendance':
+        title = 'Shift: ${DateFormat.jm().format(DateTime.parse(item['clock_in']))}';
+        if (item['clock_out'] != null) {
+          title += ' - ${DateFormat.jm().format(DateTime.parse(item['clock_out']))}';
+        }
+        date = DateFormat('MMM dd, yyyy').format(DateTime.parse(item['clock_in']));
+        status = item['status'] ?? '';
+        icon = Icons.access_time_filled_rounded;
+        break;
+      case 'task':
+        title = item['title'] ?? 'Task';
+        date = item['created_at'] != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse(item['created_at'])) : '';
+        status = item['is_completed'] == true ? 'Completed' : 'Pending';
+        icon = Icons.assignment_rounded;
+        break;
+      case 'feedback':
+        title = item['feedback_text'] ?? 'Feedback';
+        date = item['created_at'] != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse(item['created_at'])) : '';
+        icon = Icons.chat_bubble_rounded;
+        break;
+      default:
+        icon = Icons.notifications_rounded;
     }
 
     return Container(
@@ -130,8 +148,18 @@ class _InternActivityPageState extends State<InternActivityPage> {
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(color: (status == 'Completed' ? AppColors.success : AppColors.almostBlack50).withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
-              child: Text(status, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: status == 'Completed' ? AppColors.success : AppColors.almostBlack400)),
+              decoration: BoxDecoration(
+                color: (status == 'Completed' || status == 'COMPLETED' ? AppColors.success : AppColors.almostBlack50).withOpacity(0.1), 
+                borderRadius: BorderRadius.circular(6)
+              ),
+              child: Text(
+                status.replaceAll('_', ' '), 
+                style: TextStyle(
+                  fontSize: 10, 
+                  fontWeight: FontWeight.w600, 
+                  color: (status == 'Completed' || status == 'COMPLETED') ? AppColors.success : AppColors.almostBlack400
+                )
+              ),
             ),
           ],
         ],

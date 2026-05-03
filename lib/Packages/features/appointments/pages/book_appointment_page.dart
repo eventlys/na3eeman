@@ -6,6 +6,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 // import '../../../../Services/ui/overlay_service.dart';
+import '../../../../Packages/Core/constants/app_constants.dart';
 import '../../../../Services/ui/navigation_service.dart';
 import '../../../features/salon/widgets/services_section.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection; 
@@ -13,7 +14,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
+import 'dart:math';
 import 'package:na3eeman/Models/salon/payment_config_model.dart';
+import 'package:na3eeman/Models/loyalty/gift_card_model.dart';
+import 'package:na3eeman/Providers/features/gift_card_provider.dart';
 import './per_service_selection_page.dart';
 
 enum SelectionMode { individual, perService, noPreference }
@@ -51,6 +55,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   SelectionMode _selectionMode = SelectionMode.individual;
   final Map<int, dynamic> _perServiceExperts = {}; // serviceId -> expertData
   
+  int _appliedPoints = 0;
+  UserGiftCard? _selectedUserGiftCard;
+  
   bool _isFetchingConfig = false;
 
   @override
@@ -69,6 +76,12 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         }
       }
       _initialized = true;
+      
+      // Load points and gift cards
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<PointsProvider>(context, listen: false).loadBalance();
+        Provider.of<GiftCardProvider>(context, listen: false).loadMyCards();
+      });
     }
   }
 
@@ -163,6 +176,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     final totalAmount = _calculateTotalCost();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+    final giftCardProvider = Provider.of<GiftCardProvider>(context, listen: false);
+    
     final pointsCost = pointsProvider.calculatePointsValue(totalAmount);
     final hasEnoughPoints = pointsProvider.currentBalance >= pointsCost;
 
@@ -199,7 +214,86 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 if (depositAmount > 0)
                   _buildSummaryRow('prepayment_required'.tr(), '${depositAmount.toStringAsFixed(2)} JOD', isBold: true, color: AppColors.error),
 
-                const SizedBox(height: 24),
+                const Divider(height: 32),
+                
+                // Redemptions Section
+                Text('apply_discounts'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                const SizedBox(height: 12),
+                
+                // Points Slider/Toggle
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.stars_rounded, color: Colors.amber),
+                  title: Text('use_loyalty_points'.tr()),
+                  subtitle: Text('balance'.tr() + ': ${pointsProvider.currentBalance} pts'),
+                  trailing: Switch(
+                    value: _appliedPoints > 0,
+                    activeColor: Colors.amber,
+                    onChanged: (val) {
+                      setModalState(() {
+                        if (val) {
+                          // Apply up to the total cost or current balance
+                          _appliedPoints = min(pointsProvider.currentBalance, pointsCost);
+                        } else {
+                          _appliedPoints = 0;
+                        }
+                      });
+                    },
+                  ),
+                ),
+                if (_appliedPoints > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40, bottom: 8),
+                    child: Text(
+                      '- ${(_appliedPoints * 0.005).toStringAsFixed(2)} JOD',
+                      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+
+                // Gift Card Selection
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.card_giftcard, color: AppColors.pink),
+                  title: Text('use_gift_card'.tr()),
+                  subtitle: Text(_selectedUserGiftCard != null 
+                      ? '${_selectedUserGiftCard!.code} (${_selectedUserGiftCard!.balance} JOD)'
+                      : 'select_gift_card'.tr()),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () async {
+                    final selected = await _showGiftCardPicker(giftCardProvider.activeCards);
+                    if (selected != null) {
+                      setModalState(() => _selectedUserGiftCard = selected);
+                    }
+                  },
+                ),
+                if (_selectedUserGiftCard != null)
+                   Padding(
+                    padding: const EdgeInsets.only(left: 40, bottom: 8),
+                    child: Row(
+                      children: [
+                        Text(
+                          '- ${min(_selectedUserGiftCard!.balance, totalAmount - (_appliedPoints * 0.005)).toStringAsFixed(2)} JOD',
+                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () => setModalState(() => _selectedUserGiftCard = null),
+                          child: const Icon(Icons.close, size: 16, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                const Divider(height: 32),
+                
+                // Final Total Calculation
+                Builder(builder: (context) {
+                  final deduction = (_appliedPoints * 0.005) + (_selectedUserGiftCard?.balance ?? 0);
+                  final finalTotal = max(0.0, totalAmount - deduction);
+                  return _buildSummaryRow('final_total'.tr(), '${finalTotal.toStringAsFixed(2)} JOD', isBold: true, color: Theme.of(context).primaryColor);
+                }),
+
+                const SizedBox(height: 16),
                 Text('payment_method'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 const SizedBox(height: 12),
                 
@@ -407,6 +501,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       }).toList(),
       'payment_method': _selectedPaymentMethod,
       if (_selectedPaymentMethod == 'VOUCHER') 'voucher_code': _voucherController.text,
+      'points_to_redeem': _appliedPoints,
+      if (_selectedUserGiftCard != null) 'gift_card_code': _selectedUserGiftCard!.code,
       'is_gift': _isGift,
       if (_isGift) ...{
         'gift_receiver_name': _receiverNameController.text,
@@ -508,7 +604,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                final link = "https://na3eeman.com/appointment/${DateTime.now().millisecondsSinceEpoch}";
+                final link = "${AppConstants.webAppUrl}/appointment/${DateTime.now().millisecondsSinceEpoch}";
                 final message = "I have a gift for you! 🎁 Booked an appointment at Na3eeman. Show this link to the salon: $link";
                 Share.share(message);
               },
@@ -543,6 +639,48 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
   }
 
+  Future<UserGiftCard?> _showGiftCardPicker(List<UserGiftCard> cards) {
+    return showModalBottomSheet<UserGiftCard>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+             Text('select_gift_card'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+             const SizedBox(height: 16),
+             if (cards.isEmpty)
+               Padding(
+                 padding: const EdgeInsets.all(24),
+                 child: Text('no_active_gift_cards'.tr(), style: const TextStyle(color: Colors.grey)),
+               )
+             else
+               ListView.builder(
+                 shrinkWrap: true,
+                 itemCount: cards.length,
+                 itemBuilder: (context, index) {
+                   final card = cards[index];
+                   return ListTile(
+                     leading: const Icon(Icons.card_giftcard, color: AppColors.pink),
+                     title: Text(card.code),
+                     subtitle: Text('balance'.tr() + ': ${card.balance} JOD'),
+                     onTap: () => Navigator.pop(context, card),
+                   );
+                 },
+               ),
+             const SizedBox(height: 16),
+             SecondaryButton(text: 'cancel'.tr(), onPressed: () => Navigator.pop(context)),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final expertProvider = context.watch<ExpertProvider>();
@@ -565,6 +703,36 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
               ),
               const SizedBox(height: 16),
+              Consumer<PointsProvider>(
+                builder: (context, points, child) {
+                  if (!points.hasPendingPenalty) return const SizedBox.shrink();
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 24),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.red.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: Colors.red),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('payment_overdue_warning'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                              const SizedBox(height: 4),
+                              Text('payment_overdue_description'.tr(), style: const TextStyle(fontSize: 12, color: Colors.red)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               ServicesSection(
                 selectedServiceNames: _selectedServiceNames,
                 onToggleService: _toggleService,

@@ -12,9 +12,6 @@ import 'package:na3eeman/Packages/features/navigation/sidebar.dart';
 import 'package:na3eeman/Packages/features/navigation/sidebar_controller.dart';
 import 'package:na3eeman/core/enums/owner_enums.dart';
 
-import 'revenue_controls_page.dart';
-import 'voucher_management_page.dart';
-
 class OwnerManagementDashboardPage extends StatefulWidget {
   const OwnerManagementDashboardPage({super.key});
 
@@ -66,20 +63,39 @@ class _OwnerManagementDashboardPageState extends State<OwnerManagementDashboardP
                      children: [
                        _buildDashboardModule(
                          context,
-                         title: 'scheduling'.tr(),
-                         subtitle: 'manage_staff_schedules_rotations'.tr(),
-                         icon: Icons.calendar_month_rounded,
-                         color: Theme.of(context).primaryColor,
-                         onTap: () => Navigator.pushNamed(context, '/expert_schedule'),
-                       ),
-                       _buildDashboardModule(
-                         context,
-                         title: "expert_management".tr(),
+                         title: "Employee Management".tr(),
                          subtitle: 'hire_detach_monitor_staff'.tr(),
                          icon: Icons.people_alt_rounded,
                          color: AppColors.blue,
                          onTap: () => Navigator.pushNamed(context, '/staff'),
                          isEnabled: owner.canAccess(FeatureKey.viewStaffList),
+                       ),
+                       _buildDashboardModule(
+                         context,
+                         title: 'Salon Management'.tr(),
+                         subtitle: 'configure_salon_info_hours_branding'.tr(),
+                         icon: Icons.storefront_rounded,
+                         color: Colors.brown,
+                         onTap: () => Navigator.pushNamed(context, '/management/salon'),
+                         isEnabled: owner.canAccess(FeatureKey.ownerControls),
+                       ),
+                       _buildDashboardModule(
+                         context,
+                         title: 'Analytics'.tr(),
+                         subtitle: 'performance_growth_peak_hours'.tr(),
+                         icon: Icons.analytics_rounded,
+                         color: AppColors.blue,
+                         onTap: () => Navigator.pushNamed(context, '/management/analytics'),
+                         isEnabled: owner.canAccess(FeatureKey.analyticsElite),
+                       ),
+                       _buildDashboardModule(
+                         context,
+                         title: 'Data Management'.tr(),
+                         subtitle: 'export_data_manage_history'.tr(),
+                         icon: Icons.storage_rounded,
+                         color: AppColors.almostBlack300,
+                         onTap: () => Navigator.pushNamed(context, '/management/data'),
+                         isEnabled: owner.canAccess(FeatureKey.ownerControls),
                        ),
                      ],
                    ),
@@ -93,99 +109,7 @@ class _OwnerManagementDashboardPageState extends State<OwnerManagementDashboardP
                      children: [
                        _buildDashboardModule(
                          context,
-                         title: 'payment_setup'.tr(),
-                         subtitle: 'configure_deposits_cliq_policies'.tr(),
-                         icon: Icons.account_balance_rounded,
-                         color: Colors.green,
-                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RevenueControlsPage())),
-                         isEnabled: owner.canAccess(FeatureKey.paymentManagement),
-                       ),
-                       _buildDashboardModule(
-                         context,
-                         title: 'prepaid_vouchers'.tr(),
-                         subtitle: 'manage_gift_cards_packages'.tr(),
-                         icon: Icons.confirmation_num_rounded,
-                         color: Colors.orange,
-                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const VoucherManagementPage())),
-                         isEnabled: owner.canAccess(FeatureKey.vouchers),
-                       ),
-                       _buildDashboardModule(
-                         context,
-                         title: 'loyalty_points'.tr(),
-                         subtitle: 'rewards_mapping_rules'.tr(),
-                         icon: Icons.stars_rounded,
-                         color: AppColors.pink,
-                         onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('points_config_coming_soon'.tr()))),
-                         isEnabled: owner.canAccess(FeatureKey.loyaltySystem),
-                       ),
-                     ],
-                   ),
-
-                   const SizedBox(height: 32),
-
-                   // ── Marketing & Customer Section ────────────────
-                   _buildSection(
-                     context,
-                     title: 'marketing_customers'.tr(),
-                     children: [
-                       _buildDashboardModule(
-                         context,
-                         title: "active_campaigns".tr(),
-                         subtitle: 'manage_offers_ads_promotions'.tr(),
-                         icon: Icons.campaign_rounded,
-                         color: Colors.purple,
-                         onTap: () => Navigator.pushNamed(context, '/active_campaigns'),
-                         isEnabled: owner.canAccess(FeatureKey.marketingAds),
-                       ),
-                       _buildDashboardModule(
-                         context,
-                         title: "feedback".tr(),
-                         subtitle: 'review_customer_ratings_comments'.tr(),
-                         icon: Icons.rate_review_rounded,
-                         color: Colors.teal,
-                         onTap: () => Navigator.pushNamed(context, '/feedback_page'),
-                       ),
-                     ],
-                   ),
-
-                   const SizedBox(height: 32),
-
-                   // ── Analytics & Performance Section ──────────────
-                   _buildSection(
-                     context,
-                     title: 'analytics_performance'.tr(),
-                     children: [
-                       _buildDashboardModule(
-                         context,
-                         title: 'salon_analytics'.tr(),
-                         subtitle: 'performance_growth_peak_hours'.tr(),
-                         icon: Icons.analytics_rounded,
-                         color: AppColors.blue,
-                         onTap: () => Navigator.pushNamed(context, '/management/analytics'),
-                         isEnabled: owner.canAccess(FeatureKey.analyticsElite),
-                       ),
-                       _buildDashboardModule(
-                         context,
-                         title: 'data_management'.tr(),
-                         subtitle: 'export_data_manage_history'.tr(),
-                         icon: Icons.storage_rounded,
-                         color: AppColors.almostBlack300,
-                         onTap: () => Navigator.pushNamed(context, '/management/data'),
-                         isEnabled: owner.canAccess(FeatureKey.ownerControls),
-                       ),
-                     ],
-                   ),
-
-                   const SizedBox(height: 32),
-
-                   // ── Financial Controls Section ───────────────────
-                   _buildSection(
-                     context,
-                     title: 'financial_controls'.tr(),
-                     children: [
-                       _buildDashboardModule(
-                         context,
-                         title: 'expense_tracker'.tr(),
+                         title: 'Expenses'.tr(),
                          subtitle: 'log_monitor_operational_costs'.tr(),
                          icon: Icons.account_balance_wallet_rounded,
                          color: Colors.redAccent,
@@ -194,38 +118,38 @@ class _OwnerManagementDashboardPageState extends State<OwnerManagementDashboardP
                        ),
                        _buildDashboardModule(
                          context,
-                         title: 'payroll'.tr(),
-                         subtitle: 'manage_staff_salaries_tips'.tr(),
-                         icon: Icons.payments_rounded,
-                         color: Colors.indigo,
-                         onTap: () => Navigator.pushNamed(context, '/management/payroll'),
-                         isEnabled: owner.canAccess(FeatureKey.financialControls),
+                         title: 'Vouchers'.tr(),
+                         subtitle: 'manage_gift_cards_packages'.tr(),
+                         icon: Icons.confirmation_num_rounded,
+                         color: Colors.orange,
+                         onTap: () => Navigator.pushNamed(context, '/management/vouchers'),
+                         isEnabled: owner.canAccess(FeatureKey.vouchers),
+                       ),
+                       _buildDashboardModule(
+                         context,
+                         title: "Campaigns".tr(),
+                         subtitle: 'manage_offers_ads_promotions'.tr(),
+                         icon: Icons.campaign_rounded,
+                         color: Colors.purple,
+                         onTap: () => Navigator.pushNamed(context, '/active_campaigns'),
+                         isEnabled: owner.canAccess(FeatureKey.marketingAds),
                        ),
                      ],
                    ),
 
                    const SizedBox(height: 32),
 
-                   // ── Inventory & Assets Section ────────────────
+                   // ── Inventory & Stock Section ────────────────
                    _buildSection(
                      context,
                      title: 'inventory_stock'.tr(),
                      children: [
                        _buildDashboardModule(
                          context,
-                         title: 'retail_inventory'.tr(),
-                         subtitle: 'track_products_sales'.tr(),
+                         title: 'Inventory'.tr(),
+                         subtitle: 'track_products_retail_and_stock'.tr(),
                          icon: Icons.inventory_2_rounded,
                          color: AppColors.blue,
-                         onTap: () => Navigator.pushNamed(context, '/management/products'),
-                         isEnabled: owner.canAccess(FeatureKey.inventoryRetail),
-                       ),
-                       _buildDashboardModule(
-                         context,
-                         title: 'stock_management'.tr(),
-                         subtitle: 'manage_salon_supplies'.tr(),
-                         icon: Icons.layers_rounded,
-                         color: AppColors.cream600,
                          onTap: () => Navigator.pushNamed(context, '/management/inventory'),
                          isEnabled: owner.canAccess(FeatureKey.inventoryRetail),
                        ),

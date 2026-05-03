@@ -94,7 +94,7 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
 
   UserRole _currentRole(BuildContext context) {
     final user = context.read<AuthProvider>().user;
-    return user?.role ?? UserRole.customer;
+    return user?.userRole ?? UserRole.customer;
   }
 
   String _currentRoleName(BuildContext context, UserRole role) {

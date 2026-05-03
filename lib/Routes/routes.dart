@@ -36,7 +36,8 @@ import 'package:na3eeman/Packages/features/owner/dashboard/pages/salon_managemen
 import 'package:na3eeman/Packages/features/staff/pages/receptionist/receptionist_inventory_page.dart';
 import 'package:na3eeman/Packages/features/staff/pages/receptionist/receptionist_products_page.dart';
 import 'package:na3eeman/Packages/features/staff/pages/receptionist/appointment_search_page.dart';
-import 'package:na3eeman/Packages/features/staff/pages/intern_activity_page.dart';
+import '../Packages/features/staff/pages/intern_activity_page.dart';
+import '../Packages/features/staff/pages/intern_attendance_report_page.dart';
 
 // Navigations
 import '../Packages/features/Navigations/favorites_list_page.dart';
@@ -157,7 +158,6 @@ class AppRoutes {
     // ── Staff & Management ────────────────────────────────────────────────
     '/expert_home': (context) => const ExpertHomePage(),
     '/expert_dashboard': (context) => const ExpertDashboard(),
-    '/expert_dashboard': (context) => const ExpertDashboard(), // For backward compatibility
     '/my_times': (context) => const MyTimesPage(),
     '/receptionist_dashboard': (context) => const ReceptionistDashboard(),
     '/intern_dashboard': (context) => const InternDashboard(),
@@ -175,6 +175,7 @@ class AppRoutes {
     // Legacy alias — kept for backward compat while migrating references
     '/salon_owner_dashboard': (context) => const SalonOwnerDashboard(),
     '/staff': (context) => const StaffManagementPage(),
+    '/management/intern-attendance': (context) => const InternAttendanceReportPage(),
 
     // ── Legacy Admin (placeholder) ────────────────────────────────────────
     '/admin_home': (context) => const AdminHomePage(),

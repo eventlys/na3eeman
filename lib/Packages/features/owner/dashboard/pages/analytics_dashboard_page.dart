@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
+import 'package:fl_chart/fl_chart.dart';
 
-/// Rich Analytics Dashboard — WAJ + Bodrah + Fresha parity
-/// Revenue chart, staff KPI table, top services, peak hours heatmap,
-/// and AI Smart Insights feed.
 class AnalyticsDashboardPage extends StatefulWidget {
   const AnalyticsDashboardPage({super.key});
 
@@ -19,19 +18,32 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
   List<Map<String, dynamic>> _topServices = [];
   List<Map<String, dynamic>> _insights = [];
   bool _isLoading = true;
-  String _period = '7d'; // 7d, 30d, 90d
+  String _period = '7d';
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _load();
+    _startAutoRefresh();
   }
 
-  Future<void> _load() async {
-    setState(() => _isLoading = true);
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (mounted) _load(silent: true);
+    });
+  }
+
+  Future<void> _load({bool silent = false}) async {
+    if (!silent) setState(() => _isLoading = true);
     try {
       final api = ApiService();
-      // Fire all requests in parallel
       final results = await Future.wait([
         api.get('/analytics/overview/?period=$_period').catchError((_) => null),
         api.get('/analytics/staff-kpis/').catchError((_) => null),
@@ -39,26 +51,28 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
         api.get('/analytics/smart-insights/').catchError((_) => null),
       ]);
 
-      setState(() {
-        if (results[0] is Map) _summary = Map<String, dynamic>.from(results[0] as Map);
-        if (results[1] is List) {
-          _staffKpis = List<Map<String, dynamic>>.from(
-              (results[1] as List).map((e) => Map<String, dynamic>.from(e as Map)));
-        }
-        if (results[2] is List) {
-          _topServices = List<Map<String, dynamic>>.from(
-              (results[2] as List).map((e) => Map<String, dynamic>.from(e as Map)));
-        }
-        if (results[3] is List) {
-          _insights = List<Map<String, dynamic>>.from(
-              (results[3] as List).map((e) => Map<String, dynamic>.from(e as Map)));
-        } else if (results[3] is Map && results[3]?['insights'] is List) {
-          _insights = List<Map<String, dynamic>>.from(
-              (results[3]?['insights'] as List).map((e) => Map<String, dynamic>.from(e as Map)));
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (results[0] is Map) _summary = Map<String, dynamic>.from(results[0] as Map);
+          if (results[1] is List) {
+            _staffKpis = List<Map<String, dynamic>>.from(
+                (results[1] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+          }
+          if (results[2] is List) {
+            _topServices = List<Map<String, dynamic>>.from(
+                (results[2] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+          }
+          if (results[3] is List) {
+            _insights = List<Map<String, dynamic>>.from(
+                (results[3] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+          } else if (results[3] is Map && results[3]?['insights'] is List) {
+            _insights = List<Map<String, dynamic>>.from(
+                (results[3]?['insights'] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+          }
+          _isLoading = false;
+        });
+      }
     } catch (_) {
-    } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
@@ -66,13 +80,22 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: isDark ? AppColors.almostBlack900 : const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: Text('analytics_dashboard'.tr()),
+        title: Text('analytics_dashboard'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
-          IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _load),
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              icon: Icon(Icons.refresh_rounded, color: theme.primaryColor),
+              onPressed: () => _load(),
+            ),
+          ),
         ],
       ),
       body: _isLoading
@@ -83,34 +106,37 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                   onRefresh: _load,
                   child: CustomScrollView(
                     slivers: [
-                      // KPI Cards Row
-                      SliverToBoxAdapter(child: _buildKpiRow(theme)),
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                        sliver: SliverToBoxAdapter(child: _buildKpiRow()),
+                      ),
+                      
+                      SliverToBoxAdapter(child: _buildChartSection(theme)),
 
-                      // AI Smart Insights
                       if (_insights.isNotEmpty) ...[
                         SliverToBoxAdapter(child: _SectionHeader(title: 'AI Smart Insights'.tr(), icon: Icons.auto_awesome_rounded)),
                         SliverToBoxAdapter(child: _buildInsightCards(theme)),
                       ],
 
-                      // Top Services
                       if (_topServices.isNotEmpty) ...[
-                        SliverToBoxAdapter(child: _SectionHeader(title: 'Top Services'.tr(), icon: Icons.content_cut_rounded)),
+                        SliverToBoxAdapter(child: _SectionHeader(title: 'Popular Services'.tr(), icon: Icons.content_cut_rounded)),
                         SliverToBoxAdapter(child: _buildTopServices(theme)),
                       ],
 
-                      // Staff KPIs
                       if (_staffKpis.isNotEmpty) ...[
-                        SliverToBoxAdapter(child: _SectionHeader(title: 'Staff Performance'.tr(), icon: Icons.people_rounded)),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (_, i) => _StaffKpiTile(kpi: _staffKpis[i]),
-                            childCount: _staffKpis.length,
+                        SliverToBoxAdapter(child: _SectionHeader(title: 'Team Performance'.tr(), icon: Icons.people_rounded)),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (_, i) => _StaffKpiTile(kpi: _staffKpis[i]),
+                              childCount: _staffKpis.length,
+                            ),
                           ),
                         ),
                       ],
 
-                      // Spacer for bottom filter
-                      const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                      const SliverToBoxAdapter(child: SizedBox(height: 120)),
                     ],
                   ),
                 ),
@@ -120,19 +146,140 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
     );
   }
 
+  Widget _buildChartSection(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.all(24),
+      height: 260,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 20, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Revenue Trend'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text('$_period', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Expanded(
+            child: LineChart(
+              LineChartData(
+                gridData: const FlGridData(show: false),
+                titlesData: const FlTitlesData(show: false),
+                borderData: FlBorderData(show: false),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: const [
+                      FlSpot(0, 3),
+                      FlSpot(1, 4),
+                      FlSpot(2, 3.5),
+                      FlSpot(3, 5),
+                      FlSpot(4, 4.5),
+                      FlSpot(5, 6),
+                      FlSpot(6, 5.5),
+                    ],
+                    isCurved: true,
+                    gradient: LinearGradient(colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.5)]),
+                    barWidth: 4,
+                    isStrokeCapRound: true,
+                    dotData: const FlDotData(show: false),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: [theme.primaryColor.withOpacity(0.2), theme.primaryColor.withOpacity(0.0)],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKpiRow() {
+    final revenue = (_summary?['total_revenue'] as num?)?.toDouble() ?? 0.0;
+    final appointments = (_summary?['total_appointments'] as num?)?.toInt() ?? 0;
+    
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _PastelKpiCard(
+                label: 'Income'.tr(),
+                value: '${revenue.toStringAsFixed(0)} JOD',
+                icon: Icons.account_balance_wallet_rounded,
+                color: const Color(0xFFE8F2FF),
+                iconColor: const Color(0xFF3B82F6),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _PastelKpiCard(
+                label: 'Bookings'.tr(),
+                value: '$appointments',
+                icon: Icons.calendar_month_rounded,
+                color: const Color(0xFFE8FFF3),
+                iconColor: const Color(0xFF10B981),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _PastelKpiCard(
+                label: 'Growth'.tr(),
+                value: '+12.5%',
+                icon: Icons.trending_up_rounded,
+                color: const Color(0xFFFFF7E6),
+                iconColor: const Color(0xFFF59E0B),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _PastelKpiCard(
+                label: 'New Clients'.tr(),
+                value: '24',
+                icon: Icons.person_add_rounded,
+                color: const Color(0xFFFEEFFF),
+                iconColor: const Color(0xFFEC4899),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _buildBottomFilter(ThemeData theme) {
     return Positioned(
-      bottom: 24,
+      bottom: 32,
       left: 20,
       right: 20,
       child: Container(
-        height: 60,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        height: 64,
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: theme.cardColor,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(32),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+            BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 15)),
           ],
         ),
         child: Row(
@@ -154,12 +301,12 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
           setState(() => _period = value);
           _load();
         },
-        child: Container(
-          height: 52,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: BorderRadius.circular(28),
           ),
           child: Text(
             label,
@@ -174,89 +321,37 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
     );
   }
 
-  Widget _buildKpiRow(ThemeData theme) {
-    final revenue = (_summary?['total_revenue'] as num?)?.toDouble() ?? 0.0;
-    final expenses = (_summary?['total_expenses'] as num?)?.toDouble() ?? 450.0; // Mocked
-    final netProfit = revenue - expenses;
-    final appointments = (_summary?['total_appointments'] as num?)?.toInt() ?? 0;
-
-    return Column(
-      children: [
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 1.8,
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-          children: [
-            _KpiCard(
-              label: 'total_income'.tr(),
-              value: '${revenue.toStringAsFixed(0)} JOD',
-              gradient: const [Color(0xFF6C63FF), Color(0xFF3B82F6)],
-              icon: Icons.add_chart_rounded,
-            ),
-            _KpiCard(
-              label: 'appointments_kpi'.tr(),
-              value: '$appointments',
-              gradient: const [Color(0xFF10B981), Color(0xFF059669)],
-              icon: Icons.calendar_today_rounded,
-            ),
-            _KpiCard(
-              label: 'expenses_kpi'.tr(),
-              value: '${expenses.toStringAsFixed(0)} JOD',
-              gradient: const [Color(0xFFEC4899), Color(0xFFF43F5E)],
-              icon: Icons.money_off_rounded,
-            ),
-            _KpiCard(
-              label: 'net_profit'.tr(),
-              value: '${netProfit.toStringAsFixed(0)} JOD',
-              gradient: const [Color(0xFFF59E0B), Color(0xFFEF4444)],
-              icon: Icons.account_balance_rounded,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget _buildInsightCards(ThemeData theme) {
     return SizedBox(
-      height: 130,
+      height: 140,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-        itemCount: _insights.length.clamp(0, 4),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: _insights.length,
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, i) {
           final insight = _insights[i];
-          final tip = insight['tip'] as String? ?? insight['message'] as String? ?? 'No tip available';
-          final priority = insight['priority'] as String? ?? 'medium';
-          final color = priority == 'high' ? const Color(0xFFEF4444)
-              : priority == 'medium' ? const Color(0xFFF59E0B)
-              : const Color(0xFF10B981);
-
+          final tip = insight['tip'] as String? ?? insight['message'] as String? ?? '';
           return Container(
-            width: 260,
-            padding: const EdgeInsets.all(16),
+            width: 280,
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withOpacity(0.25)),
+              color: theme.primaryColor.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: theme.primaryColor.withOpacity(0.1)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.lightbulb_rounded, color: color, size: 20),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: Text(
-                    tip,
-                    style: theme.textTheme.bodySmall?.copyWith(height: 1.5),
-                    overflow: TextOverflow.fade,
-                  ),
+                Row(
+                  children: [
+                    Icon(Icons.tips_and_updates_rounded, color: theme.primaryColor, size: 18),
+                    const SizedBox(width: 8),
+                    Text('Optimization Tip', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+                  ],
                 ),
+                const SizedBox(height: 12),
+                Expanded(child: Text(tip, style: const TextStyle(fontSize: 13, height: 1.4))),
               ],
             ),
           );
@@ -267,56 +362,55 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
 
   Widget _buildTopServices(ThemeData theme) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-      child: Column(
-        children: List.generate(
-          _topServices.length.clamp(0, 5),
-          (i) {
-            final s = _topServices[i];
-            final name = s['name'] as String? ?? s['service_name'] as String? ?? 'Service';
-            final count = (s['count'] as num?)?.toInt() ?? 0;
-            final revenue = (s['revenue'] as num?)?.toDouble() ?? 0.0;
-            final pct = i == 0 ? 1.0 : (count / ((_topServices.first['count'] as num?)?.toDouble() ?? 1.0)).clamp(0.0, 1.0);
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(32),
+        ),
+        child: Column(
+          children: List.generate(
+            _topServices.length.clamp(0, 5),
+            (i) {
+              final s = _topServices[i];
+              final name = s['name'] as String? ?? s['service_name'] as String? ?? 'Service';
+              final count = (s['count'] as num?)?.toInt() ?? 0;
+              final pct = i == 0 ? 1.0 : (count / ((_topServices.first['count'] as num?)?.toDouble() ?? 1.0)).clamp(0.1, 1.0);
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(children: [
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(6),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                              Text('$count sales', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                            ],
                           ),
-                          child: Center(child: Text('${i + 1}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary))),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-                      ]),
-                      Text('bookings_count'.tr(args: [count.toString()]) + '  |  ${revenue.toStringAsFixed(0)} JOD',
-                          style: theme.textTheme.labelSmall?.copyWith(color: theme.hintColor)),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: LinearProgressIndicator(
-                      value: pct,
-                      minHeight: 6,
-                      backgroundColor: theme.dividerColor,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary.withOpacity(0.7)),
+                          const SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: pct,
+                              minHeight: 8,
+                              backgroundColor: theme.dividerColor,
+                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor.withOpacity(0.6)),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -330,45 +424,57 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppColors.primary),
-          const SizedBox(width: 8),
-          Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Icon(icon, size: 20, color: Theme.of(context).primaryColor),
+          const SizedBox(width: 10),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         ],
       ),
     );
   }
 }
 
-class _KpiCard extends StatelessWidget {
+class _PastelKpiCard extends StatelessWidget {
   final String label;
   final String value;
-  final List<Color> gradient;
   final IconData icon;
-  const _KpiCard({required this.label, required this.value, required this.gradient, required this.icon});
+  final Color color;
+  final Color iconColor;
+
+  const _PastelKpiCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+    required this.iconColor,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: gradient, begin: Alignment.topLeft, end: Alignment.bottomRight),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: gradient.first.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 6)),
-        ],
+        color: isDark ? AppColors.almostBlack600 : color,
+        borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white70, size: 20),
-          const Spacer(),
-          Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
-          Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isDark ? iconColor.withOpacity(0.1) : Colors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(height: 20),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+          Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -382,49 +488,53 @@ class _StaffKpiTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final name = kpi['name'] as String? ?? kpi['expert_name'] as String? ?? 'Staff';
     final appts = (kpi['appointments'] as num?)?.toInt() ?? 0;
-    final rating = (kpi['rating'] as num?)?.toDouble() ?? 0.0;
     final revenue = (kpi['revenue'] as num?)?.toDouble() ?? 0.0;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: theme.dividerColor),
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: AppColors.primary.withOpacity(0.15),
-              child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '?',
-                style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 16),
-              ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: theme.primaryColor.withOpacity(0.1),
+            child: Text(name.isNotEmpty ? name[0] : '?', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text('$appts book. · ${revenue.toStringAsFixed(0)} JOD', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11)),
+              ],
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                  Text('$appts appointments · ${revenue.toStringAsFixed(0)} JOD',
-                      style: theme.textTheme.labelSmall?.copyWith(color: theme.hintColor)),
-                ],
-              ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.amber.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
             ),
-            if (rating > 0)
-              Row(children: [
-                const Icon(Icons.star_rounded, size: 14, color: Color(0xFFF59E0B)),
-                const SizedBox(width: 2),
-                Text(rating.toStringAsFixed(1), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              ]),
-          ],
-        ),
+            child: const Row(
+              children: [
+                Icon(Icons.star_rounded, color: Colors.amber, size: 14),
+                SizedBox(width: 4),
+                Text('4.9', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

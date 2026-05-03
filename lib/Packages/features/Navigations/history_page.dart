@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Providers/main_providers.dart';
+import '../../../Services/api/api_service.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../core/widgets/dashboard/dashboard_widgets.dart';
@@ -192,10 +193,67 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Future<void> _handleSetRepeatAlarm(dynamic appointment, String frequency, String duration, DateTime startDate) async {
+    setState(() => _isLoading = true);
+    try {
+      final api = ApiService();
+      final authProvider = context.read<AuthProvider>();
+      
+      // Map display labels to backend choices
+      final frequencyMap = {
+        'Twice a month': '2x_MONTH',
+        'Once a week': '1x_WEEK',
+        'Once a month': '1x_MONTH',
+        'Once every 3 weeks': '3x_WEEK',
+      };
+
+      final durationMap = {
+        '1 month': 1,
+        '3 months': 3,
+        '6 months': 6,
+        '9 months': 9,
+        '1 year': 12,
+        '2 years': 24,
+      };
+
+      await api.createRecurringBooking({
+        'customer': authProvider.user?.id,
+        'salon': appointment['salon'] ?? 1,
+        'expert': appointment['expert'] ?? 1,
+        'service': appointment['service'] ?? 1,
+        'frequency': frequencyMap[frequency] ?? '1x_WEEK',
+        'start_date': DateFormat('yyyy-MM-dd').format(startDate),
+        'duration_months': durationMap[duration] ?? 3,
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Recurring appointment set for $frequency for $duration'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to set repeat: $e'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   void _showRepeatPopup(dynamic appointment) {
     String selectedFrequency = 'Once a week';
     String selectedDuration = '3 months';
-    DateTime startDate = DateTime.now();
+    DateTime startDate = DateTime.now().add(const Duration(days: 7));
 
     final frequencies = ['Twice a month', 'Once a week', 'Once a month', 'Once every 3 weeks'];
     final durations = ['1 month', '3 months', '6 months', '9 months', '1 year', '2 years'];
@@ -212,7 +270,7 @@ class _HistoryPageState extends State<HistoryPage> {
               const Text('Keep your routine consistent by setting a recurring appointment alarm.'),
               const SizedBox(height: 24),
               DropdownButtonFormField<String>(
-                initialValue: selectedFrequency,
+                value: selectedFrequency,
                 decoration: InputDecoration(
                   labelText: 'Frequency',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -223,7 +281,7 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                initialValue: selectedDuration,
+                value: selectedDuration,
                 decoration: InputDecoration(
                   labelText: 'For how long?',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -257,13 +315,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Recurring appointment set for $selectedFrequency for $selectedDuration'),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                _handleSetRepeatAlarm(appointment, selectedFrequency, selectedDuration, startDate);
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

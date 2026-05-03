@@ -6,6 +6,8 @@ import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:na3eeman/Models/salon/salons_model.dart';
 
 class SalonManagementPage extends StatefulWidget {
   const SalonManagementPage({super.key});
@@ -21,8 +23,12 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
   late TextEditingController _phoneCtrl;
   late TextEditingController _locationCtrl;
   late TextEditingController _descCtrl;
+  
+  TimeOfDay? _openingTime;
+  TimeOfDay? _closingTime;
 
-  final List<XFile> _salonImages = [];
+  final List<XFile> _newSalonImages = [];
+  List<SalonGalleryImage> _existingImages = [];
 
   @override
   void initState() {
@@ -33,6 +39,22 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     _phoneCtrl = TextEditingController(text: salon?.salonPhonNum ?? '');
     _locationCtrl = TextEditingController(text: salon?.location ?? '');
     _descCtrl = TextEditingController(text: salon?.salonDescription ?? '');
+    
+    if (salon?.openingTime != null) {
+      final parts = salon!.openingTime.split(':');
+      if (parts.length >= 2) {
+        _openingTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+      }
+    }
+    
+    if (salon?.closingTime != null) {
+      final parts = salon!.closingTime.split(':');
+      if (parts.length >= 2) {
+        _closingTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+      }
+    }
+
+    _existingImages = salon?.galleryImages ?? [];
   }
 
   @override
@@ -50,28 +72,64 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     final images = await picker.pickMultiImage();
     if (images.isNotEmpty) {
       setState(() {
-        _salonImages.addAll(images);
+        _newSalonImages.addAll(images);
       });
     }
+  }
+
+  Future<void> _selectTime(BuildContext context, bool isOpening) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: (isOpening ? _openingTime : _closingTime) ?? const TimeOfDay(hour: 9, minute: 0),
+    );
+    if (picked != null) {
+      setState(() {
+        if (isOpening) {
+          _openingTime = picked;
+        } else {
+          _closingTime = picked;
+        }
+      });
+    }
+  }
+
+  String _formatTimeOfDay(TimeOfDay? time) {
+    if (time == null) return '--:--';
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 
   Future<void> _saveChanges() async {
     if (!_formKey.currentState!.validate()) return;
 
     try {
+      final openingStr = _openingTime != null ? _formatTimeOfDay(_openingTime) : null;
+      final closingStr = _closingTime != null ? _formatTimeOfDay(_closingTime) : null;
+      
+      final images = _newSalonImages.map((x) => File(x.path)).toList();
+
       await context.read<SalonProvider>().updateSalonOnBackend(
         name: _nameCtrl.text,
         phone: _phoneCtrl.text,
         location: _locationCtrl.text,
         description: _descCtrl.text,
+        slogan: _sloganCtrl.text,
+        openingTime: openingStr,
+        closingTime: closingStr,
+        images: images.isNotEmpty ? images : null,
       );
-      // Slogan is local for now as API might not have it yet
+      
       context.read<SalonProvider>().updateSalonInMemory(
         name: _nameCtrl.text,
         phone: _phoneCtrl.text,
         location: _locationCtrl.text,
         description: _descCtrl.text,
+        slogan: _sloganCtrl.text,
+        openingTime: openingStr,
+        closingTime: closingStr,
       );
+      
       if (mounted) AppSnackBar.success(context, 'Salon details updated successfully!');
     } catch (e) {
       if (mounted) AppSnackBar.error(context, 'Failed to update salon: $e');
@@ -85,7 +143,7 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Salon Management', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('salon_management'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -95,27 +153,59 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Visual Identity', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('visual_identity'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               _buildImageSection(isDark),
               const SizedBox(height: 32),
-              const Text('Basic Information', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              
+              Text('working_hours'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Text('set_global_hours_or_manage_weekly'.tr(), style: const TextStyle(fontSize: 12, color: AppColors.almostBlack300)),
               const SizedBox(height: 16),
-              _buildField('Salon Name', _nameCtrl, Icons.store_rounded),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildTimeSelector('opening_time'.tr(), _openingTime, () => _selectTime(context, true)),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildTimeSelector('closing_time'.tr(), _closingTime, () => _selectTime(context, false)),
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
-              _buildField('Salon Slogan', _sloganCtrl, Icons.auto_awesome_rounded, hint: 'e.g. The Art of Grooming'),
+              OutlinedButton.icon(
+                onPressed: () {
+                  // TODO: Open Weekly Schedule Manager Bottom Sheet
+                  _showWeeklyScheduleManager();
+                },
+                icon: const Icon(Icons.calendar_month_rounded, size: 18),
+                label: Text('manage_weekly_schedule'.tr()),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              Text('basic_information'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
-              _buildField('Phone Number', _phoneCtrl, Icons.phone_rounded, keyboardType: TextInputType.phone),
+              _buildField('salon_name'.tr(), _nameCtrl, Icons.store_rounded),
               const SizedBox(height: 16),
-              _buildField('Location Address', _locationCtrl, Icons.location_on_rounded),
+              _buildField('salon_slogan'.tr(), _sloganCtrl, Icons.auto_awesome_rounded, hint: 'e.g. The Art of Grooming'),
               const SizedBox(height: 16),
-              _buildField('Description', _descCtrl, Icons.description_rounded, maxLines: 4),
+              _buildField('phone_number'.tr(), _phoneCtrl, Icons.phone_rounded, keyboardType: TextInputType.phone),
+              const SizedBox(height: 16),
+              _buildField('location_address'.tr(), _locationCtrl, Icons.location_on_rounded),
+              const SizedBox(height: 16),
+              _buildField('description'.tr(), _descCtrl, Icons.description_rounded, maxLines: 4),
               const SizedBox(height: 40),
+              
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: PrimaryButton(
-                  text: 'Save Salon Details',
+                  text: 'save_salon_details'.tr(),
                   onPressed: _saveChanges,
                 ),
               ),
@@ -127,10 +217,39 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     );
   }
 
+  Widget _buildTimeSelector(String label, TimeOfDay? time, VoidCallback onTap) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.almostBlack300)),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.almostBlack50.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.access_time_rounded, color: Theme.of(context).primaryColor, size: 20),
+                const SizedBox(width: 12),
+                Text(_formatTimeOfDay(time), style: const TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildImageSection(bool isDark) {
     return Column(
       children: [
-        if (_salonImages.isEmpty)
+        if (_existingImages.isEmpty && _newSalonImages.isEmpty)
           GestureDetector(
             onTap: _pickImages,
             child: Container(
@@ -146,7 +265,7 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
                 children: [
                   Icon(Icons.add_a_photo_rounded, size: 40, color: Theme.of(context).primaryColor),
                   const SizedBox(height: 12),
-                  const Text('Upload Salon Photos', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
+                  Text('upload_salon_photos'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
                 ],
               ),
             ),
@@ -156,9 +275,9 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
             height: 120,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: _salonImages.length + 1,
+              itemCount: _existingImages.length + _newSalonImages.length + 1,
               itemBuilder: (context, index) {
-                if (index == _salonImages.length) {
+                if (index == _existingImages.length + _newSalonImages.length) {
                   return GestureDetector(
                     onTap: _pickImages,
                     child: Container(
@@ -172,12 +291,71 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
                     ),
                   );
                 }
+                
+                if (index < _existingImages.length) {
+                  final img = _existingImages[index];
+                  return Container(
+                    width: 120,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: NetworkImage(img.image),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: GestureDetector(
+                            onTap: () {
+                              // TODO: Implement image deletion
+                              AppSnackBar.info(context, 'Image deletion coming soon');
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                final newIdx = index - _existingImages.length;
                 return Container(
                   width: 120,
                   margin: const EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    image: DecorationImage(image: FileImage(File(_salonImages[index].path)), fit: BoxFit.cover),
+                    image: DecorationImage(
+                      image: FileImage(File(_newSalonImages[newIdx].path)),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        right: 4,
+                        top: 4,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _newSalonImages.removeAt(newIdx);
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                            child: const Icon(Icons.close, size: 14, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -185,6 +363,13 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
           ),
       ],
     );
+  }
+
+  void _showWeeklyScheduleManager() {
+    // This would ideally be a separate widget or bottom sheet
+    AppSnackBar.info(context, 'Opening Weekly Schedule Manager...');
+    // Navigation to a dedicated schedule management page or showing a bottom sheet
+    // For now, we'll keep it as a placeholder as requested "Add Opening Hours"
   }
 
   Widget _buildField(String label, TextEditingController ctrl, IconData icon, {String? hint, TextInputType keyboardType = TextInputType.text, int maxLines = 1}) {

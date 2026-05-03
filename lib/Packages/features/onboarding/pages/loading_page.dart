@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../../../Services/ui/navigation_service.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
@@ -49,37 +50,13 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     final bool isLoggedIn = authProvider.isAuthenticated;
 
     if (isLoggedIn) {
-      final userRole = authProvider.userType?.name.toLowerCase() ?? 'customer';
-      _navigateBasedOnRole(userRole);
+      final userRole = authProvider.userType?.name ?? 'customer';
+      final user = authProvider.user;
+      final String? tier = user?.subscriptionTier?.name.toUpperCase();
+      
+      NavigationService.navigateToHomeBasedOnRole(context, userRole, tier: tier);
     } else {
       Navigator.pushReplacementNamed(context, '/login');
-    }
-  }
-
-  void _navigateBasedOnRole(String role) {
-    switch (role) {
-      case 'admin':
-        Navigator.pushReplacementNamed(context, '/admin');
-        break;
-      case 'owner':
-        Navigator.pushReplacementNamed(context, '/owner_dashboard');
-        break;
-      case 'manager':
-      case 'ownerExpert':
-      case 'owner_expert':
-      case 'cofounder':
-      case 'expert':
-        Navigator.pushReplacementNamed(context, '/expert_dashboard');
-        break;
-      case 'receptionist':
-        Navigator.pushReplacementNamed(context, '/receptionist_dashboard');
-        break;
-      case 'intern':
-        Navigator.pushReplacementNamed(context, '/intern_dashboard');
-        break;
-      case 'customer':
-      default:
-        Navigator.pushReplacementNamed(context, '/customer_home');
     }
   }
 

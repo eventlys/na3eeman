@@ -26,23 +26,29 @@ enum UserRole {
   /// Full salon owner; all salon-level permissions.
   owner,
 
-  /// Owner of a second branch.
+  /// Branch or salon manager.
   manager,
 
-  /// Owner who also works as an expert.
+  /// Owner who also provides services.
   ownerExpert,
 
-  /// Co-Founder — shares all Owner permissions and pages.
+  /// Co-Founder of the salon.
   cofounder,
+
+  /// Co-Founder who also provides services.
+  cofounderExpert,
+
+  /// Independent artisan or top-tier service provider.
+  artisan,
 
   /// Administrative role for salon/platform management.
   admin;
 
   bool get isStaff =>
-      [expert, intern, receptionist, owner, manager, ownerExpert, cofounder, admin].contains(this);
+      [expert, intern, receptionist, owner, manager, ownerExpert, cofounder, cofounderExpert, artisan, admin].contains(this);
 
   bool get isOwnerEquivalent =>
-      [owner, manager, ownerExpert, cofounder].contains(this);
+      [owner, manager, ownerExpert, cofounder, cofounderExpert].contains(this);
 
   bool get isAdmin => this == admin;
 
@@ -64,6 +70,10 @@ enum UserRole {
         return 'Owner Expert';
       case cofounder:
         return 'Co-Founder';
+      case cofounderExpert:
+        return 'Co-Founder Expert';
+      case artisan:
+        return 'Artisan';
       case admin:
         return 'Admin';
     }
@@ -96,6 +106,10 @@ extension UserRoleExtension on UserRole {
       case 'COFOUNDER':
       case 'CO_FOUNDER':
         return UserRole.cofounder;
+      case 'COFOUNDER_EXPERT':
+        return UserRole.cofounderExpert;
+      case 'ARTISAN':
+        return UserRole.artisan;
       case 'ADMIN':
       case 'SUPERADMIN':
       case 'SUPER_ADMIN':
@@ -311,6 +325,33 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
     AppPermission.manageServices,
     AppPermission.viewAnalytics,
     AppPermission.viewPeakHours,
+  },
+  UserRole.cofounderExpert: {
+    AppPermission.viewBookings,
+    AppPermission.createBooking,
+    AppPermission.cancelAnyBooking,
+    AppPermission.rescheduleBooking,
+    AppPermission.viewCustomerList,
+    AppPermission.editCustomerProfile,
+    AppPermission.viewStaffList,
+    AppPermission.manageStaff,
+    AppPermission.setStaffRoles,
+    AppPermission.viewSalonRevenue,
+    AppPermission.viewPayoutRequests,
+    AppPermission.viewReports,
+    AppPermission.downloadReports,
+    AppPermission.editSalonProfile,
+    AppPermission.manageSessions,
+    AppPermission.manageServices,
+    AppPermission.viewAnalytics,
+    AppPermission.viewPeakHours,
+  },
+  UserRole.artisan: {
+    AppPermission.viewBookings,
+    AppPermission.viewCustomerList,
+    AppPermission.viewReports,
+    AppPermission.manageServices,
+    AppPermission.manageSessions,
   },
 };
 

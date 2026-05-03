@@ -1,3 +1,5 @@
+// import 'dart:io';
+import 'dart:io';
 // import 'package:flutter/material.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
@@ -194,38 +196,64 @@ class SalonProvider extends BaseProvider {
     }
   }
 
-  Future<void> updateSalonOnBackend({required String name, required String phone, required String location, required String description}) async {
+  Future<void> updateSalonOnBackend({
+    required String name,
+    required String phone,
+    required String location,
+    required String description,
+    String? slogan,
+    String? openingTime,
+    String? closingTime,
+    List<File>? images,
+  }) async {
     if (_selectedSalon != null) {
       try {
-        final data = {
+        final fields = {
           'salon_name': name,
           'salon_phone_num': phone,
           'location': location,
           'salon_description': description,
+          if (slogan != null) 'salon_slogan': slogan,
+          if (openingTime != null) 'opening_time': openingTime,
+          if (closingTime != null) 'closing_time': closingTime,
         };
-        print('Frontend: Updating Salon on Backend with data: $data');
-        final response = await ApiService().put('/salons/salons/${_selectedSalon!.id}/', data: data);
+        print('Frontend: Updating Salon on Backend with fields: $fields');
+        final response = await ApiService().updateSalonWithImages(
+          salonId: _selectedSalon!.id,
+          fields: fields,
+          images: images,
+        );
         print('Frontend: updateSalonOnBackend Response: $response');
         _selectedSalon = Salon.fromJson(response);
         notifyListeners();
       } catch (e) {
         print('Frontend: updateSalonOnBackend Error: $e');
+        rethrow;
       }
     }
   }
 
-  void updateSalonInMemory({required String name, required String phone, required String location, required String description}) {
+  void updateSalonInMemory({
+    required String name,
+    required String phone,
+    required String location,
+    required String description,
+    String? slogan,
+    String? openingTime,
+    String? closingTime,
+  }) {
     if (_selectedSalon != null) {
       _selectedSalon = Salon(
         id: _selectedSalon!.id,
         salonName: name,
         salonPhonNum: phone,
         salonDescription: description,
+        slogan: slogan ?? _selectedSalon!.slogan,
         location: location,
         lat: _selectedSalon!.lat,
         lng: _selectedSalon!.lng,
-        openingTime: _selectedSalon!.openingTime,
-        closingTime: _selectedSalon!.closingTime,
+        openingTime: openingTime ?? _selectedSalon!.openingTime,
+        closingTime: closingTime ?? _selectedSalon!.closingTime,
         salonSeats: _selectedSalon!.salonSeats,
         salonStaff: _selectedSalon!.salonStaff,
         confirmedPhone: _selectedSalon!.confirmedPhone,
@@ -233,7 +261,6 @@ class SalonProvider extends BaseProvider {
         avgRating: _selectedSalon!.avgRating,
       );
       
-      // Also update in list if any list iterates it
       final index = _salons.indexWhere((s) => s.id == _selectedSalon!.id);
       if (index != -1) {
         _salons[index] = _selectedSalon!;

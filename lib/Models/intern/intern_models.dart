@@ -35,34 +35,66 @@ class InternTask {
   }
 }
 
-class InternTarget {
+class InternFeedback {
   final int id;
-  final String title;
-  final int targetValue;
-  final int currentValue;
-  final double percentageCompletion;
-  final String setByName;
-  final DateTime period;
+  final int intern;
+  final String? internName;
+  final int expert;
+  final String? expertName;
+  final String feedbackText;
+  final DateTime createdAt;
 
-  InternTarget({
+  InternFeedback({
     required this.id,
-    required this.title,
-    required this.targetValue,
-    required this.currentValue,
-    required this.percentageCompletion,
-    required this.setByName,
-    required this.period,
+    required this.intern,
+    this.internName,
+    required this.expert,
+    this.expertName,
+    required this.feedbackText,
+    required this.createdAt,
   });
 
-  factory InternTarget.fromJson(Map<String, dynamic> json) {
-    return InternTarget(
+  factory InternFeedback.fromJson(Map<String, dynamic> json) {
+    return InternFeedback(
       id: json['id'],
-      title: json['title'],
-      targetValue: json['target_value'],
-      currentValue: json['current_value'],
-      percentageCompletion: (json['percentage_completion'] as num).toDouble(),
-      setByName: json['set_by_name'],
-      period: DateTime.parse(json['period']),
+      intern: json['intern'],
+      internName: json['intern_name'],
+      expert: json['expert'],
+      expertName: json['expert_name'],
+      feedbackText: json['feedback_text'],
+      createdAt: DateTime.parse(json['created_at']),
+    );
+  }
+}
+
+class InternAttendanceLog {
+  final int id;
+  final int userId;
+  final String? userName;
+  final DateTime clockIn;
+  final DateTime? clockOut;
+  final String status;
+  final String? location;
+
+  InternAttendanceLog({
+    required this.id,
+    required this.userId,
+    this.userName,
+    required this.clockIn,
+    this.clockOut,
+    required this.status,
+    this.location,
+  });
+
+  factory InternAttendanceLog.fromJson(Map<String, dynamic> json) {
+    return InternAttendanceLog(
+      id: json['id'],
+      userId: json['user'],
+      userName: json['user_name'],
+      clockIn: DateTime.parse(json['clock_in']),
+      clockOut: json['clock_out'] != null ? DateTime.parse(json['clock_out']) : null,
+      status: json['status'],
+      location: json['location'],
     );
   }
 }

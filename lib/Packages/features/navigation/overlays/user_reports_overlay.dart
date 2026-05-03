@@ -122,7 +122,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Role: ${authProvider.user?.role.name ?? 'Customer'}',
+              'Role: ${authProvider.user?.userRole.name ?? 'Customer'}',
               style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white70,

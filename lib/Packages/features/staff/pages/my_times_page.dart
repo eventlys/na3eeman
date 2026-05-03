@@ -40,6 +40,7 @@ class _MyTimesPageState extends State<MyTimesPage> with SingleTickerProviderStat
       await context.read<ScheduleProvider>().fetchWorkingHours(
         expertId: auth.user!.id,
       );
+      await context.read<ScheduleProvider>().fetchPTORequests();
     }
     if (mounted) setState(() => _isInitialLoad = false);
   }
@@ -303,9 +304,93 @@ class _MyTimesPageState extends State<MyTimesPage> with SingleTickerProviderStat
             onTap: () => _showPTODialog(context, 4),
             isDark: isDark,
           ),
+          
+          const SizedBox(height: 32),
+          Text(
+            'Request History'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 16),
+          
+          Consumer<ScheduleProvider>(
+            builder: (context, provider, _) {
+              if (provider.isLoading && _isInitialLoad) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              
+              final requests = provider.ptoRequests;
+              if (requests.isEmpty) {
+                return Center(child: Text('No requests found'.tr(), style: const TextStyle(color: Colors.grey)));
+              }
+              
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: requests.length,
+                itemBuilder: (context, index) {
+                  final req = requests[index];
+                  final status = req['status'] ?? 'PENDING';
+                  final Color statusColor = status == 'APPROVED' 
+                      ? AppColors.success 
+                      : (status == 'REJECTED' ? AppColors.error : AppColors.warning);
+                      
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.almostBlack600 : AppColors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _getPTOHeaderFromScenario(req['scenario']).tr(),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${req['start_date']} ${req['start_time'] ?? ''}',
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: statusColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            status.tr(),
+                            style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
     );
+  }
+
+  String _getPTOHeaderFromScenario(String? scenario) {
+    return switch (scenario) {
+      'SINGLE_DAY' => 'Single Day Off',
+      'DATE_RANGE' => 'Date Range',
+      'IMMEDIATE' => 'Immediate Leave',
+      'TIME_WINDOW' => 'Specific Time Range',
+      _ => 'PTO Request',
+    };
   }
 
   Widget _buildPTOCard({
@@ -425,11 +510,35 @@ class _MyTimesPageState extends State<MyTimesPage> with SingleTickerProviderStat
           actions: [
             TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel'.tr())),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('PTO request submitted for approval'.tr()), backgroundColor: AppColors.success),
-                );
+              onPressed: () async {
+                final Map<String, dynamic> data = {
+                  'scenario': switch (scenario) {
+                    1 => 'SINGLE_DAY',
+                    2 => 'DATE_RANGE',
+                    3 => 'IMMEDIATE',
+                    4 => 'TIME_WINDOW',
+                    _ => 'SINGLE_DAY',
+                  },
+                  'start_date': startDate != null ? DateFormat('yyyy-MM-dd').format(startDate!) : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                  'end_date': endDate != null ? DateFormat('yyyy-MM-dd').format(endDate!) : null,
+                  'start_time': startTime != null ? '${startTime!.hour.toString().padLeft(2, '0')}:${startTime!.minute.toString().padLeft(2, '0')}:00' : null,
+                  'end_time': endTime != null ? '${endTime!.hour.toString().padLeft(2, '0')}:${endTime!.minute.toString().padLeft(2, '0')}:00' : null,
+                  'reason': reasonController.text,
+                };
+
+                final success = await context.read<ScheduleProvider>().submitPTORequest(data);
+                if (mounted) {
+                  Navigator.pop(context);
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('PTO request submitted for approval'.tr()), backgroundColor: AppColors.success),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(context.read<ScheduleProvider>().error ?? 'Failed to submit request'.tr()), backgroundColor: AppColors.error),
+                    );
+                  }
+                }
               },
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
               child: Text('Submit'.tr(), style: const TextStyle(color: Colors.white)),

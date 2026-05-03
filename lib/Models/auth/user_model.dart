@@ -1,5 +1,6 @@
-import 'package:na3eeman/Packages/Core/constants/app_roles.dart';
+import 'package:na3eeman/core/enums/user_type.dart';
 import 'package:na3eeman/Services/enums/gender.dart';
+import 'package:na3eeman/Packages/Core/constants/app_roles.dart';
 
 class User {
   final int id;
@@ -7,7 +8,7 @@ class User {
   final String username;
   final String firstName;
   final String lastName;
-  final UserRole role;
+  final UserType userType;
   final Gender gender;
   final String? profilePic;
   final String? phone;
@@ -27,6 +28,8 @@ class User {
   final bool isSuperuser;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? otpPassword;
+  final bool otpUsed;
   final Map<String, dynamic>? metadata;
 
   User({
@@ -35,7 +38,7 @@ class User {
     required this.username,
     required this.firstName,
     required this.lastName,
-    required this.role,
+    required this.userType,
     required this.gender,
     this.profilePic,
     this.phone,
@@ -55,20 +58,24 @@ class User {
     this.isSuperuser = false,
     required this.createdAt,
     required this.updatedAt,
+    this.otpPassword,
+    this.otpUsed = false,
     this.metadata,
   });
 
   String get fullName => '$firstName $lastName';
+  String get role => userType.value;
+  UserRole get userRole => UserRoleExtension.fromString(role);
 
-  bool get isCustomer => role == UserRole.customer;
-  bool get isExpert => role == UserRole.expert;
-  bool get isReceptionist => role == UserRole.receptionist;
-  bool get isIntern => role == UserRole.intern;
-  bool get isOwner => [UserRole.owner, UserRole.manager, UserRole.ownerExpert, UserRole.cofounder].contains(role);
-  bool get isManager => role == UserRole.manager;
-  bool get isOwnerExpert => role == UserRole.ownerExpert;
-  bool get isAdmin => role == UserRole.admin;
-  bool get isStaffMember => role != UserRole.customer;
+  bool get isCustomer => userType == UserType.customer;
+  bool get isExpert => userType == UserType.expert;
+  bool get isReceptionist => userType == UserType.receptionist;
+  bool get isIntern => userType == UserType.intern;
+  bool get isOwner => userType.isManagement;
+  bool get isManager => userType == UserType.manager;
+  bool get isOwnerExpert => userType == UserType.ownerExpert;
+  bool get isAdmin => userType == UserType.admin;
+  bool get isStaffMember => userType.isStaff;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -77,7 +84,7 @@ class User {
       username: json['username']?.toString() ?? json['email']?.split('@')[0] ?? '',
       firstName: json['first_name']?.toString() ?? json['firstName']?.toString() ?? '',
       lastName: json['last_name']?.toString() ?? json['lastName']?.toString() ?? '',
-      role: UserRoleExtension.fromString(json['role']?.toString() ?? 'CUSTOMER'),
+      userType: UserType.fromString(json['user_type']?.toString() ?? json['role']?.toString() ?? 'CUSTOMER'),
       gender: GenderExtension.fromString(json['gender']?.toString() ?? 'MALE'),
       profilePic: json['profile_pic']?.toString() ?? json['profile_image']?.toString(),
       phone: json['phone']?.toString() ?? json['phone_number']?.toString(),
@@ -97,6 +104,8 @@ class User {
       isSuperuser: (json['is_superuser'] ?? false) as bool,
       createdAt: DateTime.parse(json['created_at']?.toString() ?? DateTime.now().toIso8601String()),
       updatedAt: DateTime.parse(json['updated_at']?.toString() ?? DateTime.now().toIso8601String()),
+      otpPassword: json['otp_password']?.toString(),
+      otpUsed: (json['otp_used'] ?? false) as bool,
       metadata: json['metadata'],
     );
   }
@@ -108,7 +117,8 @@ class User {
       'username': username,
       'first_name': firstName,
       'last_name': lastName,
-      'role': role.value,
+      'user_type': userType.value,
+      'role': userType.value, // Keep role for backward compatibility
       'gender': gender.value,
       'profile_pic': profilePic,
       'phone': phone,
@@ -128,6 +138,8 @@ class User {
       'is_superuser': isSuperuser,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
+      'otp_password': otpPassword,
+      'otp_used': otpUsed,
       'metadata': metadata,
     };
   }
@@ -138,7 +150,7 @@ class User {
     String? username,
     String? firstName,
     String? lastName,
-    UserRole? role,
+    UserType? userType,
     Gender? gender,
     String? profilePic,
     String? phone,
@@ -158,6 +170,8 @@ class User {
     bool? isSuperuser,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? otpPassword,
+    bool? otpUsed,
     Map<String, dynamic>? metadata,
   }) {
     return User(
@@ -166,7 +180,7 @@ class User {
       username: username ?? this.username,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      role: role ?? this.role,
+      userType: userType ?? this.userType,
       gender: gender ?? this.gender,
       profilePic: profilePic ?? this.profilePic,
       phone: phone ?? this.phone,
@@ -186,6 +200,8 @@ class User {
       isSuperuser: isSuperuser ?? this.isSuperuser,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      otpPassword: otpPassword ?? this.otpPassword,
+      otpUsed: otpUsed ?? this.otpUsed,
       metadata: metadata ?? this.metadata,
     );
   }

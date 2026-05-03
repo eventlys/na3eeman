@@ -31,6 +31,8 @@ class UserGiftCard {
   final String code;
   final double balance;
   final bool isActive;
+  final String? receiverPhone;
+  final String? message;
   final DateTime expiresAt;
   final DateTime purchasedAt;
 
@@ -41,6 +43,8 @@ class UserGiftCard {
     required this.code,
     required this.balance,
     required this.isActive,
+    this.receiverPhone,
+    this.message,
     required this.expiresAt,
     required this.purchasedAt,
   });
@@ -55,6 +59,8 @@ class UserGiftCard {
       code: json['code'],
       balance: double.parse(json['balance'].toString()),
       isActive: json['is_active'],
+      receiverPhone: json['receiver_phone'],
+      message: json['message'],
       expiresAt: DateTime.parse(json['expires_at']),
       purchasedAt: DateTime.parse(json['purchased_at']),
     );

@@ -110,6 +110,18 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
                   AppColors.blue,
                   onTap: () => Navigator.pushNamed(context, '/appointments/search'),
                 ),
+                _buildQuickAction(
+                   "Inventory".tr(), 
+                  Icons.inventory_2_rounded, 
+                  Colors.orange,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistInventoryPage())),
+                ),
+                _buildQuickAction(
+                   "POS Terminal".tr(), 
+                  Icons.point_of_sale_rounded, 
+                  Colors.indigo,
+                  onTap: () => Navigator.pushNamed(context, '/pos'),
+                ),
               ],
             ),
 
@@ -122,18 +134,28 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
               builder: (context, provider, _) {
                 // Show appointments that are ACTIVE or DONE but payment is PENDING
                 final pendingAppts = provider.appointments.where((a) => 
-                  (a.status == AppointmentStatus.scheduled || a.status == AppointmentStatus.completed) && 
-                  a.paymentStatus == 'PENDING'
+                  (a.status == AppointmentStatus.scheduled || a.status == AppointmentStatus.completed || a.status == AppointmentStatus.checkedIn) && 
+                  (a.paymentStatus == 'PENDING' || a.paymentStatus == 'FAILED')
                 ).toList();
                 
                 if (pendingAppts.isEmpty) {
-                  return const Center(child: Text('No pending payments for active/done appointments', style: TextStyle(color: Colors.grey)));
+                  return DashboardCard(
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(Icons.check_circle_outline_rounded, color: AppColors.success, size: 48),
+                          const SizedBox(height: 12),
+                          Text('all_payments_settled'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  );
                 }
                 return Column(
-                  children: pendingAppts.map((appt) => _buildPendingPaymentItem(
+                  children: pendingAppts.take(3).map((appt) => _buildPendingPaymentItem(
                     appt.id,
                     'Customer #${appt.customerId}', 
-                    '${appt.totalAmount ?? appt.depositAmount ?? 0.0} JOD', 
+                    '${appt.totalAmount ?? 0.0} JOD', 
                     (appt.services).map((s) => s.name).join(', ')
                   )).toList(),
                 );
@@ -154,44 +176,21 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             // Inventory Count Preview
             DashboardSectionHeader(title: "inventory_management".tr()),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistInventoryPage(startWithStaff: true))),
-                    child: DashboardSummaryCard(
-                      title: 'Staff Items',
-                      value: '12 Low',
-                      icon: Icons.person_pin_circle_rounded,
-                      color: Theme.of(context).primaryColor,
-                    ),
+            DashboardCard(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      _buildInventorySummaryItem(context, 'Staff', '12 Low', Icons.person_pin_circle_rounded, Theme.of(context).primaryColor, () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistInventoryPage(startWithStaff: true)))),
+                      const SizedBox(width: 12),
+                      _buildInventorySummaryItem(context, 'Shared', '5 Left', Icons.layers_rounded, AppColors.pink, () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistInventoryPage(startWithStaff: false)))),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceptionistInventoryPage(startWithStaff: false))),
-                    child: DashboardSummaryCard(
-                      title: 'Shared Items',
-                      value: '5 Left',
-                      icon: Icons.layers_rounded,
-                      color: AppColors.pink,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _navigateToProductsPage(context),
-                    child: DashboardSummaryCard(
-                      title: 'Our Products',
-                      value: '24 Available',
-                      icon: Icons.shopping_basket_rounded,
-                      color: Colors.orange,
-                    ),
-                  ),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  _buildInventorySummaryItem(context, 'Products', '24 Available', Icons.shopping_basket_rounded, Colors.orange, () => _navigateToProductsPage(context), fullWidth: true),
+                ],
+              ),
             ),
 
             const SizedBox(height: 32),
@@ -1012,12 +1011,11 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
       onTap: () => Navigator.pushNamed(context, '/staff_schedules'),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark 
                 ? [AppColors.almostBlack500, AppColors.almostBlack600] 
-                : [Colors.white, AppColors.almostBlack50.withOpacity(0.5)],
+                : [AppColors.white, Colors.grey[50]!],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -1033,47 +1031,66 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
         ),
         child: Column(
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.pink.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
+            Padding(
+              padding: const EdgeInsets.all(28),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.pink.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(Icons.calendar_month_rounded, color: AppColors.pink, size: 32),
                   ),
-                  child: const Icon(Icons.calendar_today_rounded, color: AppColors.pink, size: 32),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "today_schedule".tr(), 
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
-                      ),
-                      const Text(
-                        'View all experts & timelines', 
-                        style: TextStyle(color: AppColors.almostBlack300, fontSize: 14)
-                      ),
-                    ],
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "today_schedule".tr(), 
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22)
+                        ),
+                        Text(
+                          DateFormat('EEEE, MMM d').format(DateTime.now()), 
+                          style: const TextStyle(color: AppColors.almostBlack300, fontSize: 14)
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.almostBlack200, size: 18),
-              ],
+                  const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.almostBlack200, size: 18),
+                ],
+              ),
             ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildScheduleQuickStat('Morning', '8', Colors.blue),
-                _buildScheduleQuickStat('Afternoon', '12', Colors.orange),
-                _buildScheduleQuickStat('Evening', '4', Colors.purple),
-              ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.black.withOpacity(0.2) : Colors.grey[100]!.withOpacity(0.5),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildScheduleQuickStat('Morning', '8', Colors.blue),
+                  _buildVerticalDivider(isDark),
+                  _buildScheduleQuickStat('Afternoon', '12', Colors.orange),
+                  _buildVerticalDivider(isDark),
+                  _buildScheduleQuickStat('Evening', '4', Colors.purple),
+                ],
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildVerticalDivider(bool isDark) {
+    return Container(
+      height: 40,
+      width: 1,
+      color: isDark ? Colors.white10 : Colors.black12,
     );
   }
 
@@ -1213,6 +1230,44 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard> with Sing
             const SizedBox(height: 16),
             const Expanded(child: Center(child: Text('Search Results Appear here'))),
           ],
+        ),
+      ),
+    );
+  }
+  Widget _buildInventorySummaryItem(BuildContext context, String title, String value, IconData icon, Color color, VoidCallback onTap, {bool fullWidth = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final content = Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 20),
+        ),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            Text(value, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+          ],
+        ),
+      ],
+    );
+
+    return Expanded(
+      flex: fullWidth ? 2 : 1,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack500 : AppColors.almostBlack50.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: content,
         ),
       ),
     );

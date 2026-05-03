@@ -18,10 +18,10 @@ class InventoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = item['name'] ?? item['product_name'] ?? 'Unknown Item';
-    final count = item['count'] ?? item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+    final name = item['name'] ?? item['productName'] ?? item['product_name'] ?? 'Unknown Item';
+    final count = item['count'] ?? item['current_stock'] ?? item['quantityInStock'] ?? item['quantity_in_stock'] ?? 0;
     final description = item['description'];
-    final minStockLevel = item['min_stock_level'] ?? 3;
+    final minStockLevel = item['lowStockThreshold'] ?? item['low_stock_threshold'] ?? 3;
 
     final isLowStock = InventoryHelpers.isLowStock(count, minStockLevel);
 

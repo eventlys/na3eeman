@@ -100,20 +100,24 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
     final points = (_balance?['points'] as num?)?.toInt() ?? 0;
     final freeAvailable = (_balance?['free_haircuts_available'] as num?)?.toInt() ?? 0;
     final progress = (_balance?['free_haircut_progress'] as num?)?.toInt() ?? 0;
+    final jodValue = points / 200.0;
+    final hasPenalty = (_balance?['has_pending_penalty'] ?? false);
 
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF6C63FF), Color(0xFF3B82F6)],
+        gradient: LinearGradient(
+          colors: hasPenalty 
+              ? [const Color(0xFFFF5252), const Color(0xFFFF1744)] 
+              : [const Color(0xFF6C63FF), const Color(0xFF3B82F6)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6C63FF).withOpacity(0.35),
+            color: (hasPenalty ? const Color(0xFFFF5252) : const Color(0xFF6C63FF)).withOpacity(0.35),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -141,6 +145,10 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
                       letterSpacing: -1,
                     ),
                   ),
+                  Text(
+                    '≈ ${jodValue.toStringAsFixed(2)} JOD',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
               Container(
@@ -149,10 +157,28 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
                   color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(Icons.stars_rounded, size: 32, color: Colors.white),
+                child: Icon(
+                  hasPenalty ? Icons.warning_amber_rounded : Icons.stars_rounded, 
+                  size: 32, 
+                  color: Colors.white
+                ),
               ),
             ],
           ),
+          if (hasPenalty) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                '⚠️ Potential penalty detected for unpaid appointments (>24h). Please settle your balance.',
+                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ],
           const SizedBox(height: 20),
           Row(
             children: [

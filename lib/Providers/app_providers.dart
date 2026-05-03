@@ -4,6 +4,7 @@ import '../core/theme/app_theme.dart';
 import '../core/theme/colors.dart';
 import '../core/enums/app_enums.dart';
 import '../Packages/Core/utils/helpers/themes_helpers.dart';
+export '../Packages/Core/utils/helpers/themes_helpers.dart';
 import 'features/auth_provider.dart';
 import '../Services/enums/gender.dart';
 
@@ -113,7 +114,7 @@ class RBACProvider extends ChangeNotifier {
   void updateAuth(AuthProvider auth) {
     if (auth.isAuthenticated && auth.user != null) {
       setUser(
-        role: auth.user!.role,
+        role: auth.user!.userRole,
         tier: auth.user!.subscriptionTier ?? SubscriptionTier.basic,
       );
     } else {

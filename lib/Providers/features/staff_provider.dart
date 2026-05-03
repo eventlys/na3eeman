@@ -2,6 +2,7 @@ import '../base_provider.dart';
 import 'auth_provider.dart';
 import '../../Models/salon/staff_member_model.dart';
 import '../../Models/salon/expert_model.dart';
+import '../../Models/intern/intern_models.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/endpoints.dart';
 import '../../Helpers/logger.dart';
@@ -12,11 +13,13 @@ class StaffProvider extends BaseProvider {
   List<Expert> _experts = [];
   AuthProvider? _authProvider;
   StaffMember? _selectedStaff;
+  List<InternAttendanceLog> _attendanceLogs = [];
 
   // Getters
   List<StaffMember> get staff => _staff;
   List<Expert> get experts => _experts;
   StaffMember? get selectedStaff => _selectedStaff;
+  List<InternAttendanceLog> get attendanceLogs => _attendanceLogs;
 
   List<StaffMember> get manageableStaff {
     return _staff;
@@ -76,5 +79,19 @@ class StaffProvider extends BaseProvider {
   void selectStaff(StaffMember? staff) {
     _selectedStaff = staff;
     notifyListeners();
+  }
+
+  Future<void> fetchInternAttendance() async {
+    try {
+      setLoading(true);
+      final response = await _apiService.get(Endpoints.attendanceLog);
+      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+      _attendanceLogs = data.map((json) => InternAttendanceLog.fromJson(json)).toList();
+      notifyListeners();
+    } catch (e) {
+      AppLogger.error('Error fetching intern attendance: $e');
+    } finally {
+      setLoading(false);
+    }
   }
 }

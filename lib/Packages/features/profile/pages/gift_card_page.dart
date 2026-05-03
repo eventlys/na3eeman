@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
+import 'package:na3eeman/core/utils/gift_card_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GiftCardPage extends StatefulWidget {
@@ -74,21 +75,29 @@ class _GiftCardPageState extends State<GiftCardPage> {
     setState(() => _isBuying = true);
     try {
       final api = ApiService();
-      final res = await api.purchaseGiftCard(_selectedGiftCard!.id);
+      final res = await api.purchaseGiftCard(
+        _selectedGiftCard!.id,
+        receiverPhone: _receiverPhoneCtrl.text,
+        message: _messageCtrl.text,
+      );
       final purchasedCard = UserGiftCard.fromJson(res);
 
       if (mounted) {
         AppSnackBar.success(context, 'Gift card purchased successfully!');
         
         // Launch WhatsApp
-        final code = purchasedCard.code;
-        final amount = purchasedCard.balance.toInt();
-        final message = "Hi! I sent you a Na3eeman Gift Card worth $amount JOD!\n\n"
-            "Voucher Code: $code\n"
-            "${_messageCtrl.text.isNotEmpty ? '\nMessage: ${_messageCtrl.text}\n' : ''}\n"
-            "Redeem it at any Na3eeman salon. Enjoy! ✨";
+        final code = GiftCardUtils.formatCardCode(purchasedCard.code);
+        final value = purchasedCard.balance.toStringAsFixed(2);
+        final expiry = GiftCardUtils.formatDate(purchasedCard.expiresAt);
         
-        final whatsappUrl = "https://wa.me/${_receiverPhoneCtrl.text.replaceAll(' ', '')}?text=${Uri.encodeComponent(message)}";
+        final message = "Hi! I sent you a Na3eeman Gift Card! ✨\n\n"
+            "Voucher Code: $code\n"
+            "Service Value: $value JOD\n"
+            "Expires on: $expiry\n"
+            "${_messageCtrl.text.isNotEmpty ? '\nMessage: ${_messageCtrl.text}\n' : ''}\n"
+            "Redeem it at any Na3eeman salon. Enjoy! 💇‍♂️💇‍♀️";
+        
+        final whatsappUrl = "https://wa.me/${_receiverPhoneCtrl.text.replaceAll(' ', '').replaceAll('+', '')}?text=${Uri.encodeComponent(message)}";
         if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
           await launchUrl(Uri.parse(whatsappUrl), mode: LaunchMode.externalApplication);
         }
@@ -280,17 +289,35 @@ class _GiftCardPageState extends State<GiftCardPage> {
                 color: primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  const Text('Gift Card Value', style: TextStyle(fontWeight: FontWeight.w600)),
-                  Text(
-                    '${_selectedGiftCard?.price.toInt() ?? 0} JOD',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: primaryColor,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Purchase Price', style: TextStyle(fontWeight: FontWeight.w500)),
+                      Text(
+                        '${_selectedGiftCard?.price.toInt() ?? 0} JOD',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Divider(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Service Value (Price - 15%)', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text(
+                        '${GiftCardUtils.calculateValue(_selectedGiftCard?.price ?? 0).toStringAsFixed(2)} JOD',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

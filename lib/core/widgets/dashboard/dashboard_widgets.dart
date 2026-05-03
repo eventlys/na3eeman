@@ -3,8 +3,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import '../../theme/colors.dart';
 import '../buttons/styled_buttons.dart';
-import '../../../../Services/api/api_service.dart';
+// import '../../../../Services/api/api_service.dart';
 import '../../../../Providers/features/auth_provider.dart';
+import '../feedback/feedback_dialog.dart';
 
 
 class DashboardCard extends StatelessWidget {
@@ -186,132 +187,7 @@ class FeedbackSection extends StatelessWidget {
   const FeedbackSection({super.key});
 
   void _showFeedbackDialog(BuildContext context) {
-    final TextEditingController feedbackController = TextEditingController();
-    final apiService = ApiService();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.95,
-          constraints: const BoxConstraints(maxWidth: 800),
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.almostBlack600 : AppColors.white,
-            borderRadius: BorderRadius.circular(32),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "help_us_improve".tr(),
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "help_us_improve_description".tr(),
-                          style: TextStyle(
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close_rounded),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              TextField(
-                controller: feedbackController,
-                maxLines: 8,
-                decoration: InputDecoration(
-                  hintText: 'feedback_hint'.tr(),
-                  hintStyle: TextStyle(color: Colors.grey.withOpacity(0.4)),
-                  filled: true,
-                  fillColor: isDark ? AppColors.almostBlack500 : Colors.grey[50],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
-                ),
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (feedbackController.text.isNotEmpty) {
-                      try {
-                        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                        final user = authProvider.user;
-
-                        await apiService.submitServiceRequest({
-                          'text': feedbackController.text,
-                          'type': 'FEEDBACK',
-                          'user_id': user?.id,
-                          'user_name': '${user?.firstName ?? ''} ${user?.lastName ?? ''}',
-                          'user_type': user?.role.name,
-                          'timestamp': DateTime.now().toIso8601String(),
-                          'email_recipient': 'w.t.f.azooz@gmail.com',
-                        });
-                        
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('feedback_success'.tr()),
-                              backgroundColor: AppColors.success,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('feedback_failed'.tr())),
-                          );
-                         }
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    elevation: 0,
-                  ),
-                  child: Text('send_feedback'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    FeedbackDialog.show(context);
   }
 
   @override
@@ -357,6 +233,40 @@ class FeedbackSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFeedbackTypeSelector(BuildContext context, Function(String) onSelected) {
+    final types = [
+      {'label': 'Bug', 'value': 'BUG', 'icon': Icons.bug_report_rounded},
+      {'label': 'Feature', 'value': 'FEATURE', 'icon': Icons.add_chart_rounded},
+      {'label': 'Abuse', 'value': 'ABUSE', 'icon': Icons.report_gmailerrorred_rounded},
+      {'label': 'Other', 'value': 'OTHER', 'icon': Icons.more_horiz_rounded},
+    ];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: types.map((type) {
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => onSelected(type['value'] as String),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(type['icon'] as IconData, color: Theme.of(context).primaryColor, size: 24),
+                ),
+                const SizedBox(height: 8),
+                Text(type['label'] as String, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

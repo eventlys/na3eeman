@@ -34,72 +34,72 @@ import 'core/app_management_service.dart';
 import 'storage_service.dart';
 import 'utils/filters_service.dart'; // Consolidated utilities
 
-final GetIt serviceLocator = GetIt.instance;
+final GetIt locator = GetIt.instance;
 
 class ServiceLocator {
   static Future<void> initialize() async {
     // Initialize storage first
 
     // ============ CORE SERVICES ============
-    serviceLocator.registerLazySingleton(() => ApiService());
-    serviceLocator.registerLazySingleton(() => ApiThrottler());
-    serviceLocator.registerLazySingleton(() => SecurityService());
-    serviceLocator.registerLazySingleton(() => UnifiedStorageService());
-    serviceLocator.registerLazySingleton(() => AnalyticsService());
+    locator.registerLazySingleton(() => ApiService());
+    locator.registerLazySingleton(() => ApiThrottler());
+    locator.registerLazySingleton(() => SecurityService());
+    locator.registerLazySingleton(() => UnifiedStorageService());
+    locator.registerLazySingleton(() => AnalyticsService());
 
     // ============ API INTERCEPTOR ============
-    serviceLocator.registerLazySingleton(() => ApiInterceptorService(
-      serviceLocator.get<ApiService>(),
+    locator.registerLazySingleton(() => ApiInterceptorService(
+      locator.get<ApiService>(),
     ));
 
     // ============ BUSINESS SERVICES ============
-    serviceLocator.registerLazySingleton(() => BusinessService());
+    locator.registerLazySingleton(() => BusinessService());
 
     // ============ STORAGE SERVICES ============
 
     // ============ UI SERVICES ============
-    serviceLocator.registerLazySingleton(() => NavigationService());
-    serviceLocator.registerLazySingleton(() => SideNavigationService());
-    serviceLocator.registerLazySingleton(() => OverlayService());
-    serviceLocator.registerLazySingleton(() => ThemeService());
-    serviceLocator.registerLazySingleton(() => LanguageService());
+    locator.registerLazySingleton(() => NavigationService());
+    locator.registerLazySingleton(() => SideNavigationService());
+    locator.registerLazySingleton(() => OverlayService());
+    locator.registerLazySingleton(() => ThemeService());
+    locator.registerLazySingleton(() => LanguageService());
 
     // ============ APP MANAGEMENT ============
-    serviceLocator.registerLazySingleton(() => AppManagementService());
+    locator.registerLazySingleton(() => AppManagementService());
 
     // ============ REPOSITORIES ============
-    serviceLocator.registerLazySingleton(() => AuthRepository(
-      serviceLocator.get<ApiService>(),
+    locator.registerLazySingleton(() => AuthRepository(
+      locator.get<ApiService>(),
     ));
 
-    serviceLocator.registerLazySingleton(() => SalonRepository(
-      serviceLocator.get<ApiService>(),
+    locator.registerLazySingleton(() => SalonRepository(
+      locator.get<ApiService>(),
     ));
 
     // ============ USE CASES ============
-    serviceLocator.registerLazySingleton(() => LoginUseCase(
-      serviceLocator.get<AuthRepository>(),
+    locator.registerLazySingleton(() => LoginUseCase(
+      locator.get<AuthRepository>(),
     ));
 
-    serviceLocator.registerLazySingleton(() => GetSalonsUseCase(
-      serviceLocator.get<SalonRepository>(),
+    locator.registerLazySingleton(() => GetSalonsUseCase(
+      locator.get<SalonRepository>(),
     ));
 
-    serviceLocator.registerLazySingleton(() => AppointmentUseCases(
-      serviceLocator.get<BusinessService>(),
+    locator.registerLazySingleton(() => AppointmentUseCases(
+      locator.get<BusinessService>(),
     ));
 
     // ============ UTILITY SERVICES ============
-    serviceLocator.registerLazySingleton(() => LocationService());
-    serviceLocator.registerLazySingleton(() => UnifiedService());
+    locator.registerLazySingleton(() => LocationService());
+    locator.registerLazySingleton(() => UnifiedService());
 
     // ============ INITIALIZE ASYNC SERVICES ============
-    await serviceLocator.get<UnifiedStorageService>().initialize();
-    await serviceLocator.get<AppManagementService>().initialize();
-    await serviceLocator.get<LanguageService>().init();
+    await locator.get<UnifiedStorageService>().initialize();
+    await locator.get<AppManagementService>().initialize();
+    await locator.get<LanguageService>().init();
 
     print('✅ All services initialized successfully');
   }
 
-  static T get<T extends Object>() => serviceLocator.get<T>();
+  static T get<T extends Object>() => locator.get<T>();
 }

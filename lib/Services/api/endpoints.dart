@@ -68,9 +68,9 @@ class Endpoints {
   // ==================== INTERN MANAGEMENT ====================
   static const String internTasks = '/auth/intern/tasks/';
   static String internTaskDetail(int id) => '/auth/intern/tasks/$id/';
-  static const String internTargets = '/auth/intern/targets/';
   static const String internAttach = '/auth/intern/attach/';
   static const String internActivity = '/auth/intern/activity/';
+  static const String attendanceLog = '/salons/attendance/';
 
   // ==================== INVITATIONS ====================
   static const String invitationsSend = '/auth/invitations/send/';
@@ -101,6 +101,7 @@ class Endpoints {
   static String salonServices(int salonId) => '/salons/salons/$salonId/options/';  // Same as options
   static String salonSchedule(int salonId) => '/salons/salons/$salonId/schedule/';
   static const String workingHours = '/salons/working-hours/';
+  static const String pto = '/salons/pto/';
 
   // ==================== APPOINTMENTS ====================
   static const String appointments = '/salons/appointments/';

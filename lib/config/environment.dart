@@ -65,6 +65,11 @@ abstract class EnvironmentConfig {
   String get firebaseAppId;
   String get firebaseMessagingSenderId;
   String get firebaseProjectId;
+
+  // Dynamic Links & Contacts
+  String get webAppUrl;
+  String get adminEmail;
+  String get supportEmail;
 }
 
 /// Development environment configuration
@@ -122,6 +127,15 @@ class DevConfig implements EnvironmentConfig {
   String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
   @override
   String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
+
+  @override
+  String get webAppUrl => Environment.getEnv('WEB_APP_URL', defaultValue: 'https://na3eeman.com');
+
+  @override
+  String get adminEmail => Environment.getEnv('ADMIN_EMAIL', defaultValue: 'admin@na3eeman.com');
+
+  @override
+  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL', defaultValue: 'support@na3eeman.com');
 }
 
 /// Staging environment configuration
@@ -176,6 +190,15 @@ class StagingConfig implements EnvironmentConfig {
   String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
   @override
   String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
+
+  @override
+  String get webAppUrl => Environment.getEnv('WEB_APP_URL', defaultValue: 'https://na3eeman.com');
+
+  @override
+  String get adminEmail => Environment.getEnv('ADMIN_EMAIL', defaultValue: 'admin@na3eeman.com');
+
+  @override
+  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL', defaultValue: 'support@na3eeman.com');
 }
 
 /// Production environment configuration
@@ -230,4 +253,13 @@ class ProdConfig implements EnvironmentConfig {
   String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
   @override
   String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
+
+  @override
+  String get webAppUrl => Environment.getEnv('WEB_APP_URL', defaultValue: 'https://na3eeman.com');
+
+  @override
+  String get adminEmail => Environment.getEnv('ADMIN_EMAIL', defaultValue: 'admin@na3eeman.com');
+
+  @override
+  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL', defaultValue: 'support@na3eeman.com');
 }

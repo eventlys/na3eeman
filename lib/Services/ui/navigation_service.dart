@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
+import '../../Packages/Core/constants/app_roles.dart';
 
 class NavigationService {
   static void navigateToHomeBasedOnRole(BuildContext context, String role, {String? tier}) {
-    switch (role.toUpperCase()) {
-      case 'CUSTOMER':
+    final userRole = UserRoleExtension.fromString(role);
+    
+    switch (userRole) {
+      case UserRole.customer:
         Navigator.pushNamedAndRemoveUntil(context, '/customer_home', (route) => false);
         break;
-      case 'EXPERT':
-      case 'EXPERT':
-      case 'EMPLOYEE':
-        Navigator.pushNamedAndRemoveUntil(context, '/expert_dashboard', (route) => false);
+      case UserRole.expert:
+      case UserRole.artisan:
+      case UserRole.ownerExpert:
+      case UserRole.cofounderExpert:
+      case UserRole.manager:
+        Navigator.pushNamedAndRemoveUntil(context, '/expert_home', (route) => false);
         break;
-      case 'INTERN':
+      case UserRole.intern:
         Navigator.pushNamedAndRemoveUntil(context, '/intern_dashboard', (route) => false);
         break;
-      case 'RECEPTIONIST':
+      case UserRole.receptionist:
         Navigator.pushNamedAndRemoveUntil(context, '/receptionist_dashboard', (route) => false);
         break;
-      case 'OWNER':
-      case 'MANAGER':
-      case 'OWNER_EXPERT':
-      case 'OWNER_EMPLOYEE':
-      case 'OWNER_OWNER':
-      case 'COFOUNDER':
-        Navigator.pushNamedAndRemoveUntil(context, '/owner_dashboard', (route) => false);
+      case UserRole.owner:
+      case UserRole.cofounder:
+        Navigator.pushNamedAndRemoveUntil(context, '/management_dashboard', (route) => false);
         break;
-      case 'ADMIN':
-      case 'SUPERADMIN':
+      case UserRole.admin:
         Navigator.pushNamedAndRemoveUntil(context, '/admin', (route) => false);
         break;
       default:
         Navigator.pushNamedAndRemoveUntil(context, '/customer_home', (route) => false);
-
     }
   }
 
