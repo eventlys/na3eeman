@@ -10,12 +10,24 @@ class KitMaintenanceWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     final items = [
-      _KitItem('Clippers', 'Due for oiling', Icons.content_cut_rounded,
-          urgency: _Urgency.high),
-      _KitItem('Razors', 'Replace blades', Icons.cut_rounded,
-          urgency: _Urgency.medium),
-      _KitItem('Towels', 'Sterilise today', Icons.dry_cleaning_rounded,
-          urgency: _Urgency.low),
+      _KitItem(
+        'Clippers',
+        'Due for oiling',
+        Icons.content_cut_rounded,
+        urgency: _Urgency.high,
+      ),
+      _KitItem(
+        'Razors',
+        'Replace blades',
+        Icons.cut_rounded,
+        urgency: _Urgency.medium,
+      ),
+      _KitItem(
+        'Towels',
+        'Sterilise today',
+        Icons.dry_cleaning_rounded,
+        urgency: _Urgency.low,
+      ),
     ];
 
     return Column(
@@ -23,12 +35,18 @@ class KitMaintenanceWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.build_circle_outlined,
-                size: 18, color: theme.primaryColor),
+            Icon(
+              Icons.build_circle_outlined,
+              size: 18,
+              color: theme.primaryColor,
+            ),
             const SizedBox(width: 8),
-            Text("kit_maintenance".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "kit_maintenance".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -43,26 +61,33 @@ class KitMaintenanceWidget extends StatelessWidget {
                     color: item.urgencyColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child:
-                      Icon(item.icon, size: 18, color: item.urgencyColor),
+                  child: Icon(item.icon, size: 18, color: item.urgencyColor),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.name,
-                          style: theme.textTheme.bodyMedium
-                              ?.copyWith(fontWeight: FontWeight.w600)),
-                      Text(item.task,
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(color: theme.hintColor)),
+                      Text(
+                        item.name,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        item.task,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.hintColor,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: item.urgencyColor.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
@@ -70,9 +95,10 @@ class KitMaintenanceWidget extends StatelessWidget {
                   child: Text(
                     item.urgencyLabel,
                     style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: item.urgencyColor),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: item.urgencyColor,
+                    ),
                   ),
                 ),
               ],

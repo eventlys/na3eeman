@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../constants/app_color.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
 /// Different types of errors that can be displayed
 enum ErrorType {
   network,
@@ -78,7 +77,9 @@ class AppErrorWidget extends StatelessWidget {
             Text(
               message,
               style: context.textTheme.bodyMedium?.copyWith(
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                color: isDark
+                    ? AppColor.darkTextSecondary
+                    : AppColor.lightTextSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -101,9 +102,7 @@ class AppErrorWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: errorColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: errorColor.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: errorColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -126,7 +125,9 @@ class AppErrorWidget extends StatelessWidget {
                 Text(
                   message,
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDark
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                   ),
                 ),
               ],
@@ -135,11 +136,7 @@ class AppErrorWidget extends StatelessWidget {
           if (showRetryButton && onRetry != null) ...[
             const SizedBox(width: 8),
             IconButton(
-              icon: Icon(
-                Icons.refresh,
-                color: errorColor,
-                size: 20,
-              ),
+              icon: Icon(Icons.refresh, color: errorColor, size: 20),
               onPressed: onRetry,
               tooltip: retryButtonText,
             ),
@@ -158,25 +155,14 @@ class AppErrorWidget extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color.withValues(alpha: 0.1),
-        border: Border.all(
-          color: color.withValues(alpha: 0.2),
-          width: 2,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 2),
       ),
-      child: Icon(
-        iconData,
-        size: 48,
-        color: color,
-      ),
+      child: Icon(iconData, size: 48, color: color),
     );
   }
 
   Widget _buildSmallErrorIcon(BuildContext context) {
-    return Icon(
-      _getErrorIconData(),
-      size: 20,
-      color: _getErrorColor(context),
-    );
+    return Icon(_getErrorIconData(), size: 20, color: _getErrorColor(context));
   }
 
   IconData _getErrorIconData() {
@@ -231,7 +217,9 @@ class AppErrorWidget extends StatelessWidget {
             icon: const Icon(Icons.refresh, size: 18),
             label: Text(retryButtonText),
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
+              backgroundColor: isDark
+                  ? AppColor.darkPrimary
+                  : AppColor.lightPrimary,
               foregroundColor: Colors.white,
             ),
           ),
@@ -240,7 +228,9 @@ class AppErrorWidget extends StatelessWidget {
           OutlinedButton(
             onPressed: onSecondaryAction,
             style: OutlinedButton.styleFrom(
-              foregroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
+              foregroundColor: isDark
+                  ? AppColor.darkPrimary
+                  : AppColor.lightPrimary,
               side: BorderSide(
                 color: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
               ),
@@ -261,7 +251,8 @@ class NetworkErrorWidget extends StatelessWidget {
   const NetworkErrorWidget({
     super.key,
     required this.onRetry,
-    this.message = 'No internet connection. Please check your network settings and try again.',
+    this.message =
+        'No internet connection. Please check your network settings and try again.',
   });
 
   @override
@@ -322,19 +313,12 @@ class ToastMessage {
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 20,
-            ),
+            Icon(Icons.error_outline, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
             if (onRetry != null)
@@ -343,7 +327,8 @@ class ToastMessage {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   onRetry();
                 },
-                child: Text(tr('retry'),
+                child: Text(
+                  tr('retry'),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -355,9 +340,7 @@ class ToastMessage {
         backgroundColor: isDark ? AppColor.darkError : AppColor.lightError,
         behavior: SnackBarBehavior.floating,
         duration: duration,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
@@ -375,19 +358,12 @@ class ToastMessage {
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-              size: 20,
-            ),
+            Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
@@ -395,9 +371,7 @@ class ToastMessage {
         backgroundColor: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
         behavior: SnackBarBehavior.floating,
         duration: duration,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
@@ -415,19 +389,12 @@ class ToastMessage {
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              Icons.warning_amber_outlined,
-              color: Colors.white,
-              size: 20,
-            ),
+            Icon(Icons.warning_amber_outlined, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
@@ -435,9 +402,7 @@ class ToastMessage {
         backgroundColor: isDark ? AppColor.darkWarning : AppColor.lightWarning,
         behavior: SnackBarBehavior.floating,
         duration: duration,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
@@ -455,19 +420,12 @@ class ToastMessage {
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              Icons.info_outline,
-              color: Colors.white,
-              size: 20,
-            ),
+            Icon(Icons.info_outline, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
@@ -475,9 +433,7 @@ class ToastMessage {
         backgroundColor: isDark ? AppColor.darkInfo : AppColor.lightInfo,
         behavior: SnackBarBehavior.floating,
         duration: duration,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
@@ -489,34 +445,21 @@ class ToastMessage {
 extension ErrorWidgetExtension on BuildContext {
   /// Show an error toast message
   void showErrorToast(String message, {VoidCallback? onRetry}) {
-    ToastMessage.showError(
-      context: this,
-      message: message,
-      onRetry: onRetry,
-    );
+    ToastMessage.showError(context: this, message: message, onRetry: onRetry);
   }
 
   /// Show a success toast message
   void showSuccessToast(String message) {
-    ToastMessage.showSuccess(
-      context: this,
-      message: message,
-    );
+    ToastMessage.showSuccess(context: this, message: message);
   }
 
   /// Show a warning toast message
   void showWarningToast(String message) {
-    ToastMessage.showWarning(
-      context: this,
-      message: message,
-    );
+    ToastMessage.showWarning(context: this, message: message);
   }
 
   /// Show an info toast message
   void showInfoToast(String message) {
-    ToastMessage.showInfo(
-      context: this,
-      message: message,
-    );
+    ToastMessage.showInfo(context: this, message: message);
   }
 }

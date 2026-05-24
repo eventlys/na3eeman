@@ -415,7 +415,8 @@ class _DrawerFooter extends StatelessWidget {
           size: 22,
           color: AppColor.error.withOpacity(0.8),
         ),
-        title: Text("log_out".tr(),
+        title: Text(
+          "log_out".tr(),
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,

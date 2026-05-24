@@ -110,7 +110,10 @@ class StorageHelper {
   }
 
   // Copy file
-  static Future<bool> copyFile(String sourcePath, String destinationPath) async {
+  static Future<bool> copyFile(
+    String sourcePath,
+    String destinationPath,
+  ) async {
     try {
       final sourceFile = File(sourcePath);
       if (await sourceFile.exists()) {
@@ -120,13 +123,19 @@ class StorageHelper {
       }
       return false;
     } catch (e) {
-      AppLogger.error('Error copying file: $sourcePath → $destinationPath', error: e);
+      AppLogger.error(
+        'Error copying file: $sourcePath → $destinationPath',
+        error: e,
+      );
       return false;
     }
   }
 
   // Move file
-  static Future<bool> moveFile(String sourcePath, String destinationPath) async {
+  static Future<bool> moveFile(
+    String sourcePath,
+    String destinationPath,
+  ) async {
     try {
       final sourceFile = File(sourcePath);
       if (await sourceFile.exists()) {
@@ -136,7 +145,10 @@ class StorageHelper {
       }
       return false;
     } catch (e) {
-      AppLogger.error('Error moving file: $sourcePath → $destinationPath', error: e);
+      AppLogger.error(
+        'Error moving file: $sourcePath → $destinationPath',
+        error: e,
+      );
       return false;
     }
   }
@@ -166,7 +178,10 @@ class StorageHelper {
       }
       return null;
     } catch (e) {
-      AppLogger.error('Error getting file modification time: $filePath', error: e);
+      AppLogger.error(
+        'Error getting file modification time: $filePath',
+        error: e,
+      );
       return null;
     }
   }
@@ -180,7 +195,10 @@ class StorageHelper {
       }
       return [];
     } catch (e) {
-      AppLogger.error('Error listing files in directory: $directoryPath', error: e);
+      AppLogger.error(
+        'Error listing files in directory: $directoryPath',
+        error: e,
+      );
       return [];
     }
   }
@@ -254,7 +272,10 @@ class StorageHelper {
   }
 
   // Save JSON data to file
-  static Future<bool> saveJsonToFile(String filePath, Map<String, dynamic> data) async {
+  static Future<bool> saveJsonToFile(
+    String filePath,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final jsonString = json.encode(data);
       return await writeStringToFile(filePath, jsonString);
@@ -374,8 +395,8 @@ class StorageHelper {
       final normalizedPath = File(filePath).absolute.path;
 
       return normalizedPath.startsWith(docsDir.absolute.path) ||
-             normalizedPath.startsWith(tempDir.absolute.path) ||
-             normalizedPath.startsWith(supportDir.absolute.path);
+          normalizedPath.startsWith(tempDir.absolute.path) ||
+          normalizedPath.startsWith(supportDir.absolute.path);
     } catch (e) {
       AppLogger.error('Error checking path security: $filePath', error: e);
       return false;

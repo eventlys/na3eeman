@@ -34,11 +34,15 @@ class Voucher {
       voucherType: json['voucher_type'] ?? 'VALUE',
       serviceId: json['service'],
       serviceName: json['service_name'],
-      fixedAmount: json['fixed_amount'] != null ? double.parse(json['fixed_amount'].toString()) : null,
+      fixedAmount: json['fixed_amount'] != null
+          ? double.parse(json['fixed_amount'].toString())
+          : null,
       purchaserEmail: json['purchaser_email'] ?? '',
       receiverEmail: json['receiver_email'],
       isRedeemed: json['is_redeemed'] ?? false,
-      redeemedAt: json['redeemed_at'] != null ? DateTime.parse(json['redeemed_at']) : null,
+      redeemedAt: json['redeemed_at'] != null
+          ? DateTime.parse(json['redeemed_at'])
+          : null,
       expiresAt: DateTime.parse(json['expires_at']),
       createdAt: DateTime.parse(json['created_at']),
     );

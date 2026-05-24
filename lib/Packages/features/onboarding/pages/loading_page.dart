@@ -11,7 +11,8 @@ class LoadingPage extends StatefulWidget {
   State<LoadingPage> createState() => _LoadingPageState();
 }
 
-class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStateMixin {
+class _LoadingPageState extends State<LoadingPage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
@@ -43,7 +44,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     if (!mounted) return;
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
+
     // Load auth details from storage (loads token and restores session)
     await authProvider.loadSavedAuth();
 
@@ -53,8 +54,12 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
       final userRole = authProvider.userType?.name ?? 'customer';
       final user = authProvider.user;
       final String? tier = user?.subscriptionTier?.name.toUpperCase();
-      
-      NavigationService.navigateToHomeBasedOnRole(context, userRole, tier: tier);
+
+      NavigationService.navigateToHomeBasedOnRole(
+        context,
+        userRole,
+        tier: tier,
+      );
     } else {
       Navigator.pushReplacementNamed(context, '/login');
     }
@@ -66,9 +71,13 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     final isArabic = locale == 'ar';
 
     if (isArabic) {
-      return isDark ? 'assets/images/logo_ar_dark.png' : 'assets/images/logo_ar_light.png';
+      return isDark
+          ? 'assets/images/logo_ar_dark.png'
+          : 'assets/images/logo_ar_light.png';
     } else {
-      return isDark ? 'assets/images/logo_en_dark.png' : 'assets/images/logo_en_light.png';
+      return isDark
+          ? 'assets/images/logo_en_dark.png'
+          : 'assets/images/logo_en_light.png';
     }
   }
 
@@ -110,9 +119,14 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.cut_rounded, size: 80, color: theme.colorScheme.primary),
+                      Icon(
+                        Icons.cut_rounded,
+                        size: 80,
+                        color: theme.colorScheme.primary,
+                      ),
                       const SizedBox(height: 16),
-                      Text('na3eeman'.tr(),
+                      Text(
+                        'na3eeman'.tr(),
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           letterSpacing: 4,

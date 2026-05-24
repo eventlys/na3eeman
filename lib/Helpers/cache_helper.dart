@@ -68,7 +68,9 @@ class CacheHelper {
 
       await _cacheBox.put(key, cacheEntry);
 
-      AppLogger.debug('Data cached: $key (expires in ${duration.inMinutes} minutes)');
+      AppLogger.debug(
+        'Data cached: $key (expires in ${duration.inMinutes} minutes)',
+      );
     } catch (e) {
       AppLogger.error('Failed to store data in cache: $key', error: e);
     }
@@ -155,7 +157,9 @@ class CacheHelper {
         await _cacheBox.delete(key);
       }
 
-      AppLogger.debug('Cache cleared for prefix: $prefix (${keysToRemove.length} items)');
+      AppLogger.debug(
+        'Cache cleared for prefix: $prefix (${keysToRemove.length} items)',
+      );
     } catch (e) {
       AppLogger.error('Failed to clear cache by prefix: $prefix', error: e);
     }
@@ -187,11 +191,7 @@ class CacheHelper {
 
   // Store user profile
   Future<void> storeUserProfile(Map<String, dynamic> profile) async {
-    await store(
-      CacheKeys.userProfile,
-      profile,
-      duration: CacheDurations.long,
-    );
+    await store(CacheKeys.userProfile, profile, duration: CacheDurations.long);
   }
 
   // Retrieve user profile
@@ -201,11 +201,7 @@ class CacheHelper {
 
   // Store salons list
   Future<void> storeSalonsList(List<dynamic> salons) async {
-    await store(
-      CacheKeys.salonsList,
-      salons,
-      duration: CacheDurations.medium,
-    );
+    await store(CacheKeys.salonsList, salons, duration: CacheDurations.medium);
   }
 
   // Retrieve salons list
@@ -214,7 +210,10 @@ class CacheHelper {
   }
 
   // Store salon details
-  Future<void> storeSalonDetails(int salonId, Map<String, dynamic> details) async {
+  Future<void> storeSalonDetails(
+    int salonId,
+    Map<String, dynamic> details,
+  ) async {
     await store(
       '${CacheKeys.salonDetailsPrefix}$salonId',
       details,

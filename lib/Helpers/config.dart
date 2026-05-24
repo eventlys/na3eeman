@@ -1,7 +1,7 @@
 import 'package:na3eeman/config/environment.dart';
 
 /// Application Configuration
-/// 
+///
 /// Unified configuration that uses the Environment system for dynamic values
 /// and defines constants for static configuration.
 class AppConfig {
@@ -14,7 +14,7 @@ class AppConfig {
   static String get appName => Environment.config.appName;
   static bool get showDebugBanner => Environment.config.showDebugBanner;
   static bool get enableLogging => Environment.config.enableLogging;
-  
+
   static const String appVersion = '1.0.0';
   static bool get isProduction => Environment.isProduction;
   static bool get isDevelopment => Environment.isDevelopment;
@@ -23,7 +23,8 @@ class AppConfig {
   // Feature Flags - dynamic based on environment
   static bool get enableBiometricAuth => Environment.config.enableBiometricAuth;
   static bool get enableSocialLogin => Environment.config.enableSocialLogin;
-  static bool get enableCrashReporting => Environment.config.enableCrashReporting;
+  static bool get enableCrashReporting =>
+      Environment.config.enableCrashReporting;
   static bool get enableAnalytics => Environment.config.enableAnalytics;
 
   // Legacy flags (can be removed after migration)
@@ -34,7 +35,8 @@ class AppConfig {
   static String? get appleClientId => Environment.config.appleClientId;
 
   // Payment
-  static String? get stripePublishableKey => Environment.config.stripePublishableKey;
+  static String? get stripePublishableKey =>
+      Environment.config.stripePublishableKey;
 
   // Cache Configuration
   static const Duration cacheShortDuration = Duration(minutes: 5);

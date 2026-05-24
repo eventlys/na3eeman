@@ -87,8 +87,12 @@ class OtpHelper {
 
     // Auto-submit when all fields are filled
     final currentOtp = extractOtpFromControllers(
-      List.generate(otpLength, (i) => TextEditingController(text: i == index ? value : '')
-        ..text = i == index ? value : ''),
+      List.generate(
+        otpLength,
+        (i) =>
+            TextEditingController(text: i == index ? value : '')
+              ..text = i == index ? value : '',
+      ),
     );
 
     if (currentOtp.length == otpLength) {
@@ -108,10 +112,7 @@ class OtpHelper {
       (index) => FocusNode(),
     );
 
-    return {
-      'controllers': controllers,
-      'focusNodes': focusNodes,
-    };
+    return {'controllers': controllers, 'focusNodes': focusNodes};
   }
 
   /// Dispose OTP resources

@@ -59,10 +59,7 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
                   SizedBox(width: 8),
                   Text(
                     'Invitation Rewards',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],
               ),
@@ -122,10 +119,7 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
         const SizedBox(height: 16),
         Text(
           'Your referral code: ABC123XYZ',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 12,
-          ),
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
         ),
       ],
     );
@@ -136,10 +130,7 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
+          Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
           const Spacer(),
           Text(
             value,
@@ -150,5 +141,3 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
     );
   }
 }
-
-

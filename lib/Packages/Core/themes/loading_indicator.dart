@@ -41,7 +41,7 @@ class LoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final bool isDark = theme.brightness == Brightness.dark;
-    
+
     if (useSkeleton) {
       return _buildSkeletonLoader(context, isDark, gender);
     }
@@ -49,9 +49,14 @@ class LoadingIndicator extends StatelessWidget {
     return _buildTraditionalLoader(context, isDark, gender, color);
   }
 
-  Widget _buildTraditionalLoader(BuildContext context, bool isDark, UserGender? gender, Color? customColor) {
+  Widget _buildTraditionalLoader(
+    BuildContext context,
+    bool isDark,
+    UserGender? gender,
+    Color? customColor,
+  ) {
     Color loaderColor = customColor ?? _getLoaderColor(context, isDark, gender);
-    
+
     if (message != null) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -65,7 +70,10 @@ class LoadingIndicator extends StatelessWidget {
                 SizedBox(
                   width: size * 0.7,
                   height: size * 0.7,
-                  child: Image.asset('assets/images/PRIMERY_loading.png', fit: BoxFit.contain),
+                  child: Image.asset(
+                    'assets/images/PRIMERY_loading.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
                 SizedBox(
                   width: size,
@@ -84,7 +92,9 @@ class LoadingIndicator extends StatelessWidget {
               message!,
               style: TextStyle(
                 fontSize: 12,
-                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                color: isDark
+                    ? AppColor.darkTextSecondary
+                    : AppColor.lightTextSecondary,
               ),
             ),
           ],
@@ -101,7 +111,10 @@ class LoadingIndicator extends StatelessWidget {
           SizedBox(
             width: size * 0.7,
             height: size * 0.7,
-            child: Image.asset('assets/images/PRIMERY_loading.png', fit: BoxFit.contain),
+            child: Image.asset(
+              'assets/images/PRIMERY_loading.png',
+              fit: BoxFit.contain,
+            ),
           ),
           SizedBox(
             width: size,
@@ -116,17 +129,27 @@ class LoadingIndicator extends StatelessWidget {
     );
   }
 
-  Widget _buildSkeletonLoader(BuildContext context, bool isDark, UserGender? gender) {
+  Widget _buildSkeletonLoader(
+    BuildContext context,
+    bool isDark,
+    UserGender? gender,
+  ) {
     final Color baseColor = _getSkeletonBaseColor(isDark, gender);
     final Color highlightColor = _getSkeletonHighlightColor(isDark, gender);
-    
+
     if (message != null) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildSkeletonCircle(size, baseColor, highlightColor, isDark),
           const SizedBox(height: 8),
-          _buildSkeletonText(message!, baseColor, highlightColor, context, isDark),
+          _buildSkeletonText(
+            message!,
+            baseColor,
+            highlightColor,
+            context,
+            isDark,
+          ),
         ],
       );
     }
@@ -134,15 +157,17 @@ class LoadingIndicator extends StatelessWidget {
     return _buildSkeletonCircle(size, baseColor, highlightColor, isDark);
   }
 
-  Widget _buildSkeletonCircle(double size, Color baseColor, Color highlightColor, bool isDark) {
+  Widget _buildSkeletonCircle(
+    double size,
+    Color baseColor,
+    Color highlightColor,
+    bool isDark,
+  ) {
     return SizedBox(
       width: size,
       height: size,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: baseColor,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: baseColor, shape: BoxShape.circle),
         child: ClipOval(
           child: ShaderMask(
             shaderCallback: (bounds) {
@@ -163,9 +188,15 @@ class LoadingIndicator extends StatelessWidget {
     );
   }
 
-  Widget _buildSkeletonText(String text, Color baseColor, Color highlightColor, BuildContext context, bool isDark) {
+  Widget _buildSkeletonText(
+    String text,
+    Color baseColor,
+    Color highlightColor,
+    BuildContext context,
+    bool isDark,
+  ) {
     final textWidth = _calculateTextWidth(text, context);
-    
+
     return Container(
       width: textWidth,
       height: 16,
@@ -194,7 +225,7 @@ class LoadingIndicator extends StatelessWidget {
     if (gender != null) {
       return _getGenderPrimaryColor(gender, isDark);
     }
-    
+
     // Default colors based on theme
     return isDark ? AppColor.loadingPrimaryDark : AppColor.loadingPrimaryLight;
   }
@@ -214,7 +245,7 @@ class LoadingIndicator extends StatelessWidget {
     if (gender != null) {
       return _getGenderSkeletonBaseColor(gender, isDark);
     }
-    
+
     return isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight;
   }
 
@@ -222,8 +253,10 @@ class LoadingIndicator extends StatelessWidget {
     if (gender != null) {
       return _getGenderSkeletonHighlightColor(gender, isDark);
     }
-    
-    return isDark ? AppColor.skeletonHighlightDark : AppColor.skeletonHighlightLight;
+
+    return isDark
+        ? AppColor.skeletonHighlightDark
+        : AppColor.skeletonHighlightLight;
   }
 
   Color _getGenderSkeletonBaseColor(UserGender gender, bool isDark) {
@@ -231,9 +264,13 @@ class LoadingIndicator extends StatelessWidget {
       case UserGender.male:
         return isDark ? AppColor.darkMaleBackground : AppColor.maleBackground;
       case UserGender.female:
-        return isDark ? AppColor.darkFemaleBackground : AppColor.femaleBackground;
+        return isDark
+            ? AppColor.darkFemaleBackground
+            : AppColor.femaleBackground;
       case UserGender.nonBinary:
-        return isDark ? AppColor.darkNonBinaryBackground : AppColor.nonBinaryBackground;
+        return isDark
+            ? AppColor.darkNonBinaryBackground
+            : AppColor.nonBinaryBackground;
     }
   }
 
@@ -250,13 +287,10 @@ class LoadingIndicator extends StatelessWidget {
 
   double _calculateTextWidth(String text, BuildContext context) {
     final TextPainter textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: const TextStyle(fontSize: 12),
-      ),
+      text: TextSpan(text: text, style: const TextStyle(fontSize: 12)),
       textDirection: TextDirection.ltr,
     )..layout();
-    
+
     return textPainter.width;
   }
 }
@@ -290,7 +324,11 @@ class SkeletonListLoader extends StatelessWidget {
           decoration: BoxDecoration(
             color: baseColor,
             borderRadius: BorderRadius.circular(12),
-            border: isDark ? null : Border.all(color: AppColor.lightTextHint.withValues(alpha: 0.1)),
+            border: isDark
+                ? null
+                : Border.all(
+                    color: AppColor.lightTextHint.withValues(alpha: 0.1),
+                  ),
           ),
           child: ShaderMask(
             shaderCallback: (bounds) {
@@ -361,12 +399,16 @@ class SkeletonListLoader extends StatelessWidget {
         case UserGender.male:
           return isDark ? AppColor.darkMaleBackground : AppColor.maleBackground;
         case UserGender.female:
-          return isDark ? AppColor.darkFemaleBackground : AppColor.femaleBackground;
+          return isDark
+              ? AppColor.darkFemaleBackground
+              : AppColor.femaleBackground;
         case UserGender.nonBinary:
-          return isDark ? AppColor.darkNonBinaryBackground : AppColor.nonBinaryBackground;
+          return isDark
+              ? AppColor.darkNonBinaryBackground
+              : AppColor.nonBinaryBackground;
       }
     }
-    
+
     return isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight;
   }
 
@@ -381,8 +423,10 @@ class SkeletonListLoader extends StatelessWidget {
           return isDark ? AppColor.darkNonBinaryBG : AppColor.lightNonBinaryBG;
       }
     }
-    
-    return isDark ? AppColor.skeletonHighlightDark : AppColor.skeletonHighlightLight;
+
+    return isDark
+        ? AppColor.skeletonHighlightDark
+        : AppColor.skeletonHighlightLight;
   }
 }
 
@@ -414,7 +458,9 @@ class SkeletonCardLoader extends StatelessWidget {
       decoration: BoxDecoration(
         color: baseColor,
         borderRadius: borderRadius,
-        border: isDark ? null : Border.all(color: AppColor.lightTextHint.withValues(alpha: 0.1)),
+        border: isDark
+            ? null
+            : Border.all(color: AppColor.lightTextHint.withValues(alpha: 0.1)),
       ),
       child: ShaderMask(
         shaderCallback: (bounds) {
@@ -439,12 +485,16 @@ class SkeletonCardLoader extends StatelessWidget {
         case UserGender.male:
           return isDark ? AppColor.darkMaleBackground : AppColor.maleBackground;
         case UserGender.female:
-          return isDark ? AppColor.darkFemaleBackground : AppColor.femaleBackground;
+          return isDark
+              ? AppColor.darkFemaleBackground
+              : AppColor.femaleBackground;
         case UserGender.nonBinary:
-          return isDark ? AppColor.darkNonBinaryBackground : AppColor.nonBinaryBackground;
+          return isDark
+              ? AppColor.darkNonBinaryBackground
+              : AppColor.nonBinaryBackground;
       }
     }
-    
+
     return isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight;
   }
 
@@ -459,7 +509,9 @@ class SkeletonCardLoader extends StatelessWidget {
           return isDark ? AppColor.darkNonBinaryBG : AppColor.lightNonBinaryBG;
       }
     }
-    
-    return isDark ? AppColor.skeletonHighlightDark : AppColor.skeletonHighlightLight;
+
+    return isDark
+        ? AppColor.skeletonHighlightDark
+        : AppColor.skeletonHighlightLight;
   }
 }

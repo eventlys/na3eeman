@@ -28,10 +28,7 @@ class ServiceDetailsSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColor.lightCard,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: AppColor.lightSecondary,
-                width: 1.0,
-              ),
+              border: Border.all(color: AppColor.lightSecondary, width: 1.0),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -48,7 +45,8 @@ class ServiceDetailsSection extends StatelessWidget {
                         color: AppColor.lightSecondary,
                       ),
                       const SizedBox(width: 8),
-                      Text("add_additional_services".tr(),
+                      Text(
+                        "add_additional_services".tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -67,14 +65,18 @@ class ServiceDetailsSection extends StatelessWidget {
                     itemCount: availableAdditionalServices.length,
                     itemBuilder: (context, index) {
                       final service = availableAdditionalServices[index];
-                      final isSelected = serviceProvider.isServiceSelected(service);
+                      final isSelected = serviceProvider.isServiceSelected(
+                        service,
+                      );
 
                       return ListTile(
                         leading: Image.asset(
                           isSelected ? AppImages.check : AppImages.uncheck,
                           width: 24,
                           height: 24,
-                          color: isSelected ? AppColor.lightSecondary : AppColor.lightTextHint,
+                          color: isSelected
+                              ? AppColor.lightSecondary
+                              : AppColor.lightTextHint,
                         ),
                         title: Text(
                           ServiceDataHelper.getServiceName(service),
@@ -85,9 +87,7 @@ class ServiceDetailsSection extends StatelessWidget {
                         ),
                         subtitle: Text(
                           '${ServiceDataHelper.getServiceDuration(service)} • ${ServiceDataHelper.getServicePrice(service)}',
-                          style: TextStyle(
-                            color: AppColor.lightTextSecondary,
-                          ),
+                          style: TextStyle(color: AppColor.lightTextSecondary),
                         ),
                         trailing: Text(
                           ServiceDataHelper.getServicePrice(service),
@@ -119,7 +119,8 @@ class ServiceDetailsSection extends StatelessWidget {
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text("close".tr(),
+                      child: Text(
+                        "close".tr(),
                         style: TextStyle(
                           color: AppColor.lightSecondary,
                           fontSize: 16,
@@ -153,17 +154,15 @@ class ServiceDetailsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColor.buttonBackgroundLight,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColor.borderLight,
-          width: 1.0,
-        ),
+        border: Border.all(color: AppColor.borderLight, width: 1.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("service_details".tr(),
+            Text(
+              "service_details".tr(),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -193,7 +192,8 @@ class ServiceDetailsSection extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("main_service".tr(),
+                        Text(
+                          "main_service".tr(),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColor.lightSecondary,
@@ -221,7 +221,8 @@ class ServiceDetailsSection extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("additional_services".tr(),
+                  Text(
+                    "additional_services".tr(),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -229,45 +230,47 @@ class ServiceDetailsSection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...additionalServices.map((service) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColor.lightSecondary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            AppImages.check,
-                            width: 20,
-                            height: 20,
-                            color: AppColor.lightSecondary,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              '${ServiceDataHelper.getServiceName(service)} - ${ServiceDataHelper.getServicePrice(service)}',
-                              style: TextStyle(
-                                color: AppColor.lightText,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Image.asset(
-                              AppImages.minus,
+                  ...additionalServices.map(
+                    (service) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColor.lightSecondary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              AppImages.check,
                               width: 20,
                               height: 20,
                               color: AppColor.lightSecondary,
                             ),
-                            onPressed: () => onServiceToggled(service),
-                          ),
-                        ],
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                '${ServiceDataHelper.getServiceName(service)} - ${ServiceDataHelper.getServicePrice(service)}',
+                                style: TextStyle(
+                                  color: AppColor.lightText,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Image.asset(
+                                AppImages.minus,
+                                width: 20,
+                                height: 20,
+                                color: AppColor.lightSecondary,
+                              ),
+                              onPressed: () => onServiceToggled(service),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  )),
+                  ),
                   const SizedBox(height: 12),
                   Divider(color: AppColor.borderLight),
                   const SizedBox(height: 12),
@@ -287,7 +290,8 @@ class ServiceDetailsSection extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("total_duration".tr(),
+                      Text(
+                        "total_duration".tr(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColor.lightText,
@@ -306,7 +310,8 @@ class ServiceDetailsSection extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("total_price".tr(),
+                      Text(
+                        "total_price".tr(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColor.lightText,
@@ -336,7 +341,10 @@ class ServiceDetailsSection extends StatelessWidget {
                     backgroundColor: AppColor.buttonBackgroundLight,
                     foregroundColor: AppColor.lightSecondary,
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                       side: BorderSide(color: AppColor.lightSecondary),
@@ -348,11 +356,9 @@ class ServiceDetailsSection extends StatelessWidget {
                     height: 20,
                     color: AppColor.lightSecondary,
                   ),
-                  label: Text("add_more_services".tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  label: Text(
+                    "add_more_services".tr(),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -368,10 +374,7 @@ class ServiceDetailsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColor.buttonBackgroundLight,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColor.borderLight,
-          width: 1.0,
-        ),
+        border: Border.all(color: AppColor.borderLight, width: 1.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -384,7 +387,8 @@ class ServiceDetailsSection extends StatelessWidget {
               color: AppColor.lightSecondary,
             ),
             SizedBox(height: 8),
-            Text("no_service_selected".tr(),
+            Text(
+              "no_service_selected".tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -392,10 +396,9 @@ class ServiceDetailsSection extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            Text("please_select_a_main_service_to_continue".tr(),
-              style: TextStyle(
-                color: AppColor.lightTextSecondary,
-              ),
+            Text(
+              "please_select_a_main_service_to_continue".tr(),
+              style: TextStyle(color: AppColor.lightTextSecondary),
               textAlign: TextAlign.center,
             ),
           ],

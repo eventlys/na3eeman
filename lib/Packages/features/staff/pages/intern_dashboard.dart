@@ -20,7 +20,8 @@ class InternDashboard extends StatefulWidget {
   State<InternDashboard> createState() => _InternDashboardState();
 }
 
-class _InternDashboardState extends State<InternDashboard> with SingleTickerProviderStateMixin {
+class _InternDashboardState extends State<InternDashboard>
+    with SingleTickerProviderStateMixin {
   late SidebarController sidebarController;
   bool isTasksExpanded = false;
   bool isShowingAllTasks = false;
@@ -30,7 +31,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     super.initState();
     sidebarController = SidebarController();
     sidebarController.init(this);
-    
+
     // Initial data fetch
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final internProvider = context.read<InternProvider>();
@@ -115,7 +116,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
 
                   // ToDo Tasks Section
                   DashboardSectionHeader(
-                    title: "daily_tasks".tr(), 
+                    title: "daily_tasks".tr(),
                     actionText: "add_task".tr(),
                     onPressed: () => _showAddTaskSheet(context),
                   ),
@@ -165,11 +166,18 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Learning Journey Under', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                const Text(
+                  'Learning Journey Under',
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
                 const SizedBox(height: 4),
                 Text(
-                  mentorName ?? 'Explore Mentors Below', 
-                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  mentorName ?? 'Explore Mentors Below',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -187,7 +195,9 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final hasMore = totalCount > 5;
-    final displayedTasks = isShowingAllTasks ? provider.tasks : provider.tasks.take(5).toList();
+    final displayedTasks = isShowingAllTasks
+        ? provider.tasks
+        : provider.tasks.take(5).toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -216,15 +226,26 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                         width: 50,
                         height: 50,
                         child: CircularProgressIndicator(
-                          value: totalCount == 0 ? 0 : completedCount / totalCount,
-                          backgroundColor: AppColors.almostBlack100.withOpacity(0.1),
-                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                          value: totalCount == 0
+                              ? 0
+                              : completedCount / totalCount,
+                          backgroundColor: AppColors.almostBlack100.withOpacity(
+                            0.1,
+                          ),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).primaryColor,
+                          ),
                           strokeWidth: 6,
                         ),
                       ),
                       Text(
-                        totalCount == 0 ? '0%' : '${((completedCount / totalCount) * 100).toInt()}%',
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        totalCount == 0
+                            ? '0%'
+                            : '${((completedCount / totalCount) * 100).toInt()}%',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -233,18 +254,26 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Task Completion', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Task Completion',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(height: 4),
                         Text(
                           '$completedCount of $totalCount tasks done for today',
-                          style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                          style: const TextStyle(
+                            color: AppColors.almostBlack300,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Icon(
-                    isTasksExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, 
-                    color: AppColors.almostBlack300
+                    isTasksExpanded
+                        ? Icons.expand_less_rounded
+                        : Icons.expand_more_rounded,
+                    color: AppColors.almostBlack300,
                   ),
                 ],
               ),
@@ -269,12 +298,16 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                     task.title,
                     style: TextStyle(
                       fontSize: 14,
-                      decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                      decoration: task.isCompleted
+                          ? TextDecoration.lineThrough
+                          : null,
                       color: task.isCompleted ? AppColors.almostBlack300 : null,
                     ),
                   ),
                   activeColor: Theme.of(context).primaryColor,
-                  checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  checkboxShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                   controlAffinity: ListTileControlAffinity.leading,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 );
@@ -288,9 +321,8 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
                   child: const Text('Show more'),
                 ),
               ),
-            if (isShowingAllTasks || !hasMore)
-              const SizedBox(height: 10),
-          ]
+            if (isShowingAllTasks || !hasMore) const SizedBox(height: 10),
+          ],
         ],
       ),
     );
@@ -342,12 +374,12 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
   //     children: bProvider.experts.map((mentor) {
   //       final isShadowing = iProvider.assignedMentor == mentor.name;
   //       return _buildMentorCard(
-  //         context, 
-  //         iProvider, 
-  //         mentor.id, 
-  //         mentor.name, 
-  //         mentor.specialties.isNotEmpty ? mentor.specialties.first : 'Staff Member', 
-  //         mentor.isActive ? 'Active' : 'Inactive', 
+  //         context,
+  //         iProvider,
+  //         mentor.id,
+  //         mentor.name,
+  //         mentor.specialties.isNotEmpty ? mentor.specialties.first : 'Staff Member',
+  //         mentor.isActive ? 'Active' : 'Inactive',
   //         isShadowing,
   //         isShadowingAnyone,
   //         allTasksCompleted
@@ -357,12 +389,12 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
   // }
 
   // Widget _buildMentorCard(
-  //   BuildContext context, 
-  //   InternProvider iProvider, 
+  //   BuildContext context,
+  //   InternProvider iProvider,
   //   String id,
-  //   String name, 
-  //   String role, 
-  //   String status, 
+  //   String name,
+  //   String role,
+  //   String status,
   //   bool isShadowing,
   //   bool isShadowingAnyone,
   //   bool allTasksCompleted
@@ -377,8 +409,8 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
   //       color: isShadowing ? Theme.of(context).primaryColor.withOpacity(0.05) : (isDark ? AppColors.almostBlack700 : AppColors.white),
   //       borderRadius: BorderRadius.circular(20),
   //       border: Border.all(
-  //         color: isShadowing 
-  //           ? Theme.of(context).primaryColor.withOpacity(0.3) 
+  //         color: isShadowing
+  //           ? Theme.of(context).primaryColor.withOpacity(0.3)
   //           : (isDark ? AppColors.almostBlack100.withOpacity(0.1) : AppColors.almostBlack50)
   //       ),
   //     ),
@@ -426,7 +458,7 @@ class _InternDashboardState extends State<InternDashboard> with SingleTickerProv
   //     context: context,
   //     builder: (context) => AttachFeedbackDialog(staffName: mentorName),
   //   );
-    
+
   //   if (feedback != null) {
   //     try {
   //       await provider.attachToMentor(int.tryParse(mentorId) ?? 0, feedback, mentorName);
@@ -478,16 +510,25 @@ class FeedbackSection extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.almostBlack700 : AppColors.almostBlack50,
+              color: isDark
+                  ? AppColors.almostBlack700
+                  : AppColors.almostBlack50,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Column(
               children: [
-                Icon(Icons.feedback_outlined, size: 48, color: AppColors.almostBlack300.withOpacity(0.5)),
+                Icon(
+                  Icons.feedback_outlined,
+                  size: 48,
+                  color: AppColors.almostBlack300.withOpacity(0.5),
+                ),
                 const SizedBox(height: 12),
                 Text(
                   "No feedback yet",
-                  style: TextStyle(color: AppColors.almostBlack300, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: AppColors.almostBlack300,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -503,7 +544,9 @@ class FeedbackSection extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.almostBlack700 : AppColors.almostBlack50,
+                  color: isDark
+                      ? AppColors.almostBlack700
+                      : AppColors.almostBlack50,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(
@@ -516,7 +559,11 @@ class FeedbackSection extends StatelessWidget {
                           backgroundColor: AppColors.primary.withOpacity(0.1),
                           child: Text(
                             feedback.expertName?[0] ?? 'E',
-                            style: TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -526,11 +573,19 @@ class FeedbackSection extends StatelessWidget {
                             children: [
                               Text(
                                 feedback.expertName ?? "Expert",
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                               Text(
-                                DateFormat('MMM dd, yyyy').format(feedback.createdAt),
-                                style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                                DateFormat(
+                                  'MMM dd, yyyy',
+                                ).format(feedback.createdAt),
+                                style: const TextStyle(
+                                  color: AppColors.almostBlack300,
+                                  fontSize: 12,
+                                ),
                               ),
                             ],
                           ),
@@ -542,7 +597,9 @@ class FeedbackSection extends StatelessWidget {
                     Text(
                       feedback.feedbackText,
                       style: TextStyle(
-                        color: isDark ? Colors.white70 : AppColors.almostBlack400,
+                        color: isDark
+                            ? Colors.white70
+                            : AppColors.almostBlack400,
                         height: 1.5,
                       ),
                     ),
@@ -570,9 +627,9 @@ class ShadowingBadge extends StatelessWidget {
       child: Text(
         'SHADOWING',
         style: TextStyle(
-          fontSize: 10, 
-          fontWeight: FontWeight.bold, 
-          color: Theme.of(context).primaryColor
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );

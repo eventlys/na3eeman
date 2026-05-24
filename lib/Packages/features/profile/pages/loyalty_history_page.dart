@@ -37,7 +37,9 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
         _balance = Map<String, dynamic>.from(balanceRes);
         if (_balance!['transactions'] is List) {
           _transactions = List<Map<String, dynamic>>.from(
-            (_balance!['transactions'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+            (_balance!['transactions'] as List).map(
+              (e) => Map<String, dynamic>.from(e as Map),
+            ),
           );
         }
       }
@@ -64,41 +66,42 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null && _balance == null
-              ? _buildError(theme)
-              : RefreshIndicator(
-                  onRefresh: _load,
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverToBoxAdapter(child: _buildBalanceCard(theme)),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-                          child: Text(
-                            'Transaction History',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+          ? _buildError(theme)
+          : RefreshIndicator(
+              onRefresh: _load,
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(child: _buildBalanceCard(theme)),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+                      child: Text(
+                        'Transaction History',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (_transactions.isEmpty)
-                        SliverToBoxAdapter(child: _buildEmpty(theme))
-                      else
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (_, i) => _TxTile(tx: _transactions[i]),
-                            childCount: _transactions.length,
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
-                ),
+                  if (_transactions.isEmpty)
+                    SliverToBoxAdapter(child: _buildEmpty(theme))
+                  else
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (_, i) => _TxTile(tx: _transactions[i]),
+                        childCount: _transactions.length,
+                      ),
+                    ),
+                ],
+              ),
+            ),
     );
   }
 
   Widget _buildBalanceCard(ThemeData theme) {
     final points = (_balance?['points'] as num?)?.toInt() ?? 0;
-    final freeAvailable = (_balance?['free_haircuts_available'] as num?)?.toInt() ?? 0;
+    final freeAvailable =
+        (_balance?['free_haircuts_available'] as num?)?.toInt() ?? 0;
     final progress = (_balance?['free_haircut_progress'] as num?)?.toInt() ?? 0;
     final jodValue = points / 200.0;
     final hasPenalty = (_balance?['has_pending_penalty'] ?? false);
@@ -108,8 +111,8 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: hasPenalty 
-              ? [const Color(0xFFFF5252), const Color(0xFFFF1744)] 
+          colors: hasPenalty
+              ? [const Color(0xFFFF5252), const Color(0xFFFF1744)]
               : [const Color(0xFF6C63FF), const Color(0xFF3B82F6)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -117,7 +120,9 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: (hasPenalty ? const Color(0xFFFF5252) : const Color(0xFF6C63FF)).withOpacity(0.35),
+            color:
+                (hasPenalty ? const Color(0xFFFF5252) : const Color(0xFF6C63FF))
+                    .withOpacity(0.35),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -147,7 +152,11 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
                   ),
                   Text(
                     '≈ ${jodValue.toStringAsFixed(2)} JOD',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),
@@ -158,9 +167,11 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
-                  hasPenalty ? Icons.warning_amber_rounded : Icons.stars_rounded, 
-                  size: 32, 
-                  color: Colors.white
+                  hasPenalty
+                      ? Icons.warning_amber_rounded
+                      : Icons.stars_rounded,
+                  size: 32,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -175,7 +186,11 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
               ),
               child: const Text(
                 '⚠️ Potential penalty detected for unpaid appointments (>24h). Please settle your balance.',
-                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -210,36 +225,40 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
   }
 
   Widget _buildEmpty(ThemeData theme) => Padding(
-        padding: const EdgeInsets.all(60),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.history_rounded, size: 56, color: theme.hintColor),
-            const SizedBox(height: 16),
-            Text(
-              'No transactions yet',
-              style: theme.textTheme.titleMedium?.copyWith(color: theme.hintColor),
-            ),
-          ],
+    padding: const EdgeInsets.all(60),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.history_rounded, size: 56, color: theme.hintColor),
+        const SizedBox(height: 16),
+        Text(
+          'No transactions yet',
+          style: theme.textTheme.titleMedium?.copyWith(color: theme.hintColor),
         ),
-      );
+      ],
+    ),
+  );
 
   Widget _buildError(ThemeData theme) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline_rounded, size: 56, color: theme.colorScheme.error),
-            const SizedBox(height: 16),
-            Text(_error ?? 'An error occurred', textAlign: TextAlign.center),
-            const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: _load,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
-            ),
-          ],
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.error_outline_rounded,
+          size: 56,
+          color: theme.colorScheme.error,
         ),
-      );
+        const SizedBox(height: 16),
+        Text(_error ?? 'An error occurred', textAlign: TextAlign.center),
+        const SizedBox(height: 20),
+        FilledButton.icon(
+          onPressed: _load,
+          icon: const Icon(Icons.refresh_rounded),
+          label: const Text('Retry'),
+        ),
+      ],
+    ),
+  );
 }
 
 class _StatChip extends StatelessWidget {
@@ -257,8 +276,18 @@ class _StatChip extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-          Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 11),
+          ),
         ],
       ),
     );
@@ -317,11 +346,18 @@ class _TxTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  Text(
+                    label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   if (ts.isNotEmpty)
                     Text(
                       ts.length >= 10 ? ts.substring(0, 10) : ts,
-                      style: theme.textTheme.labelSmall?.copyWith(color: theme.hintColor),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.hintColor,
+                      ),
                     ),
                 ],
               ),

@@ -44,8 +44,18 @@ enum UserRole {
   /// Administrative role for salon/platform management.
   admin;
 
-  bool get isStaff =>
-      [expert, intern, receptionist, owner, manager, ownerExpert, cofounder, cofounderExpert, artisan, admin].contains(this);
+  bool get isStaff => [
+    expert,
+    intern,
+    receptionist,
+    owner,
+    manager,
+    ownerExpert,
+    cofounder,
+    cofounderExpert,
+    artisan,
+    admin,
+  ].contains(this);
 
   bool get isOwnerEquivalent =>
       [owner, manager, ownerExpert, cofounder, cofounderExpert].contains(this);
@@ -298,10 +308,7 @@ const Map<UserRole, Set<AppPermission>> _rolePermissions = {
   UserRole.admin: {
     ...AppPermission.values, // Admins get everything
   },
-  UserRole.intern: {
-    AppPermission.viewBookings,
-    AppPermission.viewCustomerList,
-  },
+  UserRole.intern: {AppPermission.viewBookings, AppPermission.viewCustomerList},
   UserRole.cofounder: {
     // Co-Founder has identical permissions to Owner
     AppPermission.viewBookings,

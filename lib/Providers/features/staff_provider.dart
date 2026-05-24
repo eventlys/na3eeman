@@ -61,13 +61,15 @@ class StaffProvider extends BaseProvider {
   Future<void> loadStaff(int salonId) async {
     try {
       final response = await _apiService.get(Endpoints.salonExperts(salonId));
-      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
-      
+      final List<dynamic> data = response is List
+          ? response
+          : (response['results'] ?? response['data'] ?? []);
+
       // Map to StaffMember or Expert based on needs
       // For now, mapping to both for backward compatibility with existing UI
       _staff = data.map((json) => StaffMember.fromJson(json)).toList();
       _experts = data.map((json) => Expert.fromJson(json)).toList();
-      
+
       notifyListeners();
     } catch (e) {
       AppLogger.error('Failed to load staff for salon $salonId: $e');
@@ -85,8 +87,12 @@ class StaffProvider extends BaseProvider {
     try {
       setLoading(true);
       final response = await _apiService.get(Endpoints.attendanceLog);
-      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
-      _attendanceLogs = data.map((json) => InternAttendanceLog.fromJson(json)).toList();
+      final List<dynamic> data = response is List
+          ? response
+          : (response['results'] ?? response['data'] ?? []);
+      _attendanceLogs = data
+          .map((json) => InternAttendanceLog.fromJson(json))
+          .toList();
       notifyListeners();
     } catch (e) {
       AppLogger.error('Error fetching intern attendance: $e');

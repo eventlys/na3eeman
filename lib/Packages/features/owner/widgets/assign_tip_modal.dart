@@ -15,7 +15,9 @@ class AssignTipModal extends StatefulWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
         child: const AssignTipModal(),
       ),
     );
@@ -23,7 +25,11 @@ class AssignTipModal extends StatefulWidget {
 }
 
 class _AssignTipModalState extends State<AssignTipModal> {
-  final List<String> interns = ['Ahmed (Intern)', 'Sarah (Intern)', 'Zaid (Intern)'];
+  final List<String> interns = [
+    'Ahmed (Intern)',
+    'Sarah (Intern)',
+    'Zaid (Intern)',
+  ];
   String? selectedIntern;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
@@ -52,19 +58,30 @@ class _AssignTipModalState extends State<AssignTipModal> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("assign_daily_tip".tr(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              "assign_daily_tip".tr(),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 24),
-            
+
             // Intern Selection
             DropdownButtonFormField<String>(
               initialValue: selectedIntern,
               decoration: InputDecoration(
                 labelText: "select_intern".tr(),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              items: interns.map((intern) => DropdownMenuItem(value: intern, child: Text(intern))).toList(),
+              items: interns
+                  .map(
+                    (intern) =>
+                        DropdownMenuItem(value: intern, child: Text(intern)),
+                  )
+                  .toList(),
               onChanged: (value) => setState(() => selectedIntern = value),
-              validator: (value) => value == null ? 'Please select an intern' : null,
+              validator: (value) =>
+                  value == null ? 'Please select an intern' : null,
             ),
             const SizedBox(height: 16),
 
@@ -74,9 +91,14 @@ class _AssignTipModalState extends State<AssignTipModal> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Amount (\$)',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              validator: (value) => (value == null || double.tryParse(value) == null) ? 'Enter a valid amount' : null,
+              validator: (value) =>
+                  (value == null || double.tryParse(value) == null)
+                  ? 'Enter a valid amount'
+                  : null,
             ),
             const SizedBox(height: 16),
 
@@ -85,15 +107,14 @@ class _AssignTipModalState extends State<AssignTipModal> {
               controller: _noteController,
               decoration: InputDecoration(
                 labelText: "optional_note".tr(),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 32),
 
-            PrimaryButton(
-              text: "assign_tip".tr(),
-              onPressed: _handleAssign,
-            ),
+            PrimaryButton(text: "assign_tip".tr(), onPressed: _handleAssign),
             const SizedBox(height: 16),
           ],
         ),
@@ -106,7 +127,9 @@ class _AssignTipModalState extends State<AssignTipModal> {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Tip of \$${_amountController.text} assigned to $selectedIntern'),
+          content: Text(
+            'Tip of \$${_amountController.text} assigned to $selectedIntern',
+          ),
           backgroundColor: AppColors.success,
         ),
       );

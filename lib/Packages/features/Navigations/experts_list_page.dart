@@ -74,7 +74,6 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
     _refreshController.refreshCompleted();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -86,10 +85,7 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewExpert,
         backgroundColor: AppColor.primary,
-        child: ImageIcon(
-          AssetImage(AppImages.plus),
-          color: AppColor.light,
-        ),
+        child: ImageIcon(AssetImage(AppImages.plus), color: AppColor.light),
       ),
       actions: [
         IconButton(
@@ -105,10 +101,7 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
         builder: (context, provider, child) {
           if (provider.isLoading && provider.experts.isEmpty) {
             return const Center(
-              child: LoadingIndicator(
-                message: 'Loading experts...',
-                size: 50,
-              ),
+              child: LoadingIndicator(message: 'Loading experts...', size: 50),
             );
           }
 
@@ -130,13 +123,21 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
                   ImageIcon(
                     AssetImage(AppImages.avatar_male),
                     size: 64,
-                    color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.5),
+                    color:
+                        (isDark
+                                ? AppColor.darkTextSecondary
+                                : AppColor.lightTextSecondary)
+                            .withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No experts found',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                      color:
+                          (isDark
+                                  ? AppColor.darkTextSecondary
+                                  : AppColor.lightTextSecondary)
+                              .withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -228,28 +229,52 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
             const SizedBox(height: 12),
             _buildDetailRow(AppImages.phone, 'Phone', phone, isDark),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.star, 'Rating', rating.toStringAsFixed(1), isDark),
+            _buildDetailRow(
+              AppImages.star,
+              'Rating',
+              rating.toStringAsFixed(1),
+              isDark,
+            ),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.calender, 'Total Appointments', totalAppointments.toString(), isDark),
+            _buildDetailRow(
+              AppImages.calender,
+              'Total Appointments',
+              totalAppointments.toString(),
+              isDark,
+            ),
             const SizedBox(height: 12),
-            _buildDetailRow(AppImages.scissors, 'Specialties', specialties.join(', '), isDark),
+            _buildDetailRow(
+              AppImages.scissors,
+              'Specialties',
+              specialties.join(', '),
+              isDark,
+            ),
             if (hourlyRate != null) ...[
               const SizedBox(height: 12),
-              _buildDetailRow(AppImages.money, 'Hourly Rate', '\$${hourlyRate.toStringAsFixed(2)}', isDark),
+              _buildDetailRow(
+                AppImages.money,
+                'Hourly Rate',
+                '\$${hourlyRate.toStringAsFixed(2)}',
+                isDark,
+              ),
             ],
             if (lastActive != null) ...[
               const SizedBox(height: 12),
-              _buildDetailRow(AppImages.clock, 'Last Active', _formatDate(lastActive), isDark),
+              _buildDetailRow(
+                AppImages.clock,
+                'Last Active',
+                _formatDate(lastActive),
+                isDark,
+              ),
             ],
             const SizedBox(height: 24),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("close".tr(),
-                  style: TextStyle(
-                    color: AppColor.primary,
-                  ),
+                child: Text(
+                  "close".tr(),
+                  style: TextStyle(color: AppColor.primary),
                 ),
               ),
             ),
@@ -259,15 +284,16 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
     );
   }
 
-  Widget _buildDetailRow(String iconPath, String label, String value, bool isDark) {
+  Widget _buildDetailRow(
+    String iconPath,
+    String label,
+    String value,
+    bool isDark,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ImageIcon(
-          AssetImage(iconPath),
-          size: 20,
-          color: AppColor.primary,
-        ),
+        ImageIcon(AssetImage(iconPath), size: 20, color: AppColor.primary),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -276,7 +302,11 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                  color:
+                      (isDark
+                              ? AppColor.darkTextSecondary
+                              : AppColor.lightTextSecondary)
+                          .withValues(alpha: 0.7),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -352,7 +382,11 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
             Text(
               'Are you sure you want to delete $expertName?',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.8),
+                color:
+                    (isDark
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary)
+                        .withValues(alpha: 0.8),
               ),
             ),
             const SizedBox(height: 24),
@@ -361,9 +395,14 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("cancel".tr(),
+                  child: Text(
+                    "cancel".tr(),
                     style: TextStyle(
-                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                      color:
+                          (isDark
+                                  ? AppColor.darkTextSecondary
+                                  : AppColor.lightTextSecondary)
+                              .withValues(alpha: 0.7),
                     ),
                   ),
                 ),
@@ -394,7 +433,8 @@ class _ExpertsListPageState extends State<ExpertsListPage> {
                       );
                     }
                   },
-                  child: Text("delete".tr(),
+                  child: Text(
+                    "delete".tr(),
                     style: TextStyle(
                       color: AppColor.secondary,
                       fontWeight: FontWeight.w600,

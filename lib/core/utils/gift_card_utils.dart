@@ -1,20 +1,22 @@
 import 'package:intl/intl.dart';
 
 class GiftCardUtils {
-  /// Value = Price - 15%
+  /// Value = Price (No profit deduction as per user request)
   static double calculateValue(double price) {
-    return price * 0.85;
+    return price;
   }
 
-  /// Calculates profit (15%)
+  /// Calculates profit (0% as per user request)
   static double calculateProfit(double price) {
-    return price * 0.15;
+    return 0.0;
   }
 
   /// Formats the gift card ID/Code for display
   static String formatCardCode(String code) {
     if (code.length <= 4) return code;
-    return code.replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ").trim();
+    return code
+        .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
+        .trim();
   }
 
   /// Checks if the card is expired

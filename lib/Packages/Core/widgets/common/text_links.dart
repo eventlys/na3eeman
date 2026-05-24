@@ -33,10 +33,11 @@ class TextLink extends StatelessWidget {
           fontSize: fontSize,
           fontFamily: fontFamily,
           fontWeight: fontWeight,
-          decoration: underline ? TextDecoration.underline : TextDecoration.none,
+          decoration: underline
+              ? TextDecoration.underline
+              : TextDecoration.none,
         ),
       ),
     );
   }
 }
-

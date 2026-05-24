@@ -50,9 +50,9 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete FAQ: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to delete FAQ: $e')));
       }
     }
   }
@@ -60,7 +60,9 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
   void _showFAQDialog([FAQModel? faq]) {
     final questionController = TextEditingController(text: faq?.question);
     final answerController = TextEditingController(text: faq?.answer);
-    final orderController = TextEditingController(text: faq?.order.toString() ?? '0');
+    final orderController = TextEditingController(
+      text: faq?.order.toString() ?? '0',
+    );
 
     showDialog(
       context: context,
@@ -115,9 +117,9 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
                 }
               } catch (e) {
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $e')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Error: $e')));
                 }
               }
             },
@@ -149,71 +151,88 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Error: $_error'),
-                      ElevatedButton(
-                        onPressed: _fetchFAQs,
-                        child: const Text('Retry'),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Error: $_error'),
+                  ElevatedButton(
+                    onPressed: _fetchFAQs,
+                    child: const Text('Retry'),
                   ),
-                )
-              : _faqs.isEmpty
-                  ? const Center(child: Text('No FAQs found.'))
-                  : ListView.builder(
-                      itemCount: _faqs.length,
-                      itemBuilder: (context, index) {
-                        final faq = _faqs[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: ListTile(
-                            title: Text(faq.question, style: const TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: Text(
-                              faq.answer,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit_rounded, color: Colors.blue),
-                                  onPressed: () => _showFAQDialog(faq),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete_rounded, color: Colors.red),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Delete FAQ'),
-                                        content: const Text('Are you sure you want to delete this FAQ?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(context),
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              _deleteFAQ(faq.id!);
-                                            },
-                                            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                ],
+              ),
+            )
+          : _faqs.isEmpty
+          ? const Center(child: Text('No FAQs found.'))
+          : ListView.builder(
+              itemCount: _faqs.length,
+              itemBuilder: (context, index) {
+                final faq = _faqs[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      faq.question,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    subtitle: Text(
+                      faq.answer,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit_rounded,
+                            color: Colors.blue,
+                          ),
+                          onPressed: () => _showFAQDialog(faq),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.delete_rounded,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Delete FAQ'),
+                                content: const Text(
+                                  'Are you sure you want to delete this FAQ?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _deleteFAQ(faq.id!);
+                                    },
+                                    child: const Text(
+                                      'Delete',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

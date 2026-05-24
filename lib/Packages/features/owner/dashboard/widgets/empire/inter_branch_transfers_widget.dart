@@ -17,7 +17,9 @@ class InterBranchTransfersWidget extends StatelessWidget {
     final inventory = context.watch<InventoryProvider>();
     final owner = context.watch<OwnerProvider>();
 
-    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeSalonId != null) {
+    if (!inventory.isLoading &&
+        inventory.items.isEmpty &&
+        owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         inventory.loadInventory(owner.activeSalonId!);
       });
@@ -35,15 +37,19 @@ class InterBranchTransfersWidget extends StatelessWidget {
           children: [
             Icon(Icons.swap_horiz_rounded, size: 18, color: theme.primaryColor),
             const SizedBox(width: 8),
-            Text("inter_branch_transfers".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "inter_branch_transfers".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             if (inventory.isLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 8),
@@ -57,14 +63,18 @@ class InterBranchTransfersWidget extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(Icons.info_outline_rounded,
-                  size: 13, color: Colors.blue),
+              const Icon(
+                Icons.info_outline_rounded,
+                size: 13,
+                color: Colors.blue,
+              ),
               const SizedBox(width: 6),
               Expanded(
-                  child: Text(
-                'Cross-branch transfers coming soon. Showing items that need restocking.',
-                style: const TextStyle(fontSize: 11, color: Colors.blue),
-              )),
+                child: Text(
+                  'Cross-branch transfers coming soon. Showing items that need restocking.',
+                  style: const TextStyle(fontSize: 11, color: Colors.blue),
+                ),
+              ),
             ],
           ),
         ),
@@ -74,30 +84,44 @@ class InterBranchTransfersWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
-                const Icon(Icons.check_circle_outline_rounded,
-                    color: Colors.green, size: 16),
+                const Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: Colors.green,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
-                Text('All stock levels healthy — no transfers needed.',
-                    style: TextStyle(color: theme.hintColor, fontSize: 12)),
+                Text(
+                  'All stock levels healthy — no transfers needed.',
+                  style: TextStyle(color: theme.hintColor, fontSize: 12),
+                ),
               ],
             ),
           ),
-        ...needsRestock.take(3).map((item) => Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              child: ListTile(
-                leading: Icon(Icons.inventory_2_outlined,
+        ...needsRestock
+            .take(3)
+            .map(
+              (item) => Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  leading: Icon(
+                    Icons.inventory_2_outlined,
                     color: item.quantityInStock == 0
                         ? Colors.red
-                        : Colors.orange),
-                title: Text(item.productName,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: Text('${item.quantityInStock} units remaining'),
-                trailing: _StatusBadge(
+                        : Colors.orange,
+                  ),
+                  title: Text(
+                    item.productName,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text('${item.quantityInStock} units remaining'),
+                  trailing: _StatusBadge(
                     status: item.quantityInStock == 0
                         ? 'Critical'
-                        : 'Low Stock'),
+                        : 'Low Stock',
+                  ),
+                ),
               ),
-            )),
+            ),
         if (needsRestock.isNotEmpty)
           TextButton.icon(
             onPressed: () {},
@@ -119,11 +143,17 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(20)),
-      child: Text(status,
-          style: TextStyle(
-              color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

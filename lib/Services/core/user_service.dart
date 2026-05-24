@@ -49,7 +49,9 @@ class UserService {
     );
 
     if (result['success'] != true) {
-      throw Exception('Failed to send password reset email: ${result['error']}');
+      throw Exception(
+        'Failed to send password reset email: ${result['error']}',
+      );
     }
   }
 
@@ -102,7 +104,6 @@ class UserService {
 
       // Optionally update local storage with new profile data
       await _updateLocalProfile(profileData);
-
     } catch (e) {
       // Log the error and rethrow for the helper to handle
       print('UserService update error: $e');
@@ -133,11 +134,12 @@ class UserService {
     }
   }
 
-  Future<List<UserSummary>> getUsers({int page = 1, int limit = 20, String? search}) async {
-    final Map<String, dynamic> queryParams = {
-      'page': page,
-      'limit': limit,
-    };
+  Future<List<UserSummary>> getUsers({
+    int page = 1,
+    int limit = 20,
+    String? search,
+  }) async {
+    final Map<String, dynamic> queryParams = {'page': page, 'limit': limit};
 
     if (search != null && search.isNotEmpty) {
       queryParams['search'] = search;
@@ -201,7 +203,10 @@ class UserService {
   }
 
   // Analytics methods
-  Future<Map<String, dynamic>> getUserAnalytics(DateTime startDate, DateTime endDate) async {
+  Future<Map<String, dynamic>> getUserAnalytics(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
     final result = await _apiInterceptor.executeApiCall(
       endpoint: '$_baseUrl/users/analytics/',
       method: 'GET',

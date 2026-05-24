@@ -37,7 +37,8 @@ class AppImages {
   static const String tick = 'assets/icons/tick.png';
   static const String bookmark_view = 'assets/icons/bookmark_view.png';
   static const String book_mark = 'assets/icons/book_mark.png';
-  static const String star_bookmark_view = 'assets/icons/star_bookmark_view.png';
+  static const String star_bookmark_view =
+      'assets/icons/star_bookmark_view.png';
   static const String star_bookmark = 'assets/icons/star_bookmark.png';
   static const String copy = 'assets/icons/copy.png';
   static const String copy_view = 'assets/icons/copy_view.png';
@@ -126,7 +127,8 @@ class AppImages {
   static const String T = 'assets/icons/T.png';
   static const String T_view = 'assets/icons/T_view.png';
   static const String avatar_female = 'assets/icons/avatar_female.png';
-  static const String avatar_female_view = 'assets/icons/avatar_female_view.png';
+  static const String avatar_female_view =
+      'assets/icons/avatar_female_view.png';
   static const String avatar_male = 'assets/icons/avatar_male.png';
   static const String avatar_male_view = 'assets/icons/avatar_male_view.png';
   static const String mail_view = 'assets/icons/mail_view.png';
@@ -161,5 +163,4 @@ class AppImages {
   static const String warning = 'assets/icons/warning.png';
   static const String warning_view = 'assets/icons/warning_view.png';
   static const String workspace_premium = 'assets/icons/premium.png';
-
 }

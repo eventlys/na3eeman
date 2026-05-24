@@ -29,21 +29,30 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
     final owner = context.read<OwnerProvider>();
     final salonId = owner.activeSalonId;
     if (salonId == null) {
-      if (mounted) setState(() { _isLoading = false; _error = 'No salon selected'; });
+      if (mounted)
+        setState(() {
+          _isLoading = false;
+          _error = 'No salon selected';
+        });
       return;
     }
 
     try {
-      final response = await _apiService.get('/salons/salons/$salonId/inventory/');
+      final response = await _apiService.get(
+        '/salons/salons/$salonId/inventory/',
+      );
       final data = response['results'] as List;
-      
-      final parsed = data.map((json) {
-        final product = json['product'] ?? {};
-        final name = product['product_name'] ?? 'Unknown Item';
-        final qty = json['quantity_in_stock'] ?? 0;
-        final id = json['id'];
-        return _Item(id: id, name: name, qty: qty, threshold: 5); 
-      }).where((el) => el.qty <= el.threshold).toList();
+
+      final parsed = data
+          .map((json) {
+            final product = json['product'] ?? {};
+            final name = product['product_name'] ?? 'Unknown Item';
+            final qty = json['quantity_in_stock'] ?? 0;
+            final id = json['id'];
+            return _Item(id: id, name: name, qty: qty, threshold: 5);
+          })
+          .where((el) => el.qty <= el.threshold)
+          .toList();
 
       if (mounted) {
         setState(() {
@@ -92,52 +101,69 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: isSubmitting ? null : () async {
-                  // Permanent remove action
-                  final salonId = context.read<OwnerProvider>().activeSalonId;
-                  if (salonId == null) return;
-                  
-                  setModalState(() => isSubmitting = true);
-                  try {
-                    await _apiService.delete('/salons/salons/$salonId/inventory/${item.id}/');
-                    if (mounted) {
-                      Navigator.pop(ctx);
-                      _fetchInventory();
-                    }
-                  } catch (e) {
-                    setModalState(() => isSubmitting = false);
-                  }
-                },
+                onPressed: isSubmitting
+                    ? null
+                    : () async {
+                        // Permanent remove action
+                        final salonId = context
+                            .read<OwnerProvider>()
+                            .activeSalonId;
+                        if (salonId == null) return;
+
+                        setModalState(() => isSubmitting = true);
+                        try {
+                          await _apiService.delete(
+                            '/salons/salons/$salonId/inventory/${item.id}/',
+                          );
+                          if (mounted) {
+                            Navigator.pop(ctx);
+                            _fetchInventory();
+                          }
+                        } catch (e) {
+                          setModalState(() => isSubmitting = false);
+                        }
+                      },
                 style: TextButton.styleFrom(foregroundColor: Colors.red),
                 child: Text("remove_permanently".tr()),
               ),
               ElevatedButton(
-                onPressed: isSubmitting ? null : () async {
-                  final val = int.tryParse(qtyController.text.trim());
-                  if (val == null || val <= 0) return;
-                  
-                  final salonId = context.read<OwnerProvider>().activeSalonId;
-                  if (salonId == null) return;
-                  
-                  setModalState(() => isSubmitting = true);
-                  
-                  try {
-                    await _apiService.post('/salons/salons/$salonId/inventory/${item.id}/add_stock/', data: {
-                      'quantity': val
-                    });
-                    if (mounted) {
-                      Navigator.pop(ctx);
-                      _fetchInventory();
-                    }
-                  } catch (e) {
-                    setModalState(() => isSubmitting = false);
-                  }
-                },
-                child: isSubmitting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : Text("add_stock".tr()),
+                onPressed: isSubmitting
+                    ? null
+                    : () async {
+                        final val = int.tryParse(qtyController.text.trim());
+                        if (val == null || val <= 0) return;
+
+                        final salonId = context
+                            .read<OwnerProvider>()
+                            .activeSalonId;
+                        if (salonId == null) return;
+
+                        setModalState(() => isSubmitting = true);
+
+                        try {
+                          await _apiService.post(
+                            '/salons/salons/$salonId/inventory/${item.id}/add_stock/',
+                            data: {'quantity': val},
+                          );
+                          if (mounted) {
+                            Navigator.pop(ctx);
+                            _fetchInventory();
+                          }
+                        } catch (e) {
+                          setModalState(() => isSubmitting = false);
+                        }
+                      },
+                child: isSubmitting
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text("add_stock".tr()),
               ),
             ],
           );
-        }
+        },
       ),
     );
   }
@@ -145,7 +171,10 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_error != null) return Center(child: Text(_error!, style: const TextStyle(color: Colors.red)));
+    if (_error != null)
+      return Center(
+        child: Text(_error!, style: const TextStyle(color: Colors.red)),
+      );
 
     final theme = Theme.of(context);
 
@@ -154,18 +183,27 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
       children: [
         Row(
           children: [
-            const Icon(Icons.warning_amber_rounded,
-                size: 18, color: Colors.orange),
+            const Icon(
+              Icons.warning_amber_rounded,
+              size: 18,
+              color: Colors.orange,
+            ),
             const SizedBox(width: 8),
-            Text("low_stock_alerts".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "low_stock_alerts".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
-            Text('${_items.length} items',
-                style: const TextStyle(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13)),
+            Text(
+              '${_items.length} items',
+              style: const TextStyle(
+                color: Colors.orange,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -184,26 +222,34 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(item.name,
-                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                    Text(
+                      item.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                     Row(
                       children: [
-                        Text('${item.qty} left',
-                            style: TextStyle(
-                                color: item.qty <= 2
-                                    ? Colors.red
-                                    : Colors.orange,
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          '${item.qty} left',
+                          style: TextStyle(
+                            color: item.qty <= 2 ? Colors.red : Colors.orange,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(width: 8),
                         SizedBox(
                           height: 24,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               visualDensity: VisualDensity.compact,
                             ),
                             onPressed: () => _showReorderDialog(item),
-                            child: const Text('Reorder', style: TextStyle(fontSize: 10)),
+                            child: const Text(
+                              'Reorder',
+                              style: TextStyle(fontSize: 10),
+                            ),
                           ),
                         ),
                       ],
@@ -215,7 +261,8 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                   value: pct.clamp(0.0, 1.0),
                   backgroundColor: Colors.grey.withOpacity(0.2),
                   valueColor: AlwaysStoppedAnimation(
-                      item.qty <= 2 ? Colors.red : Colors.orange),
+                    item.qty <= 2 ? Colors.red : Colors.orange,
+                  ),
                   borderRadius: BorderRadius.circular(4),
                   minHeight: 7,
                 ),
@@ -239,5 +286,10 @@ class _Item {
   final String name;
   final int qty;
   final int threshold;
-  _Item({required this.id, required this.name, required this.qty, required this.threshold});
+  _Item({
+    required this.id,
+    required this.name,
+    required this.qty,
+    required this.threshold,
+  });
 }

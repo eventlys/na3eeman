@@ -20,9 +20,13 @@ class VisaPaymentPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const TextField(decoration: InputDecoration(labelText: 'Card Number')),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Card Number'),
+            ),
             const SizedBox(height: 16),
-            const TextField(decoration: InputDecoration(labelText: 'Expiry Date')),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Expiry Date'),
+            ),
             const SizedBox(height: 16),
             const TextField(
               decoration: InputDecoration(labelText: 'CVV'),
@@ -40,4 +44,3 @@ class VisaPaymentPage extends StatelessWidget {
     );
   }
 }
-

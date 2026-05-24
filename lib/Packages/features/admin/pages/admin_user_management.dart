@@ -134,10 +134,15 @@ class _UserListState extends State<_UserList> {
 
   void _loadUsers() {
     setState(() {
-      _usersFuture = _apiService.getUsers(
-        role: widget.role == 'STAFF' ? null : widget.role, // Backend handles staff grouping if role is null or 'STAFF'
-        query: widget.query,
-      ).then((list) => list.map((e) => User.fromJson(e)).toList());
+      _usersFuture = _apiService
+          .getUsers(
+            role: widget.role == 'STAFF'
+                ? null
+                : widget
+                      .role, // Backend handles staff grouping if role is null or 'STAFF'
+            query: widget.query,
+          )
+          .then((list) => list.map((e) => User.fromJson(e)).toList());
     });
   }
 
@@ -152,7 +157,7 @@ class _UserListState extends State<_UserList> {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
-        
+
         final users = snapshot.data ?? [];
 
         if (users.isEmpty) {
@@ -165,7 +170,8 @@ class _UserListState extends State<_UserList> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: users.length,
             separatorBuilder: (_, _) => const SizedBox(height: 8),
-            itemBuilder: (context, i) => _UserTile(user: users[i], isDark: widget.isDark),
+            itemBuilder: (context, i) =>
+                _UserTile(user: users[i], isDark: widget.isDark),
           ),
         );
       },
@@ -192,14 +198,20 @@ class _UserTile extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            backgroundImage: user.profilePic != null ? NetworkImage(user.profilePic!) : null,
-            child: user.profilePic == null 
-                ? Text(user.firstName[0],
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.1),
+            backgroundImage: user.profilePic != null
+                ? NetworkImage(user.profilePic!)
+                : null,
+            child: user.profilePic == null
+                ? Text(
+                    user.firstName[0],
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.primary,
-                    ))
+                    ),
+                  )
                 : null,
           ),
           const SizedBox(width: 12),
@@ -236,7 +248,10 @@ class _UserTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 1,
+                      ),
                       decoration: BoxDecoration(
                         color: _statusColor.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -268,7 +283,10 @@ class _UserTile extends StatelessWidget {
               if (user.isActive)
                 const PopupMenuItem(value: 'ban', child: Text('Ban User')),
               if (!user.isActive)
-                const PopupMenuItem(value: 'unban', child: Text('Unban / Restore')),
+                const PopupMenuItem(
+                  value: 'unban',
+                  child: Text('Unban / Restore'),
+                ),
               const PopupMenuItem(value: 'view', child: Text('View Profile')),
             ],
           ),

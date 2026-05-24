@@ -35,6 +35,7 @@ class AuthProvider extends BaseProvider {
   bool get isAuthenticated => _isAuthenticated;
   UserRole? get userType => _user?.userRole;
   Gender? get userGender => _user?.gender;
+
   /// The currently active JWT access token. Null if not logged in.
   String? get currentToken => _currentToken;
 
@@ -43,14 +44,14 @@ class AuthProvider extends BaseProvider {
     try {
       final tokens = await secureStorage.getAuthTokens();
       final accessToken = tokens['authToken'];
-      
+
       if (accessToken != null && accessToken.isNotEmpty) {
         final profile = await secureStorage.getUserProfile();
         if (profile != null) {
           _user = profile;
           _isAuthenticated = true;
           _currentToken = accessToken;
-          
+
           // Rehydrate other profiles based on role if needed
           _rehydrateProfiles();
 
@@ -71,17 +72,20 @@ class AuthProvider extends BaseProvider {
   }
 
   void _rehydrateProfiles() {
-    final userData = secureStorage.getMemoryCache('user_profile_${_user?.id}') ?? 
-                     secureStorage.getPreference('user_data');
-                     
+    final userData =
+        secureStorage.getMemoryCache('user_profile_${_user?.id}') ??
+        secureStorage.getPreference('user_data');
+
     if (userData != null) {
       try {
-        final Map<String, dynamic> data = userData is String 
-            ? Map<String, dynamic>.from(json.decode(userData)) 
+        final Map<String, dynamic> data = userData is String
+            ? Map<String, dynamic>.from(json.decode(userData))
             : Map<String, dynamic>.from(userData);
-            
+
         if (_user?.isExpert == true || _user?.isOwner == true) {
-          _expertProfile = ExpertProfile.fromJson(data['expert_profile'] ?? data['expert_profile'] ?? data);
+          _expertProfile = ExpertProfile.fromJson(
+            data['expert_profile'] ?? data['expert_profile'] ?? data,
+          );
         }
         if (_user?.isOwner == true) {
           _ownerProfile = OwnerProfile.fromJson(data['owner_profile'] ?? data);
@@ -115,7 +119,10 @@ class AuthProvider extends BaseProvider {
   }
 
   Future<void> updateLastActivity() async {
-    await secureStorage.setPreference('last_activity', DateTime.now().toIso8601String());
+    await secureStorage.setPreference(
+      'last_activity',
+      DateTime.now().toIso8601String(),
+    );
   }
 
   // Role-based convenience getters
@@ -131,10 +138,18 @@ class AuthProvider extends BaseProvider {
   bool get hasOwnerProfile => _ownerProfile != null;
 
   // Combined role checks
-  bool get canManageSalon => RolePermissionManager.canAccessSalonManagement(_user?.userRole ?? UserRole.customer);
-  bool get canManageAppointments => RolePermissionManager.canManageAppointments(_user?.userRole ?? UserRole.customer);
-  bool get canManageInventory => RolePermissionManager.canManageInventory(_user?.userRole ?? UserRole.customer);
-  bool get canManageFinancials => RolePermissionManager.canManageFinancials(_user?.userRole ?? UserRole.customer);
+  bool get canManageSalon => RolePermissionManager.canAccessSalonManagement(
+    _user?.userRole ?? UserRole.customer,
+  );
+  bool get canManageAppointments => RolePermissionManager.canManageAppointments(
+    _user?.userRole ?? UserRole.customer,
+  );
+  bool get canManageInventory => RolePermissionManager.canManageInventory(
+    _user?.userRole ?? UserRole.customer,
+  );
+  bool get canManageFinancials => RolePermissionManager.canManageFinancials(
+    _user?.userRole ?? UserRole.customer,
+  );
 
   // Enhanced login method combining both
   Future<bool> login({
@@ -178,12 +193,9 @@ class AuthProvider extends BaseProvider {
         if (_user != null) {
           await secureStorage.saveUserData(_user!.toJson());
         }
-        
+
         _currentToken = accessToken;
-        await secureStorage.setAuthTokens(
-          accessToken,
-          refreshToken ?? '',
-        );
+        await secureStorage.setAuthTokens(accessToken, refreshToken ?? '');
 
         await updateLastActivity(); // Update activity on login
 
@@ -219,14 +231,11 @@ class AuthProvider extends BaseProvider {
         if (_user != null) {
           await secureStorage.saveUserData(_user!.toJson());
         }
-        
+
         final accessToken = response['access'];
         final refreshToken = response['refresh'];
-        
-        await secureStorage.setAuthTokens(
-          accessToken,
-          refreshToken ?? '',
-        );
+
+        await secureStorage.setAuthTokens(accessToken, refreshToken ?? '');
 
         await updateLastActivity(); // Update activity on login
 
@@ -250,11 +259,17 @@ class AuthProvider extends BaseProvider {
 
     // Update additional profiles based on role
     if (_user?.isExpert == true || _user?.isOwner == true) {
-      _expertProfile = ExpertProfile.fromJson(userData['expert_profile'] as Map<String, dynamic>? ?? userData['expert_profile'] as Map<String, dynamic>? ?? userData);
+      _expertProfile = ExpertProfile.fromJson(
+        userData['expert_profile'] as Map<String, dynamic>? ??
+            userData['expert_profile'] as Map<String, dynamic>? ??
+            userData,
+      );
     }
 
     if (_user?.isOwner == true) {
-      _ownerProfile = OwnerProfile.fromJson(userData['owner_profile'] as Map<String, dynamic>? ?? userData);
+      _ownerProfile = OwnerProfile.fromJson(
+        userData['owner_profile'] as Map<String, dynamic>? ?? userData,
+      );
     }
 
     notifyListeners();
@@ -348,7 +363,11 @@ class AuthProvider extends BaseProvider {
   }
 
   /// Check if user exists with social credentials
-  Future<bool> checkSocialUserExists(String provider, String socialId, String email) async {
+  Future<bool> checkSocialUserExists(
+    String provider,
+    String socialId,
+    String email,
+  ) async {
     return await _authService.checkSocialUserExists(
       provider: provider,
       socialId: socialId,
@@ -428,7 +447,7 @@ class AuthProvider extends BaseProvider {
 
   Future<void> toggleOnlineStatus() async {
     if (_user == null || !_user!.isStaffMember) return;
-    
+
     try {
       final newStatus = !_user!.isOnline;
       await _authService.updateOnlineStatus(newStatus);

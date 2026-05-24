@@ -142,7 +142,8 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightError,
           ),
           SizedBox(height: 16),
-          Text("failed_to_load_subscriptions".tr(),
+          Text(
+            "failed_to_load_subscriptions".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -190,7 +191,8 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
                 : AppColor.lightTextHint,
           ),
           SizedBox(height: 16),
-          Text("no_subscriptions_available".tr(),
+          Text(
+            "no_subscriptions_available".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -200,7 +202,8 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
             ),
           ),
           SizedBox(height: 8),
-          Text("there_are_no_subscription_plans_available_at_the_m".tr(),
+          Text(
+            "there_are_no_subscription_plans_available_at_the_m".tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).brightness == Brightness.dark
@@ -236,7 +239,8 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
         // Header
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Text("subscribe_to_the_salon".tr(),
+          child: Text(
+            "subscribe_to_the_salon".tr(),
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? AppColor.darkText : AppColor.lightText,
@@ -267,11 +271,13 @@ class _SubscriptionListWidgetState extends State<SubscriptionListWidget> {
             child: OutlinedButton(
               onPressed: _loadMoreSubscriptions,
               style: OutlinedButton.styleFrom(
-                foregroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
+                foregroundColor: isDark
+                    ? AppColor.darkPrimary
+                    : AppColor.lightPrimary,
                 side: BorderSide(
                   color: isDark
                       ? AppColor.darkPrimary.withValues(alpha: 0.5)
-                      : AppColor.lightPrimary.withValues(alpha: 0.5)
+                      : AppColor.lightPrimary.withValues(alpha: 0.5),
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),

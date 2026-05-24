@@ -64,18 +64,19 @@ class EarningsReport {
   factory EarningsReport.fromJson(Map<String, dynamic> json) {
     return EarningsReport(
       dailyEarnings: List<EarningsData>.from(
-        (json['daily_earnings'] ?? []).map((x) => EarningsData.fromJson(x))
+        (json['daily_earnings'] ?? []).map((x) => EarningsData.fromJson(x)),
       ),
       weeklyEarnings: List<EarningsData>.from(
-        (json['weekly_earnings'] ?? []).map((x) => EarningsData.fromJson(x))
+        (json['weekly_earnings'] ?? []).map((x) => EarningsData.fromJson(x)),
       ),
       monthlyEarnings: List<EarningsData>.from(
-        (json['monthly_earnings'] ?? []).map((x) => EarningsData.fromJson(x))
+        (json['monthly_earnings'] ?? []).map((x) => EarningsData.fromJson(x)),
       ),
       totalRevenue: (json['total_revenue'] as num?)?.toDouble() ?? 0.0,
       totalTips: (json['total_tips'] as num?)?.toDouble() ?? 0.0,
       totalAppointments: json['total_appointments'] as int? ?? 0,
-      averageEarningPerAppointment: (json['average_earning_per_appointment'] as num?)?.toDouble() ?? 0.0,
+      averageEarningPerAppointment:
+          (json['average_earning_per_appointment'] as num?)?.toDouble() ?? 0.0,
       startDate: DateTime.parse(json['start_date'] as String),
       endDate: DateTime.parse(json['end_date'] as String),
     );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
 
-
 class BgIcon extends StatefulWidget {
   final String iconPath;
   final double blurLevel;
@@ -44,18 +43,12 @@ class BgIconState extends State<BgIcon> with SingleTickerProviderStateMixin {
     _positionAnimation = Tween<Offset>(
       begin: widget.startPosition,
       end: widget.endPosition,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _rotationAnimation = Tween<double>(
       begin: 0,
       end: widget.rotationDegree,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -87,13 +80,11 @@ class BgIconState extends State<BgIcon> with SingleTickerProviderStateMixin {
               child: BackdropFilter(
                 filter: widget.blurLevel > 0
                     ? ImageFilter.blur(
-                  sigmaX: widget.blurLevel,
-                  sigmaY: widget.blurLevel,
-                )
+                        sigmaX: widget.blurLevel,
+                        sigmaY: widget.blurLevel,
+                      )
                     : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                child: Container(
-                  color: Colors.transparent,
-                ),
+                child: Container(color: Colors.transparent),
               ),
             ),
           ),

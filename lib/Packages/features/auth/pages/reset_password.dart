@@ -58,7 +58,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
 
     // Validate password strength
-    final passwordValidation = _passwordHelper.validatePassword(_passwordController.text);
+    final passwordValidation = _passwordHelper.validatePassword(
+      _passwordController.text,
+    );
     if (!passwordValidation['isValid']) {
       setState(() {
         _message = passwordValidation['message'];
@@ -113,8 +115,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             fontSize: 12,
             color: isMet
                 ? AppColor.featureCheckLight
-                : (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
-            decoration: isMet ? TextDecoration.lineThrough : TextDecoration.none,
+                : (isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary),
+            decoration: isMet
+                ? TextDecoration.lineThrough
+                : TextDecoration.none,
           ),
         ),
       ],
@@ -191,10 +197,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           children: requirements.map<Widget>((req) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 4),
-              child: _buildPasswordRequirement(
-                req['text'],
-                req['isMet'],
-              ),
+              child: _buildPasswordRequirement(req['text'], req['isMet']),
             );
           }).toList(),
         ),
@@ -222,7 +225,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     return AuthScaffold(
       title: 'Create New Password',
-      subtitle: 'Enter your new password below. Make sure it\'s strong and secure.',
+      subtitle:
+          'Enter your new password below. Make sure it\'s strong and secure.',
       showBackButton: true,
       child: Form(
         key: _formKey,
@@ -239,27 +243,30 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   AppImages.lock,
                   width: 20,
                   height: 20,
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDark
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: AppColor.primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: AppColor.primary, width: 2),
                 ),
                 suffixIcon: IconButton(
                   icon: Image.asset(
                     _passwordVisible ? AppImages.eye_view : AppImages.eye,
                     width: 20,
                     height: 20,
-                    color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDark
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                   ),
                   onPressed: () {
                     setState(() {
@@ -270,7 +277,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
                 filled: true,
                 labelStyle: TextStyle(
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               ),
               style: TextStyle(
@@ -300,27 +309,32 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   AppImages.secure,
                   width: 20,
                   height: 20,
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDark
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: AppColor.primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: AppColor.primary, width: 2),
                 ),
                 suffixIcon: IconButton(
                   icon: Image.asset(
-                    _confirmPasswordVisible ? AppImages.eye_view : AppImages.eye,
+                    _confirmPasswordVisible
+                        ? AppImages.eye_view
+                        : AppImages.eye,
                     width: 20,
                     height: 20,
-                    color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDark
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                   ),
                   onPressed: () {
                     setState(() {
@@ -331,7 +345,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
                 filled: true,
                 labelStyle: TextStyle(
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               ),
               style: TextStyle(
@@ -371,13 +387,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: _isSuccess
-                      ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess).withValues(alpha: 0.2)
-                      : (isDark ? AppColor.darkError : AppColor.lightError).withValues(alpha: 0.2),
+                      ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
+                            .withValues(alpha: 0.2)
+                      : (isDark ? AppColor.darkError : AppColor.lightError)
+                            .withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: _isSuccess
-                        ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                        : isDark ? AppColor.darkError : AppColor.lightError,
+                        ? isDark
+                              ? AppColor.darkSuccess
+                              : AppColor.lightSuccess
+                        : isDark
+                        ? AppColor.darkError
+                        : AppColor.lightError,
                     width: 1,
                   ),
                 ),
@@ -391,8 +413,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           width: 20,
                           height: 20,
                           color: _isSuccess
-                              ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                              : isDark ? AppColor.darkError : AppColor.lightError,
+                              ? isDark
+                                    ? AppColor.darkSuccess
+                                    : AppColor.lightSuccess
+                              : isDark
+                              ? AppColor.darkError
+                              : AppColor.lightError,
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -400,8 +426,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: _isSuccess
-                                ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                                : isDark ? AppColor.darkError : AppColor.lightError,
+                                ? isDark
+                                      ? AppColor.darkSuccess
+                                      : AppColor.lightSuccess
+                                : isDark
+                                ? AppColor.darkError
+                                : AppColor.lightError,
                           ),
                         ),
                       ],
@@ -411,24 +441,34 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       _message,
                       style: TextStyle(
                         color: _isSuccess
-                            ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                            : isDark ? AppColor.darkError : AppColor.lightError,
+                            ? isDark
+                                  ? AppColor.darkSuccess
+                                  : AppColor.lightSuccess
+                            : isDark
+                            ? AppColor.darkError
+                            : AppColor.lightError,
                       ),
                     ),
                     if (_isSuccess) ...[
                       const SizedBox(height: 12),
-                      ..._passwordHelper.getPostResetSteps(_isSuccess).map((step) {
+                      ..._passwordHelper.getPostResetSteps(_isSuccess).map((
+                        step,
+                      ) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: Row(
                             children: [
                               Image.asset(
-                                step['completed'] ? AppImages.tick : AppImages.clock,
+                                step['completed']
+                                    ? AppImages.tick
+                                    : AppImages.clock,
                                 width: 16,
                                 height: 16,
                                 color: step['completed']
                                     ? AppColor.featureCheckLight
-                                    : (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
+                                    : (isDark
+                                          ? AppColor.darkTextSecondary
+                                          : AppColor.lightTextSecondary),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -437,7 +477,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   style: TextStyle(
                                     color: step['completed']
                                         ? AppColor.featureCheckLight
-                                        : (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
+                                        : (isDark
+                                              ? AppColor.darkTextSecondary
+                                              : AppColor.lightTextSecondary),
                                     fontSize: 12,
                                   ),
                                 ),

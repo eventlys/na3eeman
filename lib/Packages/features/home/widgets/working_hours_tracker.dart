@@ -4,10 +4,7 @@ import '../../../Core/constants/app_color.dart';
 class WorkingHoursTracker extends StatelessWidget {
   final Map<String, dynamic> workingHours;
 
-  const WorkingHoursTracker({
-    super.key,
-    required this.workingHours,
-  });
+  const WorkingHoursTracker({super.key, required this.workingHours});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +13,7 @@ class WorkingHoursTracker extends StatelessWidget {
     final openingTime = workingHours['openingTime'] ?? '09:00';
     final closingTime = workingHours['closingTime'] ?? '20:00';
     final currentStatus = isOpen ? 'Open' : 'Closed';
-    final statusColor = isOpen 
+    final statusColor = isOpen
         ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
         : (isDark ? AppColor.darkError : AppColor.lightError);
 
@@ -24,7 +21,7 @@ class WorkingHoursTracker extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark 
+        color: isDark
             ? AppColor.darkCard.withValues(alpha: 0.9)
             : AppColor.lightCard.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(16),
@@ -57,7 +54,9 @@ class WorkingHoursTracker extends StatelessWidget {
                   'Salon Status',
                   style: TextStyle(
                     fontSize: 14,
-                    color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDark
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -80,7 +79,9 @@ class WorkingHoursTracker extends StatelessWidget {
                 'Hours',
                 style: TextStyle(
                   fontSize: 14,
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               ),
               const SizedBox(height: 4),

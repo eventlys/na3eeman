@@ -53,21 +53,34 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
 
       if (mounted) {
         setState(() {
-          if (results[0] is Map) _summary = Map<String, dynamic>.from(results[0] as Map);
+          if (results[0] is Map)
+            _summary = Map<String, dynamic>.from(results[0] as Map);
           if (results[1] is List) {
             _staffKpis = List<Map<String, dynamic>>.from(
-                (results[1] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+              (results[1] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
+            );
           }
           if (results[2] is List) {
             _topServices = List<Map<String, dynamic>>.from(
-                (results[2] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+              (results[2] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
+            );
           }
           if (results[3] is List) {
             _insights = List<Map<String, dynamic>>.from(
-                (results[3] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+              (results[3] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
+            );
           } else if (results[3] is Map && results[3]?['insights'] is List) {
             _insights = List<Map<String, dynamic>>.from(
-                (results[3]?['insights'] as List).map((e) => Map<String, dynamic>.from(e as Map)));
+              (results[3]?['insights'] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
+            );
           }
           _isLoading = false;
         });
@@ -83,9 +96,14 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.almostBlack900 : const Color(0xFFF8F9FE),
+      backgroundColor: isDark
+          ? AppColors.almostBlack900
+          : const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: Text('analytics_dashboard'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'analytics_dashboard'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -110,21 +128,36 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                         sliver: SliverToBoxAdapter(child: _buildKpiRow()),
                       ),
-                      
+
                       SliverToBoxAdapter(child: _buildChartSection(theme)),
 
                       if (_insights.isNotEmpty) ...[
-                        SliverToBoxAdapter(child: _SectionHeader(title: 'AI Smart Insights'.tr(), icon: Icons.auto_awesome_rounded)),
+                        SliverToBoxAdapter(
+                          child: _SectionHeader(
+                            title: 'AI Smart Insights'.tr(),
+                            icon: Icons.auto_awesome_rounded,
+                          ),
+                        ),
                         SliverToBoxAdapter(child: _buildInsightCards(theme)),
                       ],
 
                       if (_topServices.isNotEmpty) ...[
-                        SliverToBoxAdapter(child: _SectionHeader(title: 'Popular Services'.tr(), icon: Icons.content_cut_rounded)),
+                        SliverToBoxAdapter(
+                          child: _SectionHeader(
+                            title: 'top_services'.tr(),
+                            icon: Icons.content_cut_rounded,
+                          ),
+                        ),
                         SliverToBoxAdapter(child: _buildTopServices(theme)),
                       ],
 
                       if (_staffKpis.isNotEmpty) ...[
-                        SliverToBoxAdapter(child: _SectionHeader(title: 'Team Performance'.tr(), icon: Icons.people_rounded)),
+                        SliverToBoxAdapter(
+                          child: _SectionHeader(
+                            title: 'team_performance'.tr(),
+                            icon: Icons.people_rounded,
+                          ),
+                        ),
                         SliverPadding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           sliver: SliverList(
@@ -156,7 +189,11 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
         color: isDark ? AppColors.almostBlack600 : Colors.white,
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 20, offset: const Offset(0, 10)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
         ],
       ),
       child: Column(
@@ -165,8 +202,21 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Revenue Trend'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              Text('$_period', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+              Text(
+                'revenue_trend'.tr(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '$_period',
+                style: TextStyle(
+                  color: theme.primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -188,14 +238,22 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                       FlSpot(6, 5.5),
                     ],
                     isCurved: true,
-                    gradient: LinearGradient(colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.5)]),
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.primaryColor,
+                        theme.primaryColor.withOpacity(0.5),
+                      ],
+                    ),
                     barWidth: 4,
                     isStrokeCapRound: true,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
                       gradient: LinearGradient(
-                        colors: [theme.primaryColor.withOpacity(0.2), theme.primaryColor.withOpacity(0.0)],
+                        colors: [
+                          theme.primaryColor.withOpacity(0.2),
+                          theme.primaryColor.withOpacity(0.0),
+                        ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -212,29 +270,30 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
 
   Widget _buildKpiRow() {
     final revenue = (_summary?['total_revenue'] as num?)?.toDouble() ?? 0.0;
-    final appointments = (_summary?['total_appointments'] as num?)?.toInt() ?? 0;
-    
+    final appointments =
+        (_summary?['total_appointments'] as num?)?.toInt() ?? 0;
+    final growth = _summary?['growth_rate']?.toString() ?? '+12.5%';
+    final newClients = _summary?['new_clients_count']?.toString() ?? '24';
+
     return Column(
       children: [
         Row(
           children: [
             Expanded(
-              child: _PastelKpiCard(
-                label: 'Income'.tr(),
+              child: _PremiumKpiCard(
+                label: 'income'.tr(),
                 value: '${revenue.toStringAsFixed(0)} JOD',
                 icon: Icons.account_balance_wallet_rounded,
-                color: const Color(0xFFE8F2FF),
-                iconColor: const Color(0xFF3B82F6),
+                color: const Color(0xFF3B82F6),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _PastelKpiCard(
-                label: 'Bookings'.tr(),
+              child: _PremiumKpiCard(
+                label: 'appointments'.tr(),
                 value: '$appointments',
                 icon: Icons.calendar_month_rounded,
-                color: const Color(0xFFE8FFF3),
-                iconColor: const Color(0xFF10B981),
+                color: const Color(0xFF10B981),
               ),
             ),
           ],
@@ -243,22 +302,20 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
         Row(
           children: [
             Expanded(
-              child: _PastelKpiCard(
-                label: 'Growth'.tr(),
-                value: '+12.5%',
+              child: _PremiumKpiCard(
+                label: 'performance'.tr(),
+                value: growth,
                 icon: Icons.trending_up_rounded,
-                color: const Color(0xFFFFF7E6),
-                iconColor: const Color(0xFFF59E0B),
+                color: const Color(0xFFF59E0B),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _PastelKpiCard(
-                label: 'New Clients'.tr(),
-                value: '24',
+              child: _PremiumKpiCard(
+                label: 'new_clients'.tr(),
+                value: newClients,
                 icon: Icons.person_add_rounded,
-                color: const Color(0xFFFEEFFF),
-                iconColor: const Color(0xFFEC4899),
+                color: const Color(0xFFEC4899),
               ),
             ),
           ],
@@ -279,7 +336,11 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 15)),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
+            ),
           ],
         ),
         child: Row(
@@ -305,7 +366,9 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
           duration: const Duration(milliseconds: 300),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Text(
@@ -331,7 +394,8 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, i) {
           final insight = _insights[i];
-          final tip = insight['tip'] as String? ?? insight['message'] as String? ?? '';
+          final tip =
+              insight['tip'] as String? ?? insight['message'] as String? ?? '';
           return Container(
             width: 280,
             padding: const EdgeInsets.all(20),
@@ -345,13 +409,29 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.tips_and_updates_rounded, color: theme.primaryColor, size: 18),
+                    Icon(
+                      Icons.tips_and_updates_rounded,
+                      color: theme.primaryColor,
+                      size: 18,
+                    ),
                     const SizedBox(width: 8),
-                    Text('Optimization Tip', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+                    Text(
+                      'optimization_tip'.tr(),
+                      style: TextStyle(
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Expanded(child: Text(tip, style: const TextStyle(fontSize: 13, height: 1.4))),
+                Expanded(
+                  child: Text(
+                    tip,
+                    style: const TextStyle(fontSize: 13, height: 1.4),
+                  ),
+                ),
               ],
             ),
           );
@@ -370,47 +450,66 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
           borderRadius: BorderRadius.circular(32),
         ),
         child: Column(
-          children: List.generate(
-            _topServices.length.clamp(0, 5),
-            (i) {
-              final s = _topServices[i];
-              final name = s['name'] as String? ?? s['service_name'] as String? ?? 'Service';
-              final count = (s['count'] as num?)?.toInt() ?? 0;
-              final pct = i == 0 ? 1.0 : (count / ((_topServices.first['count'] as num?)?.toDouble() ?? 1.0)).clamp(0.1, 1.0);
+          children: List.generate(_topServices.length.clamp(0, 5), (i) {
+            final s = _topServices[i];
+            final name =
+                s['name'] as String? ??
+                s['service_name'] as String? ??
+                'Service';
+            final count = (s['count'] as num?)?.toInt() ?? 0;
+            final pct = i == 0
+                ? 1.0
+                : (count /
+                          ((_topServices.first['count'] as num?)?.toDouble() ??
+                              1.0))
+                      .clamp(0.1, 1.0);
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                              Text('$count sales', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: pct,
-                              minHeight: 8,
-                              backgroundColor: theme.dividerColor,
-                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor.withOpacity(0.6)),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Text(
+                              'sales_suffix'.tr(args: [count.toString()]),
+                              style: const TextStyle(
+                                color: AppColors.almostBlack300,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: pct,
+                            minHeight: 8,
+                            backgroundColor: theme.dividerColor,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).primaryColor.withOpacity(0.6),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -430,26 +529,27 @@ class _SectionHeader extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: Theme.of(context).primaryColor),
           const SizedBox(width: 10),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
         ],
       ),
     );
   }
 }
 
-class _PastelKpiCard extends StatelessWidget {
+class _PremiumKpiCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
   final Color color;
-  final Color iconColor;
 
-  const _PastelKpiCard({
+  const _PremiumKpiCard({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
-    required this.iconColor,
   });
 
   @override
@@ -458,23 +558,52 @@ class _PastelKpiCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.almostBlack600 : color,
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
         borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isDark ? iconColor.withOpacity(0.1) : Colors.white,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: iconColor, size: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              Icon(
+                Icons.more_horiz_rounded,
+                color: AppColors.almostBlack200,
+                size: 16,
+              ),
+            ],
           ),
           const SizedBox(height: 20),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
-          Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12, fontWeight: FontWeight.w500)),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.almostBlack300,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
         ],
       ),
     );
@@ -489,7 +618,8 @@ class _StaffKpiTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final name = kpi['name'] as String? ?? kpi['expert_name'] as String? ?? 'Staff';
+    final name =
+        kpi['name'] as String? ?? kpi['expert_name'] as String? ?? 'Staff';
     final appts = (kpi['appointments'] as num?)?.toInt() ?? 0;
     final revenue = (kpi['revenue'] as num?)?.toDouble() ?? 0.0;
 
@@ -500,7 +630,11 @@ class _StaffKpiTile extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Row(
@@ -508,15 +642,34 @@ class _StaffKpiTile extends StatelessWidget {
           CircleAvatar(
             radius: 22,
             backgroundColor: theme.primaryColor.withOpacity(0.1),
-            child: Text(name.isNotEmpty ? name[0] : '?', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold)),
+            child: Text(
+              name.isNotEmpty ? name[0] : '?',
+              style: TextStyle(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                Text('$appts book. · ${revenue.toStringAsFixed(0)} JOD', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11)),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  'booking_suffix_compact'.tr(args: [appts.toString()]) +
+                      ' · ${revenue.toStringAsFixed(0)} JOD',
+                  style: const TextStyle(
+                    color: AppColors.almostBlack300,
+                    fontSize: 11,
+                  ),
+                ),
               ],
             ),
           ),
@@ -530,7 +683,10 @@ class _StaffKpiTile extends StatelessWidget {
               children: [
                 Icon(Icons.star_rounded, color: Colors.amber, size: 14),
                 SizedBox(width: 4),
-                Text('4.9', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                Text(
+                  '4.9',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
               ],
             ),
           ),

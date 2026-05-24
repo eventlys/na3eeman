@@ -42,7 +42,9 @@ class Sidebar extends StatelessWidget {
               GestureDetector(
                 onTap: controller.closeSidebar,
                 child: Container(
-                  color: Colors.black.withValues(alpha: controller.animation.value * 0.4),
+                  color: Colors.black.withValues(
+                    alpha: controller.animation.value * 0.4,
+                  ),
                 ),
               ),
 
@@ -53,7 +55,12 @@ class Sidebar extends StatelessWidget {
                 top: 0,
                 bottom: 0,
                 child: Transform.translate(
-                  offset: Offset(offsetMultiplier * (1 - controller.animation.value) * calculatedWidth, 0),
+                  offset: Offset(
+                    offsetMultiplier *
+                        (1 - controller.animation.value) *
+                        calculatedWidth,
+                    0,
+                  ),
                   child: SizedBox(
                     width: calculatedWidth,
                     child: Material(
@@ -86,9 +93,7 @@ class Sidebar extends StatelessWidget {
             children: [
               const SizedBox(height: 40),
               // Menu Items
-              Expanded(
-                child: _buildMenuItems(context),
-              ),
+              Expanded(child: _buildMenuItems(context)),
 
               // Footer / Branding
               Padding(
@@ -96,7 +101,8 @@ class Sidebar extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('na3eeman'.tr(),
+                    Text(
+                      'na3eeman'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -106,7 +112,10 @@ class Sidebar extends StatelessWidget {
                     ),
                     const Text(
                       'Version 2.0.0',
-                      style: TextStyle(color: AppColors.almostBlack300, fontSize: 10),
+                      style: TextStyle(
+                        color: AppColors.almostBlack300,
+                        fontSize: 10,
+                      ),
                     ),
                   ],
                 ),
@@ -132,15 +141,30 @@ class Sidebar extends StatelessWidget {
         requiresAuth: true,
         requiredRoles: [UserRole.admin],
       ),
-      if (role == UserRole.owner || role == UserRole.admin)
-        MenuItem(
-          title: 'shop_dashboard'.tr(),
-          assetIcon: 'assets/icons/setting.png',
-          delay: 1,
-          onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.salonId ?? 1}),
-          requiresAuth: true,
-          requiredRoles: [UserRole.owner, UserRole.admin],
-        ),
+      // if (role == UserRole.owner || role == UserRole.admin)
+      //   MenuItem(
+      //     // title: ''.tr(),
+      //     // assetIcon: 'assets/icons/setting.png',
+      //     // delay: 1,
+      //     // onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.salonId ?? 1}),
+      //     // requiresAuth: true,
+      //     // requiredRoles: [UserRole.owner, UserRole.admin],
+      //   ),
+      // MenuItem(
+      //   title: 'shop_dashboard'.tr(),
+      //   assetIcon: 'assets/icons/shop.png',
+      //   delay: 1,
+      //   onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.salonId ?? 1}),
+      //   requiresAuth: true,
+      //   requiredRoles: [
+      //     // UserRole.owner,
+      //     UserRole.admin,
+      //     UserRole.ownerExpert,
+      //     // UserRole.cofounder,
+      //     UserRole.cofounderExpert,
+      //     // UserRole.manager
+      //   ],
+      // ),
       MenuItem(
         title: 'management'.tr(),
         assetIcon: 'assets/icons/setting.png',
@@ -148,16 +172,13 @@ class Sidebar extends StatelessWidget {
         onTap: () => Navigator.pushNamed(context, '/management_dashboard'),
         requiresAuth: true,
         requiredRoles: [
-          UserRole.owner, 
-          UserRole.admin, 
-          UserRole.ownerExpert, 
-          UserRole.cofounder, 
+          UserRole.admin,
+          UserRole.ownerExpert,
           UserRole.cofounderExpert,
-          UserRole.manager
         ],
       ),
       MenuItem(
-        title: 'My Times'.tr(),
+        title: 'my_times'.tr(),
         assetIcon: 'assets/icons/clock.png',
         delay: 1,
         onTap: () => Navigator.pushNamed(context, '/my_times'),
@@ -166,53 +187,82 @@ class Sidebar extends StatelessWidget {
           UserRole.expert,
           UserRole.intern,
           UserRole.ownerExpert,
+          UserRole.cofounderExpert,
         ],
       ),
-      MenuItem(
-        title: 'Data Management'.tr(),
-        assetIcon: 'assets/icons/report.png',
-        delay: 1,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/data');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder, UserRole.manager],
-      ),
-      MenuItem(
-        title: 'Expenses'.tr(),
-        assetIcon: 'assets/icons/money.png',
-        delay: 1,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/expenses');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder, UserRole.manager],
-      ),
-      MenuItem(
-        title: 'Payroll'.tr(),
-        assetIcon: 'assets/icons/wallet.png',
-        delay: 1,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/management/payroll');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.admin, UserRole.cofounder, UserRole.manager],
-      ),
+      // MenuItem(
+      //   title: 'Data Management'.tr(),
+      //   assetIcon: 'assets/icons/report.png',
+      //   delay: 1,
+      //   onTap: () {
+      //     controller.closeSidebar();
+      //     Navigator.pushNamed(context, '/management/data');
+      //   },
+      //   requiresAuth: true,
+      //   requiredRoles: [
+      //     UserRole.owner,
+      //     UserRole.admin,
+      //     UserRole.cofounder,
+      //     UserRole.manager,
+      //     UserRole.ownerExpert,
+      //     UserRole.cofounderExpert
+      //   ],
+      // ),
+      // MenuItem(
+      //   title: 'Expenses'.tr(),
+      //   assetIcon: 'assets/icons/money.png',
+      //   delay: 1,
+      //   onTap: () {
+      //     controller.closeSidebar();
+      //     Navigator.pushNamed(context, '/management/expenses');
+      //   },
+      //   requiresAuth: true,
+      //   requiredRoles: [
+      //     UserRole.owner,
+      //     UserRole.admin,
+      //     UserRole.cofounder,
+      //     UserRole.manager,
+      //     UserRole.ownerExpert,
+      //     UserRole.cofounderExpert
+      //   ],
+      // ),
+      // MenuItem(
+      //   title: 'Payroll'.tr(),
+      //   assetIcon: 'assets/icons/wallet.png',
+      //   delay: 1,
+      //   onTap: () {
+      //     controller.closeSidebar();
+      //     Navigator.pushNamed(context, '/management/payroll');
+      //   },
+      //   requiresAuth: true,
+      //   requiredRoles: [
+      //     UserRole.owner,
+      //     UserRole.admin,
+      //     UserRole.cofounder,
+      //     UserRole.manager,
+      //     UserRole.ownerExpert,
+      //     UserRole.cofounderExpert
+      //   ],
+      // ),
       // ── Receptionist POS ─────────────────────────────────────────
-      MenuItem(
-        title: 'pos_terminal'.tr(),
-        assetIcon: 'assets/icons/plus.png',
-        delay: 2,
-        onTap: () {
-          controller.closeSidebar();
-          Navigator.pushNamed(context, '/pos');
-        },
-        requiresAuth: true,
-        requiredRoles: [UserRole.owner, UserRole.ownerExpert, UserRole.cofounder, UserRole.receptionist],
-      ),
+      // MenuItem(
+      //   title: 'pos_terminal'.tr(),
+      //   assetIcon: 'assets/icons/plus.png',
+      //   delay: 2,
+      //   onTap: () {
+      //     controller.closeSidebar();
+      //     Navigator.pushNamed(context, '/pos');
+      //   },
+      //   requiresAuth: true,
+      //   requiredRoles: [
+      //     UserRole.owner,
+      //     UserRole.ownerExpert,
+      //     UserRole.cofounder,
+      //     UserRole.cofounderExpert,
+      //     UserRole.manager,
+      //     UserRole.receptionist
+      //   ],
+      // ),
       MenuItem(
         title: 'FAQs'.tr(),
         assetIcon: 'assets/icons/info.png',
@@ -247,7 +297,9 @@ class Sidebar extends StatelessWidget {
       ),
     ];
 
-    final filteredItems = allItems.where((item) => item.isAccessible(role)).toList();
+    final filteredItems = allItems
+        .where((item) => item.isAccessible(role))
+        .toList();
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 8),

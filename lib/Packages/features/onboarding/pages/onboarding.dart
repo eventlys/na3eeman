@@ -122,7 +122,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   child: Column(
                     children: [
                       AppButton(
-                        label: _page == 2 ? 'get_started'.tr() : 'continue'.tr(),
+                        label: _page == 2
+                            ? 'get_started'.tr()
+                            : 'continue'.tr(),
                         fullWidth: true,
                         icon: _page == 2 ? Icons.arrow_forward_rounded : null,
                         onPressed: (_page == 1 && _gender == null)
@@ -134,7 +136,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         TextButton(
                           onPressed: () =>
                               Navigator.pushReplacementNamed(context, '/login'),
-                          child: Text("already_have_an_account_log_in".tr(),
+                          child: Text(
+                            "already_have_an_account_log_in".tr(),
                             style: TextStyle(
                               fontSize: 13,
                               color: isDark
@@ -177,7 +180,8 @@ class _WelcomePage extends StatelessWidget {
             child: Icon(Icons.cut_rounded, size: 60, color: primary),
           ),
           const SizedBox(height: 40),
-          Text("welcome_to_na3_eeman".tr(),
+          Text(
+            "welcome_to_na3_eeman".tr(),
             style: Theme.of(
               context,
             ).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800),
@@ -213,7 +217,8 @@ class _GenderPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("personalise_your_theme".tr(),
+          Text(
+            "personalise_your_theme".tr(),
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),
@@ -252,7 +257,8 @@ class _GenderPage extends StatelessWidget {
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => onSelect(UserGender.nonBinary),
-            child: Text("prefer_not_to_say".tr(),
+            child: Text(
+              "prefer_not_to_say".tr(),
               style: TextStyle(fontSize: 13),
             ),
           ),
@@ -332,7 +338,8 @@ class _RolePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("how_will_you_use_na3_eeman".tr(),
+          Text(
+            "how_will_you_use_na3_eeman".tr(),
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),

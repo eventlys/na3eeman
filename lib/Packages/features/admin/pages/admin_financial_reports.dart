@@ -8,7 +8,8 @@ class AdminFinancialReportsPage extends StatefulWidget {
   const AdminFinancialReportsPage({super.key});
 
   @override
-  State<AdminFinancialReportsPage> createState() => _AdminFinancialReportsPageState();
+  State<AdminFinancialReportsPage> createState() =>
+      _AdminFinancialReportsPageState();
 }
 
 class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
@@ -28,7 +29,10 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Financial Intelligence', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Financial Intelligence',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -43,16 +47,18 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
                   const SizedBox(height: 24),
                   _buildRevenueChart(stats?['daily_revenue_30d'] ?? []),
                   const SizedBox(height: 32),
-                  
+
                   _buildSectionHeader('Payment Methods'),
                   const SizedBox(height: 16),
-                  _buildMethodBreakdown(stats?['payment_method_distribution'] ?? []),
-                  
+                  _buildMethodBreakdown(
+                    stats?['payment_method_distribution'] ?? [],
+                  ),
+
                   const SizedBox(height: 32),
                   _buildSectionHeader('Recent Payouts'),
                   const SizedBox(height: 16),
                   _buildPayoutList(),
-                  
+
                   const SizedBox(height: 48),
                 ],
               ),
@@ -61,12 +67,19 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
   }
 
   Widget _buildSectionHeader(String title) {
-    return Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
+    return Text(
+      title,
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    );
   }
 
   Widget _buildRevenueChart(List<dynamic> data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    if (data.isEmpty) return const SizedBox(height: 200, child: Center(child: Text('No financial data')));
+    if (data.isEmpty)
+      return const SizedBox(
+        height: 200,
+        child: Center(child: Text('No financial data')),
+      );
 
     final spots = data.asMap().entries.map((e) {
       return FlSpot(e.key.toDouble(), (e.value['revenue'] ?? 0).toDouble());
@@ -78,7 +91,11 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: LineChart(
         LineChartData(
@@ -91,7 +108,10 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
               isCurved: true,
               color: AppColors.success,
               barWidth: 4,
-              belowBarData: BarAreaData(show: true, color: AppColors.success.withOpacity(0.1)),
+              belowBarData: BarAreaData(
+                show: true,
+                color: AppColors.success.withOpacity(0.1),
+              ),
               dotData: const FlDotData(show: false),
             ),
           ],
@@ -107,7 +127,11 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Column(
         children: data.map((item) {
@@ -115,11 +139,23 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                Icon(item['method'] == 'CASH' ? Icons.money_rounded : Icons.credit_card_rounded, color: AppColors.almostBlack200, size: 20),
+                Icon(
+                  item['method'] == 'CASH'
+                      ? Icons.money_rounded
+                      : Icons.credit_card_rounded,
+                  color: AppColors.almostBlack200,
+                  size: 20,
+                ),
                 const SizedBox(width: 12),
-                Text(item['method'], style: const TextStyle(fontWeight: FontWeight.w500)),
+                Text(
+                  item['method'],
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
                 const Spacer(),
-                Text('${item['count']} Tx', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  '${item['count']} Tx',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             ),
           );
@@ -145,7 +181,11 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
           decoration: BoxDecoration(
             color: isDark ? AppColors.almostBlack600 : AppColors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+            border: Border.all(
+              color: isDark
+                  ? AppColors.white.withOpacity(0.05)
+                  : AppColors.almostBlack50,
+            ),
           ),
           child: Row(
             children: [
@@ -153,20 +193,38 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p['salon']!, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text('\$${p['amount']}', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(
+                      p['salon']!,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '\$${p['amount']}',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
-                  color: (isPending ? AppColors.warning : AppColors.success).withOpacity(0.1),
+                  color: (isPending ? AppColors.warning : AppColors.success)
+                      .withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   p['status']!,
-                  style: TextStyle(color: isPending ? AppColors.warning : AppColors.success, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: isPending ? AppColors.warning : AppColors.success,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

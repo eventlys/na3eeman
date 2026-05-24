@@ -15,7 +15,9 @@ class ExpertService {
     bool? isActive,
   }) async {
     try {
-      AppLogger.debug('Fetching experts - page: $page, limit: $limit, salonId: $salonId');
+      AppLogger.debug(
+        'Fetching experts - page: $page, limit: $limit, salonId: $salonId',
+      );
 
       final queryParams = <String, dynamic>{
         'page': page.toString(),
@@ -32,12 +34,17 @@ class ExpertService {
         queryParams['is_active'] = isActive.toString();
       }
 
-      final response = await _apiService.get(Endpoints.usersExperts, queryParams: queryParams);
+      final response = await _apiService.get(
+        Endpoints.usersExperts,
+        queryParams: queryParams,
+      );
 
       final List<dynamic> data = response['data'] ?? [];
       return data.map((expertData) => ExpertDto.fromJson(expertData)).toList();
     } catch (error) {
-      AppLogger.debug('Backend returned error for GET /staff. Mocking empty list to prevent crash.');
+      AppLogger.debug(
+        'Backend returned error for GET /staff. Mocking empty list to prevent crash.',
+      );
       return [];
     }
   }
@@ -66,11 +73,17 @@ class ExpertService {
     }
   }
 
-  Future<ExpertDto> updateExpert(String expertId, Map<String, dynamic> expertData) async {
+  Future<ExpertDto> updateExpert(
+    String expertId,
+    Map<String, dynamic> expertData,
+  ) async {
     try {
       AppLogger.debug('Updating expert: $expertId');
 
-      final response = await _apiService.put('/staff/$expertId', data: expertData);
+      final response = await _apiService.put(
+        '/staff/$expertId',
+        data: expertData,
+      );
       return ExpertDto.fromJson(response['data'] ?? response);
     } catch (error) {
       AppLogger.error('Failed to update expert: $expertId', error: error);
@@ -97,7 +110,9 @@ class ExpertService {
       final List<dynamic> data = response['data'] ?? [];
       return data.map((expertData) => ExpertDto.fromJson(expertData)).toList();
     } catch (error) {
-      AppLogger.debug('Failed to fetch salon experts: $salonId. Returning empty list.');
+      AppLogger.debug(
+        'Failed to fetch salon experts: $salonId. Returning empty list.',
+      );
       return [];
     }
   }

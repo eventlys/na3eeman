@@ -5,91 +5,75 @@ class AppRulesOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     return Container(
-        constraints: const BoxConstraints(maxHeight: 500),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildRuleCategory(
-                      'User Conduct',
-                      Icons.person,
-                      [
-                        'Be respectful to other users',
-                        'No harassment or hate speech',
-                        'No spamming or flooding',
-                        'No impersonation of others',
-                        'Respect privacy of other users',
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildRuleCategory(
-                      'Content Guidelines',
-                      Icons.content_copy,
-                      [
-                        'No illegal content',
-                        'No explicit or adult content',
-                        'No copyrighted material without permission',
-                        'No false or misleading information',
-                        'No commercial spam',
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildRuleCategory(
-                      'Account Usage',
-                      Icons.account_circle,
-                      [
-                        'One account per person',
-                        'You are responsible for your account',
-                        'No sharing of account credentials',
-                        'Report lost or stolen accounts immediately',
-                        'Accounts must not be bought or sold',
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildRuleCategory(
-                      'Prohibited Activities',
-                      Icons.warning,
-                      [
-                        'No hacking or exploiting vulnerabilities',
-                        'No automated bots or scripts',
-                        'No reverse engineering',
-                        'No data scraping',
-                        'No unauthorized commercial use',
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildConsequencesSection(),
-                  ],
-                ),
+      constraints: const BoxConstraints(maxHeight: 500),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildRuleCategory('User Conduct', Icons.person, [
+                    'Be respectful to other users',
+                    'No harassment or hate speech',
+                    'No spamming or flooding',
+                    'No impersonation of others',
+                    'Respect privacy of other users',
+                  ]),
+                  const SizedBox(height: 20),
+                  _buildRuleCategory('Content Guidelines', Icons.content_copy, [
+                    'No illegal content',
+                    'No explicit or adult content',
+                    'No copyrighted material without permission',
+                    'No false or misleading information',
+                    'No commercial spam',
+                  ]),
+                  const SizedBox(height: 20),
+                  _buildRuleCategory('Account Usage', Icons.account_circle, [
+                    'One account per person',
+                    'You are responsible for your account',
+                    'No sharing of account credentials',
+                    'Report lost or stolen accounts immediately',
+                    'Accounts must not be bought or sold',
+                  ]),
+                  const SizedBox(height: 20),
+                  _buildRuleCategory('Prohibited Activities', Icons.warning, [
+                    'No hacking or exploiting vulnerabilities',
+                    'No automated bots or scripts',
+                    'No reverse engineering',
+                    'No data scraping',
+                    'No unauthorized commercial use',
+                  ]),
+                  const SizedBox(height: 20),
+                  _buildConsequencesSection(),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0x80ffffff),
-                  side: BorderSide(color: Color(0x80c25858)),
-                  shadowColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'I Agree',
-                  style: TextStyle(fontSize: 16, color: Color(0xffc25858)),
-                ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0x80ffffff),
+                side: BorderSide(color: Color(0x80c25858)),
+                shadowColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text(
+                'I Agree',
+                style: TextStyle(fontSize: 16, color: Color(0xffc25858)),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -125,12 +109,7 @@ class AppRulesOverlay extends StatelessWidget {
         children: [
           const Icon(Icons.circle, size: 8, color: Colors.grey),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              rule,
-              style: const TextStyle(fontSize: 12),
-            ),
-          ),
+          Expanded(child: Text(rule, style: const TextStyle(fontSize: 12))),
         ],
       ),
     );
@@ -183,4 +162,3 @@ class AppRulesOverlay extends StatelessWidget {
     );
   }
 }
-

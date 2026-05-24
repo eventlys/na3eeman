@@ -328,14 +328,23 @@ extension AppTextStylesExtension on BuildContext {
   TextStyle get bodyMedium => _isDarkMode ? darkBodyMedium : lightBodyMedium;
   TextStyle get bodySmall => _isDarkMode ? darkBodySmall : lightBodySmall;
   TextStyle get buttonLarge => _isDarkMode ? darkButtonLarge : lightButtonLarge;
-  TextStyle get buttonMedium => _isDarkMode ? darkButtonMedium : lightButtonMedium;
+  TextStyle get buttonMedium =>
+      _isDarkMode ? darkButtonMedium : lightButtonMedium;
   TextStyle get buttonSmall => _isDarkMode ? darkButtonSmall : lightButtonSmall;
-  TextStyle get caption => _isDarkMode ? AppTextStyles.darkCaption : AppTextStyles.lightCaption;
-  TextStyle get overline => _isDarkMode ? AppTextStyles.darkOverline : AppTextStyles.lightOverline;
-  TextStyle get appBarTitle => _isDarkMode ? AppTextStyles.darkAppBarTitle : AppTextStyles.lightAppBarTitle;
-  TextStyle get cardTitle => _isDarkMode ? AppTextStyles.darkCardTitle : AppTextStyles.lightCardTitle;
-  TextStyle get priceText => _isDarkMode ? AppTextStyles.darkPriceText : AppTextStyles.lightPriceText;
-  TextStyle get ratingText => _isDarkMode ? AppTextStyles.darkRatingText : AppTextStyles.lightRatingText;
+  TextStyle get caption =>
+      _isDarkMode ? AppTextStyles.darkCaption : AppTextStyles.lightCaption;
+  TextStyle get overline =>
+      _isDarkMode ? AppTextStyles.darkOverline : AppTextStyles.lightOverline;
+  TextStyle get appBarTitle => _isDarkMode
+      ? AppTextStyles.darkAppBarTitle
+      : AppTextStyles.lightAppBarTitle;
+  TextStyle get cardTitle =>
+      _isDarkMode ? AppTextStyles.darkCardTitle : AppTextStyles.lightCardTitle;
+  TextStyle get priceText =>
+      _isDarkMode ? AppTextStyles.darkPriceText : AppTextStyles.lightPriceText;
+  TextStyle get ratingText => _isDarkMode
+      ? AppTextStyles.darkRatingText
+      : AppTextStyles.lightRatingText;
 
   bool get _isDarkMode {
     final brightness = MediaQuery.of(this).platformBrightness;
@@ -352,5 +361,5 @@ enum TextFieldType {
   date,
   currency,
   decimal,
-  custom
+  custom,
 }

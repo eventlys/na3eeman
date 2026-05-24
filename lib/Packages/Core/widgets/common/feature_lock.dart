@@ -174,7 +174,8 @@ class _LockOverlay extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Text("upgrade_to_unlock".tr(),
+          Text(
+            "upgrade_to_unlock".tr(),
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: Colors.white70),
@@ -194,7 +195,8 @@ class _LockOverlay extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
-              child: Text("upgrade_now".tr(),
+              child: Text(
+                "upgrade_now".tr(),
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ),

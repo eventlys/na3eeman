@@ -52,7 +52,9 @@ class PermissionGuard {
       case 'STAFF_MANAGEMENT':
         return userType.isManagement;
       case 'BOOKING_CONTROLS':
-        return userType.isExpertType || userType == UserType.receptionist || userType.isManagement;
+        return userType.isExpertType ||
+            userType == UserType.receptionist ||
+            userType.isManagement;
       default:
         return false;
     }

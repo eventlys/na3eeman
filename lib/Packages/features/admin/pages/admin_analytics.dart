@@ -28,7 +28,10 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('advanced_analytics'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'advanced_analytics'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -43,25 +46,38 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                   const SizedBox(height: 24),
                   _buildGrowthChart(provider.userStats?['growth_30d'] ?? []),
                   const SizedBox(height: 32),
-                  
+
                   Row(
                     children: [
-                      Expanded(child: _buildDistributionChart('user_roles'.tr(), provider.userStats?['distribution_by_role'] ?? [])),
+                      Expanded(
+                        child: _buildDistributionChart(
+                          'user_roles'.tr(),
+                          provider.userStats?['distribution_by_role'] ?? [],
+                        ),
+                      ),
                       const SizedBox(width: 16),
-                      Expanded(child: _buildDistributionChart('genders'.tr(), provider.userStats?['distribution_by_gender'] ?? [])),
+                      Expanded(
+                        child: _buildDistributionChart(
+                          'genders'.tr(),
+                          provider.userStats?['distribution_by_gender'] ?? [],
+                        ),
+                      ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 32),
                   _buildSectionHeader('top_performing_salons'.tr()),
                   const SizedBox(height: 16),
                   _buildTopSalonsList(provider.usageStats?['top_salons'] ?? []),
-                  
+
                   const SizedBox(height: 32),
                   _buildSectionHeader('appointment_status'.tr()),
                   const SizedBox(height: 16),
-                  _buildStatusDistribution(provider.usageStats?['appointment_status_distribution'] ?? []),
-                  
+                  _buildStatusDistribution(
+                    provider.usageStats?['appointment_status_distribution'] ??
+                        [],
+                  ),
+
                   const SizedBox(height: 48),
                 ],
               ),
@@ -78,11 +94,16 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
 
   Widget _buildGrowthChart(List<dynamic> data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     if (data.isEmpty) {
       return SizedBox(
         height: 200,
-        child: Center(child: Text('no_growth_data'.tr(), style: const TextStyle(color: AppColors.almostBlack300))),
+        child: Center(
+          child: Text(
+            'no_growth_data'.tr(),
+            style: const TextStyle(color: AppColors.almostBlack300),
+          ),
+        ),
       );
     }
 
@@ -96,7 +117,11 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: LineChart(
         LineChartData(
@@ -124,7 +149,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
 
   Widget _buildDistributionChart(String title, List<dynamic> data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     if (data.isEmpty) return const SizedBox();
 
     final colors = [
@@ -140,11 +165,22 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Column(
         children: [
-          Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: AppColors.almostBlack300,
+            ),
+          ),
           const SizedBox(height: 16),
           SizedBox(
             height: 100,
@@ -164,13 +200,20 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
             ),
           ),
           const SizedBox(height: 8),
-          ...data.take(3).map((item) => Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              '${item['role'] ?? item['gender'] ?? 'other'.tr()}: ${item['count']}',
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
-            ),
-          )),
+          ...data
+              .take(3)
+              .map(
+                (item) => Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    '${item['role'] ?? item['gender'] ?? 'other'.tr()}: ${item['count']}',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
         ],
       ),
     );
@@ -186,25 +229,51 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
           decoration: BoxDecoration(
             color: isDark ? AppColors.almostBlack600 : AppColors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+            border: Border.all(
+              color: isDark
+                  ? AppColors.white.withOpacity(0.05)
+                  : AppColors.almostBlack50,
+            ),
           ),
           child: Row(
             children: [
               CircleAvatar(
-                 backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                 child: Text(salon['salon_name'][0], style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+                backgroundColor: Theme.of(
+                  context,
+                ).primaryColor.withOpacity(0.1),
+                child: Text(
+                  salon['salon_name'][0],
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(salon['salon_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text('appointments_count_label'.tr(args: [salon['app_count'].toString()]), style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                    Text(
+                      salon['salon_name'],
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'appointments_count_label'.tr(
+                        args: [salon['app_count'].toString()],
+                      ),
+                      style: const TextStyle(
+                        color: AppColors.almostBlack300,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: AppColors.almostBlack100),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.almostBlack100,
+              ),
             ],
           ),
         );
@@ -219,7 +288,11 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Column(
         children: stats.map((s) {
@@ -234,11 +307,27 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Text(status, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                Text(
+                  status,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 const Spacer(),
-                Text(count.toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  count.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             ),
           );
@@ -247,4 +336,3 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
     );
   }
 }
-

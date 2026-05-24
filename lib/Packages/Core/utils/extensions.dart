@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' as intl;
 
-
 // Context extensions for easy access to theme, media query, etc.
 extension ContextExtensions on BuildContext {
   // Theme access
@@ -32,7 +31,8 @@ extension ContextExtensions on BuildContext {
   // Scaffold and dialogs
   ScaffoldState get scaffold => Scaffold.of(this);
   ScaffoldMessengerState get scaffoldMessenger => ScaffoldMessenger.of(this);
-  void showSnackBar(SnackBar snackBar) => scaffoldMessenger.showSnackBar(snackBar);
+  void showSnackBar(SnackBar snackBar) =>
+      scaffoldMessenger.showSnackBar(snackBar);
   void removeCurrentSnackBar() => scaffoldMessenger.removeCurrentSnackBar();
   void hideCurrentSnackBar() => scaffoldMessenger.hideCurrentSnackBar();
 
@@ -57,16 +57,21 @@ extension StringExtensions on String {
   // Validation
   bool get isNullOrEmpty => isEmpty;
   bool get isNotNullOrEmpty => !isNullOrEmpty;
-  bool get isEmail => RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(this);
+  bool get isEmail => RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  ).hasMatch(this);
   bool get isPhoneNumber => RegExp(r'^[+]?[0-9]{10,15}$').hasMatch(this);
-  bool get isURL => RegExp(r'^(https?://)?([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$').hasMatch(this);
+  bool get isURL =>
+      RegExp(r'^(https?://)?([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$').hasMatch(this);
   bool get isNumeric => double.tryParse(this) != null;
 
   // Formatting
-  String get capitalize => isNotEmpty ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String get capitalize =>
+      isNotEmpty ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
   String get titleCase => split(' ').map((str) => str.capitalize).join(' ');
   String get removeExtraSpaces => replaceAll(RegExp(r'\s+'), ' ').trim();
-  String get sanitizeFilename => replaceAll(RegExp(r'[^\w\s.-]'), '').replaceAll(' ', '_');
+  String get sanitizeFilename =>
+      replaceAll(RegExp(r'[^\w\s.-]'), '').replaceAll(' ', '_');
 
   // Truncation
   String truncate(int maxLength, {String suffix = '...'}) {
@@ -111,7 +116,8 @@ extension StringExtensions on String {
 // DateTime extensions
 extension DateTimeExtensions on DateTime {
   // Formatting
-  String format(String pattern, [String? locale]) => intl.DateFormat(pattern, locale).format(this);
+  String format(String pattern, [String? locale]) =>
+      intl.DateFormat(pattern, locale).format(this);
   String get yyyyMMdd => format('yyyy-MM-dd');
   String get ddMMyyyy => format('dd/MM/yyyy');
   String get hhmm => format('HH:mm');
@@ -125,8 +131,10 @@ extension DateTimeExtensions on DateTime {
     if (difference.inMinutes < 60) return '${difference.inMinutes}m ago';
     if (difference.inHours < 24) return '${difference.inHours}h ago';
     if (difference.inDays < 7) return '${difference.inDays}d ago';
-    if (difference.inDays < 30) return '${(difference.inDays / 7).floor()}w ago';
-    if (difference.inDays < 365) return '${(difference.inDays / 30).floor()}mo ago';
+    if (difference.inDays < 30)
+      return '${(difference.inDays / 7).floor()}w ago';
+    if (difference.inDays < 365)
+      return '${(difference.inDays / 30).floor()}mo ago';
     return '${(difference.inDays / 365).floor()}y ago';
   }
 
@@ -138,12 +146,16 @@ extension DateTimeExtensions on DateTime {
 
   bool get isTomorrow {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
-    return year == tomorrow.year && month == tomorrow.month && day == tomorrow.day;
+    return year == tomorrow.year &&
+        month == tomorrow.month &&
+        day == tomorrow.day;
   }
 
   bool get isYesterday {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    return year == yesterday.year && month == yesterday.month && day == yesterday.day;
+    return year == yesterday.year &&
+        month == yesterday.month &&
+        day == yesterday.day;
   }
 
   bool get isPast => isBefore(DateTime.now());
@@ -156,6 +168,7 @@ extension DateTimeExtensions on DateTime {
     final weekDay = weekday;
     return subtract(Duration(days: weekDay - 1));
   }
+
   DateTime get endOfWeek => startOfWeek.add(const Duration(days: 6));
   DateTime get startOfMonth => DateTime(year, month, 1);
   DateTime get endOfMonth => DateTime(year, month + 1, 0);
@@ -173,7 +186,9 @@ extension DateTimeExtensions on DateTime {
   // Week number
   int get weekNumber {
     final firstDay = DateTime(year, 1, 1);
-    final firstMonday = firstDay.add(Duration(days: (8 - firstDay.weekday) % 7));
+    final firstMonday = firstDay.add(
+      Duration(days: (8 - firstDay.weekday) % 7),
+    );
     if (isBefore(firstMonday)) {
       return DateTime(year - 1, 12, 28).weekNumber;
     }
@@ -205,17 +220,25 @@ extension NumberExtensions on num {
   }
 
   String formatDecimal([int decimalDigits = 2]) {
-    return intl.NumberFormat.decimalPatternDigits(decimalDigits: decimalDigits).format(this);
+    return intl.NumberFormat.decimalPatternDigits(
+      decimalDigits: decimalDigits,
+    ).format(this);
   }
 
   // Clamping
-  num clampNum(num min, num max) => this < min ? min : (this > max ? max : this);
+  num clampNum(num min, num max) =>
+      this < min ? min : (this > max ? max : this);
 
   // Percentage calculation
   num percentOf(num total) => total == 0 ? 0 : (this / total * 100);
 
   // Responsive sizing helper
-  double responsiveSize(BuildContext context, {double? mobile, double? tablet, double? desktop}) {
+  double responsiveSize(
+    BuildContext context, {
+    double? mobile,
+    double? tablet,
+    double? desktop,
+  }) {
     return context.responsiveValue(
       mobile: mobile ?? toDouble(),
       tablet: tablet ?? toDouble(),
@@ -236,7 +259,8 @@ extension ListExtensions<T> on List<T> {
   // Safe access
   T? get firstOrNull => isEmpty ? null : first;
   T? get lastOrNull => isEmpty ? null : last;
-  T? elementAtOrNull(int index) => (index >= 0 && index < length) ? this[index] : null;
+  T? elementAtOrNull(int index) =>
+      (index >= 0 && index < length) ? this[index] : null;
 
   // Manipulation
   List<T> separated(T separator) {
@@ -292,7 +316,9 @@ extension ColorExtensions on Color {
   Color lighten([double amount = 0.1]) {
     assert(amount >= 0 && amount <= 1);
     final hsl = HSLColor.fromColor(this);
-    final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+    final hslLight = hsl.withLightness(
+      (hsl.lightness + amount).clamp(0.0, 1.0),
+    );
     return hslLight.toColor();
   }
 
@@ -307,7 +333,8 @@ extension ColorExtensions on Color {
 
   // Conversion
   String toHex({bool withHash = true}) {
-    final hex = '${withHash ? '#' : ''}'
+    final hex =
+        '${withHash ? '#' : ''}'
         '${red.toRadixString(16).padLeft(2, '0')}'
         '${green.toRadixString(16).padLeft(2, '0')}'
         '${blue.toRadixString(16).padLeft(2, '0')}';
@@ -323,55 +350,84 @@ extension ColorExtensions on Color {
 
   // Gradient creation
   LinearGradient get toLinearGradient => LinearGradient(
-        colors: [this, darken(0.2)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: [this, darken(0.2)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   LinearGradient toLinearGradientWith(Color other) => LinearGradient(
-        colors: [this, other],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: [this, other],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
 
 // Widget extensions
 extension WidgetExtensions on Widget {
   // Padding
-  Widget paddingAll(double value) => Padding(padding: EdgeInsets.all(value), child: this);
+  Widget paddingAll(double value) =>
+      Padding(padding: EdgeInsets.all(value), child: this);
   Widget paddingSymmetric({double horizontal = 0, double vertical = 0}) =>
-      Padding(padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical), child: this);
-  Widget paddingOnly({double left = 0, double top = 0, double right = 0, double bottom = 0}) =>
-      Padding(padding: EdgeInsets.only(left: left, top: top, right: right, bottom: bottom), child: this);
+      Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontal,
+          vertical: vertical,
+        ),
+        child: this,
+      );
+  Widget paddingOnly({
+    double left = 0,
+    double top = 0,
+    double right = 0,
+    double bottom = 0,
+  }) => Padding(
+    padding: EdgeInsets.only(
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+    ),
+    child: this,
+  );
 
   // Margin
-  Widget marginAll(double value) => Container(margin: EdgeInsets.all(value), child: this);
+  Widget marginAll(double value) =>
+      Container(margin: EdgeInsets.all(value), child: this);
   Widget marginSymmetric({double horizontal = 0, double vertical = 0}) =>
-      Container(margin: EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical), child: this);
+      Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: horizontal,
+          vertical: vertical,
+        ),
+        child: this,
+      );
 
   // Alignment
-  Widget align([AlignmentGeometry alignment = Alignment.center]) => Align(alignment: alignment, child: this);
+  Widget align([AlignmentGeometry alignment = Alignment.center]) =>
+      Align(alignment: alignment, child: this);
   Widget center() => Center(child: this);
 
   // Gestures
   Widget onTap(VoidCallback onTap, {bool opaque = true}) => GestureDetector(
-        onTap: onTap,
-        behavior: opaque ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
-        child: this,
-      );
+    onTap: onTap,
+    behavior: opaque ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
+    child: this,
+  );
 
-  Widget onDoubleTap(VoidCallback onDoubleTap) => GestureDetector(onDoubleTap: onDoubleTap, child: this);
-  Widget onLongPress(VoidCallback onLongPress) => GestureDetector(onLongPress: onLongPress, child: this);
+  Widget onDoubleTap(VoidCallback onDoubleTap) =>
+      GestureDetector(onDoubleTap: onDoubleTap, child: this);
+  Widget onLongPress(VoidCallback onLongPress) =>
+      GestureDetector(onLongPress: onLongPress, child: this);
 
   // Visibility
   Widget visible(bool visible, {bool maintainState = false}) => Visibility(
-        visible: visible,
-        maintainState: maintainState,
-        maintainSize: maintainState,
-        maintainAnimation: maintainState,
-        maintainInteractivity: maintainState,
-        child: this,
-      );
+    visible: visible,
+    maintainState: maintainState,
+    maintainSize: maintainState,
+    maintainAnimation: maintainState,
+    maintainInteractivity: maintainState,
+    child: this,
+  );
 
   Widget opacity(double opacity) => Opacity(opacity: opacity, child: this);
 
@@ -381,39 +437,56 @@ extension WidgetExtensions on Widget {
     double? maxWidth,
     double? minHeight,
     double? maxHeight,
-  }) =>
-      ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: minWidth ?? 0,
-          maxWidth: maxWidth ?? double.infinity,
-          minHeight: minHeight ?? 0,
-          maxHeight: maxHeight ?? double.infinity,
-        ),
-        child: this,
-      );
+  }) => ConstrainedBox(
+    constraints: BoxConstraints(
+      minWidth: minWidth ?? 0,
+      maxWidth: maxWidth ?? double.infinity,
+      minHeight: minHeight ?? 0,
+      maxHeight: maxHeight ?? double.infinity,
+    ),
+    child: this,
+  );
 
   Widget expanded([int flex = 1]) => Expanded(flex: flex, child: this);
-  Widget flexible([int flex = 1, FlexFit fit = FlexFit.loose]) => Flexible(flex: flex, fit: fit, child: this);
+  Widget flexible([int flex = 1, FlexFit fit = FlexFit.loose]) =>
+      Flexible(flex: flex, fit: fit, child: this);
 
   // Sizing
-  Widget sized({double? width, double? height}) => SizedBox(width: width, height: height, child: this);
+  Widget sized({double? width, double? height}) =>
+      SizedBox(width: width, height: height, child: this);
   Widget width(double width) => SizedBox(width: width, child: this);
   Widget height(double height) => SizedBox(height: height, child: this);
 
   // Transformation
   Widget rotate(double angle) => Transform.rotate(angle: angle, child: this);
   Widget scale(double scale) => Transform.scale(scale: scale, child: this);
-  Widget translate({double x = 0, double y = 0}) => Transform.translate(offset: Offset(x, y), child: this);
+  Widget translate({double x = 0, double y = 0}) =>
+      Transform.translate(offset: Offset(x, y), child: this);
 
   // Decorations
-  Widget decorate(Decoration decoration) => DecoratedBox(decoration: decoration, child: this);
-  Widget background(Color color) => DecoratedBox(decoration: BoxDecoration(color: color), child: this);
-  Widget rounded(double radius) => ClipRRect(borderRadius: BorderRadius.circular(radius), child: this);
-  Widget circular(double radius) => ClipOval(child: SizedBox(width: radius * 2, height: radius * 2, child: this));
+  Widget decorate(Decoration decoration) =>
+      DecoratedBox(decoration: decoration, child: this);
+  Widget background(Color color) => DecoratedBox(
+    decoration: BoxDecoration(color: color),
+    child: this,
+  );
+  Widget rounded(double radius) =>
+      ClipRRect(borderRadius: BorderRadius.circular(radius), child: this);
+  Widget circular(double radius) => ClipOval(
+    child: SizedBox(width: radius * 2, height: radius * 2, child: this),
+  );
 
   // Tooltip
-  Widget withTooltip(String message, {Decoration? decoration, double? height}) =>
-      Tooltip(message: message, decoration: decoration, height: height, child: this);
+  Widget withTooltip(
+    String message, {
+    Decoration? decoration,
+    double? height,
+  }) => Tooltip(
+    message: message,
+    decoration: decoration,
+    height: height,
+    child: this,
+  );
 }
 
 // extension ObjectExtensions on Object {

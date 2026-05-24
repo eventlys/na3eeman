@@ -4,13 +4,15 @@ import '../storage_service.dart';
 
 class ThemeService {
   final UnifiedStorageService _storageService = UnifiedStorageService();
-  final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
+  final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(
+    ThemeMode.system,
+  );
   final ValueNotifier<String> themeModeNotifier = ValueNotifier('System');
 
   Future<void> init() async {
     // Load saved theme preference
     final savedTheme = _storageService.getPreference('theme_mode');
-    
+
     if (savedTheme != null) {
       switch (savedTheme) {
         case 'light':
@@ -35,7 +37,7 @@ class ThemeService {
 
   void changeTheme(ThemeMode themeMode) {
     themeNotifier.value = themeMode;
-    
+
     switch (themeMode) {
       case ThemeMode.light:
         themeModeNotifier.value = 'Light';
@@ -80,10 +82,7 @@ class ThemeService {
     primarySwatch: Colors.blue,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.grey[900],
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.grey[900],
-      elevation: 0,
-    ),
+    appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900], elevation: 0),
     cardTheme: CardThemeData(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

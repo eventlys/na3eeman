@@ -44,7 +44,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       // Use the AuthService through AuthProvider
-      final result = await authProvider.forgotPassword(_emailController.text.trim());
+      final result = await authProvider.forgotPassword(
+        _emailController.text.trim(),
+      );
 
       setState(() {
         _isLoading = false;
@@ -59,7 +61,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtpVerificationPage(email: _emailController.text.trim()),
+              builder: (context) =>
+                  OtpVerificationPage(email: _emailController.text.trim()),
             ),
           );
         }
@@ -76,7 +79,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return AuthScaffold(
       title: "forgot_password".tr(),
       subtitle: "enter_your_email_address_and_we_ll_send_you_a_one".tr(),
@@ -100,20 +103,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
+                  borderSide: BorderSide(
+                    color: isDark
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
+                  borderSide: BorderSide(
+                    color: isDark
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: isDark ? AppColor.darkPrimary : AppColor.lightPrimary),
+                  borderSide: BorderSide(
+                    color: isDark
+                        ? AppColor.darkPrimary
+                        : AppColor.lightPrimary,
+                  ),
                 ),
                 filled: true,
                 fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
                 labelStyle: TextStyle(
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               ),
               style: TextStyle(
@@ -123,7 +140,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
                 }
-                if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
+                if (!RegExp(
+                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                ).hasMatch(value)) {
                   return 'Please enter a valid email';
                 }
                 return null;
@@ -139,7 +158,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 text: "send_otp".tr(),
                 onPressed: _submitForgotPassword,
                 showRightIcon: true,
-                rightIcon: Icons.send, // Keeping Material icon for now, or replace with custom image icon
+                rightIcon: Icons
+                    .send, // Keeping Material icon for now, or replace with custom image icon
                 isLoading: _isLoading,
               ),
             ),
@@ -152,12 +172,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: _isSuccess
-                      ? (isDark ? AppColor.darkSuccess.withValues(alpha: 0.2) : AppColor.lightSuccess.withValues(alpha: 0.2))
-                      : (isDark ? AppColor.darkError.withValues(alpha: 0.2) : AppColor.lightError.withValues(alpha: 0.2)),
+                      ? (isDark
+                            ? AppColor.darkSuccess.withValues(alpha: 0.2)
+                            : AppColor.lightSuccess.withValues(alpha: 0.2))
+                      : (isDark
+                            ? AppColor.darkError.withValues(alpha: 0.2)
+                            : AppColor.lightError.withValues(alpha: 0.2)),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: _isSuccess
-                        ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
+                        ? (isDark
+                              ? AppColor.darkSuccess
+                              : AppColor.lightSuccess)
                         : (isDark ? AppColor.darkError : AppColor.lightError),
                     width: 1,
                   ),
@@ -168,11 +194,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     Row(
                       children: [
                         ImageIcon(
-                          AssetImage(_isSuccess ? AppImages.check : AppImages.error_view),
+                          AssetImage(
+                            _isSuccess ? AppImages.check : AppImages.error_view,
+                          ),
                           size: 20,
                           color: _isSuccess
-                              ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
-                              : (isDark ? AppColor.darkError : AppColor.lightError),
+                              ? (isDark
+                                    ? AppColor.darkSuccess
+                                    : AppColor.lightSuccess)
+                              : (isDark
+                                    ? AppColor.darkError
+                                    : AppColor.lightError),
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -180,8 +212,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: _isSuccess
-                                ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
-                                : (isDark ? AppColor.darkError : AppColor.lightError),
+                                ? (isDark
+                                      ? AppColor.darkSuccess
+                                      : AppColor.lightSuccess)
+                                : (isDark
+                                      ? AppColor.darkError
+                                      : AppColor.lightError),
                           ),
                         ),
                       ],
@@ -191,8 +227,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       _message,
                       style: TextStyle(
                         color: _isSuccess
-                            ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
-                            : (isDark ? AppColor.darkError : AppColor.lightError),
+                            ? (isDark
+                                  ? AppColor.darkSuccess
+                                  : AppColor.lightSuccess)
+                            : (isDark
+                                  ? AppColor.darkError
+                                  : AppColor.lightError),
                       ),
                     ),
                     if (_isSuccess) ...[
@@ -202,7 +242,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           ImageIcon(
                             AssetImage(AppImages.info),
                             size: 16,
-                            color: isDark ? AppColor.darkWarning : AppColor.lightWarning,
+                            color: isDark
+                                ? AppColor.darkWarning
+                                : AppColor.lightWarning,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -211,7 +253,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontStyle: FontStyle.italic,
-                                color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                                color: isDark
+                                    ? AppColor.darkTextSecondary
+                                    : AppColor.lightTextSecondary,
                               ),
                             ),
                           ),
@@ -223,18 +267,23 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ),
 
             const SizedBox(height: 48),
-            
+
             // Back to Login
             Center(
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
                 style: TextButton.styleFrom(
-                  foregroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
+                  foregroundColor: isDark
+                      ? AppColor.darkPrimary
+                      : AppColor.lightPrimary,
                 ),
-                child: Text("back_to_login".tr(),
+                child: Text(
+                  "back_to_login".tr(),
                   style: TextStyle(
                     fontSize: 16,
-                    color: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
+                    color: isDark
+                        ? AppColor.darkPrimary
+                        : AppColor.lightPrimary,
                   ),
                 ),
               ),

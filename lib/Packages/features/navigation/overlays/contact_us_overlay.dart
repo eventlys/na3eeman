@@ -48,44 +48,44 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: const BoxConstraints(maxHeight: 700),
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      _buildContactInfo(),
-                      const SizedBox(height: 20),
-                      _buildFormFields(),
-                    ],
-                  ),
+      constraints: const BoxConstraints(maxHeight: 700),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    _buildContactInfo(),
+                    const SizedBox(height: 20),
+                    _buildFormFields(),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0x80806C99),
-                  shadowColor: Colors.transparent,
-                  side: BorderSide(color: Color(0xff806C99)),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'Send Message',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _submitForm,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0x80806C99),
+                shadowColor: Colors.transparent,
+                side: BorderSide(color: Color(0xff806C99)),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text(
+                'Send Message',
+                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -133,10 +133,7 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
         DropdownButtonFormField<String>(
           initialValue: _selectedCategory,
           items: _categories.map((String category) {
-            return DropdownMenuItem(
-              value: category,
-              child: Text(category),
-            );
+            return DropdownMenuItem(value: category, child: Text(category));
           }).toList(),
           onChanged: (String? newValue) {
             setState(() {
@@ -221,4 +218,3 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
     );
   }
 }
-

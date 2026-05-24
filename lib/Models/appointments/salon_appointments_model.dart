@@ -76,11 +76,15 @@ class SalonAppointment {
       arrivalTime: json['arrival_time'] != null
           ? DateTime.parse(json['arrival_time'] as String)
           : null,
-      status: AppointmentStatusExtension.fromString(json['status'] as String? ?? 'SCHEDULED'),
+      status: AppointmentStatusExtension.fromString(
+        json['status'] as String? ?? 'SCHEDULED',
+      ),
       isFree: json['is_free'] as bool? ?? false,
       bookingGroupId: json['booking_group_id']?.toString(),
       requestedStyleId: json['style'] as int?,
-      attendeeType: AttendeeTypeExtension.fromString(json['attendee_type'] as String? ?? 'SELF'),
+      attendeeType: AttendeeTypeExtension.fromString(
+        json['attendee_type'] as String? ?? 'SELF',
+      ),
       recurrence: json['recurrence'] != null
           ? RecurrenceTypeExtension.fromString(json['recurrence'] as String)
           : null,
@@ -89,7 +93,9 @@ class SalonAppointment {
           : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       services: json['services'] != null
-          ? (json['services'] as List).map((s) => AppointmentServiceModel.fromJson(s)).toList()
+          ? (json['services'] as List)
+                .map((s) => AppointmentServiceModel.fromJson(s))
+                .toList()
           : [],
       payment: json['payment'] != null
           ? Payment.fromJson(json['payment'])
@@ -103,8 +109,12 @@ class SalonAppointment {
       giftLink: json['gift_link'] as String?,
       totalAmount: (json['total_amount'] as num?)?.toDouble(),
       depositAmount: (json['deposit_amount'] as num?)?.toDouble(),
-      customerName: json['customer'] is Map ? "${json['customer']['first_name']} ${json['customer']['last_name']}" : null,
-      expertName: json['expert_info'] is Map ? "${json['expert_info']['first_name']} ${json['expert_info']['last_name']}" : null,
+      customerName: json['customer'] is Map
+          ? "${json['customer']['first_name']} ${json['customer']['last_name']}"
+          : null,
+      expertName: json['expert_info'] is Map
+          ? "${json['expert_info']['first_name']} ${json['expert_info']['last_name']}"
+          : null,
     );
   }
 
@@ -174,7 +184,8 @@ class Payment {
   final String id;
   final String appointmentId;
   final double amount;
-  final String method; // 'CASH', 'VISA', 'CLIQ', 'SUBSCRIPTION', 'POINTS', 'VOUCHER'
+  final String
+  method; // 'CASH', 'VISA', 'CLIQ', 'SUBSCRIPTION', 'POINTS', 'VOUCHER'
   final String status; // 'PENDING', 'PAID', 'FAILED', 'REFUNDED', 'REPORTED'
   final String? transactionId;
   final bool isDeposit;

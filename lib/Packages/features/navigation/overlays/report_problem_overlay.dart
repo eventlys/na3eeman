@@ -26,9 +26,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
             children: [
               DropdownButtonFormField<String>(
                 initialValue: _problemType,
-                decoration: const InputDecoration(
-                  labelText: 'Problem Type',
-                ),
+                decoration: const InputDecoration(labelText: 'Problem Type'),
                 items: [
                   DropdownMenuItem(
                     value: 'bug',
@@ -42,10 +40,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
                     value: 'feature',
                     child: Text("feature_request".tr()),
                   ),
-                  DropdownMenuItem(
-                    value: 'other',
-                    child: Text("other".tr()),
-                  ),
+                  DropdownMenuItem(value: 'other', child: Text("other".tr())),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -117,4 +112,3 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
     super.dispose();
   }
 }
-

@@ -13,7 +13,8 @@ class ToolsAndInventoryPage extends StatefulWidget {
   State<ToolsAndInventoryPage> createState() => _ToolsAndInventoryPageState();
 }
 
-class _ToolsAndInventoryPageState extends State<ToolsAndInventoryPage> with SingleTickerProviderStateMixin {
+class _ToolsAndInventoryPageState extends State<ToolsAndInventoryPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -39,7 +40,10 @@ class _ToolsAndInventoryPageState extends State<ToolsAndInventoryPage> with Sing
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Tools & Inventory'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Tools & Inventory'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButtonStyled(

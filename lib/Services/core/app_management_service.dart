@@ -15,7 +15,8 @@ import 'user_service.dart';
 import '../ui/sidebar_navigation_service.dart';
 
 class AppManagementService with WidgetsBindingObserver {
-  static final AppManagementService _instance = AppManagementService._internal();
+  static final AppManagementService _instance =
+      AppManagementService._internal();
 
   factory AppManagementService() => _instance;
 
@@ -28,7 +29,8 @@ class AppManagementService with WidgetsBindingObserver {
   // Updated Services
   final SecurityService _securityService = SecurityService();
   final UnifiedStorageService _storageService = UnifiedStorageService();
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
 
   // Configuration
   static String get _baseUrl => AppConfig.baseUrl;
@@ -84,10 +86,10 @@ class AppManagementService with WidgetsBindingObserver {
 
     const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     const InitializationSettings settings = InitializationSettings(
       android: androidSettings,
@@ -163,10 +165,10 @@ class AppManagementService with WidgetsBindingObserver {
       final deviceInfo = await DeviceInfoPlugin().deviceInfo;
       final platform = _getPlatform(deviceInfo);
 
-      AppLogger.debug('Checking for update', extra: {
-        'current_version': packageInfo.version,
-        'platform': platform,
-      });
+      AppLogger.debug(
+        'Checking for update',
+        extra: {'current_version': packageInfo.version, 'platform': platform},
+      );
 
       // Use the new SecurityService for secure requests
       final response = await _securityService.secureGet(
@@ -184,10 +186,7 @@ class AppManagementService with WidgetsBindingObserver {
       }
     } catch (e) {
       AppLogger.error('Update check failed: $e');
-      return AppUpdateInfo(
-        updateAvailable: false,
-        currentVersion: '1.0.0',
-      );
+      return AppUpdateInfo(updateAvailable: false, currentVersion: '1.0.0');
     }
   }
 
@@ -224,7 +223,9 @@ class AppManagementService with WidgetsBindingObserver {
         notificationTask,
         notificationTask,
         frequency: const Duration(hours: 24),
-        initialDelay: _calculateInitialDelay(const TimeOfDay(hour: 9, minute: 0)),
+        initialDelay: _calculateInitialDelay(
+          const TimeOfDay(hour: 9, minute: 0),
+        ),
       );
 
       // Sync loyalty data every 12 hours
@@ -248,7 +249,10 @@ class AppManagementService with WidgetsBindingObserver {
     }
   }
 
-  void scheduleAppointmentReminder(String appointmentId, DateTime reminderTime) {
+  void scheduleAppointmentReminder(
+    String appointmentId,
+    DateTime reminderTime,
+  ) {
     try {
       final now = DateTime.now();
       final delay = reminderTime.difference(now);
@@ -273,11 +277,14 @@ class AppManagementService with WidgetsBindingObserver {
     final path = uri.path;
     final queryParams = uri.queryParameters;
 
-    _logAnalyticsEvent('deep_link_opened', parameters: {
-      'url': uri.toString(),
-      'path': path,
-      'query_params': queryParams,
-    });
+    _logAnalyticsEvent(
+      'deep_link_opened',
+      parameters: {
+        'url': uri.toString(),
+        'path': path,
+        'query_params': queryParams,
+      },
+    );
 
     switch (path) {
       case '/salon':
@@ -311,7 +318,9 @@ class AppManagementService with WidgetsBindingObserver {
     try {
       AppLogger.debug('GET: {$_baseUrl/users/statistics/}');
 
-      final response = await _securityService.secureGet('$_baseUrl/users/statistics/');
+      final response = await _securityService.secureGet(
+        '$_baseUrl/users/statistics/',
+      );
       final responseBody = await response.transform(utf8.decoder).join();
       AppLogger.debug('Response: ${response.statusCode} - $responseBody');
 
@@ -319,7 +328,9 @@ class AppManagementService with WidgetsBindingObserver {
         final data = json.decode(responseBody);
         return UserStatistics.fromJson(data);
       } else {
-        throw Exception('Failed to fetch user statistics: ${response.statusCode}');
+        throw Exception(
+          'Failed to fetch user statistics: ${response.statusCode}',
+        );
       }
     } catch (error) {
       AppLogger.error('Error fetching user statistics: $error');
@@ -361,8 +372,11 @@ class AppManagementService with WidgetsBindingObserver {
   Duration _calculateInitialDelay(TimeOfDay notificationTime) {
     final now = DateTime.now();
     final scheduledTime = DateTime(
-      now.year, now.month, now.day,
-      notificationTime.hour, notificationTime.minute,
+      now.year,
+      now.month,
+      now.day,
+      notificationTime.hour,
+      notificationTime.minute,
     );
 
     if (scheduledTime.isBefore(now)) {
@@ -450,7 +464,9 @@ class AppManagementService with WidgetsBindingObserver {
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  Future<void> _handleAppointmentReminders(Map<String, dynamic>? inputData) async {
+  Future<void> _handleAppointmentReminders(
+    Map<String, dynamic>? inputData,
+  ) async {
     try {
       final appointmentId = inputData?['appointment_id'] as String?;
       appointmentId != null
@@ -502,7 +518,10 @@ class AppManagementService with WidgetsBindingObserver {
   void _navigateToFreeHaircut(int customerId) {}
 
   void _handleUnknownDeepLink(Uri uri) {
-    _logAnalyticsEvent('unknown_deep_link', parameters: {'url': uri.toString()});
+    _logAnalyticsEvent(
+      'unknown_deep_link',
+      parameters: {'url': uri.toString()},
+    );
   }
 
   // Cleanup

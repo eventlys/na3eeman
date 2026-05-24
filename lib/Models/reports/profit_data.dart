@@ -20,9 +20,21 @@ class ProfitData {
   factory ProfitData.fromJson(Map<String, dynamic> json) {
     return ProfitData(
       date: DateTime.parse(json['date']),
-      revenue: (json['revenue'] is double ? json['revenue'] : double.tryParse(json['revenue']?.toString() ?? '0.0')) ?? 0.0,
-      profit: (json['profit'] is double ? json['profit'] : double.tryParse(json['profit']?.toString() ?? '0.0')) ?? 0.0,
-      expenses: (json['expenses'] is double ? json['expenses'] : double.tryParse(json['expenses']?.toString() ?? '0.0')) ?? 0.0,
+      revenue:
+          (json['revenue'] is double
+              ? json['revenue']
+              : double.tryParse(json['revenue']?.toString() ?? '0.0')) ??
+          0.0,
+      profit:
+          (json['profit'] is double
+              ? json['profit']
+              : double.tryParse(json['profit']?.toString() ?? '0.0')) ??
+          0.0,
+      expenses:
+          (json['expenses'] is double
+              ? json['expenses']
+              : double.tryParse(json['expenses']?.toString() ?? '0.0')) ??
+          0.0,
       tips: (json['tips'] as num?)?.toDouble() ?? 0.0,
       appointments: json['appointments'] as int? ?? 0,
       salonId: json['salon'] as int,
@@ -70,18 +82,21 @@ class ProfitReport {
   factory ProfitReport.fromJson(Map<String, dynamic> json) {
     return ProfitReport(
       monthlyData: List<ProfitData>.from(
-        (json['monthly_data'] ?? []).map((x) => ProfitData.fromJson(x))
+        (json['monthly_data'] ?? []).map((x) => ProfitData.fromJson(x)),
       ),
       yearlyData: List<ProfitData>.from(
-        (json['yearly_data'] ?? []).map((x) => ProfitData.fromJson(x))
+        (json['yearly_data'] ?? []).map((x) => ProfitData.fromJson(x)),
       ),
       totalRevenue: (json['total_revenue'] as num?)?.toDouble() ?? 0.0,
       totalProfit: (json['total_profit'] as num?)?.toDouble() ?? 0.0,
       totalExpenses: (json['total_expenses'] as num?)?.toDouble() ?? 0.0,
       totalTips: (json['total_tips'] as num?)?.toDouble() ?? 0.0,
       totalAppointments: json['total_appointments'] as int? ?? 0,
-      averageProfitMargin: (json['average_profit_margin'] as num?)?.toDouble() ?? 0.0,
-      reportDate: DateTime.parse(json['report_date'] as String? ?? DateTime.now().toString()),
+      averageProfitMargin:
+          (json['average_profit_margin'] as num?)?.toDouble() ?? 0.0,
+      reportDate: DateTime.parse(
+        json['report_date'] as String? ?? DateTime.now().toString(),
+      ),
     );
   }
 
@@ -99,5 +114,6 @@ class ProfitReport {
     };
   }
 
-  double get overallProfitMargin => totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+  double get overallProfitMargin =>
+      totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 }

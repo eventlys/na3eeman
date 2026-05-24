@@ -1,24 +1,8 @@
-enum ReportType {
-  user,
-  salon,
-  content,
-  staff,
-  financial,
-  inventory
-}
+enum ReportType { user, salon, content, staff, financial, inventory }
 
-enum ReportTime {
-  daily,
-  weekly,
-  monthly,
-  annually
-}
+enum ReportTime { daily, weekly, monthly, annually }
 
-enum ReportFormat {
-  pdf,
-  excel,
-  csv
-}
+enum ReportFormat { pdf, excel, csv }
 
 enum StaffReportType {
   daily,
@@ -27,6 +11,5 @@ enum StaffReportType {
   annually,
   performance,
   payroll,
-  attendance
+  attendance,
 }
-

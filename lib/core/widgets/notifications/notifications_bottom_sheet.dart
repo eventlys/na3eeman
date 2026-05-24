@@ -36,31 +36,52 @@ class _NotificationsContent extends StatelessWidget {
           Container(
             width: 40,
             height: 5,
-            decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("notifications".tr(), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                "notifications".tr(),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               if (provider.unreadCount > 0)
                 TextButton(
                   onPressed: () => provider.markAllRead(),
-                  child: Text("mark_all_read".tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
+                  child: Text(
+                    "mark_all_read".tr(),
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
                 ),
             ],
           ),
           const SizedBox(height: 16),
           if (provider.isLoading && provider.notifications.isEmpty)
-            const Padding(padding: EdgeInsets.all(40), child: CircularProgressIndicator())
+            const Padding(
+              padding: EdgeInsets.all(40),
+              child: CircularProgressIndicator(),
+            )
           else if (provider.notifications.isEmpty)
             Padding(
               padding: const EdgeInsets.all(40),
               child: Column(
                 children: [
-                  Icon(Icons.notifications_none_rounded, size: 48, color: AppColors.almostBlack200),
+                  Icon(
+                    Icons.notifications_none_rounded,
+                    size: 48,
+                    color: AppColors.almostBlack200,
+                  ),
                   const SizedBox(height: 12),
-                  Text('No notifications', style: TextStyle(color: AppColors.almostBlack300)),
+                  Text(
+                    'no_notifications'.tr(),
+                    style: TextStyle(color: AppColors.almostBlack300),
+                  ),
                 ],
               ),
             )
@@ -76,27 +97,43 @@ class _NotificationsContent extends StatelessWidget {
                     onTap: !isRead ? () => provider.markRead(n['id']) : null,
                     contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
-                      backgroundColor: isRead ? Colors.grey.withOpacity(0.05) : Theme.of(context).primaryColor.withOpacity(0.1),
+                      backgroundColor: isRead
+                          ? Colors.grey.withOpacity(0.05)
+                          : Theme.of(context).primaryColor.withOpacity(0.1),
                       child: Icon(
-                        isRead ? Icons.notifications_none_rounded : Icons.notifications_active_rounded, 
-                        color: isRead ? AppColors.almostBlack300 : Theme.of(context).primaryColor,
+                        isRead
+                            ? Icons.notifications_none_rounded
+                            : Icons.notifications_active_rounded,
+                        color: isRead
+                            ? AppColors.almostBlack300
+                            : Theme.of(context).primaryColor,
                         size: 20,
                       ),
                     ),
                     title: Text(
-                      n['title'] ?? 'System Update', 
+                      n['title'] ?? 'System Update',
                       style: TextStyle(
-                        fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                        fontWeight: isRead
+                            ? FontWeight.normal
+                            : FontWeight.bold,
                         fontSize: 14,
                       ),
                     ),
                     subtitle: Text(
-                      n['message'] ?? '', 
-                      style: TextStyle(fontSize: 12, color: isRead ? AppColors.almostBlack300 : AppColors.almostBlack500),
+                      n['message'] ?? '',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isRead
+                            ? AppColors.almostBlack300
+                            : AppColors.almostBlack500,
+                      ),
                     ),
                     trailing: Text(
-                      _formatDate(n['created_at']), 
-                      style: const TextStyle(fontSize: 10, color: AppColors.almostBlack200),
+                      _formatDate(n['created_at']),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: AppColors.almostBlack200,
+                      ),
                     ),
                   );
                 },

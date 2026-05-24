@@ -16,12 +16,12 @@ class PendingConfirmations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark 
+        color: isDark
             ? AppColor.darkCard.withValues(alpha: 0.9)
             : AppColor.lightCard.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(16),
@@ -38,7 +38,8 @@ class PendingConfirmations extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("pending_confirmations".tr(),
+          Text(
+            "pending_confirmations".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -46,13 +47,15 @@ class PendingConfirmations extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ...pendingConfirmations.map((confirmation) => _ConfirmationItem(
-                confirmation: confirmation,
-                onConfirm: () {
-                  final id = confirmation['id'] as int;
-                  onConfirmationSuccess(id);
-                },
-              )),
+          ...pendingConfirmations.map(
+            (confirmation) => _ConfirmationItem(
+              confirmation: confirmation,
+              onConfirm: () {
+                final id = confirmation['id'] as int;
+                onConfirmationSuccess(id);
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -71,7 +74,7 @@ class _ConfirmationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
@@ -104,14 +107,18 @@ class _ConfirmationItem extends StatelessWidget {
                 Text(
                   confirmation['service'] ?? 'Service',
                   style: TextStyle(
-                    color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDark
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   confirmation['time'] ?? 'Time',
                   style: TextStyle(
-                    color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDark
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                     fontSize: 12,
                   ),
                 ),
@@ -121,7 +128,9 @@ class _ConfirmationItem extends StatelessWidget {
           ElevatedButton(
             onPressed: onConfirm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
+              backgroundColor: isDark
+                  ? AppColor.darkSuccess
+                  : AppColor.lightSuccess,
               foregroundColor: AppColor.light,
             ),
             child: Text("confirm".tr()),

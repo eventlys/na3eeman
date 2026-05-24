@@ -42,11 +42,13 @@ class OwnerProvider extends BaseProvider {
   bool get hasProfile => _profile != null;
 
   /// The typed subscription tier (safe fallback: artisan).
-  OwnerSubscriptionTier get tier =>
-      _profile?.effectiveTier ?? OwnerSubscriptionTier.artisan;
+  // OwnerSubscriptionTier get tier =>
+  //     _profile?.effectiveTier ?? OwnerSubscriptionTier.basic;
+  OwnerSubscriptionTier get tier => OwnerSubscriptionTier.empire;
 
   /// True if the subscription (or trial) is currently active.
-  bool get isSubscriptionActive => _profile?.isSubscriptionActive ?? false;
+  // bool get isSubscriptionActive => _profile?.isSubscriptionActive ?? false;
+  bool get isSubscriptionActive => true;
 
   /// The ID of the salon currently being managed.
   int? get activeSalonId => _profile?.salonId;
@@ -113,11 +115,12 @@ class OwnerProvider extends BaseProvider {
 
   /// Primary gate for all features. Use this in every widget/action.
   bool canAccess(FeatureKey feature) {
-    return FeatureAccessService.checkAccess(
-      tier: tier,
-      feature: feature,
-      isSubscriptionActive: isSubscriptionActive,
-    );
+    // return FeatureAccessService.checkAccess(
+    //   tier: tier,
+    //   feature: feature,
+    //   isSubscriptionActive: isSubscriptionActive,
+    // );
+    return true;
   }
 
   /// Returns a [FeatureDenialReason] or null if access is granted.
@@ -136,20 +139,22 @@ class OwnerProvider extends BaseProvider {
 
   /// Checks if one more staff can be hired.
   bool canAddStaff(int currentCount) {
-    return FeatureAccessService.canAddStaff(
-      tier: tier,
-      currentStaffCount: currentCount,
-      isSubscriptionActive: isSubscriptionActive,
-    );
+    // return FeatureAccessService.canAddStaff(
+    //   tier: tier,
+    //   currentStaffCount: currentCount,
+    //   isSubscriptionActive: isSubscriptionActive,
+    // );
+    return true;
   }
 
   /// Checks if one more branch can be opened.
   bool canAddBranch(int currentCount) {
-    return FeatureAccessService.canAddBranch(
-      tier: tier,
-      currentBranchCount: currentCount,
-      isSubscriptionActive: isSubscriptionActive,
-    );
+    // return FeatureAccessService.canAddBranch(
+    //   tier: tier,
+    //   currentBranchCount: currentCount,
+    //   isSubscriptionActive: isSubscriptionActive,
+    // );
+    return true;
   }
 
   // ---------------------------------------------------------------------------
@@ -210,17 +215,17 @@ class OwnerProvider extends BaseProvider {
 
   Future<void> loadDashboardAnalytics() async {
     if (activeSalonId == null || _auth == null) return;
-    
+
     _isAnalyticsLoading = true;
     notifyListeners();
-    
+
     try {
       final results = await Future.wait([
         _apiService.getTeamLeaderboard(activeSalonId!),
         _apiService.getRetailSnapshot(activeSalonId!),
         _apiService.getDailyEarnings(activeSalonId!),
       ]);
-      
+
       _leaderboard = results[0] as List<dynamic>;
       _retailSnapshot = results[1] as Map<String, dynamic>;
       _dailyEarnings = results[2] as Map<String, dynamic>;

@@ -17,11 +17,14 @@ class UnifiedProfitLossWidget extends StatelessWidget {
     final snapshot = owner.retailSnapshot;
 
     final salesToday = (snapshot['sales_today'] as num?)?.toDouble() ?? 0.0;
-    final weeklySales = snapshot['weekly_sales'] as List? ?? [0, 0, 0, 0, 0, 0, 0];
+    final weeklySales =
+        snapshot['weekly_sales'] as List? ?? [0, 0, 0, 0, 0, 0, 0];
 
     // Calculate weekly total from the flat list
     final weeklyTotal = weeklySales.fold<double>(
-        0.0, (sum, v) => sum + ((v as num?)?.toDouble() ?? 0.0));
+      0.0,
+      (sum, v) => sum + ((v as num?)?.toDouble() ?? 0.0),
+    );
 
     // Expenses tracking is a future feature — show as placeholder
     const expenses = 0.0;
@@ -40,18 +43,25 @@ class UnifiedProfitLossWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.account_balance_rounded,
-                size: 18, color: theme.primaryColor),
+            Icon(
+              Icons.account_balance_rounded,
+              size: 18,
+              color: theme.primaryColor,
+            ),
             const SizedBox(width: 8),
-            Text("unified_pl".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "unified_pl".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             if (owner.isAnalyticsLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 14),
@@ -59,17 +69,22 @@ class UnifiedProfitLossWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _PLStat(
-                'Revenue (7d)',
-                'JD ${(weeklyTotal / 1000).toStringAsFixed(1)}k',
-                Colors.green),
+              'Revenue (7d)',
+              'JD ${(weeklyTotal / 1000).toStringAsFixed(1)}k',
+              Colors.green,
+            ),
             _PLStat(
-                'Today',
-                'JD ${salesToday.toStringAsFixed(0)}',
-                theme.primaryColor),
+              'Today',
+              'JD ${salesToday.toStringAsFixed(0)}',
+              theme.primaryColor,
+            ),
             _PLStat(
-                'Expenses',
-                expenses == 0 ? 'N/A' : '-JD ${(expenses / 1000).toStringAsFixed(1)}k',
-                Colors.red),
+              'Expenses',
+              expenses == 0
+                  ? 'N/A'
+                  : '-JD ${(expenses / 1000).toStringAsFixed(1)}k',
+              Colors.red,
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -108,21 +123,24 @@ class UnifiedProfitLossWidget extends StatelessWidget {
                     borderData: FlBorderData(show: false),
                     titlesData: const FlTitlesData(
                       leftTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                       rightTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                       topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                       bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
                   ),
                 )
               : Center(
                   child: Text(
                     'No revenue data for this week yet.',
-                    style: TextStyle(
-                        color: theme.hintColor, fontSize: 12),
+                    style: TextStyle(color: theme.hintColor, fontSize: 12),
                   ),
                 ),
         ),
@@ -139,13 +157,17 @@ class _PLStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        children: [
-          Text(value,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 16, color: color)),
-          const SizedBox(height: 2),
-          Text(label,
-              style: const TextStyle(fontSize: 11, color: Colors.grey)),
-        ],
-      );
+    children: [
+      Text(
+        value,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: color,
+        ),
+      ),
+      const SizedBox(height: 2),
+      Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+    ],
+  );
 }

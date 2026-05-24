@@ -79,31 +79,55 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '') ?? 0,
       email: json['email']?.toString() ?? '',
-      username: json['username']?.toString() ?? json['email']?.split('@')[0] ?? '',
-      firstName: json['first_name']?.toString() ?? json['firstName']?.toString() ?? '',
-      lastName: json['last_name']?.toString() ?? json['lastName']?.toString() ?? '',
-      userType: UserType.fromString(json['user_type']?.toString() ?? json['role']?.toString() ?? 'CUSTOMER'),
+      username:
+          json['username']?.toString() ?? json['email']?.split('@')[0] ?? '',
+      firstName:
+          json['first_name']?.toString() ?? json['firstName']?.toString() ?? '',
+      lastName:
+          json['last_name']?.toString() ?? json['lastName']?.toString() ?? '',
+      userType: UserType.fromString(
+        json['user_type']?.toString() ?? json['role']?.toString() ?? 'CUSTOMER',
+      ),
       gender: GenderExtension.fromString(json['gender']?.toString() ?? 'MALE'),
-      profilePic: json['profile_pic']?.toString() ?? json['profile_image']?.toString(),
+      profilePic:
+          json['profile_pic']?.toString() ?? json['profile_image']?.toString(),
       phone: json['phone']?.toString() ?? json['phone_number']?.toString(),
       location: json['location']?.toString(),
-      salonId: json['salon_id'] is int ? json['salon_id'] : int.tryParse(json['salon_id']?.toString() ?? ''),
-      subscriptionTier: json['subscription_tier'] != null ? SubscriptionTier.values.firstWhere((e) => e.name.toUpperCase() == json['subscription_tier'].toString().toUpperCase(), orElse: () => SubscriptionTier.basic) : null,
+      salonId: json['salon_id'] is int
+          ? json['salon_id']
+          : int.tryParse(json['salon_id']?.toString() ?? ''),
+      subscriptionTier: json['subscription_tier'] != null
+          ? SubscriptionTier.values.firstWhere(
+              (e) =>
+                  e.name.toUpperCase() ==
+                  json['subscription_tier'].toString().toUpperCase(),
+              orElse: () => SubscriptionTier.basic,
+            )
+          : null,
       specialization: json['specialization']?.toString(),
       isOnline: (json['is_online'] ?? false) as bool,
       lat: (json['lat'] as num?)?.toDouble(),
       lng: (json['lng'] as num?)?.toDouble(),
-      isEmailVerified: (json['is_email_verified'] ?? json['isVerified'] ?? false) as bool,
+      isEmailVerified:
+          (json['is_email_verified'] ?? json['isVerified'] ?? false) as bool,
       isPhoneVerified: (json['is_phone_verified'] ?? false) as bool,
       isDeleted: (json['is_deleted'] ?? false) as bool,
-      deletedAt: json['deleted_at'] != null ? DateTime.tryParse(json['deleted_at'].toString()) : null,
+      deletedAt: json['deleted_at'] != null
+          ? DateTime.tryParse(json['deleted_at'].toString())
+          : null,
       isActive: (json['is_active'] ?? true) as bool,
       isStaff: (json['is_staff'] ?? false) as bool,
       isSuperuser: (json['is_superuser'] ?? false) as bool,
-      createdAt: DateTime.parse(json['created_at']?.toString() ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updated_at']?.toString() ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['created_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updated_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
       otpPassword: json['otp_password']?.toString(),
       otpUsed: (json['otp_used'] ?? false) as bool,
       metadata: json['metadata'],

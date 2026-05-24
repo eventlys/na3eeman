@@ -27,7 +27,10 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AlertDialog(
-      title: Text('Shadowing ${widget.staffName}', style: const TextStyle(fontWeight: FontWeight.bold)),
+      title: Text(
+        'Shadowing ${widget.staffName}',
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
       content: Form(
         key: _formKey,
         child: Column(
@@ -44,7 +47,9 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'e.g., Learning fade technique',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -63,7 +68,9 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
         ),
         ElevatedButton(
           onPressed: _handleSubmit,
-          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
           child: Text("confirm".tr(), style: TextStyle(color: Colors.white)),
         ),
       ],
@@ -75,10 +82,12 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
       // Logic would be here to store to database
       // Mocking the success for now
       Navigator.pop(context, _feedbackController.text);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Attached to ${widget.staffName}. Notifications sent to Owner & Receptionist.'),
+          content: Text(
+            'Attached to ${widget.staffName}. Notifications sent to Owner & Receptionist.',
+          ),
           backgroundColor: AppColors.success,
         ),
       );

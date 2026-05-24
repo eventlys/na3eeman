@@ -9,7 +9,7 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../Packages/Core/constants/app_constants.dart';
 import '../../../../Services/ui/navigation_service.dart';
 import '../../../features/salon/widgets/services_section.dart';
-import 'package:easy_localization/easy_localization.dart' hide TextDirection; 
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -33,20 +33,30 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   Map<String, dynamic>? salonData;
   List<Map<String, dynamic>> _selectedServices = [];
   final Set<String> _selectedServiceNames = {};
-  
+
   Map<String, dynamic>? _selectedExpert;
   DateTime _selectedDate = DateTime.now();
   String? _selectedTime;
-  
+
   bool _isGift = false;
   final TextEditingController _receiverNameController = TextEditingController();
-  final TextEditingController _receiverPhoneController = TextEditingController();
+  final TextEditingController _receiverPhoneController =
+      TextEditingController();
   final TextEditingController _giftMessageController = TextEditingController();
   String? _selectedRelation;
   String? _receiverGender;
   final TextEditingController _voucherController = TextEditingController();
 
-  final List<String> _relations = ['Brother', 'Sister', 'Friend', 'Husband', 'Wife', 'Father', 'Mother', 'Other'];
+  final List<String> _relations = [
+    'Brother',
+    'Sister',
+    'Friend',
+    'Husband',
+    'Wife',
+    'Father',
+    'Mother',
+    'Other',
+  ];
 
   String _selectedPaymentMethod = 'CASH';
   XFile? _paymentProof;
@@ -54,21 +64,28 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   SalonPaymentConfig? _paymentConfig;
   SelectionMode _selectionMode = SelectionMode.individual;
   final Map<int, dynamic> _perServiceExperts = {}; // serviceId -> expertData
-  
+
   int _appliedPoints = 0;
   UserGiftCard? _selectedUserGiftCard;
-  
+
   bool _isFetchingConfig = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
-      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null) {
         salonData = args['salonData'];
-        _selectedServices = List<Map<String, dynamic>>.from(args['selectedServices'] ?? []);
-        _selectedServiceNames.addAll(_selectedServices.map((e) => (e['name'] ?? e['serviceName'] ?? '').toString()));
+        _selectedServices = List<Map<String, dynamic>>.from(
+          args['selectedServices'] ?? [],
+        );
+        _selectedServiceNames.addAll(
+          _selectedServices.map(
+            (e) => (e['name'] ?? e['serviceName'] ?? '').toString(),
+          ),
+        );
         _isGift = args['giftMode'] ?? false;
         _receiverGender = args['giftGender'];
         if (salonData != null && salonData!['id'] != null) {
@@ -76,7 +93,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         }
       }
       _initialized = true;
-      
+
       // Load points and gift cards
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Provider.of<PointsProvider>(context, listen: false).loadBalance();
@@ -93,7 +110,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         _paymentConfig = config;
         // Default to first allowed method
         if (!config.allowCash) {
-           _selectedPaymentMethod = config.allowOnline ? 'STRIPE' : (config.allowCliq ? 'CLIQ' : 'POINTS');
+          _selectedPaymentMethod = config.allowOnline
+              ? 'STRIPE'
+              : (config.allowCliq ? 'CLIQ' : 'POINTS');
         }
       });
     } catch (e) {
@@ -108,7 +127,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       final name = service['name'] ?? service['serviceName'] ?? 'Service';
       if (_selectedServiceNames.contains(name)) {
         _selectedServiceNames.remove(name);
-        _selectedServices.removeWhere((s) => (s['name'] ?? s['serviceName'] ?? 'Service') == name);
+        _selectedServices.removeWhere(
+          (s) => (s['name'] ?? s['serviceName'] ?? 'Service') == name,
+        );
       } else {
         _selectedServiceNames.add(name);
         _selectedServices.add(service);
@@ -119,34 +140,41 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
   double _calculateTotalCost() {
     return _selectedServices.fold(0.0, (sum, service) {
-      final priceStr = (service['price'] ?? '0').toString().replaceAll(RegExp(r'[^0-9.]'), '');
+      final priceStr = (service['price'] ?? '0').toString().replaceAll(
+        RegExp(r'[^0-9.]'),
+        '',
+      );
       return sum + (double.tryParse(priceStr) ?? 0.0);
     });
   }
 
   int _calculateTotalDuration() {
     return _selectedServices.fold(0, (sum, service) {
-      final durationStr = (service['duration'] ?? '30').toString().replaceAll(RegExp(r'[^0-9]'), '');
+      final durationStr = (service['duration'] ?? '30').toString().replaceAll(
+        RegExp(r'[^0-9]'),
+        '',
+      );
       return sum + (int.tryParse(durationStr) ?? 30);
     });
   }
 
   List<String> _generateTimeSlots() {
     if (_selectedExpert == null) return [];
-    
+
     final slots = <String>[];
-    final startHour = 9; 
-    final endHour = 20; 
-    
+    final startHour = 9;
+    final endHour = 20;
+
     // Add 15 min buffer to total duration
-    final totalDuration = _calculateTotalDuration() + 15; 
+    final totalDuration = _calculateTotalDuration() + 15;
     final interval = totalDuration > 0 ? totalDuration : 45;
-    
+
     for (int hour = startHour; hour < endHour; hour++) {
       for (int minute = 0; minute < 60; minute += interval) {
         if (minute >= 60) break;
-        final timeString = '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
-        
+        final timeString =
+            '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
         if ((hour + minute) % 4 != 0) {
           slots.add(timeString);
         }
@@ -157,15 +185,21 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
   void _handleConfirmBooking() {
     if (_selectedServices.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('select_at_least_one_service'.tr())));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('select_at_least_one_service'.tr())),
+      );
       return;
     }
     if (_selectedExpert == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please_select_expert'.tr())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('please_select_expert'.tr())));
       return;
     }
     if (_selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please_select_time'.tr())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('please_select_time'.tr())));
       return;
     }
 
@@ -176,12 +210,15 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     final totalAmount = _calculateTotalCost();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
-    final giftCardProvider = Provider.of<GiftCardProvider>(context, listen: false);
-    
+    final giftCardProvider = Provider.of<GiftCardProvider>(
+      context,
+      listen: false,
+    );
+
     final pointsCost = pointsProvider.calculatePointsValue(totalAmount);
     final hasEnoughPoints = pointsProvider.currentBalance >= pointsCost;
 
-    final depositAmount = _paymentConfig?.depositType == DepositType.percent 
+    final depositAmount = _paymentConfig?.depositType == DepositType.percent
         ? (totalAmount * (_paymentConfig?.depositValue ?? 0) / 100)
         : (_paymentConfig?.depositValue ?? 0);
 
@@ -201,31 +238,72 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Container(width: 40, height: 5, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)))),
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
-                Text('booking_summary'.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(
+                  'booking_summary'.tr(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const Divider(height: 32),
-                _buildSummaryRow('salon'.tr(), salonData!['salonName'] ?? 'expert_salon'.tr()),
-                _buildSummaryRow('expert'.tr(), _selectedExpert!['first_name'] ?? 'Professional'),
-                _buildSummaryRow('date'.tr(), DateFormat('MMM d, yyyy').format(_selectedDate)),
+                _buildSummaryRow(
+                  'salon'.tr(),
+                  salonData!['salonName'] ?? 'expert_salon'.tr(),
+                ),
+                _buildSummaryRow(
+                  'expert'.tr(),
+                  _selectedExpert!['first_name'] ?? 'Professional',
+                ),
+                _buildSummaryRow(
+                  'date'.tr(),
+                  DateFormat('MMM d, yyyy').format(_selectedDate),
+                ),
                 _buildSummaryRow('time'.tr(), _selectedTime!),
-                _buildSummaryRow('total'.tr(), '${totalAmount.toStringAsFixed(2)} JOD', isBold: true),
-                
+                _buildSummaryRow(
+                  'total'.tr(),
+                  '${totalAmount.toStringAsFixed(2)} JOD',
+                  isBold: true,
+                ),
+
                 if (depositAmount > 0)
-                  _buildSummaryRow('prepayment_required'.tr(), '${depositAmount.toStringAsFixed(2)} JOD', isBold: true, color: AppColors.error),
+                  _buildSummaryRow(
+                    'prepayment_required'.tr(),
+                    '${depositAmount.toStringAsFixed(2)} JOD',
+                    isBold: true,
+                    color: AppColors.error,
+                  ),
 
                 const Divider(height: 32),
-                
+
                 // Redemptions Section
-                Text('apply_discounts'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(
+                  'apply_discounts'.tr(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
                 const SizedBox(height: 12),
-                
+
                 // Points Slider/Toggle
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.stars_rounded, color: Colors.amber),
                   title: Text('use_loyalty_points'.tr()),
-                  subtitle: Text('balance'.tr() + ': ${pointsProvider.currentBalance} pts'),
+                  subtitle: Text(
+                    'balance'.tr() + ': ${pointsProvider.currentBalance} pts',
+                  ),
                   trailing: Switch(
                     value: _appliedPoints > 0,
                     activeColor: Colors.amber,
@@ -233,7 +311,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       setModalState(() {
                         if (val) {
                           // Apply up to the total cost or current balance
-                          _appliedPoints = min(pointsProvider.currentBalance, pointsCost);
+                          _appliedPoints = min(
+                            pointsProvider.currentBalance,
+                            pointsCost,
+                          );
                         } else {
                           _appliedPoints = 0;
                         }
@@ -246,57 +327,90 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     padding: const EdgeInsets.only(left: 40, bottom: 8),
                     child: Text(
                       '- ${(_appliedPoints * 0.005).toStringAsFixed(2)} JOD',
-                      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
                 // Gift Card Selection
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.card_giftcard, color: AppColors.pink),
+                  leading: const Icon(
+                    Icons.card_giftcard,
+                    color: AppColors.pink,
+                  ),
                   title: Text('use_gift_card'.tr()),
-                  subtitle: Text(_selectedUserGiftCard != null 
-                      ? '${_selectedUserGiftCard!.code} (${_selectedUserGiftCard!.balance} JOD)'
-                      : 'select_gift_card'.tr()),
+                  subtitle: Text(
+                    _selectedUserGiftCard != null
+                        ? '${_selectedUserGiftCard!.code} (${_selectedUserGiftCard!.balance} JOD)'
+                        : 'select_gift_card'.tr(),
+                  ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () async {
-                    final selected = await _showGiftCardPicker(giftCardProvider.activeCards);
+                    final selected = await _showGiftCardPicker(
+                      giftCardProvider.activeCards,
+                    );
                     if (selected != null) {
                       setModalState(() => _selectedUserGiftCard = selected);
                     }
                   },
                 ),
                 if (_selectedUserGiftCard != null)
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.only(left: 40, bottom: 8),
                     child: Row(
                       children: [
                         Text(
                           '- ${min(_selectedUserGiftCard!.balance, totalAmount - (_appliedPoints * 0.005)).toStringAsFixed(2)} JOD',
-                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () => setModalState(() => _selectedUserGiftCard = null),
-                          child: const Icon(Icons.close, size: 16, color: Colors.grey),
+                          onTap: () =>
+                              setModalState(() => _selectedUserGiftCard = null),
+                          child: const Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
                         ),
                       ],
                     ),
                   ),
 
                 const Divider(height: 32),
-                
+
                 // Final Total Calculation
-                Builder(builder: (context) {
-                  final deduction = (_appliedPoints * 0.005) + (_selectedUserGiftCard?.balance ?? 0);
-                  final finalTotal = max(0.0, totalAmount - deduction);
-                  return _buildSummaryRow('final_total'.tr(), '${finalTotal.toStringAsFixed(2)} JOD', isBold: true, color: Theme.of(context).primaryColor);
-                }),
+                Builder(
+                  builder: (context) {
+                    final deduction =
+                        (_appliedPoints * 0.005) +
+                        (_selectedUserGiftCard?.balance ?? 0);
+                    final finalTotal = max(0.0, totalAmount - deduction);
+                    return _buildSummaryRow(
+                      'final_total'.tr(),
+                      '${finalTotal.toStringAsFixed(2)} JOD',
+                      isBold: true,
+                      color: Theme.of(context).primaryColor,
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 16),
-                Text('payment_method'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(
+                  'payment_method'.tr(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
                 const SizedBox(height: 12),
-                
+
                 // Payment Options dynamically from config
                 if (_paymentConfig?.allowCash ?? true)
                   _buildPaymentOption(
@@ -305,7 +419,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     icon: Icons.money,
                     color: Colors.green,
                     selected: _selectedPaymentMethod == 'CASH',
-                    onTap: () => setModalState(() => _selectedPaymentMethod = 'CASH'),
+                    onTap: () =>
+                        setModalState(() => _selectedPaymentMethod = 'CASH'),
                   ),
                 if (_paymentConfig?.allowOnline ?? true)
                   _buildPaymentOption(
@@ -315,7 +430,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     icon: Icons.credit_card,
                     color: Colors.purple,
                     selected: _selectedPaymentMethod == 'STRIPE',
-                    onTap: () => setModalState(() => _selectedPaymentMethod = 'STRIPE'),
+                    onTap: () =>
+                        setModalState(() => _selectedPaymentMethod = 'STRIPE'),
                   ),
                 if (_paymentConfig?.allowCliq ?? false)
                   _buildPaymentOption(
@@ -325,18 +441,22 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     icon: Icons.account_balance_wallet,
                     color: Colors.blue,
                     selected: _selectedPaymentMethod == 'CLIQ',
-                    onTap: () => setModalState(() => _selectedPaymentMethod = 'CLIQ'),
+                    onTap: () =>
+                        setModalState(() => _selectedPaymentMethod = 'CLIQ'),
                   ),
                 if (_paymentConfig?.allowPoints ?? true)
                   _buildPaymentOption(
                     id: 'POINTS',
                     title: 'Na3eeman Points'.tr(),
-                    subtitle: hasEnoughPoints ? 'redeem_pts'.tr(args: [pointsCost.toString()]) : 'need_pts'.tr(args: [pointsCost.toString()]),
+                    subtitle: hasEnoughPoints
+                        ? 'redeem_pts'.tr(args: [pointsCost.toString()])
+                        : 'need_pts'.tr(args: [pointsCost.toString()]),
                     icon: Icons.stars_rounded,
                     color: Colors.amber,
                     enabled: hasEnoughPoints,
                     selected: _selectedPaymentMethod == 'POINTS',
-                    onTap: () => setModalState(() => _selectedPaymentMethod = 'POINTS'),
+                    onTap: () =>
+                        setModalState(() => _selectedPaymentMethod = 'POINTS'),
                   ),
                 if (_paymentConfig?.allowVouchers ?? true)
                   _buildPaymentOption(
@@ -346,7 +466,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     icon: Icons.confirmation_number,
                     color: Colors.deepOrange,
                     selected: _selectedPaymentMethod == 'VOUCHER',
-                    onTap: () => setModalState(() => _selectedPaymentMethod = 'VOUCHER'),
+                    onTap: () =>
+                        setModalState(() => _selectedPaymentMethod = 'VOUCHER'),
                   ),
 
                 const SizedBox(height: 16),
@@ -363,10 +484,24 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('cliq_transfer_details'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                        Text(
+                          'cliq_transfer_details'.tr(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text('alias'.tr() + ': ${salonData!['cliq_alias'] ?? 'SalonAlias'}', style: const TextStyle(fontSize: 13)),
-                        Text('phone'.tr() + ': ${salonData!['cliq_phone_num'] ?? '00962...' }', style: const TextStyle(fontSize: 13)),
+                        Text(
+                          'alias'.tr() +
+                              ': ${salonData!['cliq_alias'] ?? 'SalonAlias'}',
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                        Text(
+                          'phone'.tr() +
+                              ': ${salonData!['cliq_phone_num'] ?? '00962...'}',
+                          style: const TextStyle(fontSize: 13),
+                        ),
                       ],
                     ),
                   ),
@@ -388,11 +523,14 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 ],
 
                 // Proof Upload for Cash/CliQ
-                if (_selectedPaymentMethod == 'CASH' || _selectedPaymentMethod == 'CLIQ') ...[
+                if (_selectedPaymentMethod == 'CASH' ||
+                    _selectedPaymentMethod == 'CLIQ') ...[
                   InkWell(
                     onTap: () async {
                       final picker = ImagePicker();
-                      final image = await picker.pickImage(source: ImageSource.gallery);
+                      final image = await picker.pickImage(
+                        source: ImageSource.gallery,
+                      );
                       if (image != null) {
                         setModalState(() => _paymentProof = image);
                       }
@@ -400,21 +538,42 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        border: Border.all(color: _paymentProof == null ? Colors.red.withOpacity(0.5) : Colors.grey.withOpacity(0.3)),
+                        border: Border.all(
+                          color: _paymentProof == null
+                              ? Colors.red.withOpacity(0.5)
+                              : Colors.grey.withOpacity(0.3),
+                        ),
                         borderRadius: BorderRadius.circular(12),
-                        color: _paymentProof == null ? Colors.red.withOpacity(0.02) : Colors.transparent,
+                        color: _paymentProof == null
+                            ? Colors.red.withOpacity(0.02)
+                            : Colors.transparent,
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.camera_alt, color: _paymentProof == null ? Colors.red : Colors.grey),
+                          Icon(
+                            Icons.camera_alt,
+                            color: _paymentProof == null
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              _paymentProof == null ? 'upload_proof_required'.tr() : 'proof_uploaded'.tr(args: [_paymentProof!.name]),
-                              style: TextStyle(color: _paymentProof == null ? Colors.red : Colors.green, fontWeight: FontWeight.w500),
+                              _paymentProof == null
+                                  ? 'upload_proof_required'.tr()
+                                  : 'proof_uploaded'.tr(
+                                      args: [_paymentProof!.name],
+                                    ),
+                              style: TextStyle(
+                                color: _paymentProof == null
+                                    ? Colors.red
+                                    : Colors.green,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                          if (_paymentProof != null) const Icon(Icons.check_circle, color: Colors.green),
+                          if (_paymentProof != null)
+                            const Icon(Icons.check_circle, color: Colors.green),
                         ],
                       ),
                     ),
@@ -424,16 +583,28 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
                 const SizedBox(height: 16),
                 PrimaryButton(
-                  text: (_selectedPaymentMethod == 'STRIPE' && depositAmount > 0) ? 'pay_deposit'.tr() : 'confirm_booking'.tr(),
-                  onPressed: (_selectedPaymentMethod == 'POINTS' || _selectedPaymentMethod == 'STRIPE' || _selectedPaymentMethod == 'VOUCHER' || _paymentProof != null) ? () {
-                    Navigator.pop(context);
-                    _processStandardPayment(totalAmount);
-                  } : null,
+                  text:
+                      (_selectedPaymentMethod == 'STRIPE' && depositAmount > 0)
+                      ? 'pay_deposit'.tr()
+                      : 'confirm_booking'.tr(),
+                  onPressed:
+                      (_selectedPaymentMethod == 'POINTS' ||
+                          _selectedPaymentMethod == 'STRIPE' ||
+                          _selectedPaymentMethod == 'VOUCHER' ||
+                          _paymentProof != null)
+                      ? () {
+                          Navigator.pop(context);
+                          _processStandardPayment(totalAmount);
+                        }
+                      : null,
                 ),
                 Center(
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text('cancel'.tr(), style: const TextStyle(color: Colors.grey)),
+                    child: Text(
+                      'cancel'.tr(),
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ),
                 ),
               ],
@@ -463,7 +634,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: selected ? color : Colors.grey.withOpacity(0.2), width: selected ? 2 : 1),
+            border: Border.all(
+              color: selected ? color : Colors.grey.withOpacity(0.2),
+              width: selected ? 2 : 1,
+            ),
             color: selected ? color.withOpacity(0.05) : Colors.transparent,
           ),
           child: Row(
@@ -473,8 +647,18 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: selected ? color : null)),
-                  if (subtitle != null) Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: selected ? color : null,
+                    ),
+                  ),
+                  if (subtitle != null)
+                    Text(
+                      subtitle,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                 ],
               ),
               const Spacer(),
@@ -487,22 +671,33 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   void _processStandardPayment(double amountJod) async {
-    final appointmentProvider = Provider.of<AppointmentProvider>(context, listen: false);
-    
+    final appointmentProvider = Provider.of<AppointmentProvider>(
+      context,
+      listen: false,
+    );
+
     final appointmentData = {
       'salon': salonData!['id'],
       'expert': _selectedExpert!['id'],
-      'start_time': "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T$_selectedTime:00Z",
-      'end_time': "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T${_calculateEndTime()}:00Z",
-      'services': _selectedServices.map((s) => {
-        'service_type': s['category'] == 'Product' ? 'PRODUCT' : 'OPTION',
-        'option': s['id'],
-        'quantity': 1,
-      }).toList(),
+      'start_time':
+          "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T$_selectedTime:00Z",
+      'end_time':
+          "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T${_calculateEndTime()}:00Z",
+      'services': _selectedServices
+          .map(
+            (s) => {
+              'service_type': s['category'] == 'Product' ? 'PRODUCT' : 'OPTION',
+              'option': s['id'],
+              'quantity': 1,
+            },
+          )
+          .toList(),
       'payment_method': _selectedPaymentMethod,
-      if (_selectedPaymentMethod == 'VOUCHER') 'voucher_code': _voucherController.text,
+      if (_selectedPaymentMethod == 'VOUCHER')
+        'voucher_code': _voucherController.text,
       'points_to_redeem': _appliedPoints,
-      if (_selectedUserGiftCard != null) 'gift_card_code': _selectedUserGiftCard!.code,
+      if (_selectedUserGiftCard != null)
+        'gift_card_code': _selectedUserGiftCard!.code,
       'is_gift': _isGift,
       if (_isGift) ...{
         'gift_receiver_name': _receiverNameController.text,
@@ -510,7 +705,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         'gift_receiver_gender': _receiverGender,
         'gift_relation': _selectedRelation,
         'gift_message': _giftMessageController.text,
-      }
+      },
     };
 
     try {
@@ -519,7 +714,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         barrierDismissible: false,
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
-      
+
       final result = await appointmentProvider.bookAppointment(appointmentData);
       final appointmentId = result['id'];
       final checkoutUrl = result['checkout_url'];
@@ -535,14 +730,17 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
       // Upload proof if applicable
       if (_paymentProof != null && appointmentId != null) {
-        await Provider.of<ApiService>(context, listen: false).uploadPaymentProof(
+        await Provider.of<ApiService>(
+          context,
+          listen: false,
+        ).uploadPaymentProof(
           appointmentId: appointmentId,
           proof: File(_paymentProof!.path),
         );
       }
-      
+
       if (mounted) Navigator.pop(context); // Close loading dialog
-      
+
       if (_isGift) {
         _showGiftSuccessDialog();
       } else {
@@ -550,26 +748,47 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       }
     } catch (e) {
       if (mounted) Navigator.pop(context); // Close loading dialog
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('booking_failed'.tr(args: [e.toString()]))));
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('booking_failed'.tr(args: [e.toString()]))),
+        );
     }
   }
 
   String _calculateEndTime() {
     // Basic end time calculation: start + duration
     final parts = _selectedTime!.split(':');
-    final start = DateTime(2024, 1, 1, int.parse(parts[0]), int.parse(parts[1]));
+    final start = DateTime(
+      2024,
+      1,
+      1,
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+    );
     final end = start.add(Duration(minutes: _calculateTotalDuration()));
     return DateFormat('HH:mm').format(end);
   }
 
-  Widget _buildSummaryRow(String label, String value, {bool isBold = false, Color? color}) {
+  Widget _buildSummaryRow(
+    String label,
+    String value, {
+    bool isBold = false,
+    Color? color,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.w500, fontSize: isBold ? 16 : 14, color: color)),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+              fontSize: isBold ? 16 : 14,
+              color: color,
+            ),
+          ),
         ],
       ),
     );
@@ -593,8 +812,12 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             const SizedBox(height: 24),
             Text('gift_scheduled_paid'.tr(), textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            Text('sharing_link_allows'.tr(), 
-              style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+            Text(
+              'sharing_link_allows'.tr(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -604,17 +827,24 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                final link = "${AppConstants.webAppUrl}/appointment/${DateTime.now().millisecondsSinceEpoch}";
-                final message = "I have a gift for you! 🎁 Booked an appointment at Na3eeman. Show this link to the salon: $link";
+                final link =
+                    "${AppConstants.webAppUrl}/appointment/${DateTime.now().millisecondsSinceEpoch}";
+                final message =
+                    "I have a gift for you! 🎁 Booked an appointment at Na3eeman. Show this link to the salon: $link";
                 Share.share(message);
               },
               icon: const Icon(Icons.share),
-              label: Text('share_gift_link'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+              label: Text(
+                'share_gift_link'.tr(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pink,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),
@@ -623,20 +853,32 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             child: TextButton(
               onPressed: () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
-                NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
+                NavigationService.navigateToHomeBasedOnRole(
+                  context,
+                  'CUSTOMER',
+                );
               },
-              child: Text("back_to_home".tr(), style: const TextStyle(color: Colors.grey)),
+              child: Text(
+                "back_to_home".tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
           ),
         ],
-      )
+      ),
     );
   }
 
   void _completeBooking({String? method}) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('booking_confirmed'.tr(args: [method != null ? ' ($method)' : '']))));
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'booking_confirmed'.tr(args: [method != null ? ' ($method)' : '']),
+        ),
+      ),
+    );
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
   }
 
   Future<UserGiftCard?> _showGiftCardPicker(List<UserGiftCard> cards) {
@@ -652,29 +894,41 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-             Text('select_gift_card'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-             const SizedBox(height: 16),
-             if (cards.isEmpty)
-               Padding(
-                 padding: const EdgeInsets.all(24),
-                 child: Text('no_active_gift_cards'.tr(), style: const TextStyle(color: Colors.grey)),
-               )
-             else
-               ListView.builder(
-                 shrinkWrap: true,
-                 itemCount: cards.length,
-                 itemBuilder: (context, index) {
-                   final card = cards[index];
-                   return ListTile(
-                     leading: const Icon(Icons.card_giftcard, color: AppColors.pink),
-                     title: Text(card.code),
-                     subtitle: Text('balance'.tr() + ': ${card.balance} JOD'),
-                     onTap: () => Navigator.pop(context, card),
-                   );
-                 },
-               ),
-             const SizedBox(height: 16),
-             SecondaryButton(text: 'cancel'.tr(), onPressed: () => Navigator.pop(context)),
+            Text(
+              'select_gift_card'.tr(),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            if (cards.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  'no_active_gift_cards'.tr(),
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: cards.length,
+                itemBuilder: (context, index) {
+                  final card = cards[index];
+                  return ListTile(
+                    leading: const Icon(
+                      Icons.card_giftcard,
+                      color: AppColors.pink,
+                    ),
+                    title: Text(card.code),
+                    subtitle: Text('balance'.tr() + ': ${card.balance} JOD'),
+                    onTap: () => Navigator.pop(context, card),
+                  );
+                },
+              ),
+            const SizedBox(height: 16),
+            SecondaryButton(
+              text: 'cancel'.tr(),
+              onPressed: () => Navigator.pop(context),
+            ),
           ],
         ),
       ),
@@ -688,211 +942,302 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("book_appointment".tr()),
-        centerTitle: true,
-      ),
-      body: salonData == null 
-        ? const Center(child: CircularProgressIndicator())
-        : ListView(
-            padding: const EdgeInsets.all(24),
-            children: [
-              // Services Review
-              Text(
-                'select_services_step'.tr(),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
-              ),
-              const SizedBox(height: 16),
-              Consumer<PointsProvider>(
-                builder: (context, points, child) {
-                  if (!points.hasPendingPenalty) return const SizedBox.shrink();
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 24),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.red.withOpacity(0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.warning_amber_rounded, color: Colors.red),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('payment_overdue_warning'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                              const SizedBox(height: 4),
-                              Text('payment_overdue_description'.tr(), style: const TextStyle(fontSize: 12, color: Colors.red)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              ServicesSection(
-                selectedServiceNames: _selectedServiceNames,
-                onToggleService: _toggleService,
-                services: salonData!['services'] != null
-                    ? List<Map<String, dynamic>>.from(salonData!['services'])
-                    : [
-                        {'name': 'Classic Haircut', 'price': '15.00', 'duration': '30 min'},
-                        {'name': 'Beard Grooming', 'price': '10.00', 'duration': '20 min'},
-                        {'name': 'Premium Shave', 'price': '20.00', 'duration': '40 min'},
-                      ],
-              ),
-              const SizedBox(height: 24),
-
-              // Gift Section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: _isGift ? Colors.pink.withOpacity(0.05) : (isDark ? AppColors.almostBlack600 : Colors.grey.withOpacity(0.05)),
-                  borderRadius: BorderRadius.circular(16),
-                  border: _isGift ? Border.all(color: Colors.pink.withOpacity(0.3)) : null,
+      appBar: AppBar(title: Text("book_appointment".tr()), centerTitle: true),
+      body: salonData == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                // Services Review
+                Text(
+                  'select_services_step'.tr(),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(_isGift ? Icons.card_giftcard : Icons.person_outline, color: _isGift ? Colors.pink : Colors.grey),
-                        const SizedBox(width: 12),
-                        Text('gift_this_service'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        const Spacer(),
-                        Switch(
-                          value: _isGift,
-                          activeThumbColor: Colors.pink,
-                          onChanged: (val) {
-                            setState(() {
-                              _isGift = val;
-                              if (val) {
-                                // Logic to allow opposite gender search would be here, 
-                                // but on this screen we are already at the specific salon.
-                              }
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    if (_isGift) ...[
-                      const Divider(),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _receiverNameController,
-                        decoration: InputDecoration(
-                          labelText: 'receiver_name'.tr(),
-                          prefixIcon: const Icon(Icons.person),
-                          border: const OutlineInputBorder(),
-                        ),
+                const SizedBox(height: 16),
+                Consumer<PointsProvider>(
+                  builder: (context, points, child) {
+                    if (!points.hasPendingPenalty)
+                      return const SizedBox.shrink();
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
                       ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _receiverPhoneController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          labelText: 'receiver_phone'.tr(),
-                          prefixIcon: const Icon(Icons.phone),
-                          border: const OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
+                      child: Row(
                         children: [
-                          Expanded(
-                            child: DropdownButtonFormField<String>(
-                              initialValue: _selectedRelation,
-                              decoration: InputDecoration(
-                                labelText: 'relation'.tr(),
-                                border: const OutlineInputBorder(),
-                              ),
-                              items: _relations.map((r) => DropdownMenuItem(value: r, child: Text(r.tr()))).toList(),
-                              onChanged: (val) => setState(() => _selectedRelation = val),
-                            ),
+                          const Icon(
+                            Icons.warning_amber_rounded,
+                            color: Colors.red,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              initialValue: _receiverGender,
-                              decoration: InputDecoration(
-                                labelText: 'gender'.tr(),
-                                border: const OutlineInputBorder(),
-                              ),
-                              items: ['MALE', 'FEMALE'].map((g) => DropdownMenuItem(value: g, child: Text(g.tr()))).toList(),
-                              onChanged: (val) => setState(() => _receiverGender = val),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'payment_overdue_warning'.tr(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'payment_overdue_description'.tr(),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _giftMessageController,
-                        maxLines: 2,
-                        decoration: InputDecoration(
-                          labelText: 'personal_message_optional'.tr(),
-                          prefixIcon: const Icon(Icons.message),
-                          border: const OutlineInputBorder(),
+                    );
+                  },
+                ),
+                ServicesSection(
+                  selectedServiceNames: _selectedServiceNames,
+                  onToggleService: _toggleService,
+                  services: salonData!['services'] != null
+                      ? List<Map<String, dynamic>>.from(salonData!['services'])
+                      : [
+                          {
+                            'name': 'Classic Haircut',
+                            'price': '15.00',
+                            'duration': '30 min',
+                          },
+                          {
+                            'name': 'Beard Grooming',
+                            'price': '10.00',
+                            'duration': '20 min',
+                          },
+                          {
+                            'name': 'Premium Shave',
+                            'price': '20.00',
+                            'duration': '40 min',
+                          },
+                        ],
+                ),
+                const SizedBox(height: 24),
+
+                // Gift Section
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: _isGift
+                        ? Colors.pink.withOpacity(0.05)
+                        : (isDark
+                              ? AppColors.almostBlack600
+                              : Colors.grey.withOpacity(0.05)),
+                    borderRadius: BorderRadius.circular(16),
+                    border: _isGift
+                        ? Border.all(color: Colors.pink.withOpacity(0.3))
+                        : null,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            _isGift
+                                ? Icons.card_giftcard
+                                : Icons.person_outline,
+                            color: _isGift ? Colors.pink : Colors.grey,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'gift_this_service'.tr(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          Switch(
+                            value: _isGift,
+                            activeThumbColor: Colors.pink,
+                            onChanged: (val) {
+                              setState(() {
+                                _isGift = val;
+                                if (val) {
+                                  // Logic to allow opposite gender search would be here,
+                                  // but on this screen we are already at the specific salon.
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      if (_isGift) ...[
+                        const Divider(),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _receiverNameController,
+                          decoration: InputDecoration(
+                            labelText: 'receiver_name'.tr(),
+                            prefixIcon: const Icon(Icons.person),
+                            border: const OutlineInputBorder(),
+                          ),
                         ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _receiverPhoneController,
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            labelText: 'receiver_phone'.tr(),
+                            prefixIcon: const Icon(Icons.phone),
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                initialValue: _selectedRelation,
+                                decoration: InputDecoration(
+                                  labelText: 'relation'.tr(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                items: _relations
+                                    .map(
+                                      (r) => DropdownMenuItem(
+                                        value: r,
+                                        child: Text(r.tr()),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (val) =>
+                                    setState(() => _selectedRelation = val),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                initialValue: _receiverGender,
+                                decoration: InputDecoration(
+                                  labelText: 'gender'.tr(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                items: ['MALE', 'FEMALE']
+                                    .map(
+                                      (g) => DropdownMenuItem(
+                                        value: g,
+                                        child: Text(g.tr()),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (val) =>
+                                    setState(() => _receiverGender = val),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _giftMessageController,
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            labelText: 'personal_message_optional'.tr(),
+                            prefixIcon: const Icon(Icons.message),
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Totals
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.almostBlack600
+                        : Theme.of(context).primaryColor.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'total_duration'.tr(),
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                          Text(
+                            'mins_suffix'.tr(
+                              args: [_calculateTotalDuration().toString()],
+                            ),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'total_cost'.tr(),
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                          Text(
+                            '\$${_calculateTotalCost().toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              
-              // Totals 
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.almostBlack600 : Theme.of(context).primaryColor.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(12),
+
+                const SizedBox(height: 32),
+
+                // Staff Selection Mode Selection
+                Text(
+                  'professional_selection_step'.tr(),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('total_duration'.tr(), style: const TextStyle(color: Colors.grey)),
-                        Text('mins_suffix'.tr(args: [_calculateTotalDuration().toString()]), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text('total_cost'.tr(), style: const TextStyle(color: Colors.grey)),
-                        Text('\$${_calculateTotalCost().toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                const SizedBox(height: 16),
 
-              const SizedBox(height: 32),
-              
-              // Staff Selection Mode Selection
-              Text(
-                'professional_selection_step'.tr(),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
-              ),
-              const SizedBox(height: 16),
-              
-              _buildSelectionModeButtons(isDark),
-              
-              const SizedBox(height: 24),
+                _buildSelectionModeButtons(isDark),
 
-              if (_selectionMode == SelectionMode.noPreference)
-                _buildNoPreferenceView(isDark)
-              else if (_selectionMode == SelectionMode.perService)
-                _buildPerServiceSelectionView(isDark)
-              else
-                _buildIndividualSelectionView(isDark, experts, expertProvider.isLoading),
+                const SizedBox(height: 24),
 
-              const SizedBox(height: 32),
-            ],
-          ),
+                if (_selectionMode == SelectionMode.noPreference)
+                  _buildNoPreferenceView(isDark)
+                else if (_selectionMode == SelectionMode.perService)
+                  _buildPerServiceSelectionView(isDark)
+                else
+                  _buildIndividualSelectionView(
+                    isDark,
+                    experts,
+                    expertProvider.isLoading,
+                  ),
+
+                const SizedBox(height: 32),
+              ],
+            ),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -929,7 +1274,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     );
   }
 
-  Widget _buildModeButton({required String label, required IconData icon, required SelectionMode mode}) {
+  Widget _buildModeButton({
+    required String label,
+    required IconData icon,
+    required SelectionMode mode,
+  }) {
     final isSelected = _selectionMode == mode;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -939,26 +1288,36 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack600 : Colors.white),
+          color: isSelected
+              ? Theme.of(context).primaryColor
+              : (isDark ? AppColors.almostBlack600 : Colors.white),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.3),
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.grey.withOpacity(0.3),
             width: 2,
           ),
         ),
         child: Row(
           children: [
-            Icon(icon, color: isSelected ? Colors.white : Theme.of(context).primaryColor),
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : Theme.of(context).primaryColor,
+            ),
             const SizedBox(width: 16),
             Text(
               label,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black),
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white : Colors.black),
               ),
             ),
             const Spacer(),
-            if (isSelected) const Icon(Icons.check_circle, color: Colors.white, size: 20),
+            if (isSelected)
+              const Icon(Icons.check_circle, color: Colors.white, size: 20),
           ],
         ),
       ),
@@ -974,12 +1333,19 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       ),
       child: Column(
         children: [
-          Icon(Icons.auto_awesome_rounded, size: 48, color: Theme.of(context).primaryColor),
+          Icon(
+            Icons.auto_awesome_rounded,
+            size: 48,
+            color: Theme.of(context).primaryColor,
+          ),
           const SizedBox(height: 16),
           Text(
             'We will assign the best available professional for you.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, color: isDark ? Colors.white70 : Colors.black87),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
           ),
           const SizedBox(height: 24),
           _buildDatesAndHoursSection(isDark),
@@ -1009,16 +1375,27 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(service['name'] ?? 'Service', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        service['name'] ?? 'Service',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       if (selectedExpert != null)
-                        Text('Assigned to: ${selectedExpert['first_name']}', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13)),
+                        Text(
+                          'Assigned to: ${selectedExpert['first_name']}',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 13,
+                          ),
+                        ),
                     ],
                   ),
                 ),
                 ElevatedButton(
                   onPressed: () => _navigateToProfessionalSelection(service),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                    backgroundColor: Theme.of(
+                      context,
+                    ).primaryColor.withOpacity(0.1),
                     foregroundColor: Theme.of(context).primaryColor,
                     elevation: 0,
                   ),
@@ -1052,9 +1429,13 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     }
   }
 
-  Widget _buildIndividualSelectionView(bool isDark, List<dynamic> experts, bool isLoading) {
+  Widget _buildIndividualSelectionView(
+    bool isDark,
+    List<dynamic> experts,
+    bool isLoading,
+  ) {
     if (isLoading) return const Center(child: CircularProgressIndicator());
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1065,7 +1446,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             itemCount: experts.length,
             itemBuilder: (context, index) {
               final expert = experts[index].toJson();
-              final isSelected = _selectedExpert != null && _selectedExpert!['id'] == expert['id'];
+              final isSelected =
+                  _selectedExpert != null &&
+                  _selectedExpert!['id'] == expert['id'];
               final rating = (expert['rating'] ?? 5.0).toDouble();
 
               return GestureDetector(
@@ -1077,9 +1460,15 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   width: 110,
                   margin: const EdgeInsets.only(right: 16),
                   decoration: BoxDecoration(
-                    color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack600 : Colors.white),
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : (isDark ? AppColors.almostBlack600 : Colors.white),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.3)),
+                    border: Border.all(
+                      color: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey.withOpacity(0.3),
+                    ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1088,14 +1477,30 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                         children: [
                           CircleAvatar(
                             radius: 30,
-                            backgroundColor: isSelected ? Colors.white24 : AppColors.almostBlack50,
-                            child: Icon(Icons.person, size: 32, color: isSelected ? Colors.white : Theme.of(context).primaryColor),
+                            backgroundColor: isSelected
+                                ? Colors.white24
+                                : AppColors.almostBlack50,
+                            child: Icon(
+                              Icons.person,
+                              size: 32,
+                              color: isSelected
+                                  ? Colors.white
+                                  : Theme.of(context).primaryColor,
+                            ),
                           ),
                           if (isSelected)
                             const Positioned(
                               bottom: 0,
                               right: 0,
-                              child: CircleAvatar(radius: 10, backgroundColor: Colors.white, child: Icon(Icons.check, size: 12, color: AppColors.success)),
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.check,
+                                  size: 12,
+                                  color: AppColors.success,
+                                ),
+                              ),
                             ),
                         ],
                       ),
@@ -1103,7 +1508,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       Text(
                         expert['first_name'] ?? 'Expert',
                         style: TextStyle(
-                          color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black),
+                          color: isSelected
+                              ? Colors.white
+                              : (isDark ? Colors.white : Colors.black),
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
                         ),
@@ -1112,11 +1519,18 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.star_rounded, color: Colors.amber, size: 14),
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 14,
+                          ),
                           const SizedBox(width: 2),
                           Text(
                             rating.toStringAsFixed(1),
-                            style: TextStyle(color: isSelected ? Colors.white70 : Colors.grey, fontSize: 11),
+                            style: TextStyle(
+                              color: isSelected ? Colors.white70 : Colors.grey,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -1150,7 +1564,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             itemBuilder: (context, index) {
               final date = DateTime.now().add(Duration(days: index));
               final isSelected = DateUtils.isSameDay(_selectedDate, date);
-              
+
               return GestureDetector(
                 onTap: () => setState(() {
                   _selectedDate = date;
@@ -1160,9 +1574,15 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   width: 70,
                   margin: const EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
-                    color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack600 : Colors.white),
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : (isDark ? AppColors.almostBlack600 : Colors.white),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.2)),
+                    border: Border.all(
+                      color: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey.withOpacity(0.2),
+                    ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1179,7 +1599,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       Text(
                         date.day.toString(),
                         style: TextStyle(
-                          color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black),
+                          color: isSelected
+                              ? Colors.white
+                              : (isDark ? Colors.white : Colors.black),
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
@@ -1208,7 +1630,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Text('No availability on this day.', style: TextStyle(color: isDark ? Colors.white54 : Colors.grey)),
+          child: Text(
+            'No availability on this day.',
+            style: TextStyle(color: isDark ? Colors.white54 : Colors.grey),
+          ),
         ),
       );
     }
@@ -1231,16 +1656,24 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           borderRadius: BorderRadius.circular(12),
           child: Container(
             decoration: BoxDecoration(
-              color: isSelected ? Theme.of(context).primaryColor : (isDark ? AppColors.almostBlack600 : Colors.white),
+              color: isSelected
+                  ? Theme.of(context).primaryColor
+                  : (isDark ? AppColors.almostBlack600 : Colors.white),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.2)),
+              border: Border.all(
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey.withOpacity(0.2),
+              ),
             ),
             child: Center(
               child: Text(
                 slot,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black),
+                  color: isSelected
+                      ? Colors.white
+                      : (isDark ? Colors.white : Colors.black),
                 ),
               ),
             ),

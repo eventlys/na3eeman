@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
 import '../../Models/auth/user_model.dart';
@@ -42,16 +43,16 @@ class AppointmentProvider extends BaseProvider {
   // Methods
   void updateAuth(AuthProvider authProvider) {
     bool stateChanged = false;
-    
+
     // Check if auth state changed or different user
     if (_authProvider?.isAuthenticated != authProvider.isAuthenticated) {
       stateChanged = true;
     } else if (_authProvider?.user?.id != authProvider.user?.id) {
       stateChanged = true;
     }
-    
+
     _authProvider = authProvider;
-    
+
     if (stateChanged && _authProvider?.isAuthenticated == true) {
       Future.microtask(() {
         loadAppointments();
@@ -60,16 +61,26 @@ class AppointmentProvider extends BaseProvider {
     }
   }
 
-  Future<void> loadAppointments() async {
+  Future<void> loadAppointments({String? query, DateTime? date}) async {
     try {
       setLoading(true);
       clearError();
 
       // Fetch from API instead of mocks
       final apiService = ApiService();
-      final response = await apiService.get('/salons/appointments/'); // Or Endpoints.appointments
+      final Map<String, dynamic> queryParams = {};
+      if (query != null && query.isNotEmpty) {
+        queryParams['customer_name'] = query;
+      }
+      if (date != null) {
+        queryParams['start_date'] = DateFormat('yyyy-MM-dd').format(date);
+      }
+      final response = await apiService.get(
+        '/salons/appointments/',
+        queryParams: queryParams.isNotEmpty ? queryParams : null,
+      ); // Or Endpoints.appointments
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
-      
+
       _appointments.clear();
       for (var item in data) {
         try {
@@ -93,12 +104,15 @@ class AppointmentProvider extends BaseProvider {
 
       // Filter local appointments for future ones
       final now = DateTime.now();
-      final futureAppointments = _appointments
-          .where((appt) => 
-              appt.startTime.isAfter(now) && 
-              appt.status == AppointmentStatus.scheduled)
-          .toList()
-        ..sort((a, b) => a.startTime.compareTo(b.startTime));
+      final futureAppointments =
+          _appointments
+              .where(
+                (appt) =>
+                    appt.startTime.isAfter(now) &&
+                    appt.status == AppointmentStatus.scheduled,
+              )
+              .toList()
+            ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
       if (futureAppointments.isNotEmpty) {
         final a = futureAppointments.first;
@@ -125,8 +139,11 @@ class AppointmentProvider extends BaseProvider {
     try {
       setLoading(true);
       final apiService = ApiService();
-      await apiService.post('/salons/appointments/$appointmentId/delay/', data: {'minutes': minutes});
-      
+      await apiService.post(
+        '/salons/appointments/$appointmentId/delay/',
+        data: {'minutes': minutes},
+      );
+
       // Update local state
       await loadAppointments();
       notifyListeners();
@@ -142,8 +159,11 @@ class AppointmentProvider extends BaseProvider {
     try {
       setLoading(true);
       final apiService = ApiService();
-      await apiService.post('/salons/appointments/$appointmentId/verify-payment/', data: {});
-      
+      await apiService.post(
+        '/salons/appointments/$appointmentId/verify-payment/',
+        data: {},
+      );
+
       await loadAppointments();
       notifyListeners();
     } catch (e) {
@@ -154,14 +174,17 @@ class AppointmentProvider extends BaseProvider {
     }
   }
 
-  Future<void> confirmPayment(String appointmentId, {String? voucherCode}) async {
+  Future<void> confirmPayment(
+    String appointmentId, {
+    String? voucherCode,
+  }) async {
     try {
       setLoading(true);
       clearError();
-      
+
       final apiService = ApiService();
       await apiService.confirmPayment(appointmentId, voucherCode: voucherCode);
-      
+
       await loadAppointments();
       notifyListeners();
     } catch (e) {
@@ -180,12 +203,15 @@ class AppointmentProvider extends BaseProvider {
     try {
       setLoading(true);
       final apiService = ApiService();
-      await apiService.post('/users/customers/rate/', data: {
-        'appointment': appointmentId,
-        'rating': rating,
-        'reviews': reviews,
-      });
-      
+      await apiService.post(
+        '/users/customers/rate/',
+        data: {
+          'appointment': appointmentId,
+          'rating': rating,
+          'reviews': reviews,
+        },
+      );
+
       await loadAppointments();
       notifyListeners();
     } catch (e) {
@@ -204,11 +230,14 @@ class AppointmentProvider extends BaseProvider {
     try {
       setLoading(true);
       final apiService = ApiService();
-      await apiService.post('/salons/appointments/$appointmentId/reschedule/', data: {
-        'start_time': newStartTime.toIso8601String(),
-        'end_time': newEndTime.toIso8601String(),
-      });
-      
+      await apiService.post(
+        '/salons/appointments/$appointmentId/reschedule/',
+        data: {
+          'start_time': newStartTime.toIso8601String(),
+          'end_time': newEndTime.toIso8601String(),
+        },
+      );
+
       await loadAppointments();
       await loadSoonestAppointment();
     } catch (e) {
@@ -235,18 +264,20 @@ class AppointmentProvider extends BaseProvider {
     }
   }
 
-  Future<Map<String, dynamic>> bookAppointment(Map<String, dynamic> appointmentData) async {
+  Future<Map<String, dynamic>> bookAppointment(
+    Map<String, dynamic> appointmentData,
+  ) async {
     try {
       setLoading(true);
       clearError();
-      
+
       final apiService = ApiService();
       final response = await apiService.bookAppointment(appointmentData);
-      
+
       // Reload appointments to sync local state
       await loadAppointments();
       await loadSoonestAppointment();
-      
+
       return response;
     } catch (e) {
       setError(e.toString());

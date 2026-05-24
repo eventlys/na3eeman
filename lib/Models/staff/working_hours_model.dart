@@ -48,8 +48,12 @@ class WorkingHours {
       date: DateTime.parse(json['date']),
       scheduledStart: DateTime.parse(json['scheduled_start']),
       scheduledEnd: DateTime.parse(json['scheduled_end']),
-      actualStart: json['actual_start'] != null ? DateTime.parse(json['actual_start']) : null,
-      actualEnd: json['actual_end'] != null ? DateTime.parse(json['actual_end']) : null,
+      actualStart: json['actual_start'] != null
+          ? DateTime.parse(json['actual_start'])
+          : null,
+      actualEnd: json['actual_end'] != null
+          ? DateTime.parse(json['actual_end'])
+          : null,
       isWorking: json['is_working'] ?? false,
       staffId: json['staff'] as int?,
       salonId: json['salon'] as int?,

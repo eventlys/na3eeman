@@ -284,7 +284,8 @@ class EmptyState extends StatelessWidget {
   }) {
     return EmptyState(
       title: title ?? "no_internet_connection".tr(),
-      description: description ?? "please_check_your_connection_and_try_again".tr(),
+      description:
+          description ?? "please_check_your_connection_and_try_again".tr(),
       icon: Icons.wifi_off,
       actionButton: onRetry != null
           ? ElevatedButton.icon(

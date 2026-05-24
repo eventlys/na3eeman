@@ -12,7 +12,7 @@ class OnboardingService {
   Future<bool> shouldShowOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     bool isFirstLogin = prefs.getBool(_keyFirstLogin) ?? true;
-    
+
     if (isFirstLogin) return true;
 
     // Check inactivity

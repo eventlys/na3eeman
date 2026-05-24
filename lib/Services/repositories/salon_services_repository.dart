@@ -16,14 +16,16 @@ class ServiceRepository {
   }
 
   // Convert API response to service data format
-  List<Map<String, dynamic>> convertApiResponseToServices(List<dynamic> apiResponse) {
+  List<Map<String, dynamic>> convertApiResponseToServices(
+    List<dynamic> apiResponse,
+  ) {
     return ServiceDataHelper.convertToDisplayFormat(apiResponse);
   }
 
   // Search services by name
   List<Map<String, dynamic>> searchServices(
     List<Map<String, dynamic>> services,
-    String query
+    String query,
   ) {
     if (query.isEmpty) return services;
 

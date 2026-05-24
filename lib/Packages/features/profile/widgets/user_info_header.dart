@@ -62,25 +62,23 @@ class UserInfoHeader extends StatelessWidget {
     return profilePicture == null || profilePicture.isEmpty;
   }
 
-  Widget _buildUserInfo(BuildContext context, Map<String, dynamic> userData, AuthProvider authProvider) {
+  Widget _buildUserInfo(
+    BuildContext context,
+    Map<String, dynamic> userData,
+    AuthProvider authProvider,
+  ) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             _getUserName(userData),
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
             _getUserEmail(userData),
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),
           _buildEditProfileButton(context, authProvider),
@@ -107,7 +105,8 @@ class UserInfoHeader extends StatelessWidget {
     }
 
     // Try username
-    if (userData['username'] != null && userData['username'].toString().isNotEmpty) {
+    if (userData['username'] != null &&
+        userData['username'].toString().isNotEmpty) {
       return userData['username'].toString();
     }
 
@@ -120,7 +119,10 @@ class UserInfoHeader extends StatelessWidget {
     return userData['email']?.toString() ?? 'No email';
   }
 
-  Widget _buildEditProfileButton(BuildContext context, AuthProvider authProvider) {
+  Widget _buildEditProfileButton(
+    BuildContext context,
+    AuthProvider authProvider,
+  ) {
     return InkWell(
       onTap: () => _handleEditProfile(context, authProvider),
       child: Text(
@@ -138,7 +140,10 @@ class UserInfoHeader extends StatelessWidget {
     _showEditProfileOptions(context, authProvider);
   }
 
-  void _showEditProfileOptions(BuildContext context, AuthProvider authProvider) {
+  void _showEditProfileOptions(
+    BuildContext context,
+    AuthProvider authProvider,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Padding(

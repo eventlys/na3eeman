@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Staff Time Clock widget — Clock In / Clock Out.
 /// Shown on Expert Dashboard.  (Fresha / Bodrah / WAJ parity)
@@ -12,7 +13,8 @@ class TimeClockWidget extends StatefulWidget {
   State<TimeClockWidget> createState() => _TimeClockWidgetState();
 }
 
-class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProviderStateMixin {
+class _TimeClockWidgetState extends State<TimeClockWidget>
+    with SingleTickerProviderStateMixin {
   bool _isClockedIn = false;
   DateTime? _clockInTime;
   bool _isLoading = true;
@@ -23,8 +25,14 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _pulseCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat(reverse: true);
-    _pulseAnim = Tween<double>(begin: 0.9, end: 1.1).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _pulseAnim = Tween<double>(
+      begin: 0.9,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
     _loadStatus();
   }
 
@@ -63,12 +71,16 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
       if (res != null) {
         setState(() {
           _isClockedIn = true;
-          _clockInTime = DateTime.tryParse((res as Map)['clock_in']?.toString() ?? '') ?? DateTime.now();
+          _clockInTime =
+              DateTime.tryParse((res as Map)['clock_in']?.toString() ?? '') ??
+              DateTime.now();
         });
-        if (mounted) AppSnackBar.success(context, 'Clocked in successfully!');
+        if (mounted)
+          AppSnackBar.success(context, 'clocked_in_successfully'.tr());
       }
     } catch (e) {
-      if (mounted) AppSnackBar.error(context, 'Clock-in failed: $e');
+      if (mounted)
+        AppSnackBar.error(context, 'clock_in_failed'.tr(args: [e.toString()]));
     } finally {
       setState(() => _isProcessing = false);
     }
@@ -88,20 +100,26 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
         if (mounted) {
           final h = mins ~/ 60;
           final m = mins % 60;
-          AppSnackBar.success(context, 'Clocked out! Shift: ${h}h ${m}m');
+          AppSnackBar.success(
+            context,
+            'clocked_out_msg'.tr(args: [h.toString(), m.toString()]),
+          );
         }
       }
     } catch (e) {
-      if (mounted) AppSnackBar.error(context, 'Clock-out failed: $e');
+      if (mounted)
+        AppSnackBar.error(context, 'clock_out_failed'.tr(args: [e.toString()]));
     } finally {
       setState(() => _isProcessing = false);
     }
   }
 
   String _elapsed() {
-    if (_clockInTime == null) return '0h 0m';
+    if (_clockInTime == null) return 'zero_time'.tr();
     final diff = DateTime.now().difference(_clockInTime!);
-    return '${diff.inHours}h ${diff.inMinutes.remainder(60)}m';
+    return 'duration_hm'.tr(
+      args: [diff.inHours.toString(), diff.inMinutes.remainder(60).toString()],
+    );
   }
 
   @override
@@ -121,12 +139,16 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
         ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: _isClockedIn ? Colors.green.withOpacity(0.6) : theme.dividerColor,
+          color: _isClockedIn
+              ? Colors.green.withOpacity(0.6)
+              : theme.dividerColor,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: _isClockedIn ? Colors.green.withOpacity(0.25) : Colors.black.withOpacity(0.05),
+            color: _isClockedIn
+                ? Colors.green.withOpacity(0.25)
+                : Colors.black.withOpacity(0.05),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -138,16 +160,22 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
               children: [
                 // Status indicator
                 ScaleTransition(
-                  scale: _isClockedIn ? _pulseAnim : const AlwaysStoppedAnimation(1.0),
+                  scale: _isClockedIn
+                      ? _pulseAnim
+                      : const AlwaysStoppedAnimation(1.0),
                   child: Container(
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: _isClockedIn ? Colors.white.withOpacity(0.2) : AppColors.primary.withOpacity(0.1),
+                      color: _isClockedIn
+                          ? Colors.white.withOpacity(0.2)
+                          : AppColors.primary.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      _isClockedIn ? Icons.timer_rounded : Icons.timer_off_rounded,
+                      _isClockedIn
+                          ? Icons.timer_rounded
+                          : Icons.timer_off_rounded,
                       color: _isClockedIn ? Colors.white : AppColors.primary,
                       size: 28,
                     ),
@@ -159,24 +187,32 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _isClockedIn ? 'On Shift' : 'Not Clocked In',
+                        _isClockedIn ? 'on_shift'.tr() : 'not_clocked_in'.tr(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: _isClockedIn ? Colors.white : theme.textTheme.titleMedium?.color,
+                          color: _isClockedIn
+                              ? Colors.white
+                              : theme.textTheme.titleMedium?.color,
                         ),
                       ),
                       if (_isClockedIn) ...[
                         const SizedBox(height: 2),
                         Text(
-                          'Elapsed: ${_elapsed()}',
-                          style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          'elapsed_time_msg'.tr(args: [_elapsed()]),
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
                         ),
                       ] else ...[
                         const SizedBox(height: 2),
                         Text(
-                          'Tap to start your shift',
-                          style: TextStyle(color: theme.hintColor, fontSize: 12),
+                          'tap_to_start_your_shift'.tr(),
+                          style: TextStyle(
+                            color: theme.hintColor,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ],
@@ -186,20 +222,33 @@ class _TimeClockWidgetState extends State<TimeClockWidget> with SingleTickerProv
                 // Action button
                 _isProcessing
                     ? const SizedBox(
-                        width: 24, height: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : ElevatedButton(
                         onPressed: _isClockedIn ? _clockOut : _clockIn,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _isClockedIn ? Colors.white : AppColors.primary,
-                          foregroundColor: _isClockedIn ? Colors.green : Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          backgroundColor: _isClockedIn
+                              ? Colors.white
+                              : AppColors.primary,
+                          foregroundColor: _isClockedIn
+                              ? Colors.green
+                              : Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
                           elevation: 0,
                         ),
                         child: Text(
-                          _isClockedIn ? 'Clock Out' : 'Clock In',
+                          _isClockedIn ? 'clock_out'.tr() : 'clock_in'.tr(),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),

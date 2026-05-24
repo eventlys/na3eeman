@@ -119,7 +119,9 @@ class LocationService with ChangeNotifier {
       currentPositionNotifier.value = position;
       _error = null;
 
-      AppLogger.debug('Current location obtained: ${position.latitude}, ${position.longitude}');
+      AppLogger.debug(
+        'Current location obtained: ${position.latitude}, ${position.longitude}',
+      );
 
       _isLoading = false;
       notifyListeners();
@@ -151,7 +153,10 @@ class LocationService with ChangeNotifier {
   ) async {
     try {
       final distance = Geolocator.distanceBetween(
-        startLat, startLng, endLat, endLng,
+        startLat,
+        startLng,
+        endLat,
+        endLng,
       );
 
       return distance;
@@ -222,7 +227,7 @@ class LocationService with ChangeNotifier {
   // Check if location permission is granted
   bool get hasLocationPermission {
     return permissionStatus == LocationPermission.always ||
-           permissionStatus == LocationPermission.whileInUse;
+        permissionStatus == LocationPermission.whileInUse;
   }
 
   // Check if location data is available

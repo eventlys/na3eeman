@@ -24,7 +24,7 @@ class RoleBasedWidget extends StatelessWidget {
     if (allowedRoles.contains(userRole)) {
       return child;
     }
-    
+
     return fallback ?? const SizedBox.shrink();
   }
 }

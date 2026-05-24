@@ -10,10 +10,7 @@ import '../../../Core/widgets/common/date_time_pickers.dart';
 class SalonSchedulePage extends StatefulWidget {
   final Map<String, dynamic> serviceData;
 
-  const SalonSchedulePage({
-    super.key,
-    required this.serviceData,
-  });
+  const SalonSchedulePage({super.key, required this.serviceData});
 
   @override
   SalonSchedulePageState createState() => SalonSchedulePageState();
@@ -82,9 +79,15 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
   void _toggleService(Map<String, dynamic> service) {
     setState(() {
       if (ServiceSelectionHelper.containsService(_serviceSelection, service)) {
-        _serviceSelection = ServiceSelectionHelper.removeAdditionalService(_serviceSelection, service);
+        _serviceSelection = ServiceSelectionHelper.removeAdditionalService(
+          _serviceSelection,
+          service,
+        );
       } else {
-        _serviceSelection = ServiceSelectionHelper.addAdditionalService(_serviceSelection, service);
+        _serviceSelection = ServiceSelectionHelper.addAdditionalService(
+          _serviceSelection,
+          service,
+        );
       }
       // Reset date and time when services change
       _selectedDate = null;
@@ -93,130 +96,139 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
   }
 
   void _showScheduleTypeDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          decoration: BoxDecoration(
-            color: const Color(0xffffffff),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: const Color(0xFFFFFFFF),
-              width: 1.0,
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xffffffff),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFFFFFFF), width: 1.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xffffffff),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        color: const Color(0xffc25858),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "schedule_type".tr(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xffc25858),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Options
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _buildScheduleOption(
+                        context,
+                        title: "one_time_only".tr(),
+                        subtitle: "schedule_this_appointment_once".tr(),
+                        icon: Icons.event,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _confirmSchedule('one_time');
+                          // Use the simplified method
+                          Provider.of<PointsProvider>(
+                            context,
+                            listen: false,
+                          ).addAppointmentPoints();
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildScheduleOption(
+                        context,
+                        title: "bi_weekly".tr(),
+                        subtitle: "repeat_every2_weeks".tr(),
+                        icon: Icons.repeat,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _confirmSchedule('bi_weekly');
+                          // Use the simplified method
+                          Provider.of<PointsProvider>(
+                            context,
+                            listen: false,
+                          ).addAppointmentPoints();
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildScheduleOption(
+                        context,
+                        title: "monthly".tr(),
+                        subtitle: "repeat_every_month".tr(),
+                        icon: Icons.calendar_month,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _confirmSchedule('monthly');
+                          // Use the simplified method
+                          Provider.of<PointsProvider>(
+                            context,
+                            listen: false,
+                          ).addAppointmentPoints();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Close Button
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: const Color(0xffc25858),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        "cancel".tr(),
+                        style: TextStyle(
+                          color: const Color(0xffc25858),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xffffffff),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.calendar_today, color: const Color(0xffc25858)),
-                    const SizedBox(width: 8),
-                    Text("schedule_type".tr(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xffc25858),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+        );
+      },
+    );
+  }
 
-              // Options
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _buildScheduleOption(
-                      context,
-                      title: "one_time_only".tr(),
-                      subtitle: "schedule_this_appointment_once".tr(),
-                      icon: Icons.event,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        _confirmSchedule('one_time');
-                        // Use the simplified method
-                        Provider.of<PointsProvider>(context, listen: false)
-                            .addAppointmentPoints();
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildScheduleOption(
-                      context,
-                      title: "bi_weekly".tr(),
-                      subtitle: "repeat_every2_weeks".tr(),
-                      icon: Icons.repeat,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        _confirmSchedule('bi_weekly');
-                        // Use the simplified method
-                        Provider.of<PointsProvider>(context, listen: false)
-                            .addAppointmentPoints();
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildScheduleOption(
-                      context,
-                      title: "monthly".tr(),
-                      subtitle: "repeat_every_month".tr(),
-                      icon: Icons.calendar_month,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        _confirmSchedule('monthly');
-                        // Use the simplified method
-                        Provider.of<PointsProvider>(context, listen: false)
-                            .addAppointmentPoints();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              // Close Button
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xffc25858),
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text("cancel".tr(),
-                      style: TextStyle(
-                        color: const Color(0xffc25858),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-  Widget _buildScheduleOption(BuildContext context, {
+  Widget _buildScheduleOption(
+    BuildContext context, {
     required String title,
     required String subtitle,
     required IconData icon,
@@ -275,10 +287,14 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
     }
 
     // Get all selected services
-    final allServices = ServiceSelectionHelper.getAllServices(_serviceSelection);
+    final allServices = ServiceSelectionHelper.getAllServices(
+      _serviceSelection,
+    );
 
     // Your schedule confirmation logic here with scheduleType
-    print('Schedule confirmed: $scheduleType for ${allServices.length} services');
+    print(
+      'Schedule confirmed: $scheduleType for ${allServices.length} services',
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -297,55 +313,55 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
         backgroundColor: Colors.transparent,
         body: CustomScrollView(
           slivers: [
-            GlassSliverAppBar(
-              title: "book_a_haircut".tr(),
-            ),
+            GlassSliverAppBar(title: "book_a_haircut".tr()),
             SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Service Information - Updated to use service data
-                        _buildServiceDetailsSection(),
-                        const SizedBox(height: 24),
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Service Information - Updated to use service data
+                      _buildServiceDetailsSection(),
+                      const SizedBox(height: 24),
 
-                        // Date Picker
-                        ScheduleDatePicker(
-                          selectedDate: _selectedDate,
-                          onDateSelected: _selectDate,
-                        ),
-                        const SizedBox(height: 16),
+                      // Date Picker
+                      ScheduleDatePicker(
+                        selectedDate: _selectedDate,
+                        onDateSelected: _selectDate,
+                      ),
+                      const SizedBox(height: 16),
 
-                        // Time Picker
-                        ScheduleTimePicker(
-                          selectedDate: _selectedDate,
-                          selectedTime: _selectedTime,
-                          onTimeSelected: _selectTime,
-                        ),
-                        const SizedBox(height: 32),
+                      // Time Picker
+                      ScheduleTimePicker(
+                        selectedDate: _selectedDate,
+                        selectedTime: _selectedTime,
+                        onTimeSelected: _selectTime,
+                      ),
+                      const SizedBox(height: 32),
 
-                        // Confirm Button
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () => _showScheduleTypeDialog(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                            ),
-                            child: Text("confirm_schedule".tr(),
-                              style: TextStyle(fontSize: 16),
+                      // Confirm Button
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () => _showScheduleTypeDialog(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 16,
                             ),
                           ),
+                          child: Text(
+                            "confirm_schedule".tr(),
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ]),
             ),
           ],
         ),
@@ -355,9 +371,15 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
   }
 
   Widget _buildServiceDetailsSection() {
-    final mainService = ServiceSelectionHelper.getMainService(_serviceSelection);
-    final additionalServices = ServiceSelectionHelper.getAdditionalServices(_serviceSelection);
-    final allServices = ServiceSelectionHelper.getAllServices(_serviceSelection);
+    final mainService = ServiceSelectionHelper.getMainService(
+      _serviceSelection,
+    );
+    final additionalServices = ServiceSelectionHelper.getAdditionalServices(
+      _serviceSelection,
+    );
+    final allServices = ServiceSelectionHelper.getAllServices(
+      _serviceSelection,
+    );
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -368,7 +390,8 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("selected_services".tr(),
+          Text(
+            "selected_services".tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -383,7 +406,8 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
           // Additional Services
           if (additionalServices.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text("additional_services".tr(),
+            Text(
+              "additional_services".tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -396,7 +420,8 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
           const SizedBox(height: 12),
 
           // Available Additional Services
-          Text("add_more_services".tr(),
+          Text(
+            "add_more_services".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -404,15 +429,18 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
             ),
           ),
           const SizedBox(height: 8),
-          ..._availableAdditionalServices.map((service) =>
-            _buildAdditionalServiceOption(service)
+          ..._availableAdditionalServices.map(
+            (service) => _buildAdditionalServiceOption(service),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildServiceItem(Map<String, dynamic> service, {bool isMain = false}) {
+  Widget _buildServiceItem(
+    Map<String, dynamic> service, {
+    bool isMain = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(bottom: 8),
@@ -461,7 +489,10 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
   }
 
   Widget _buildAdditionalServiceOption(Map<String, dynamic> service) {
-    final isSelected = ServiceSelectionHelper.containsService(_serviceSelection, service);
+    final isSelected = ServiceSelectionHelper.containsService(
+      _serviceSelection,
+      service,
+    );
 
     return GestureDetector(
       onTap: () => _toggleService(service),
@@ -469,10 +500,14 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
         padding: const EdgeInsets.all(12),
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0x26c25858) : Colors.white.withValues(alpha: 0.05),
+          color: isSelected
+              ? const Color(0x26c25858)
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? const Color(0xffc25858) : Colors.white.withValues(alpha: 0.2),
+            color: isSelected
+                ? const Color(0xffc25858)
+                : Colors.white.withValues(alpha: 0.2),
           ),
         ),
         child: Row(
@@ -484,10 +519,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                 children: [
                   Text(
                     ServiceDataHelper.getServiceName(service),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   const SizedBox(height: 4),
                   Text(

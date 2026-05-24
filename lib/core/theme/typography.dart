@@ -7,11 +7,13 @@ class AppTypography {
 
   // English Font Families
   static String get englishFontFamily => GoogleFonts.inter().fontFamily!;
-  static String get secondaryEnglishFontFamily => GoogleFonts.poppins().fontFamily!;
+  static String get secondaryEnglishFontFamily =>
+      GoogleFonts.poppins().fontFamily!;
 
   // Arabic Font Families
   static String get arabicFontFamily => GoogleFonts.cairo().fontFamily!;
-  static String get secondaryArabicFontFamily => GoogleFonts.tajawal().fontFamily!;
+  static String get secondaryArabicFontFamily =>
+      GoogleFonts.tajawal().fontFamily!;
 
   static TextTheme buildTextTheme(Color textColor) {
     return TextTheme(

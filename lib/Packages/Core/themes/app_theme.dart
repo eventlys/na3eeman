@@ -164,9 +164,7 @@ class AppThemes {
         foregroundColor: AppColor.white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(26),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
         textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
       ),
     );
@@ -178,9 +176,7 @@ class AppThemes {
         foregroundColor: primary,
         side: BorderSide(color: primary, width: 1.5),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(26),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
         textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
       ),
     );
@@ -347,9 +343,8 @@ class AppThemes {
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith(
-          (s) => s.contains(WidgetState.selected)
-              ? primary
-              : AppColor.mediumGray,
+          (s) =>
+              s.contains(WidgetState.selected) ? primary : AppColor.mediumGray,
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (s) => s.contains(WidgetState.selected)
@@ -411,10 +406,7 @@ class AppThemes {
         shadowColor: AppColor.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(
-            color: Colors.white.withOpacity(0.08),
-            width: 1,
-          ),
+          side: BorderSide(color: Colors.white.withOpacity(0.08), width: 1),
         ),
         margin: EdgeInsets.zero,
       ),

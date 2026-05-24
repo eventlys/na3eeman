@@ -116,8 +116,7 @@ class ReportService {
     String? fileName,
     String? branchId,
     ReportFormat format = ReportFormat.pdf,
-  })
-  async {
+  }) async {
     try {
       final request = ReportRequest(
         time: timePeriod,
@@ -140,14 +139,14 @@ class ReportService {
         fileName: response['file_name'],
       );
     } catch (e) {
-      return ReportResult(
-        success: false,
-        errorMessage: e.toString(),
-      );
+      return ReportResult(success: false, errorMessage: e.toString());
     }
   }
 
-  Future<ReportResult> generateStaffReport(StaffReportRequest request, {int? salonId}) async {
+  Future<ReportResult> generateStaffReport(
+    StaffReportRequest request, {
+    int? salonId,
+  }) async {
     try {
       final activeSalonId = salonId;
       if (activeSalonId == null) {
@@ -162,14 +161,12 @@ class ReportService {
 
       return ReportResult(
         success: true,
-        downloadUrl: 'generated_staff_report_${DateTime.now().millisecondsSinceEpoch}.pdf',
+        downloadUrl:
+            'generated_staff_report_${DateTime.now().millisecondsSinceEpoch}.pdf',
         fileName: request.fileName,
       );
     } catch (e) {
-      return ReportResult(
-        success: false,
-        errorMessage: e.toString(),
-      );
+      return ReportResult(success: false, errorMessage: e.toString());
     }
   }
 }
@@ -227,8 +224,7 @@ class BusinessService {
     String? status,
     int? salonId,
     int? customerId,
-  })
-  async {
+  }) async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -252,7 +248,9 @@ class BusinessService {
     }
   }
 
-  Future<SalonAppointment> createAppointment(Map<String, dynamic> appointmentData) async {
+  Future<SalonAppointment> createAppointment(
+    Map<String, dynamic> appointmentData,
+  ) async {
     try {
       final response = await _apiService.post(
         '/appointments',
@@ -277,8 +275,7 @@ class BusinessService {
     String? recurrence,
     DateTime? recurrenceEndDate,
     bool isGroup = false,
-  })
-  async {
+  }) async {
     try {
       final appointmentData = {
         'customer': customerId,
@@ -306,9 +303,14 @@ class BusinessService {
   }
 
   // Add this method to your BusinessService class
-  Future<void> generateStaffReport(StaffReportRequest request, {required int salonId}) async {
+  Future<void> generateStaffReport(
+    StaffReportRequest request, {
+    required int salonId,
+  }) async {
     try {
-      AppLogger.debug('Generating staff report: ${request.reportType} for salon: $salonId');
+      AppLogger.debug(
+        'Generating staff report: ${request.reportType} for salon: $salonId',
+      );
 
       switch (request.reportType) {
         case StaffReportType.performance:
@@ -336,14 +338,18 @@ class BusinessService {
             salonId: salonId,
             includePerformance: true,
           );
-          final earningsData = experts.map((expert) => EarningsData(
-            date: DateTime.now(),
-            amount: expert.totalEarnings,
-            appointments: expert.totalAppointments,
-            tips: 0.0,
-            salonId: salonId, // Add the required salonId
-            expertId: expert.userId, // Add expertId
-          )).toList();
+          final earningsData = experts
+              .map(
+                (expert) => EarningsData(
+                  date: DateTime.now(),
+                  amount: expert.totalEarnings,
+                  appointments: expert.totalAppointments,
+                  tips: 0.0,
+                  salonId: salonId, // Add the required salonId
+                  expertId: expert.userId, // Add expertId
+                ),
+              )
+              .toList();
 
           await generateEarningsReport(
             earningsData,
@@ -402,8 +408,7 @@ class BusinessService {
     String appointmentId,
     DateTime newStartTime,
     DateTime newEndTime,
-  )
-  async {
+  ) async {
     try {
       final response = await _apiService.patch(
         '/appointments/$appointmentId/reschedule',
@@ -419,8 +424,7 @@ class BusinessService {
     }
   }
 
-  Future<SoonestAppointment?> getSoonestAppointment(int customerId)
-  async {
+  Future<SoonestAppointment?> getSoonestAppointment(int customerId) async {
     try {
       final response = await _apiService.get(
         '/appointments/soonest',
@@ -437,16 +441,15 @@ class BusinessService {
     }
   }
 
-  Future<SalonAppointment> createFreeAppointment(int customerId, {int? salonId})
-  async {
+  Future<SalonAppointment> createFreeAppointment(
+    int customerId, {
+    int? salonId,
+  }) async {
     try {
       final data = {'customer': customerId};
       if (salonId != null) data['salon'] = salonId;
 
-      final response = await _apiService.post(
-        '/appointments/free',
-        data: data,
-      );
+      final response = await _apiService.post('/appointments/free', data: data);
       return SalonAppointment.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Error creating free appointment: $e');
@@ -460,15 +463,15 @@ class BusinessService {
     int page = 1,
     int limit = 20,
     int? organizerId,
-  })
-  async {
+  }) async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
         'limit': limit.toString(),
       };
 
-      if (organizerId != null) queryParams['organizer'] = organizerId.toString();
+      if (organizerId != null)
+        queryParams['organizer'] = organizerId.toString();
 
       final response = await _apiService.get(
         '/booking-groups',
@@ -487,8 +490,7 @@ class BusinessService {
     required int organizerId,
     required bool isRecurring,
     int? salonId,
-  })
-  async {
+  }) async {
     try {
       _logger.logRequest('POST', '$_baseUrl/booking-groups/', {
         'organizer': organizerId,
@@ -513,7 +515,9 @@ class BusinessService {
         final data = json.decode(responseBody);
         return BookingGroup.fromJson(data);
       } else {
-        throw Exception('Failed to create booking group: ${response.statusCode}');
+        throw Exception(
+          'Failed to create booking group: ${response.statusCode}',
+        );
       }
     } catch (error) {
       AppLogger.error('Error creating booking group: $error');
@@ -531,14 +535,10 @@ class BusinessService {
     String currency = 'USD',
     int? userId,
     Map<String, dynamic>? metadata,
-  })
-  async {
+  }) async {
     try {
       String endpoint = '/payments/process/$paymentMethod';
-      Map<String, dynamic> data = {
-        'amount': amount,
-        'currency': currency,
-      };
+      Map<String, dynamic> data = {'amount': amount, 'currency': currency};
 
       if (paymentMethod == 'visa' && cardDetails != null) {
         data['card_details'] = cardDetails.toJson();
@@ -562,8 +562,7 @@ class BusinessService {
     required String paymentMethod,
     String currency = 'USD',
     Map<String, dynamic>? metadata,
-  })
-  async {
+  }) async {
     try {
       final response = await _apiService.post(
         '/payments/create-intent',
@@ -581,7 +580,11 @@ class BusinessService {
     }
   }
 
-  Future<void> confirmCashPayment(int appointmentId, int confirmedByUserId, double amount) async {
+  Future<void> confirmCashPayment(
+    int appointmentId,
+    int confirmedByUserId,
+    double amount,
+  ) async {
     try {
       await _apiService.post(
         '/payments/confirm-cash',
@@ -602,8 +605,7 @@ class BusinessService {
     int? appointmentId,
     int page = 1,
     int limit = 20,
-  })
-  async {
+  }) async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -611,7 +613,8 @@ class BusinessService {
       };
 
       if (userId != null) queryParams['user'] = userId.toString();
-      if (appointmentId != null) queryParams['appointment'] = appointmentId.toString();
+      if (appointmentId != null)
+        queryParams['appointment'] = appointmentId.toString();
 
       final response = await _apiService.get(
         '/payments/history',
@@ -632,8 +635,7 @@ class BusinessService {
     List<ProfitData> data,
     String period,
     String fileName,
-  )
-  async {
+  ) async {
     final pdf = pw.Document();
     pdf.addPage(_buildProfitReportPage(data, period));
     await _savePdf(pdf, fileName);
@@ -643,8 +645,7 @@ class BusinessService {
     List<EarningsData> data,
     String period,
     String fileName,
-  )
-  async {
+  ) async {
     final pdf = pw.Document();
     pdf.addPage(_buildEarningsReportPage(data, period));
     await _savePdf(pdf, fileName);
@@ -653,19 +654,20 @@ class BusinessService {
   static Future<void> generateStaffPerformanceReport(
     List<Expert> experts,
     StaffReportRequest request,
-  )
-  async {
+  ) async {
     final pdf = pw.Document();
     pdf.addPage(_buildStaffPerformancePage(experts, request));
-    await _savePdf(pdf, 'staff_performance_${DateTime.now().millisecondsSinceEpoch}');
+    await _savePdf(
+      pdf,
+      'staff_performance_${DateTime.now().millisecondsSinceEpoch}',
+    );
   }
 
   static Future<void> generateInventoryReport(
     List<InventoryItem> items,
     String reportType,
     String fileName,
-  )
-  async {
+  ) async {
     final pdf = pw.Document();
     pdf.addPage(_buildInventoryReportPage(items, reportType));
     await _savePdf(pdf, fileName);
@@ -675,8 +677,7 @@ class BusinessService {
     List<SalonAppointment> appointments,
     String period,
     String fileName,
-  )
-  async {
+  ) async {
     final pdf = pw.Document();
     pdf.addPage(_buildAppointmentReportPage(appointments, period));
     await _savePdf(pdf, fileName);
@@ -703,8 +704,7 @@ class BusinessService {
     required PointsType action,
     String description = '',
     Map<String, dynamic>? metadata,
-  })
-  async {
+  }) async {
     try {
       final points = getPointsForAction(action);
       AppLogger.debug('Awarding $points points to user $userId for $action');
@@ -714,7 +714,9 @@ class BusinessService {
         userId: userId,
         points: points,
         type: action,
-        description: description.isNotEmpty ? description : _getDefaultDescription(action),
+        description: description.isNotEmpty
+            ? description
+            : _getDefaultDescription(action),
         createdAt: DateTime.now(),
         metadata: metadata,
       );
@@ -736,7 +738,10 @@ class BusinessService {
     );
   }
 
-  Future<PointsModel> awardAppointmentPoints(int userId, int appointmentId) async {
+  Future<PointsModel> awardAppointmentPoints(
+    int userId,
+    int appointmentId,
+  ) async {
     return await awardPoints(
       userId: userId,
       action: PointsType.appointmentComplete,
@@ -754,8 +759,7 @@ class BusinessService {
     required String comment,
     int? appointmentId,
     List<String>? photos,
-  })
-  async {
+  }) async {
     try {
       _logger.logRequest('POST', '$_baseUrl/reviews/', {
         'customer': customerId,
@@ -818,8 +822,7 @@ class BusinessService {
     double? lat,
     double? lng,
     double? radius,
-  })
-  async {
+  }) async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -870,7 +873,9 @@ class BusinessService {
 
   Future<double> calculateAppointmentTotal(String appointmentId) async {
     try {
-      final response = await _apiService.get('/salons/calculate-total/$appointmentId');
+      final response = await _apiService.get(
+        '/salons/calculate-total/$appointmentId',
+      );
       return (response['data']['total'] as num).toDouble();
     } catch (e) {
       AppLogger.error('Error calculating appointment total: $e');
@@ -887,8 +892,7 @@ class BusinessService {
     bool? isActive,
     int page = 1,
     int limit = 20,
-  })
-  async {
+  }) async {
     try {
       final Map<String, dynamic> queryParams = {
         'page': page.toString(),
@@ -917,14 +921,14 @@ class BusinessService {
     String? branchId,
     int? salonId,
     bool? includePerformance,
-  })
-  async {
+  }) async {
     try {
       final Map<String, dynamic> queryParams = {};
 
       if (branchId != null) queryParams['branch_id'] = branchId;
       if (salonId != null) queryParams['salon'] = salonId.toString();
-      if (includePerformance != null) queryParams['include_performance'] = includePerformance.toString();
+      if (includePerformance != null)
+        queryParams['include_performance'] = includePerformance.toString();
 
       final response = await _apiService.get(
         '/experts',
@@ -953,7 +957,9 @@ class BusinessService {
 
   Future<List<SubscriptionPlan>> getAvailablePlans() async {
     try {
-      final response = await _apiService.get(Endpoints.platformSubscriptionPlans);
+      final response = await _apiService.get(
+        Endpoints.platformSubscriptionPlans,
+      );
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
       return data.map((item) => SubscriptionPlan.fromJson(item)).toList();
     } catch (e) {
@@ -967,8 +973,7 @@ class BusinessService {
     required String paymentMethodId,
     String? couponCode,
     bool autoRenew = true,
-  })
-  async {
+  }) async {
     try {
       final response = await _apiService.post(
         '/subscription/subscribe',
@@ -998,12 +1003,12 @@ class BusinessService {
     }
   }
 
-  Future<User> updateUserProfile(int userId, Map<String, dynamic> updates) async {
+  Future<User> updateUserProfile(
+    int userId,
+    Map<String, dynamic> updates,
+  ) async {
     try {
-      final response = await _apiService.patch(
-        '/users/$userId',
-        data: updates,
-      );
+      final response = await _apiService.patch('/users/$userId', data: updates);
       return User.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Error updating user profile: $e');
@@ -1045,7 +1050,6 @@ class BusinessService {
     }
   }
 
-
   // ============ PDF HELPER METHODS ============
 
   static Future<void> _savePdf(pw.Document pdf, String fileName) async {
@@ -1072,7 +1076,10 @@ class BusinessService {
     );
   }
 
-  static pw.Page _buildEarningsReportPage(List<EarningsData> data, String period) {
+  static pw.Page _buildEarningsReportPage(
+    List<EarningsData> data,
+    String period,
+  ) {
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -1090,7 +1097,10 @@ class BusinessService {
     );
   }
 
-  static pw.Page _buildStaffPerformancePage(List<Expert> experts, StaffReportRequest request) {
+  static pw.Page _buildStaffPerformancePage(
+    List<Expert> experts,
+    StaffReportRequest request,
+  ) {
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -1101,7 +1111,10 @@ class BusinessService {
               level: 0,
               child: pw.Text(
                 'Staff Performance Report',
-                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
             ),
             pw.SizedBox(height: 10),
@@ -1119,7 +1132,10 @@ class BusinessService {
     );
   }
 
-  static pw.Page _buildInventoryReportPage(List<InventoryItem> items, String reportType) {
+  static pw.Page _buildInventoryReportPage(
+    List<InventoryItem> items,
+    String reportType,
+  ) {
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -1130,7 +1146,10 @@ class BusinessService {
               level: 0,
               child: pw.Text(
                 'Inventory Report - $reportType',
-                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
             ),
             pw.SizedBox(height: 20),
@@ -1143,7 +1162,10 @@ class BusinessService {
     );
   }
 
-  static pw.Page _buildAppointmentReportPage(List<SalonAppointment> appointments, String period) {
+  static pw.Page _buildAppointmentReportPage(
+    List<SalonAppointment> appointments,
+    String period,
+  ) {
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -1154,7 +1176,10 @@ class BusinessService {
               level: 0,
               child: pw.Text(
                 'Appointment Report - $period',
-                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
             ),
             pw.SizedBox(height: 20),
@@ -1215,7 +1240,11 @@ class BusinessService {
               _buildTableCell(Formatters.formatCurrency(item.amount)),
               _buildTableCell(item.appointments.toString()),
               _buildTableCell(Formatters.formatCurrency(item.tips)),
-              _buildTableCell(Formatters.formatCurrency(item.appointments > 0 ? item.amount / item.appointments : 0)),
+              _buildTableCell(
+                Formatters.formatCurrency(
+                  item.appointments > 0 ? item.amount / item.appointments : 0,
+                ),
+              ),
             ],
           ),
       ],
@@ -1267,8 +1296,16 @@ class BusinessService {
             children: [
               _buildTableCell(item.productName ?? 'Unknown'),
               _buildTableCell(item.quantityInStock.toString()),
-              _buildTableCell(Formatters.formatCurrency(item.productPrice ?? 0)),
-              _buildTableCell(item.isCriticalStock ? 'Critical' : item.isLowStock ? 'Low' : 'Good'),
+              _buildTableCell(
+                Formatters.formatCurrency(item.productPrice ?? 0),
+              ),
+              _buildTableCell(
+                item.isCriticalStock
+                    ? 'Critical'
+                    : item.isLowStock
+                    ? 'Low'
+                    : 'Good',
+              ),
               _buildTableCell(Formatters.formatDate(item.lastUpdated)),
             ],
           ),
@@ -1294,9 +1331,17 @@ class BusinessService {
             children: [
               _buildTableCell(Formatters.formatDate(appointment.startTime)),
               _buildTableCell('Customer ${appointment.customerId}'),
-              _buildTableCell(appointment.services.isNotEmpty ? appointment.services.first.serviceType : 'Unknown'),
+              _buildTableCell(
+                appointment.services.isNotEmpty
+                    ? appointment.services.first.serviceType
+                    : 'Unknown',
+              ),
               _buildTableCell(appointment.status.toString().split('.').last),
-              _buildTableCell(appointment.payment != null ? Formatters.formatCurrency(appointment.payment!.amount) : 'N/A'),
+              _buildTableCell(
+                appointment.payment != null
+                    ? Formatters.formatCurrency(appointment.payment!.amount)
+                    : 'N/A',
+              ),
             ],
           ),
       ],
@@ -1308,93 +1353,104 @@ class BusinessService {
     final totalRevenue = data.fold(0.0, (sum, item) => sum + item.revenue);
     final totalProfit = data.fold(0.0, (sum, item) => sum + item.profit);
     final totalExpenses = data.fold(0.0, (sum, item) => sum + item.expenses);
-    final avgProfitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+    final avgProfitMargin = totalRevenue > 0
+        ? (totalProfit / totalRevenue) * 100
+        : 0;
 
-    return _buildSummaryContainer(
-      'Profit Summary',
-      [
-        'Total Revenue: ${Formatters.formatCurrency(totalRevenue)}',
-        'Total Profit: ${Formatters.formatCurrency(totalProfit)}',
-        'Total Expenses: ${Formatters.formatCurrency(totalExpenses)}',
-        'Average Profit Margin: ${avgProfitMargin.toStringAsFixed(1)}%',
-        'Number of Records: ${data.length}',
-      ],
-    );
+    return _buildSummaryContainer('Profit Summary', [
+      'Total Revenue: ${Formatters.formatCurrency(totalRevenue)}',
+      'Total Profit: ${Formatters.formatCurrency(totalProfit)}',
+      'Total Expenses: ${Formatters.formatCurrency(totalExpenses)}',
+      'Average Profit Margin: ${avgProfitMargin.toStringAsFixed(1)}%',
+      'Number of Records: ${data.length}',
+    ]);
   }
 
   static pw.Widget _buildEarningsSummary(List<EarningsData> data) {
     final totalEarnings = data.fold(0.0, (sum, item) => sum + item.amount);
     final totalTips = data.fold(0.0, (sum, item) => sum + item.tips);
-    final totalAppointments = data.fold(0, (sum, item) => sum + item.appointments);
-    final avgPerAppointment = totalAppointments > 0.0 ? totalEarnings / totalAppointments : 0.0;
-
-    return _buildSummaryContainer(
-      'Earnings Summary',
-      [
-        'Total Earnings: ${Formatters.formatCurrency(totalEarnings)}',
-        'Total Tips: ${Formatters.formatCurrency(totalTips)}',
-        'Total Appointments: $totalAppointments',
-        'Average per Appointment: ${Formatters.formatCurrency(avgPerAppointment)}',
-      ],
+    final totalAppointments = data.fold(
+      0,
+      (sum, item) => sum + item.appointments,
     );
+    final avgPerAppointment = totalAppointments > 0.0
+        ? totalEarnings / totalAppointments
+        : 0.0;
+
+    return _buildSummaryContainer('Earnings Summary', [
+      'Total Earnings: ${Formatters.formatCurrency(totalEarnings)}',
+      'Total Tips: ${Formatters.formatCurrency(totalTips)}',
+      'Total Appointments: $totalAppointments',
+      'Average per Appointment: ${Formatters.formatCurrency(avgPerAppointment)}',
+    ]);
   }
 
   static pw.Widget _buildPerformanceSummary(List<Expert> experts) {
-    final totalAppointments = experts.fold(0, (sum, expert) => sum + expert.totalAppointments);
-    final totalEarnings = experts.fold(0.0, (sum, expert) => sum + expert.totalEarnings);
-    final averageRating = experts.fold(0.0, (sum, expert) => sum + expert.rating) / experts.length;
-
-    return _buildSummaryContainer(
-      'Performance Summary',
-      [
-        'Total Appointments: $totalAppointments',
-        'Total Earnings: ${Formatters.formatCurrency(totalEarnings)}',
-        'Average Rating: ${averageRating.toStringAsFixed(1)}',
-        'Number of Experts: ${experts.length}',
-      ],
+    final totalAppointments = experts.fold(
+      0,
+      (sum, expert) => sum + expert.totalAppointments,
     );
+    final totalEarnings = experts.fold(
+      0.0,
+      (sum, expert) => sum + expert.totalEarnings,
+    );
+    final averageRating =
+        experts.fold(0.0, (sum, expert) => sum + expert.rating) /
+        experts.length;
+
+    return _buildSummaryContainer('Performance Summary', [
+      'Total Appointments: $totalAppointments',
+      'Total Earnings: ${Formatters.formatCurrency(totalEarnings)}',
+      'Average Rating: ${averageRating.toStringAsFixed(1)}',
+      'Number of Experts: ${experts.length}',
+    ]);
   }
 
   static pw.Widget _buildInventorySummary(List<InventoryItem> items) {
     final lowStockCount = items.where((item) => item.isLowStock).length;
-    final criticalStockCount = items.where((item) => item.isCriticalStock).length;
+    final criticalStockCount = items
+        .where((item) => item.isCriticalStock)
+        .length;
     final totalValue = items.fold(0.0, (sum, item) {
       final price = item.productPrice ?? 0;
       return sum + (price * item.quantityInStock);
     });
 
-    return _buildSummaryContainer(
-      'Inventory Summary',
-      [
-        'Total Items: ${items.length}',
-        'Low Stock Items: $lowStockCount',
-        'Critical Stock Items: $criticalStockCount',
-        'Total Inventory Value: ${Formatters.formatCurrency(totalValue)}',
-      ],
-    );
+    return _buildSummaryContainer('Inventory Summary', [
+      'Total Items: ${items.length}',
+      'Low Stock Items: $lowStockCount',
+      'Critical Stock Items: $criticalStockCount',
+      'Total Inventory Value: ${Formatters.formatCurrency(totalValue)}',
+    ]);
   }
 
-  static pw.Widget _buildAppointmentSummary(List<SalonAppointment> appointments) {
-    final completed = appointments.where((a) => a.status == AppointmentStatus.completed).length;
-    final cancelled = appointments.where((a) => a.status == AppointmentStatus.cancelled).length;
-    final scheduled = appointments.where((a) => a.status == AppointmentStatus.scheduled).length;
+  static pw.Widget _buildAppointmentSummary(
+    List<SalonAppointment> appointments,
+  ) {
+    final completed = appointments
+        .where((a) => a.status == AppointmentStatus.completed)
+        .length;
+    final cancelled = appointments
+        .where((a) => a.status == AppointmentStatus.cancelled)
+        .length;
+    final scheduled = appointments
+        .where((a) => a.status == AppointmentStatus.scheduled)
+        .length;
     final totalRevenue = appointments.fold(0.0, (sum, appointment) {
-      if (appointment.payment != null && appointment.status == AppointmentStatus.completed) {
+      if (appointment.payment != null &&
+          appointment.status == AppointmentStatus.completed) {
         return sum + appointment.payment!.amount;
       }
       return sum;
     });
 
-    return _buildSummaryContainer(
-      'Appointment Summary',
-      [
-        'Total Appointments: ${appointments.length}',
-        'Completed: $completed',
-        'Scheduled: $scheduled',
-        'Cancelled: $cancelled',
-        'Total Revenue: ${Formatters.formatCurrency(totalRevenue)}',
-      ],
-    );
+    return _buildSummaryContainer('Appointment Summary', [
+      'Total Appointments: ${appointments.length}',
+      'Completed: $completed',
+      'Scheduled: $scheduled',
+      'Cancelled: $cancelled',
+      'Total Revenue: ${Formatters.formatCurrency(totalRevenue)}',
+    ]);
   }
 
   // Helper methods for table building
@@ -1422,7 +1478,10 @@ class BusinessService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text(title, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+          pw.Text(
+            title,
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16),
+          ),
           pw.SizedBox(height: 10),
           for (var item in items) pw.Text(item),
         ],
@@ -1443,7 +1502,8 @@ class InventoryService {
       }
       final Map<String, dynamic> queryParams = {};
       final String endpoint = '/salons/salons/$salonId/inventory/';
-      queryParams['low_stock_only'] = 'true'; // Map to general endpoint list filter
+      queryParams['low_stock_only'] =
+          'true'; // Map to general endpoint list filter
 
       final response = await _apiService.get(
         endpoint,
@@ -1451,7 +1511,7 @@ class InventoryService {
       );
 
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
-      
+
       print('--- getLowStockItems ---');
       print('salonId: $salonId');
       print('Items count: ${data.length}');
@@ -1481,7 +1541,8 @@ class InventoryService {
         'limit': limit.toString(),
       };
 
-      if (lowStockOnly != null) queryParams['low_stock_only'] = lowStockOnly.toString();
+      if (lowStockOnly != null)
+        queryParams['low_stock_only'] = lowStockOnly.toString();
       if (category != null) queryParams['category'] = category;
 
       final String endpoint = '/salons/salons/$salonId/inventory/';
@@ -1492,7 +1553,7 @@ class InventoryService {
       );
 
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
-      
+
       print('--- getInventoryItems ---');
       print('salonId: $salonId, lowStock: $lowStockOnly, category: $category');
       print('Items count: ${data.length}');
@@ -1506,7 +1567,6 @@ class InventoryService {
     }
   }
 
-
   Future<dynamic> updateItemQuantity({
     required String itemId,
     required int salonId,
@@ -1518,7 +1578,7 @@ class InventoryService {
         '/salons/salons/$salonId/inventory/$itemId/',
         data: {
           'quantity_in_stock': newQuantity,
-          'notes': ?reason, // Map reason to notes if needed
+          if (reason != null) 'notes': reason,
         },
       );
       return response['data'];
@@ -1541,12 +1601,12 @@ class InventoryService {
       final response = await _apiService.post(
         '/salons/salons/$salonId/inventory/',
         data: {
-          'product': ?productId,
-          'product_name': ?productName,
-          'product_price': ?productPrice,
-          'category': ?category,
+          if (productId != null) 'product': productId,
+          if (productName != null) 'product_name': productName,
+          if (productPrice != null) 'product_price': productPrice,
+          if (category != null) 'category': category,
           'quantity_in_stock': initialQuantity,
-          'notes': ?notes,
+          if (notes != null) 'notes': notes,
         },
       );
       return response['data'];
@@ -1556,7 +1616,10 @@ class InventoryService {
     }
   }
 
-  Future<void> deleteInventoryItem({required String itemId, required int salonId}) async {
+  Future<void> deleteInventoryItem({
+    required String itemId,
+    required int salonId,
+  }) async {
     try {
       await _apiService.delete('/salons/salons/$salonId/inventory/$itemId/');
     } catch (e) {
@@ -1575,11 +1638,8 @@ class InventoryService {
         queryParams: queryParams,
       );
 
-      return response['data'] ?? {
-        'low_stock_count': 0,
-        'out_of_stock_count': 0,
-        'critical_items': [],
-      };
+      return response['data'] ??
+          {'low_stock_count': 0, 'out_of_stock_count': 0, 'critical_items': []};
     } catch (e) {
       AppLogger.error('Error fetching inventory alerts: $e');
       return {
@@ -1593,7 +1653,8 @@ class InventoryService {
   List<dynamic> getCriticalStockItemsFromList(List<dynamic> items) {
     try {
       return items.where((item) {
-        final currentStock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+        final currentStock =
+            item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
         final minStock = item['min_stock_level'] ?? 3;
         return currentStock <= minStock;
       }).toList();
@@ -1640,12 +1701,13 @@ class InventoryService {
         queryParams: queryParams,
       );
 
-      return response['data'] ?? {
-        'total_items': 0,
-        'low_stock_count': 0,
-        'out_of_stock_count': 0,
-        'total_value': 0,
-      };
+      return response['data'] ??
+          {
+            'total_items': 0,
+            'low_stock_count': 0,
+            'out_of_stock_count': 0,
+            'total_value': 0,
+          };
     } catch (e) {
       AppLogger.error('Error fetching inventory stats: $e');
       return {
@@ -1665,9 +1727,14 @@ class OffersService {
     return _apiService.getSalonOffers(salonId);
   }
 
-  Future<Map<String, dynamic>> createOffer(int salonId, Map<String, dynamic> offerData) async {
+  Future<Map<String, dynamic>> createOffer(
+    int salonId,
+    Map<String, dynamic> offerData,
+  ) async {
     final response = await _apiService.createOffer(salonId, offerData);
-    return response is Map<String, dynamic> ? response : (response as Map).cast<String, dynamic>();
+    return response is Map<String, dynamic>
+        ? response
+        : (response as Map).cast<String, dynamic>();
   }
 
   Future<void> deleteOffer(int salonId, int offerId) async {
@@ -1678,21 +1745,60 @@ class OffersService {
     return _apiService.getSalonAdCampaigns(salonId);
   }
 
-  Future<Map<String, dynamic>> createAdCampaign(int salonId, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> createAdCampaign(
+    int salonId,
+    Map<String, dynamic> data,
+  ) async {
     final response = await _apiService.createAdCampaign(salonId, data);
-    return response is Map<String, dynamic> ? response : (response as Map).cast<String, dynamic>();
+    return response is Map<String, dynamic>
+        ? response
+        : (response as Map).cast<String, dynamic>();
   }
 
   Future<void> deleteAdCampaign(int salonId, int campaignId) async {
     await _apiService.deleteAdCampaign(salonId, campaignId);
   }
 
-  Future<void> updateOffer(int salonId, int offerId, Map<String, dynamic> data) async {
+  Future<void> updateOffer(
+    int salonId,
+    int offerId,
+    Map<String, dynamic> data,
+  ) async {
     await _apiService.updateOffer(salonId, offerId, data);
   }
 
-  Future<void> updateAdCampaign(int salonId, int campaignId, Map<String, dynamic> data) async {
+  Future<void> updateAdCampaign(
+    int salonId,
+    int campaignId,
+    Map<String, dynamic> data,
+  ) async {
     await _apiService.updateAdCampaign(salonId, campaignId, data);
+  }
+
+  Future<List<dynamic>> getSalonPackages(int salonId) async {
+    return _apiService.getSalonPackages(salonId);
+  }
+
+  Future<Map<String, dynamic>> createPackage(
+    int salonId,
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _apiService.createPackage(salonId, data);
+    return response is Map<String, dynamic>
+        ? response
+        : (response as Map).cast<String, dynamic>();
+  }
+
+  Future<void> deletePackage(int salonId, int packageId) async {
+    await _apiService.deletePackage(salonId, packageId);
+  }
+
+  Future<void> updatePackage(
+    int salonId,
+    int packageId,
+    Map<String, dynamic> data,
+  ) async {
+    await _apiService.updatePackage(salonId, packageId, data);
   }
 }
 
@@ -1745,13 +1851,13 @@ class ProfitService {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/reports/profit-data?'
-            'start_date=${startDate.toIso8601String()}'
-            '&end_date=${endDate.toIso8601String()}'
-            '${branchId != null ? '&branch_id=$branchId' : ''}'),
-        headers: {
-          'Authorization': 'Bearer $authToken',
-        },
+        Uri.parse(
+          '$baseUrl/reports/profit-data?'
+          'start_date=${startDate.toIso8601String()}'
+          '&end_date=${endDate.toIso8601String()}'
+          '${branchId != null ? '&branch_id=$branchId' : ''}',
+        ),
+        headers: {'Authorization': 'Bearer $authToken'},
       );
 
       if (response.statusCode == 200) {
@@ -1770,16 +1876,22 @@ class ProfitService {
 class SalonGalleryService {
   final ApiService _apiService;
 
-  SalonGalleryService({ApiService? apiService}) : _apiService = apiService ?? ApiService();
+  SalonGalleryService({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
 
-  Future<List<String>> getSalonGalleryImages(String salonId, {int limit = 4}) async {
+  Future<List<String>> getSalonGalleryImages(
+    String salonId, {
+    int limit = 4,
+  }) async {
     try {
       final response = await _apiService.get(
         Endpoints.salonGallery(int.parse(salonId)),
         queryParams: {'limit': limit.toString()},
       );
 
-      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+      final List<dynamic> data = response is List
+          ? response
+          : (response['results'] ?? response['data'] ?? []);
       return data.map((item) => item['image_url'] as String).toList();
     } catch (e) {
       // If gallery fails, we can return empty or handle error
@@ -1788,16 +1900,23 @@ class SalonGalleryService {
     }
   }
 
-  Future<List<String>> getSalonGalleryImagesFromUrls(List<String> imageUrls, {int limit = 4}) async {
+  Future<List<String>> getSalonGalleryImagesFromUrls(
+    List<String> imageUrls, {
+    int limit = 4,
+  }) async {
     try {
       if (imageUrls.isEmpty) {
         return [];
       }
 
-      final effectiveLimit = limit > imageUrls.length ? imageUrls.length : limit;
+      final effectiveLimit = limit > imageUrls.length
+          ? imageUrls.length
+          : limit;
       return imageUrls.sublist(0, effectiveLimit);
     } catch (e) {
-      throw AppError('Failed to process gallery images: ${ErrorHandler.handleError(e)}');
+      throw AppError(
+        'Failed to process gallery images: ${ErrorHandler.handleError(e)}',
+      );
     }
   }
 
@@ -1821,7 +1940,8 @@ class SubscriptionService with ChangeNotifier {
   String? get error => _error;
   dynamic get currentSubscription => _currentSubscription;
 
-  SubscriptionService({required ApiService apiService}) : _apiService = apiService;
+  SubscriptionService({required ApiService apiService})
+    : _apiService = apiService;
 
   Future<void> getSubscriptionDetails() async {
     _isLoading = true;

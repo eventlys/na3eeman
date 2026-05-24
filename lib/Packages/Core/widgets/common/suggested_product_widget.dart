@@ -34,11 +34,16 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final String productName = widget.productData['productName'] ?? 'Unknown Product';
-    final String productDescription = widget.productData['productDescription'] ?? 'No description available';
-    final double productPrice = (widget.productData['productPrice'] ?? 0.0).toDouble();
-    final int quantityInStock = (widget.productData['quantityInStock'] ?? 0).toInt();
-    final int minStockLevel = (widget.productData['minStockLevel'] ?? 3).toInt();
+    final String productName =
+        widget.productData['productName'] ?? 'Unknown Product';
+    final String productDescription =
+        widget.productData['productDescription'] ?? 'No description available';
+    final double productPrice = (widget.productData['productPrice'] ?? 0.0)
+        .toDouble();
+    final int quantityInStock = (widget.productData['quantityInStock'] ?? 0)
+        .toInt();
+    final int minStockLevel = (widget.productData['minStockLevel'] ?? 3)
+        .toInt();
     final String itemId = widget.productData['id'] ?? '';
 
     final colors = _getThemeColors();
@@ -106,7 +111,9 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
                       child: Row(
                         children: [
                           Image.asset(
-                            widget.isDarkMode ? AppImages.error_view : AppImages.error,
+                            widget.isDarkMode
+                                ? AppImages.error_view
+                                : AppImages.error,
                             width: 16,
                             height: 16,
                             color: colors['error'],
@@ -149,7 +156,10 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        InventoryHelpers.getStockEmoji(quantityInStock, minStockLevel),
+                        InventoryHelpers.getStockEmoji(
+                          quantityInStock,
+                          minStockLevel,
+                        ),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ],
@@ -159,10 +169,17 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
 
                   // Stock status message
                   Text(
-                    InventoryHelpers.getStockStatusMessage(quantityInStock, minStockLevel),
+                    InventoryHelpers.getStockStatusMessage(
+                      quantityInStock,
+                      minStockLevel,
+                    ),
                     style: TextStyle(
                       fontSize: 10,
-                      color: _getStockStatusColor(colors, quantityInStock, minStockLevel),
+                      color: _getStockStatusColor(
+                        colors,
+                        quantityInStock,
+                        minStockLevel,
+                      ),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -195,7 +212,9 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(colors['primary']!),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              colors['primary']!,
+                            ),
                           ),
                         )
                       else if (quantityInStock > 0)
@@ -213,7 +232,11 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     );
   }
 
-  Widget _buildActionButtons(String itemId, int currentQuantity, Map<String, Color> colors) {
+  Widget _buildActionButtons(
+    String itemId,
+    int currentQuantity,
+    Map<String, Color> colors,
+  ) {
     final minStockLevel = (widget.productData['minStockLevel'] ?? 3).toInt();
     return Row(
       children: [
@@ -230,7 +253,11 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
         // Add to cart button
         IconButton(
           onPressed: widget.onAddToCart,
-          icon: Icon(Icons.add_shopping_cart, size: 20, color: colors['primary']),
+          icon: Icon(
+            Icons.add_shopping_cart,
+            size: 20,
+            color: colors['primary'],
+          ),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
         ),
@@ -255,10 +282,13 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     });
 
     try {
-      final inventoryService = Provider.of<InventoryService>(context, listen: false);
+      final inventoryService = Provider.of<InventoryService>(
+        context,
+        listen: false,
+      );
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final salonId = authProvider.user?.salonId;
-      
+
       if (salonId == null) {
         throw 'Salon ID was not found for this account';
       }
@@ -304,10 +334,13 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     });
 
     try {
-      final inventoryService = Provider.of<InventoryService>(context, listen: false);
+      final inventoryService = Provider.of<InventoryService>(
+        context,
+        listen: false,
+      );
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final salonId = authProvider.user?.salonId;
-      
+
       if (salonId == null) {
         throw 'Salon ID was not found for this account';
       }
@@ -358,7 +391,11 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
     return '\$${price.toStringAsFixed(2)}';
   }
 
-  Color _getStockStatusColor(Map<String, Color> colors, int quantity, int minStockLevel) {
+  Color _getStockStatusColor(
+    Map<String, Color> colors,
+    int quantity,
+    int minStockLevel,
+  ) {
     if (quantity == 0) {
       return colors['error']!;
     } else if (InventoryHelpers.isCriticalStock(quantity, minStockLevel)) {
@@ -377,51 +414,81 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
       switch (widget.userGender!) {
         case UserGender.male:
           return {
-            'cardBackground': isDark ? AppColor.darkMaleBackground : AppColor.maleBackground,
+            'cardBackground': isDark
+                ? AppColor.darkMaleBackground
+                : AppColor.maleBackground,
             'primary': AppColor.maleAccent,
             'secondary': isDark ? AppColor.darkMaleBG : AppColor.lightMaleBG,
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'border': isDark ? AppColor.darkMaleBG : AppColor.lightMaleBG,
-            'imageBackground': isDark ? AppColor.darkMaleBG : AppColor.lightMaleBG,
+            'imageBackground': isDark
+                ? AppColor.darkMaleBG
+                : AppColor.lightMaleBG,
             'imageIcon': isDark ? AppColor.darkText : AppColor.lightText,
             'success': isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
             'warning': isDark ? AppColor.darkWarning : AppColor.lightWarning,
             'error': isDark ? AppColor.darkError : AppColor.lightError,
             'info': isDark ? AppColor.darkInfo : AppColor.lightInfo,
-            'errorBackground': isDark ? AppColor.darkError.withValues(alpha: 0.1) : AppColor.lightError.withValues(alpha: 0.1),
+            'errorBackground': isDark
+                ? AppColor.darkError.withValues(alpha: 0.1)
+                : AppColor.lightError.withValues(alpha: 0.1),
           };
         case UserGender.female:
           return {
-            'cardBackground': isDark ? AppColor.darkFemaleBackground : AppColor.femaleBackground,
+            'cardBackground': isDark
+                ? AppColor.darkFemaleBackground
+                : AppColor.femaleBackground,
             'primary': AppColor.femaleAccent,
-            'secondary': isDark ? AppColor.darkFemaleBG : AppColor.lightFemaleBG,
+            'secondary': isDark
+                ? AppColor.darkFemaleBG
+                : AppColor.lightFemaleBG,
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'border': isDark ? AppColor.darkFemaleBG : AppColor.lightFemaleBG,
-            'imageBackground': isDark ? AppColor.darkFemaleBG : AppColor.lightFemaleBG,
+            'imageBackground': isDark
+                ? AppColor.darkFemaleBG
+                : AppColor.lightFemaleBG,
             'imageIcon': isDark ? AppColor.darkText : AppColor.lightText,
             'success': isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
             'warning': isDark ? AppColor.darkWarning : AppColor.lightWarning,
             'error': isDark ? AppColor.darkError : AppColor.lightError,
             'info': isDark ? AppColor.darkInfo : AppColor.lightInfo,
-            'errorBackground': isDark ? AppColor.darkError.withValues(alpha: 0.1) : AppColor.lightError.withValues(alpha: 0.1),
+            'errorBackground': isDark
+                ? AppColor.darkError.withValues(alpha: 0.1)
+                : AppColor.lightError.withValues(alpha: 0.1),
           };
         case UserGender.nonBinary:
           return {
-            'cardBackground': isDark ? AppColor.darkNonBinaryBackground : AppColor.nonBinaryBackground,
+            'cardBackground': isDark
+                ? AppColor.darkNonBinaryBackground
+                : AppColor.nonBinaryBackground,
             'primary': AppColor.nonBinaryAccent,
-            'secondary': isDark ? AppColor.darkNonBinaryBG : AppColor.lightNonBinaryBG,
+            'secondary': isDark
+                ? AppColor.darkNonBinaryBG
+                : AppColor.lightNonBinaryBG,
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-            'border': isDark ? AppColor.darkNonBinaryBG : AppColor.lightNonBinaryBG,
-            'imageBackground': isDark ? AppColor.darkNonBinaryBG : AppColor.lightNonBinaryBG,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
+            'border': isDark
+                ? AppColor.darkNonBinaryBG
+                : AppColor.lightNonBinaryBG,
+            'imageBackground': isDark
+                ? AppColor.darkNonBinaryBG
+                : AppColor.lightNonBinaryBG,
             'imageIcon': isDark ? AppColor.darkText : AppColor.lightText,
             'success': isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
             'warning': isDark ? AppColor.darkWarning : AppColor.lightWarning,
             'error': isDark ? AppColor.darkError : AppColor.lightError,
             'info': isDark ? AppColor.darkInfo : AppColor.lightInfo,
-            'errorBackground': isDark ? AppColor.darkError.withValues(alpha: 0.1) : AppColor.lightError.withValues(alpha: 0.1),
+            'errorBackground': isDark
+                ? AppColor.darkError.withValues(alpha: 0.1)
+                : AppColor.lightError.withValues(alpha: 0.1),
           };
       }
     }
@@ -432,15 +499,23 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
       'primary': isDark ? AppColor.darkPrimary : AppColor.primary,
       'secondary': isDark ? AppColor.darkSecondary : AppColor.secondary,
       'text': isDark ? AppColor.darkText : AppColor.lightText,
-      'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+      'textSecondary': isDark
+          ? AppColor.darkTextSecondary
+          : AppColor.lightTextSecondary,
       'border': isDark ? AppColor.darkSecondary : AppColor.lightSecondary,
-      'imageBackground': isDark ? AppColor.darkBackground : AppColor.lightBackground,
-      'imageIcon': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+      'imageBackground': isDark
+          ? AppColor.darkBackground
+          : AppColor.lightBackground,
+      'imageIcon': isDark
+          ? AppColor.darkTextSecondary
+          : AppColor.lightTextSecondary,
       'success': isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
       'warning': isDark ? AppColor.darkWarning : AppColor.lightWarning,
       'error': isDark ? AppColor.darkError : AppColor.lightError,
       'info': isDark ? AppColor.darkInfo : AppColor.lightInfo,
-      'errorBackground': isDark ? AppColor.darkError.withValues(alpha: 0.1) : AppColor.lightError.withValues(alpha: 0.1),
+      'errorBackground': isDark
+          ? AppColor.darkError.withValues(alpha: 0.1)
+          : AppColor.lightError.withValues(alpha: 0.1),
     };
   }
 
@@ -451,19 +526,13 @@ class _SuggestedProductWidgetState extends State<SuggestedProductWidget> {
         fontWeight: FontWeight.bold,
         color: colors['text'],
       ),
-      'description': TextStyle(
-        fontSize: 12,
-        color: colors['textSecondary'],
-      ),
+      'description': TextStyle(fontSize: 12, color: colors['textSecondary']),
       'price': TextStyle(
         fontSize: 14,
         color: colors['success'],
         fontWeight: FontWeight.bold,
       ),
-      'error': TextStyle(
-        fontSize: 12,
-        color: colors['error'],
-      ),
+      'error': TextStyle(fontSize: 12, color: colors['error']),
     };
   }
 }

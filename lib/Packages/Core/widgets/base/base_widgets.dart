@@ -7,7 +7,6 @@ import '../../themes/glass_appbar.dart';
 import '../../utils/helpers/themes_helpers.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
-
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
   bool _isLoading = false;
   String? _error;
@@ -62,7 +61,6 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       } else {
         _showErrorSnackbar(handledError.message);
       }
-    
     } finally {
       if (showLoading) setLoading(false);
     }
@@ -84,7 +82,8 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
 
   Color _getIconColor() {
     if (userGender != null) {
-      switch (userGender!) { // Add ! to handle null case
+      switch (userGender!) {
+        // Add ! to handle null case
         case UserGender.male:
           return AppColor.maleAccent;
         case UserGender.female:
@@ -105,7 +104,8 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
             valueColor: AlwaysStoppedAnimation<Color>(_getIconColor()),
           ),
           const SizedBox(height: 16),
-          Text("loading".tr(),
+          Text(
+            "loading".tr(),
             style: TextStyle(
               color: isDarkMode ? AppColor.darkText : AppColor.lightText,
               fontSize: 16,
@@ -132,7 +132,8 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
               color: _getErrorColor(),
             ),
             const SizedBox(height: 16),
-            Text("oops_something_went_wrong".tr(),
+            Text(
+              "oops_something_went_wrong".tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -145,23 +146,25 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: isDarkMode ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                color: isDarkMode
+                    ? AppColor.darkTextSecondary
+                    : AppColor.lightTextSecondary,
               ),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => retry(),
-              icon: Icon(
-                Icons.refresh,
-                color: _getIconColor(),
-              ),
-              label: Text("try_again".tr(),
+              icon: Icon(Icons.refresh, color: _getIconColor()),
+              label: Text(
+                "try_again".tr(),
                 style: TextStyle(
                   color: isDarkMode ? AppColor.darkText : AppColor.lightText,
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: isDarkMode ? AppColor.darkCard : AppColor.lightCard,
+                backgroundColor: isDarkMode
+                    ? AppColor.darkCard
+                    : AppColor.lightCard,
                 foregroundColor: _getIconColor(),
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -234,21 +237,18 @@ class BasePage extends StatelessWidget {
         ),
       ),
       centerTitle: centerTitle,
-      backgroundColor: _isDarkMode(context) ? AppColor.darkCard : AppColor.lightCard,
+      backgroundColor: _isDarkMode(context)
+          ? AppColor.darkCard
+          : AppColor.lightCard,
       elevation: 2,
       leading: showBackButton
           ? IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: _getIconColor(context),
-              ),
+              icon: Icon(Icons.arrow_back, color: _getIconColor(context)),
               onPressed: () => Navigator.of(context).pop(),
             )
           : null,
       actions: actions,
-      iconTheme: IconThemeData(
-        color: _getIconColor(context),
-      ),
+      iconTheme: IconThemeData(color: _getIconColor(context)),
     );
   }
 
@@ -265,7 +265,8 @@ class BasePage extends StatelessWidget {
 
   Color _getIconColor(BuildContext context) {
     if (userGender != null) {
-      switch (userGender!) { // Add ! to handle null case
+      switch (userGender!) {
+        // Add ! to handle null case
         case UserGender.male:
           return AppColor.maleAccent;
         case UserGender.female:
@@ -285,13 +286,13 @@ class BasePage extends StatelessWidget {
           ? CustomScrollView(
               slivers: [
                 _buildGlassAppBar(context),
-                SliverToBoxAdapter(
-                  child: SafeArea(child: body),
-                ),
+                SliverToBoxAdapter(child: SafeArea(child: body)),
               ],
             )
           : SafeArea(child: body),
-      backgroundColor: _isDarkMode(context) ? AppColor.darkBackground : AppColor.lightBackground,
+      backgroundColor: _isDarkMode(context)
+          ? AppColor.darkBackground
+          : AppColor.lightBackground,
     );
   }
 }
@@ -341,13 +342,12 @@ class BasePageWithFlexibleSpace extends StatelessWidget {
             expandedHeight: expandedHeight,
           ),
           if (slivers != null) ...slivers!,
-          if (slivers == null)
-            SliverToBoxAdapter(
-              child: SafeArea(child: body),
-            ),
+          if (slivers == null) SliverToBoxAdapter(child: SafeArea(child: body)),
         ],
       ),
-      backgroundColor: _isDarkMode(context) ? AppColor.darkBackground : AppColor.lightBackground,
+      backgroundColor: _isDarkMode(context)
+          ? AppColor.darkBackground
+          : AppColor.lightBackground,
     );
   }
 }

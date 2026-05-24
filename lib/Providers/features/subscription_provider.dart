@@ -9,7 +9,7 @@ import '../../Services/api/api_service.dart';
 class SubscriptionProvider extends BaseProvider {
   final ApiService _apiService = ApiService();
   final SubscriptionService _subscriptionService;
-  
+
   List<SubscriptionPlan> _plans = [];
   Subscription? _currentSubscription;
   AuthProvider? _authProvider;
@@ -18,7 +18,7 @@ class SubscriptionProvider extends BaseProvider {
   List<SubscriptionPlan> get plans => _plans;
   Subscription? get currentSubscription => _currentSubscription;
   bool get hasActiveSubscription => _currentSubscription?.isActive == true;
-  
+
   SubscriptionProvider({required SubscriptionService subscriptionService})
     : _subscriptionService = subscriptionService;
 
@@ -37,12 +37,12 @@ class SubscriptionProvider extends BaseProvider {
     try {
       // 1. Load available plans
       await loadPlans();
-      
+
       // 2. Load current subscription if user is owner
       if (_authProvider?.user?.isOwner == true) {
         await loadCurrentSubscription();
       }
-      
+
       clearError();
     } catch (e) {
       setError(e.toString());

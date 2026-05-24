@@ -17,7 +17,6 @@ import '../Models/salon/category_model.dart';
 
 // Staff
 import '../Packages/features/staff/pages/expert_dashboard.dart';
-import '../Packages/features/home/pages/expert_home_page.dart';
 import '../Packages/features/staff/pages/receptionist_dashboard.dart';
 import '../Packages/features/staff/pages/intern_dashboard.dart';
 import '../Packages/features/salon/pages/salon_owner_dashboard.dart';
@@ -92,7 +91,7 @@ import '../Providers/features/auth_provider.dart';
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
     // ── Entry ─────────────────────────────────────────────────────────────
-    '/': (context) => const LoadingPage(),
+    // '/': (context) => const LoadingPage(),
     '/onboarding': (context) => const OnboardingPage(),
     '/login': (context) => LoginPage(),
     '/signup': (context) => const SignupPage(),
@@ -109,28 +108,31 @@ class AppRoutes {
     // ── Customer ──────────────────────────────────────────────────────────
     '/customer_home': (context) => const CustomerHomePage(),
     '/category_details': (context) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final category = args['category'] as Category;
       final giftMode = args['giftMode'] as bool? ?? false;
       final giftGender = args['giftGender'] as String?;
+      final subQuery = args['subQuery'] as String?;
       return CategoryDetailsPage(
         category: category,
         giftMode: giftMode,
         giftGender: giftGender,
+        subQuery: subQuery,
       );
     },
     '/category_selection': (context) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ?? {};
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ??
+          {};
       final giftMode = args['giftMode'] as bool? ?? false;
       final giftGender = args['giftGender'] as String?;
-      return CategorySelectionPage(
-        giftMode: giftMode,
-        giftGender: giftGender,
-      );
+      return CategorySelectionPage(giftMode: giftMode, giftGender: giftGender);
     },
     '/salons': (context) => const SalonListPage(),
     '/salon_details': (context) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final salonData = args['salonData'] as Map<String, dynamic>;
       final giftMode = args['giftMode'] as bool? ?? false;
       final giftGender = args['giftGender'] as String?;
@@ -156,7 +158,7 @@ class AppRoutes {
     '/staff_schedules': (context) => const StaffSchedulesPage(),
 
     // ── Staff & Management ────────────────────────────────────────────────
-    '/expert_home': (context) => const ExpertHomePage(),
+    '/expert_home': (context) => const ExpertDashboard(),
     '/expert_dashboard': (context) => const ExpertDashboard(),
     '/my_times': (context) => const MyTimesPage(),
     '/receptionist_dashboard': (context) => const ReceptionistDashboard(),
@@ -175,7 +177,8 @@ class AppRoutes {
     // Legacy alias — kept for backward compat while migrating references
     '/salon_owner_dashboard': (context) => const SalonOwnerDashboard(),
     '/staff': (context) => const StaffManagementPage(),
-    '/management/intern-attendance': (context) => const InternAttendanceReportPage(),
+    '/management/intern-attendance': (context) =>
+        const InternAttendanceReportPage(),
 
     // ── Legacy Admin (placeholder) ────────────────────────────────────────
     '/admin_home': (context) => const AdminHomePage(),

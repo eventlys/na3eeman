@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../Providers/features/offers_provider.dart';
+import '../../../../Models/salon/offer_model.dart';
 
 class OffersCard extends StatelessWidget {
   const OffersCard({super.key});
@@ -8,11 +11,8 @@ class OffersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final offers = [
-      {'title': 'Summer Special', 'discount': '20%', 'expiry': '5 days left'},
-      {'title': 'New Customer', 'discount': '15%', 'expiry': 'Ongoing'},
-    ];
+    final offersProvider = context.watch<OffersProvider>();
+    final offers = offersProvider.offers.take(3).toList(); // Show top 3
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -20,7 +20,9 @@ class OffersCard extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
         ),
       ),
       child: Column(
@@ -33,15 +35,22 @@ class OffersCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.campaign_rounded, color: AppColors.pink),
                   const SizedBox(width: 8),
-                  Text("active_offers".tr(),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    "active_offers".tr(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
-              IconButton(
-                icon: Icon(Icons.add_circle_outline_rounded, color: Theme.of(context).primaryColor),
-                onPressed: () {},
-              ),
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.add_circle_outline_rounded,
+              //     color: Theme.of(context).primaryColor,
+              //   ),
+              //   onPressed: () {},
+              // ),
             ],
           ),
           const SizedBox(height: 16),
@@ -51,7 +60,7 @@ class OffersCard extends StatelessWidget {
     );
   }
 
-  Widget _buildOfferRow(Map<String, dynamic> offer, bool isDark) {
+  Widget _buildOfferRow(OfferModel offer, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -67,12 +76,18 @@ class OffersCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                offer['title'] as String,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                offer.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               Text(
-                offer['expiry'] as String,
-                style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                offer.validityPeriod,
+                style: const TextStyle(
+                  color: AppColors.almostBlack300,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),
@@ -83,8 +98,11 @@ class OffersCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              offer['discount'] as String,
-              style: const TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
+              '${offer.price} JOD',
+              style: const TextStyle(
+                color: AppColors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

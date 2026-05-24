@@ -117,7 +117,10 @@ flutter:
     - assets/mojies/
     - assets/icons/
     - assets/Lang/
+    - assets/categories/male/
+    - assets/categories/female/
     - .env
+    - .env.dev
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

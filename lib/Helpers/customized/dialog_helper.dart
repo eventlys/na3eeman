@@ -7,7 +7,9 @@ import '../../Services/ui/language_service.dart';
 
 class DialogHelper {
   static void showLanguageBottomSheet(
-      BuildContext context, LanguageService languageService) {
+    BuildContext context,
+    LanguageService languageService,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -16,7 +18,8 @@ class DialogHelper {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(tr('select_language'),
+              Text(
+                tr('select_language'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -52,17 +55,23 @@ class DialogHelper {
   }
 
   static void showThemeBottomSheet(
-      BuildContext context, ThemeService themeService) {
+    BuildContext context,
+    ThemeService themeService,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+        final themeProvider = Provider.of<ThemeProvider>(
+          context,
+          listen: false,
+        );
         return Container(
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(tr('select_theme'),
+              Text(
+                tr('select_theme'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),

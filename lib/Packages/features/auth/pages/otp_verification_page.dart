@@ -96,7 +96,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => ResetPasswordPage(resetToken: result['resetToken']!),
+            builder: (context) =>
+                ResetPasswordPage(resetToken: result['resetToken']!),
           ),
         );
       }
@@ -126,7 +127,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return AuthScaffold(
       title: "verify_otp".tr(),
       subtitle: 'We sent a 6-digit OTP to your registered email',
@@ -139,7 +140,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isDark 
+              color: isDark
                   ? AppColor.darkCard.withValues(alpha: 0.3)
                   : AppColor.lightCard.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(8),
@@ -171,15 +172,14 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide(
-                        color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
+                        color: isDark
+                            ? AppColor.darkTextHint
+                            : AppColor.lightTextHint,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: AppColor.primary,
-                        width: 2,
-                      ),
+                      borderSide: BorderSide(color: AppColor.primary, width: 2),
                     ),
                     fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
                     filled: true,
@@ -211,8 +211,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 Text(
                   "Didn't receive the OTP?",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: isDark 
-                        ? AppColor.darkTextSecondary 
+                    color: isDark
+                        ? AppColor.darkTextSecondary
                         : AppColor.lightTextSecondary,
                   ),
                 ),
@@ -224,7 +224,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            isDark ? AppColor.loadingPrimaryDark : AppColor.loadingPrimaryLight,
+                            isDark
+                                ? AppColor.loadingPrimaryDark
+                                : AppColor.loadingPrimaryLight,
                           ),
                         ),
                       )
@@ -234,13 +236,14 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           _canResend
                               ? 'Resend OTP'
                               : 'Resend in $_resendCooldown seconds',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: _canResend 
-                                ? AppColor.primary
-                                : isDark 
-                                    ? AppColor.darkTextHint 
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: _canResend
+                                    ? AppColor.primary
+                                    : isDark
+                                    ? AppColor.darkTextHint
                                     : AppColor.lightTextHint,
-                          ),
+                              ),
                         ),
                       ),
               ],
@@ -256,13 +259,19 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: _isSuccess
-                    ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess).withValues(alpha: 0.2)
-                    : (isDark ? AppColor.darkError : AppColor.lightError).withValues(alpha: 0.2),
+                    ? (isDark ? AppColor.darkSuccess : AppColor.lightSuccess)
+                          .withValues(alpha: 0.2)
+                    : (isDark ? AppColor.darkError : AppColor.lightError)
+                          .withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: _isSuccess
-                      ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                      : isDark ? AppColor.darkError : AppColor.lightError,
+                      ? isDark
+                            ? AppColor.darkSuccess
+                            : AppColor.lightSuccess
+                      : isDark
+                      ? AppColor.darkError
+                      : AppColor.lightError,
                   width: 1,
                 ),
               ),
@@ -273,17 +282,25 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     width: 20,
                     height: 20,
                     color: _isSuccess
-                        ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                        : isDark ? AppColor.darkError : AppColor.lightError,
+                        ? isDark
+                              ? AppColor.darkSuccess
+                              : AppColor.lightSuccess
+                        : isDark
+                        ? AppColor.darkError
+                        : AppColor.lightError,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       _message,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: _isSuccess 
-                            ? isDark ? AppColor.darkSuccess : AppColor.lightSuccess
-                            : isDark ? AppColor.darkError : AppColor.lightError,
+                        color: _isSuccess
+                            ? isDark
+                                  ? AppColor.darkSuccess
+                                  : AppColor.lightSuccess
+                            : isDark
+                            ? AppColor.darkError
+                            : AppColor.lightError,
                       ),
                     ),
                   ),

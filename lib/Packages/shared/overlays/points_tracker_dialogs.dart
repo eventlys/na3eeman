@@ -6,17 +6,19 @@ import '../../Core/constants/app_color.dart';
 
 class PointsTrackerDialogs {
   // Rate App Dialog
-  static void showRateAppDialog(BuildContext context, PointsProvider pointsProvider, int customerId) {
+  static void showRateAppDialog(
+    BuildContext context,
+    PointsProvider pointsProvider,
+    int customerId,
+  ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: theme.dialogBackgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.star_rate_rounded, color: AppColor.primary),
@@ -50,10 +52,16 @@ class PointsTrackerDialogs {
               try {
                 await pointsProvider.rateApp(customerId: customerId, rating: 5);
                 Navigator.pop(context);
-                PointsTrackerHelpers.showSuccessMessage(context, '🎉 Thanks for rating! +25 points');
+                PointsTrackerHelpers.showSuccessMessage(
+                  context,
+                  '🎉 Thanks for rating! +25 points',
+                );
               } catch (error) {
                 Navigator.pop(context);
-                PointsTrackerHelpers.showErrorMessage(context, 'Failed to add points. Please try again.');
+                PointsTrackerHelpers.showErrorMessage(
+                  context,
+                  'Failed to add points. Please try again.',
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -68,23 +76,26 @@ class PointsTrackerDialogs {
   }
 
   // App Feedback Dialog
-  static void showAppFeedbackDialog(BuildContext context, PointsProvider pointsProvider, int customerId) {
+  static void showAppFeedbackDialog(
+    BuildContext context,
+    PointsProvider pointsProvider,
+    int customerId,
+  ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final TextEditingController feedbackController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: theme.dialogBackgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.feedback_rounded, color: AppColor.primary),
             const SizedBox(width: 8),
-            Text("app_feedback".tr(),
+            Text(
+              "app_feedback".tr(),
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onSurface,
               ),
@@ -116,16 +127,15 @@ class PointsTrackerDialogs {
                 fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
               ),
               maxLines: 3,
-              style: TextStyle(
-                color: theme.colorScheme.onSurface,
-              ),
+              style: TextStyle(color: theme.colorScheme.onSurface),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("cancel".tr(),
+            child: Text(
+              "cancel".tr(),
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
@@ -140,10 +150,16 @@ class PointsTrackerDialogs {
                   feedback: feedback.isNotEmpty ? feedback : null,
                 );
                 Navigator.pop(context);
-                PointsTrackerHelpers.showSuccessMessage(context, '🎉 Thanks for your feedback! +50 points');
+                PointsTrackerHelpers.showSuccessMessage(
+                  context,
+                  '🎉 Thanks for your feedback! +50 points',
+                );
               } catch (error) {
                 Navigator.pop(context);
-                PointsTrackerHelpers.showErrorMessage(context, 'Failed to submit feedback. Please try again.');
+                PointsTrackerHelpers.showErrorMessage(
+                  context,
+                  'Failed to submit feedback. Please try again.',
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -160,14 +176,12 @@ class PointsTrackerDialogs {
   // More Points Info Dialog
   static void showMorePointsDialog(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: theme.dialogBackgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.workspace_premium, color: AppColor.primary),
@@ -185,12 +199,42 @@ class PointsTrackerDialogs {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildPointsRule(context, 'Complete Appointment', '+50 points', 'For each completed appointment'),
-              _buildPointsRule(context, 'Write Review', '+25 points', 'Share your experience'),
-              _buildPointsRule(context, 'Refer Friend', '+100 points', 'Invite friends to join'),
-              _buildPointsRule(context, 'Rate App', '+25 points', 'One-time reward'),
-              _buildPointsRule(context, 'App Feedback', '+50 points', 'One-time reward'),
-              _buildPointsRule(context, 'Other Activities', '+10 points', 'Various engagement activities'),
+              _buildPointsRule(
+                context,
+                'Complete Appointment',
+                '+50 points',
+                'For each completed appointment',
+              ),
+              _buildPointsRule(
+                context,
+                'Write Review',
+                '+25 points',
+                'Share your experience',
+              ),
+              _buildPointsRule(
+                context,
+                'Refer Friend',
+                '+100 points',
+                'Invite friends to join',
+              ),
+              _buildPointsRule(
+                context,
+                'Rate App',
+                '+25 points',
+                'One-time reward',
+              ),
+              _buildPointsRule(
+                context,
+                'App Feedback',
+                '+50 points',
+                'One-time reward',
+              ),
+              _buildPointsRule(
+                context,
+                'Other Activities',
+                '+10 points',
+                'Various engagement activities',
+              ),
             ],
           ),
         ),
@@ -210,18 +254,20 @@ class PointsTrackerDialogs {
   }
 
   // Invite Friend Dialog
-  static void showInviteFriendDialog(BuildContext context, PointsProvider pointsProvider, int customerId) {
+  static void showInviteFriendDialog(
+    BuildContext context,
+    PointsProvider pointsProvider,
+    int customerId,
+  ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final TextEditingController friendNameController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: theme.dialogBackgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.person_add_alt_1_rounded, color: AppColor.primary),
@@ -258,16 +304,15 @@ class PointsTrackerDialogs {
                 filled: true,
                 fillColor: isDark ? AppColor.darkCard : AppColor.lightCard,
               ),
-              style: TextStyle(
-                color: theme.colorScheme.onSurface,
-              ),
+              style: TextStyle(color: theme.colorScheme.onSurface),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("cancel".tr(),
+            child: Text(
+              "cancel".tr(),
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
@@ -282,10 +327,16 @@ class PointsTrackerDialogs {
                   friendName: friendName.isNotEmpty ? friendName : null,
                 );
                 Navigator.pop(context);
-                PointsTrackerHelpers.showSuccessMessage(context, '🎉 Friend invited! +100 points');
+                PointsTrackerHelpers.showSuccessMessage(
+                  context,
+                  '🎉 Friend invited! +100 points',
+                );
               } catch (error) {
                 Navigator.pop(context);
-                PointsTrackerHelpers.showErrorMessage(context, 'Failed to invite friend. Please try again.');
+                PointsTrackerHelpers.showErrorMessage(
+                  context,
+                  'Failed to invite friend. Please try again.',
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -300,10 +351,15 @@ class PointsTrackerDialogs {
   }
 
   // Updated points rule builder to use AppColor
-  static Widget _buildPointsRule(BuildContext context, String title, String points, String description) {
+  static Widget _buildPointsRule(
+    BuildContext context,
+    String title,
+    String points,
+    String description,
+  ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 12),

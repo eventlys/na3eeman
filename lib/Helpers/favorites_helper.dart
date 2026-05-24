@@ -56,22 +56,27 @@ class FavoritesHelper {
   // Sort favorites by different criteria
   static List<Map<String, dynamic>> sortFavorites(
     List<Map<String, dynamic>> salons,
-    String sortBy
+    String sortBy,
   ) {
     final sortedSalons = List<Map<String, dynamic>>.from(salons);
 
     switch (sortBy) {
       case 'name':
-        sortedSalons.sort((a, b) =>
-          (a['salonName'] ?? '').compareTo(b['salonName'] ?? ''));
+        sortedSalons.sort(
+          (a, b) => (a['salonName'] ?? '').compareTo(b['salonName'] ?? ''),
+        );
         break;
       case 'rating':
-        sortedSalons.sort((a, b) =>
-          (b['rating'] ?? 0.0).compareTo(a['rating'] ?? 0.0));
+        sortedSalons.sort(
+          (a, b) => (b['rating'] ?? 0.0).compareTo(a['rating'] ?? 0.0),
+        );
         break;
       case 'distance':
-        sortedSalons.sort((a, b) =>
-          (a['distance'] ?? double.infinity).compareTo(b['distance'] ?? double.infinity));
+        sortedSalons.sort(
+          (a, b) => (a['distance'] ?? double.infinity).compareTo(
+            b['distance'] ?? double.infinity,
+          ),
+        );
         break;
       case 'recent':
       default:
@@ -96,8 +101,8 @@ class FavoritesHelper {
       final services = salon['services']?.toString().toLowerCase() ?? '';
 
       return name.contains(lowerQuery) ||
-             address.contains(lowerQuery) ||
-             services.contains(lowerQuery);
+          address.contains(lowerQuery) ||
+          services.contains(lowerQuery);
     }).toList();
   }
 
@@ -105,8 +110,13 @@ class FavoritesHelper {
   static Map<String, int> getFavoritesStats(List<Map<String, dynamic>> salons) {
     int totalSalons = salons.length;
     int withRating = salons.where((salon) => salon['rating'] != null).length;
-    int withServices = salons.where((salon) =>
-      salon['services'] != null && (salon['services'] as List).isNotEmpty).length;
+    int withServices = salons
+        .where(
+          (salon) =>
+              salon['services'] != null &&
+              (salon['services'] as List).isNotEmpty,
+        )
+        .length;
 
     return {
       'total': totalSalons,

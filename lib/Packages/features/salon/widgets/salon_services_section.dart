@@ -11,10 +11,7 @@ import '../../../../Services/business_service.dart';
 class ServicesSection extends StatelessWidget {
   final Map<String, dynamic> salonData;
 
-  const ServicesSection({
-    super.key,
-    required this.salonData,
-  });
+  const ServicesSection({super.key, required this.salonData});
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +37,15 @@ class ServicesSection extends StatelessWidget {
     );
   }
 
-  Future<List<Map<String, dynamic>>> _loadServices(BuildContext context, Map<String, dynamic> salonData) async {
+  Future<List<Map<String, dynamic>>> _loadServices(
+    BuildContext context,
+    Map<String, dynamic> salonData,
+  ) async {
     try {
-      final serviceProvider = Provider.of<ServiceProvider>(context, listen: false);
+      final serviceProvider = Provider.of<ServiceProvider>(
+        context,
+        listen: false,
+      );
       final businessService = BusinessService();
 
       // Try to get services from salon data first
@@ -81,7 +84,9 @@ class ServicesSection extends StatelessWidget {
         } else {
           // Handle other types by creating a default service structure
           return ServiceDataHelper.createServiceData(
-            id: service['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+            id:
+                service['id']?.toString() ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
             name: service['name']?.toString() ?? 'Unknown Service',
             duration: service['duration']?.toString() ?? '30 min',
             price: service['price']?.toString() ?? '\$0',
@@ -93,15 +98,18 @@ class ServicesSection extends StatelessWidget {
     return [];
   }
 
-  List<Map<String, dynamic>> _convertSalonDetailsToServices(dynamic salonDetails) {
+  List<Map<String, dynamic>> _convertSalonDetailsToServices(
+    dynamic salonDetails,
+  ) {
     // Extract services from various possible salon detail structures
     final List<Map<String, dynamic>> services = [];
 
     if (salonDetails is Map<String, dynamic>) {
       // Try different possible service field names
-      final servicesData = salonDetails['services'] ??
-                          salonDetails['service_list'] ??
-                          salonDetails['available_services'];
+      final servicesData =
+          salonDetails['services'] ??
+          salonDetails['service_list'] ??
+          salonDetails['available_services'];
 
       if (servicesData is List) {
         return _parseServicesFromSalonData(servicesData);
@@ -132,7 +140,8 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text("services_prices".tr(),
+              Text(
+                "services_prices".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -170,7 +179,8 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text("services_prices".tr(),
+              Text(
+                "services_prices".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -188,7 +198,8 @@ class ServicesSection extends StatelessWidget {
               border: Border.all(color: AppColor.borderLight),
             ),
             child: Center(
-              child: Text("unable_to_load_services_please_try_again".tr(),
+              child: Text(
+                "unable_to_load_services_please_try_again".tr(),
                 style: TextStyle(
                   color: AppColor.lightTextSecondary,
                   fontSize: 14,
@@ -226,7 +237,8 @@ class ServicesSection extends StatelessWidget {
                 color: AppColor.lightText,
               ),
               const SizedBox(width: 8),
-              Text("services_prices".tr(),
+              Text(
+                "services_prices".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -239,11 +251,13 @@ class ServicesSection extends StatelessWidget {
           if (services.isEmpty)
             _buildNoServicesAvailable(context)
           else
-            ...services.map((service) => _buildServiceItem(
-              context: context,
-              service: service,
-              serviceProvider: serviceProvider,
-            )),
+            ...services.map(
+              (service) => _buildServiceItem(
+                context: context,
+                service: service,
+                serviceProvider: serviceProvider,
+              ),
+            ),
         ],
       ),
     );
@@ -258,11 +272,9 @@ class ServicesSection extends StatelessWidget {
         border: Border.all(color: AppColor.borderLight),
       ),
       child: Center(
-        child: Text("no_services_available".tr(),
-          style: TextStyle(
-            color: AppColor.lightTextSecondary,
-            fontSize: 14,
-          ),
+        child: Text(
+          "no_services_available".tr(),
+          style: TextStyle(color: AppColor.lightTextSecondary, fontSize: 14),
         ),
       ),
     );
@@ -284,25 +296,13 @@ class ServicesSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 120,
-                  height: 16,
-                  color: AppColor.borderLight,
-                ),
+                Container(width: 120, height: 16, color: AppColor.borderLight),
                 const SizedBox(height: 8),
-                Container(
-                  width: 80,
-                  height: 14,
-                  color: AppColor.borderLight,
-                ),
+                Container(width: 80, height: 14, color: AppColor.borderLight),
               ],
             ),
           ),
-          Container(
-            width: 60,
-            height: 30,
-            color: AppColor.borderLight,
-          ),
+          Container(width: 60, height: 30, color: AppColor.borderLight),
         ],
       ),
     );
@@ -380,7 +380,9 @@ class ServicesSection extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColor.lightSecondary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColor.lightSecondary.withOpacity(0.3)),
+                border: Border.all(
+                  color: AppColor.lightSecondary.withOpacity(0.3),
+                ),
               ),
               child: Text(
                 servicePrice,
@@ -396,5 +398,4 @@ class ServicesSection extends StatelessWidget {
       ),
     );
   }
-
 }

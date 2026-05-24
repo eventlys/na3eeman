@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../Providers/features/inventory_provider.dart';
 
 class InventoryAlertCard extends StatelessWidget {
   const InventoryAlertCard({super.key});
@@ -8,12 +10,9 @@ class InventoryAlertCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final inventoryProvider = context.watch<InventoryProvider>();
+    final items = inventoryProvider.lowStockItems;
 
-    final items = [
-      {'name': 'Aftershave Gel', 'stock': 2, 'min': 10},
-      {'name': 'Shaving Cream', 'stock': 5, 'min': 20},
-      {'name': 'Disposable Razors', 'stock': 12, 'min': 50},
-    ];
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -21,7 +20,9 @@ class InventoryAlertCard extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
         ),
       ),
       child: Column(
@@ -32,10 +33,17 @@ class InventoryAlertCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.warning_amber_rounded, color: AppColors.error),
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    color: AppColors.error,
+                  ),
                   const SizedBox(width: 8),
-                  Text("low_stock_alerts".tr(),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    "low_stock_alerts".tr(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -47,7 +55,10 @@ class InventoryAlertCard extends StatelessWidget {
                 ),
                 child: Text(
                   '${items.length}',
-                  style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: AppColors.error,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -59,7 +70,13 @@ class InventoryAlertCard extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () {},
-              child: Text("manage_inventory".tr(), style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+              child: Text(
+                "manage_inventory".tr(),
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],
@@ -67,7 +84,11 @@ class InventoryAlertCard extends StatelessWidget {
     );
   }
 
-  Widget _buildItemRow(Map<String, dynamic> item, bool isDark, BuildContext context) {
+  Widget _buildItemRow(
+    Map<String, dynamic> item,
+    bool isDark,
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -79,7 +100,11 @@ class InventoryAlertCard extends StatelessWidget {
               color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.inventory_2_rounded, color: Theme.of(context).primaryColor, size: 20),
+            child: Icon(
+              Icons.inventory_2_rounded,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -87,17 +112,24 @@ class InventoryAlertCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['name'] as String,
+                  item['product_name']?.toString() ?? 'Unknown',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Stock: ${item['stock']} (Min: ${item['min']})',
-                  style: const TextStyle(color: AppColors.error, fontSize: 12, fontWeight: FontWeight.w600),
+                  'Stock: ${item['quantityInStock'] ?? item['quantity_in_stock'] ?? 0} (Min: ${item['lowStockThreshold'] ?? item['low_stock_threshold'] ?? 0})',
+                  style: const TextStyle(
+                    color: AppColors.error,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.almostBlack200),
+          // const Icon(
+          //   Icons.chevron_right_rounded,
+          //   color: AppColors.almostBlack200,
+          // ),
         ],
       ),
     );

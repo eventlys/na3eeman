@@ -138,7 +138,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
         return AppColor.femaleAccent;
       case Gender.nonBinary:
         return AppColor.nonBinaryAccent;
-      }
+    }
   }
 
   Color _getTextColor(ThemeData theme) {
@@ -287,7 +287,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
 
   Widget _buildSubscribeButton(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(

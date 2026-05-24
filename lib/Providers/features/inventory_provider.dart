@@ -25,46 +25,50 @@ class InventoryProvider with ChangeNotifier {
 
   List<dynamic> get items => _inventoryItems;
   List<dynamic> get consumables => _inventoryItems.where((i) {
-    if (i is Map) return i['category'] == 'CONSUMABLE' || i['category'] == 'Consumables';
+    if (i is Map)
+      return i['category'] == 'CONSUMABLE' || i['category'] == 'Consumables';
     return false;
   }).toList();
   List<dynamic> get personalKitItems => _inventoryItems.where((i) {
-    if (i is Map) return i['category'] == 'EQUIPMENT' || i['category'] == 'Personal Kit';
-     return false;
+    if (i is Map)
+      return i['category'] == 'EQUIPMENT' || i['category'] == 'Personal Kit';
+    return false;
   }).toList();
   List<dynamic> get generalItems => _inventoryItems.where((i) {
-    if (i is Map) return i['category'] == 'GENERAL' || i['category'] == 'General';
-     return false;
+    if (i is Map)
+      return i['category'] == 'GENERAL' || i['category'] == 'General';
+    return false;
   }).toList();
   List<dynamic> get inventoryItems => _inventoryItems;
 
-  Future<void> loadInventory(int salonId, {
+  Future<void> loadInventory(
+    int salonId, {
     bool? lowStockOnly,
     String? category,
   }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
- 
-     try {
-       _inventoryItems = await _inventoryService.getInventoryItems(
-         salonId: salonId,
-         lowStockOnly: lowStockOnly,
-         category: category,
-       );
-     } catch (e) {
-       _error = 'Failed to load inventory items: ${e.toString()}';
-     } finally {
-       _isLoading = false;
-       notifyListeners();
-     }
-   }
- 
-   Future<void> loadInventoryItems({
-     int? salonId,
-     bool? lowStockOnly,
-     String? category,
-   }) async {
+
+    try {
+      _inventoryItems = await _inventoryService.getInventoryItems(
+        salonId: salonId,
+        lowStockOnly: lowStockOnly,
+        category: category,
+      );
+    } catch (e) {
+      _error = 'Failed to load inventory items: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadInventoryItems({
+    int? salonId,
+    bool? lowStockOnly,
+    String? category,
+  }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -130,7 +134,9 @@ class InventoryProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      _lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
+      _lowStockItems = await _inventoryService.getLowStockItems(
+        salonId: salonId,
+      );
     } catch (e) {
       _error = 'Failed to load low stock items: ${e.toString()}';
     } finally {

@@ -14,9 +14,12 @@ class ServiceModelsHelper {
   }
 
   // Check if service selection contains a service
-  static bool containsService(ServiceSelection selection, SalonService service) {
-    return selection.mainService.id == service.id || 
-           selection.additionalServices.any((s) => s.id == service.id);
+  static bool containsService(
+    ServiceSelection selection,
+    SalonService service,
+  ) {
+    return selection.mainService.id == service.id ||
+        selection.additionalServices.any((s) => s.id == service.id);
   }
 
   // Get all services from selection
@@ -36,7 +39,7 @@ class ServiceSelection {
   });
 
   List<SalonService> get allServices => [mainService, ...additionalServices];
-  
+
   bool containsService(SalonService service) {
     return ServiceModelsHelper.containsService(this, service);
   }
@@ -82,12 +85,17 @@ class ServiceDataHelper {
   }
 
   // Check if two services are the same
-  static bool areServicesEqual(Map<String, dynamic> service1, Map<String, dynamic> service2) {
+  static bool areServicesEqual(
+    Map<String, dynamic> service1,
+    Map<String, dynamic> service2,
+  ) {
     return getServiceId(service1) == getServiceId(service2);
   }
 
   // Convert list of service maps to display format
-  static List<Map<String, dynamic>> convertToDisplayFormat(List<dynamic> services) {
+  static List<Map<String, dynamic>> convertToDisplayFormat(
+    List<dynamic> services,
+  ) {
     return services.map((service) {
       if (service is Map<String, dynamic>) {
         return service;
@@ -117,18 +125,27 @@ class ServiceSelectionHelper {
   }
 
   // Check if selection contains a service
-  static bool containsService(Map<String, dynamic> selection, Map<String, dynamic> service) {
+  static bool containsService(
+    Map<String, dynamic> selection,
+    Map<String, dynamic> service,
+  ) {
     final mainService = selection['mainService'] as Map<String, dynamic>? ?? {};
-    final additionalServices = selection['additionalServices'] as List<dynamic>? ?? [];
+    final additionalServices =
+        selection['additionalServices'] as List<dynamic>? ?? [];
 
     return ServiceDataHelper.areServicesEqual(mainService, service) ||
-        additionalServices.any((s) => ServiceDataHelper.areServicesEqual(s, service));
+        additionalServices.any(
+          (s) => ServiceDataHelper.areServicesEqual(s, service),
+        );
   }
 
   // Get all services from selection
-  static List<Map<String, dynamic>> getAllServices(Map<String, dynamic> selection) {
+  static List<Map<String, dynamic>> getAllServices(
+    Map<String, dynamic> selection,
+  ) {
     final mainService = selection['mainService'] as Map<String, dynamic>? ?? {};
-    final additionalServices = selection['additionalServices'] as List<dynamic>? ?? [];
+    final additionalServices =
+        selection['additionalServices'] as List<dynamic>? ?? [];
 
     return [mainService, ...additionalServices.cast<Map<String, dynamic>>()];
   }
@@ -139,14 +156,17 @@ class ServiceSelectionHelper {
   }
 
   // Get additional services
-  static List<Map<String, dynamic>> getAdditionalServices(Map<String, dynamic> selection) {
-    return (selection['additionalServices'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
+  static List<Map<String, dynamic>> getAdditionalServices(
+    Map<String, dynamic> selection,
+  ) {
+    return (selection['additionalServices'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
   }
 
   // Add service to additional services
   static Map<String, dynamic> addAdditionalService(
     Map<String, dynamic> selection,
-    Map<String, dynamic> service
+    Map<String, dynamic> service,
   ) {
     final currentAdditional = getAdditionalServices(selection);
 
@@ -163,7 +183,7 @@ class ServiceSelectionHelper {
   // Remove service from additional services
   static Map<String, dynamic> removeAdditionalService(
     Map<String, dynamic> selection,
-    Map<String, dynamic> service
+    Map<String, dynamic> service,
   ) {
     final currentAdditional = getAdditionalServices(selection);
 
@@ -178,7 +198,7 @@ class ServiceSelectionHelper {
   // Toggle service in additional services
   static Map<String, dynamic> toggleAdditionalService(
     Map<String, dynamic> selection,
-    Map<String, dynamic> service
+    Map<String, dynamic> service,
   ) {
     if (containsService(selection, service)) {
       return removeAdditionalService(selection, service);

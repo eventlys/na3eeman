@@ -10,10 +10,7 @@ import '../../Navigations/navigation_config.dart';
 class CustomNavigationBar extends StatefulWidget {
   final String currentRoute;
 
-  const CustomNavigationBar({
-    super.key,
-    required this.currentRoute,
-  });
+  const CustomNavigationBar({super.key, required this.currentRoute});
 
   @override
   _CustomNavigationBarState createState() => _CustomNavigationBarState();
@@ -55,7 +52,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   Widget build(BuildContext context) {
     final appStateProvider = Provider.of<AppStateProvider>(context);
 
-    final navItems = NavigationConfig.getNavItems(appStateProvider, widget.currentRoute, context);
+    final navItems = NavigationConfig.getNavItems(
+      appStateProvider,
+      widget.currentRoute,
+      context,
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
@@ -74,8 +75,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: navItems.map((item) {
-              final isActive = NavigationConfig.isItemActive(item, widget.currentRoute, appStateProvider);
-              final shouldAnimateForThisItem = _shouldAnimate && _lastTappedId == item.id;
+              final isActive = NavigationConfig.isItemActive(
+                item,
+                widget.currentRoute,
+                appStateProvider,
+              );
+              final shouldAnimateForThisItem =
+                  _shouldAnimate && _lastTappedId == item.id;
 
               return NeomorphicSphere(
                 activeIconPath: item.activeIconPath,

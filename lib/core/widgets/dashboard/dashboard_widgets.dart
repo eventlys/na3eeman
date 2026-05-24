@@ -7,7 +7,6 @@ import '../buttons/styled_buttons.dart';
 import '../../../../Providers/features/auth_provider.dart';
 import '../feedback/feedback_dialog.dart';
 
-
 class DashboardCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -36,9 +35,13 @@ class DashboardCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color ?? (isDark ? AppColors.almostBlack600 : AppColors.white),
         borderRadius: BorderRadius.circular(borderRadius),
-        border: border ?? Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
-        ),
+        border:
+            border ??
+            Border.all(
+              color: isDark
+                  ? AppColors.white.withOpacity(0.1)
+                  : AppColors.almostBlack50,
+            ),
       ),
       child: child,
     );
@@ -107,7 +110,9 @@ class DashboardSummaryCard extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
         ),
       ),
       child: Column(
@@ -128,16 +133,16 @@ class DashboardSummaryCard extends StatelessWidget {
           ),
           Text(
             title,
-            style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+            style: const TextStyle(
+              color: AppColors.almostBlack300,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
-
 
 class GlobalSearchBar extends StatelessWidget {
   const GlobalSearchBar({super.key});
@@ -147,7 +152,7 @@ class GlobalSearchBar extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final user = authProvider.user;
-    
+
     // Management roles (Owner, Receptionist) navigate to staff list
     final isManagement = user?.isOwner == true || user?.isReceptionist == true;
 
@@ -160,9 +165,10 @@ class GlobalSearchBar extends StatelessWidget {
         ),
         child: TextField(
           readOnly: true,
-          onTap: () => Navigator.pushNamed(context, isManagement ? '/staff' : '/salons'),
+          onTap: () =>
+              Navigator.pushNamed(context, isManagement ? '/staff' : '/salons'),
           decoration: InputDecoration(
-            hintText: isManagement 
+            hintText: isManagement
                 ? 'expert_management'.tr()
                 : "search_services_salons".tr(),
             hintStyle: TextStyle(
@@ -215,7 +221,10 @@ class FeedbackSection extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 "help_us_improve".tr(),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ],
           ),
@@ -223,11 +232,12 @@ class FeedbackSection extends StatelessWidget {
           Text(
             "request_new_service".tr(),
             style: TextStyle(
-                color: isDark ? AppColors.cream600 : AppColors.almostBlack400,
-                fontSize: 14),
+              color: isDark ? AppColors.cream600 : AppColors.almostBlack400,
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 20),
-          SecondaryButton(
+          PrimaryButton(
             text: "submit_suggestion".tr(),
             onPressed: () => _showFeedbackDialog(context),
           ),
@@ -236,11 +246,18 @@ class FeedbackSection extends StatelessWidget {
     );
   }
 
-  Widget _buildFeedbackTypeSelector(BuildContext context, Function(String) onSelected) {
+  Widget _buildFeedbackTypeSelector(
+    BuildContext context,
+    Function(String) onSelected,
+  ) {
     final types = [
       {'label': 'Bug', 'value': 'BUG', 'icon': Icons.bug_report_rounded},
       {'label': 'Feature', 'value': 'FEATURE', 'icon': Icons.add_chart_rounded},
-      {'label': 'Abuse', 'value': 'ABUSE', 'icon': Icons.report_gmailerrorred_rounded},
+      {
+        'label': 'Abuse',
+        'value': 'ABUSE',
+        'icon': Icons.report_gmailerrorred_rounded,
+      },
       {'label': 'Other', 'value': 'OTHER', 'icon': Icons.more_horiz_rounded},
     ];
 
@@ -258,10 +275,20 @@ class FeedbackSection extends StatelessWidget {
                     color: Theme.of(context).primaryColor.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(type['icon'] as IconData, color: Theme.of(context).primaryColor, size: 24),
+                  child: Icon(
+                    type['icon'] as IconData,
+                    color: Theme.of(context).primaryColor,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Text(type['label'] as String, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                Text(
+                  type['label'] as String,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),

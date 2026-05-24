@@ -53,8 +53,8 @@ class UserGiftCard {
     return UserGiftCard(
       id: json['id'],
       giftCardId: json['gift_card'],
-      giftCardDetails: json['gift_card_details'] != null 
-          ? GiftCard.fromJson(json['gift_card_details']) 
+      giftCardDetails: json['gift_card_details'] != null
+          ? GiftCard.fromJson(json['gift_card_details'])
           : null,
       code: json['code'],
       balance: double.parse(json['balance'].toString()),

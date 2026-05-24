@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-
 class LogoutPage extends StatelessWidget {
   const LogoutPage({super.key});
 
@@ -13,4 +12,3 @@ class LogoutPage extends StatelessWidget {
     );
   }
 }
-

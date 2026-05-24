@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'profile_avatar_style.dart';
 
-
 class MyProfileAvatar extends StatelessWidget {
   final String? imagePath;
   final double size;
@@ -38,9 +37,7 @@ class MyProfileAvatar extends StatelessWidget {
               ),
             ],
           ),
-          child: ClipOval(
-            child: _buildAvatarContent(),
-          ),
+          child: ClipOval(child: _buildAvatarContent()),
         ),
 
         // Title (if provided)
@@ -48,10 +45,9 @@ class MyProfileAvatar extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             title!,
-            style: style?.titleStyle ?? const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            style:
+                style?.titleStyle ??
+                const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -91,11 +87,7 @@ class MyProfileAvatar extends StatelessWidget {
   Widget _buildFallback() {
     return Container(
       color: style?.color ?? Colors.blue,
-      child: Icon(
-        Icons.person,
-        size: size * 0.6,
-        color: Colors.white,
-      ),
+      child: Icon(Icons.person, size: size * 0.6, color: Colors.white),
     );
   }
 }

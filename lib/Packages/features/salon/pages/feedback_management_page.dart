@@ -37,10 +37,14 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
           final customer = r['customer'] as Map<String, dynamic>?;
           return {
             'id': r['id']?.toString() ?? '',
-            'customerName': customer != null ? '${customer['first_name']} ${customer['last_name']}' : 'Anonymous',
+            'customerName': customer != null
+                ? '${customer['first_name']} ${customer['last_name']}'
+                : 'Anonymous',
             'rating': (r['rating'] ?? 5).toDouble(),
             'comment': r['comment'] ?? 'No comment provided.',
-            'date': r['created_at'] != null ? DateTime.parse(r['created_at']) : DateTime.now(),
+            'date': r['created_at'] != null
+                ? DateTime.parse(r['created_at'])
+                : DateTime.now(),
           };
         }).toList();
       });
@@ -54,12 +58,18 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
   List<Map<String, dynamic>> _getFilteredReviews() {
     List<Map<String, dynamic>> sorted = List.from(_reviews);
     if (_selectedFilter == 'Most Recent') {
-      sorted.sort((a, b) => (b['date'] as DateTime).compareTo(a['date'] as DateTime));
+      sorted.sort(
+        (a, b) => (b['date'] as DateTime).compareTo(a['date'] as DateTime),
+      );
     } else if (_selectedFilter == 'Top 5 Best') {
-      sorted.sort((a, b) => (b['rating'] as double).compareTo(a['rating'] as double));
+      sorted.sort(
+        (a, b) => (b['rating'] as double).compareTo(a['rating'] as double),
+      );
       return sorted.take(5).toList();
     } else if (_selectedFilter == 'Top 5 Worst') {
-      sorted.sort((a, b) => (a['rating'] as double).compareTo(b['rating'] as double));
+      sorted.sort(
+        (a, b) => (a['rating'] as double).compareTo(b['rating'] as double),
+      );
       return sorted.take(5).toList();
     }
     return sorted;
@@ -73,11 +83,14 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("customer_feedback".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "customer_feedback".tr(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: _isLoading 
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(24.0),
@@ -89,7 +102,7 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
                   _buildFilters(),
                   const SizedBox(height: 24),
                   Expanded(
-                    child: filteredReviews.isEmpty 
+                    child: filteredReviews.isEmpty
                         ? Center(child: Text("no_reviews_found".tr()))
                         : ListView.builder(
                             itemCount: filteredReviews.length,
@@ -117,13 +130,17 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.05),
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).primaryColor.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 filter,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Theme.of(context).primaryColor,
+                  color: isSelected
+                      ? Colors.white
+                      : Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
@@ -144,7 +161,11 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,20 +173,31 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(review['customerName'] as String, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                review['customerName'] as String,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               Row(
                 children: [
                   const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
                   const SizedBox(width: 4),
-                  Text(rating.toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    rating.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
             review['comment'] as String,
-            style: TextStyle(color: isDark ? AppColors.cream600 : AppColors.almostBlack400),
+            style: TextStyle(
+              color: isDark ? AppColors.cream600 : AppColors.almostBlack400,
+            ),
           ),
         ],
       ),

@@ -73,20 +73,20 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? _buildError(theme)
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeroCard(theme),
-                      const SizedBox(height: 24),
-                      _buildStatsRow(theme),
-                      const SizedBox(height: 24),
-                      _buildHowItWorks(theme),
-                    ],
-                  ),
-                ),
+          ? _buildError(theme)
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeroCard(theme),
+                  const SizedBox(height: 24),
+                  _buildStatsRow(theme),
+                  const SizedBox(height: 24),
+                  _buildHowItWorks(theme),
+                ],
+              ),
+            ),
     );
   }
 
@@ -114,7 +114,11 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
       ),
       child: Column(
         children: [
-          const Icon(Icons.card_giftcard_rounded, size: 52, color: Colors.white),
+          const Icon(
+            Icons.card_giftcard_rounded,
+            size: 52,
+            color: Colors.white,
+          ),
           const SizedBox(height: 16),
           const Text(
             'Invite friends, earn rewards',
@@ -153,7 +157,11 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
                     ),
                   ),
                   const SizedBox(width: 14),
-                  const Icon(Icons.copy_rounded, color: Color(0xFFEC4899), size: 22),
+                  const Icon(
+                    Icons.copy_rounded,
+                    color: Color(0xFFEC4899),
+                    size: 22,
+                  ),
                 ],
               ),
             ),
@@ -165,11 +173,19 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
             child: OutlinedButton.icon(
               onPressed: () => _copyCode(code),
               icon: const Icon(Icons.share_rounded, color: Colors.white),
-              label: const Text('Copy & Share Code', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              label: const Text(
+                'Copy & Share Code',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Colors.white54),
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
             ),
           ),
@@ -183,9 +199,23 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
     final rewards = (_referral?['rewards_given'] as num?)?.toInt() ?? 0;
     return Row(
       children: [
-        Expanded(child: _StatCard(label: 'Friends Invited', value: '$uses', icon: Icons.people_rounded, color: Colors.blue)),
+        Expanded(
+          child: _StatCard(
+            label: 'Friends Invited',
+            value: '$uses',
+            icon: Icons.people_rounded,
+            color: Colors.blue,
+          ),
+        ),
         const SizedBox(width: 12),
-        Expanded(child: _StatCard(label: 'Rewards Earned', value: '$rewards pts', icon: Icons.stars_rounded, color: Colors.amber)),
+        Expanded(
+          child: _StatCard(
+            label: 'Rewards Earned',
+            value: '$rewards pts',
+            icon: Icons.stars_rounded,
+            color: Colors.amber,
+          ),
+        ),
       ],
     );
   }
@@ -194,7 +224,12 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('How It Works', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'How It Works',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 16),
         _Step(number: 1, text: 'Share your referral code with a friend'),
         _Step(number: 2, text: 'They register using your code'),
@@ -205,21 +240,25 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
   }
 
   Widget _buildError(ThemeData theme) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline_rounded, size: 56, color: theme.colorScheme.error),
-            const SizedBox(height: 16),
-            const Text('Could not load referral code', textAlign: TextAlign.center),
-            const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: _load,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
-            ),
-          ],
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.error_outline_rounded,
+          size: 56,
+          color: theme.colorScheme.error,
         ),
-      );
+        const SizedBox(height: 16),
+        const Text('Could not load referral code', textAlign: TextAlign.center),
+        const SizedBox(height: 20),
+        FilledButton.icon(
+          onPressed: _load,
+          icon: const Icon(Icons.refresh_rounded),
+          label: const Text('Retry'),
+        ),
+      ],
+    ),
+  );
 }
 
 class _StatCard extends StatelessWidget {
@@ -228,7 +267,12 @@ class _StatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  const _StatCard({required this.label, required this.value, required this.icon, required this.color});
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -244,8 +288,18 @@ class _StatCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 28),
           const SizedBox(height: 10),
-          Text(value, style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: 20)),
-          Text(label, style: theme.textTheme.labelSmall?.copyWith(color: theme.hintColor)),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: color,
+              fontSize: 20,
+            ),
+          ),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(color: theme.hintColor),
+          ),
         ],
       ),
     );
@@ -269,10 +323,21 @@ class _Step extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [Color(0xFFEC4899), Color(0xFFF43F5E)]),
+              gradient: const LinearGradient(
+                colors: [Color(0xFFEC4899), Color(0xFFF43F5E)],
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Center(child: Text('$number', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14))),
+            child: Center(
+              child: Text(
+                '$number',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(

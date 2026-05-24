@@ -16,7 +16,9 @@ class GlobalStockValueWidget extends StatelessWidget {
     final inventory = context.watch<InventoryProvider>();
     final owner = context.watch<OwnerProvider>();
 
-    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeSalonId != null) {
+    if (!inventory.isLoading &&
+        inventory.items.isEmpty &&
+        owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         inventory.loadInventory(owner.activeSalonId!);
       });
@@ -26,8 +28,12 @@ class GlobalStockValueWidget extends StatelessWidget {
     // value = quantity_in_stock × product_price (product_price not yet in InventoryItem model)
     // For now we show total item count as stock health indicator
     final totalItems = inventory.items.fold<int>(
-        0, (sum, item) => sum + (item.quantityInStock as int));
-    final lowStockCount = inventory.items.where((i) => i.quantityInStock < 5).length;
+      0,
+      (sum, item) => sum + (item.quantityInStock as int),
+    );
+    final lowStockCount = inventory.items
+        .where((i) => i.quantityInStock < 5)
+        .length;
     final consumablesCount = inventory.consumables.length;
     final equipmentCount = inventory.personalKitItems.length;
 
@@ -50,23 +56,34 @@ class GlobalStockValueWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.inventory_rounded, size: 18, color: theme.primaryColor),
+              Icon(
+                Icons.inventory_rounded,
+                size: 18,
+                color: theme.primaryColor,
+              ),
               const SizedBox(width: 8),
-              Text("global_stock_value".tr(),
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: theme.hintColor)),
+              Text(
+                "global_stock_value".tr(),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.hintColor,
+                ),
+              ),
               const Spacer(),
               if (inventory.isLoading)
                 const SizedBox(
-                    width: 14,
-                    height: 14,
-                    child: CircularProgressIndicator(strokeWidth: 2)),
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
             ],
           ),
           const SizedBox(height: 8),
-          Text('$totalItems Units',
-              style: theme.textTheme.headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            '$totalItems Units',
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Row(
             children: [
@@ -83,7 +100,8 @@ class GlobalStockValueWidget extends StatelessWidget {
                     ? 'All stock levels healthy'
                     : '$lowStockCount items low on stock',
                 style: theme.textTheme.bodySmall?.copyWith(
-                    color: lowStockCount == 0 ? Colors.green : Colors.orange),
+                  color: lowStockCount == 0 ? Colors.green : Colors.orange,
+                ),
               ),
             ],
           ),
@@ -95,8 +113,12 @@ class GlobalStockValueWidget extends StatelessWidget {
             children: [
               _MiniStat('Consumables', '$consumablesCount items', theme),
               _MiniStat('Equipment', '$equipmentCount items', theme),
-              _MiniStat('Low Stock', '$lowStockCount', theme,
-                  valueColor: lowStockCount > 0 ? Colors.red : Colors.green),
+              _MiniStat(
+                'Low Stock',
+                '$lowStockCount',
+                theme,
+                valueColor: lowStockCount > 0 ? Colors.red : Colors.green,
+              ),
             ],
           ),
         ],
@@ -114,13 +136,16 @@ class _MiniStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        children: [
-          Text(value,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: valueColor)),
-          Text(label, style: TextStyle(fontSize: 11, color: theme.hintColor)),
-        ],
-      );
+    children: [
+      Text(
+        value,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+          color: valueColor,
+        ),
+      ),
+      Text(label, style: TextStyle(fontSize: 11, color: theme.hintColor)),
+    ],
+  );
 }

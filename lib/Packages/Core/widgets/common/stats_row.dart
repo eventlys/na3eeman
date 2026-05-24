@@ -9,24 +9,25 @@ import '../../constants/app_color.dart';
 class AppointmentStatsRow extends StatelessWidget {
   final bool? isDarkMode;
 
-  const AppointmentStatsRow({
-    super.key,
-    this.isDarkMode,
-  });
+  const AppointmentStatsRow({super.key, this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
     final appointmentProvider = context.watch<AppointmentProvider>();
-    final bool darkMode = isDarkMode ?? Theme.of(context).brightness == Brightness.dark;
-    
+    final bool darkMode =
+        isDarkMode ?? Theme.of(context).brightness == Brightness.dark;
+
     // Calculate counts based on appointment status
     final completedCount = appointmentProvider.appointments
         .where((appt) => appt.status == AppointmentStatus.completed)
         .length;
-    
+
     final pendingCount = appointmentProvider.appointments
-        .where((appt) => appt.status == AppointmentStatus.pending || 
-                         appt.status == AppointmentStatus.scheduled)
+        .where(
+          (appt) =>
+              appt.status == AppointmentStatus.pending ||
+              appt.status == AppointmentStatus.scheduled,
+        )
         .length;
 
     return _buildStatsRow(
@@ -85,15 +86,15 @@ class AppointmentStatsRow extends StatelessWidget {
         color: darkMode ? AppColor.darkCard : AppColor.lightCard,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
-          color: darkMode 
-            ? AppColor.darkTextHint.withValues(alpha: 0.3)
-            : AppColor.lightTextHint.withValues(alpha: 0.3),
+          color: darkMode
+              ? AppColor.darkTextHint.withValues(alpha: 0.3)
+              : AppColor.lightTextHint.withValues(alpha: 0.3),
         ),
         boxShadow: [
           BoxShadow(
-            color: darkMode 
-              ? AppColor.darkWithOpacity
-              : AppColor.lightTextHint.withValues(alpha: 0.2),
+            color: darkMode
+                ? AppColor.darkWithOpacity
+                : AppColor.lightTextHint.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -128,7 +129,9 @@ class AppointmentStatsRow extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 14,
-              color: darkMode ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+              color: darkMode
+                  ? AppColor.darkTextSecondary
+                  : AppColor.lightTextSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

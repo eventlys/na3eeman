@@ -42,8 +42,7 @@ class UIHelpers {
     Color? backgroundColor,
     Duration duration = const Duration(seconds: 4),
     SnackBarAction? action,
-  })
-  {
+  }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -62,17 +61,13 @@ class UIHelpers {
     Color? barrierColor,
     bool useSafeArea = true,
     EdgeInsets insetPadding = const EdgeInsets.all(20.0),
-  })
-  {
+  }) {
     return showDialog<T>(
       context: context,
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor ?? AppColor.dark,
       useSafeArea: useSafeArea,
-      builder: (context) => Dialog(
-        insetPadding: insetPadding,
-        child: child,
-      ),
+      builder: (context) => Dialog(insetPadding: insetPadding, child: child),
     );
   }
 
@@ -85,17 +80,18 @@ class UIHelpers {
     double? elevation,
     ShapeBorder? shape,
     Clip? clipBehavior,
-  })
-  {
+  }) {
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: isScrollControlled,
       useSafeArea: useSafeArea,
       backgroundColor: backgroundColor,
       elevation: elevation,
-      shape: shape ?? const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
+      shape:
+          shape ??
+          const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
       clipBehavior: clipBehavior,
       builder: (context) => child,
     );

@@ -69,8 +69,11 @@ class _ExpertPerformancePageState extends State<ExpertPerformancePage> {
       child: FutureBuilder<List<ExpertPerformanceData>>(
         future: _performanceDataFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting && !_isLoading) {
-            return const LoadingIndicator(message: 'Loading performance data...');
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              !_isLoading) {
+            return const LoadingIndicator(
+              message: 'Loading performance data...',
+            );
           }
 
           if (snapshot.hasError || snapshot.data == null) {
@@ -127,7 +130,8 @@ class _ExpertPerformancePageState extends State<ExpertPerformancePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColor.lightPrimary,
               ),
-              child: Text("retry".tr(),
+              child: Text(
+                "retry".tr(),
                 style: TextStyle(color: AppColor.light),
               ),
             ),
@@ -142,9 +146,7 @@ class _ExpertPerformancePageState extends State<ExpertPerformancePage> {
       margin: const EdgeInsets.all(16),
       color: AppColor.lightCard,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -209,8 +211,8 @@ class _ExpertPerformancePageState extends State<ExpertPerformancePage> {
                 Text(
                   '${data.totalAppointments} appointments • \$${data.totalEarnings.toStringAsFixed(2)}',
                   style: TextStyle(
-                    fontSize: 12, 
-                    color: AppColor.lightTextSecondary
+                    fontSize: 12,
+                    color: AppColor.lightTextSecondary,
                   ),
                 ),
               ],
@@ -225,7 +227,9 @@ class _ExpertPerformancePageState extends State<ExpertPerformancePage> {
               ),
             ),
             backgroundColor: AppColor.lightPrimary.withValues(alpha: 0.1),
-            side: BorderSide(color: AppColor.lightPrimary.withValues(alpha: 0.3)),
+            side: BorderSide(
+              color: AppColor.lightPrimary.withValues(alpha: 0.3),
+            ),
           ),
         ],
       ),

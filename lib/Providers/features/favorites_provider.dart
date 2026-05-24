@@ -73,7 +73,9 @@ class FavoritesProvider extends BaseProvider {
         return true;
       } else {
         // Rollback if API call failed
-        _favoriteSalons.removeWhere((salon) => salon['id'].toString() == salonId);
+        _favoriteSalons.removeWhere(
+          (salon) => salon['id'].toString() == salonId,
+        );
         notifyListeners();
         await _saveFavoritesToCache();
         throw Exception(response['message'] ?? 'Failed to add to favorites');
@@ -115,7 +117,9 @@ class FavoritesProvider extends BaseProvider {
       await _saveFavoritesToCache();
 
       // Call API to remove from favorites
-      final response = await _apiService.removeFromFavorites(int.parse(salonId));
+      final response = await _apiService.removeFromFavorites(
+        int.parse(salonId),
+      );
 
       if (response['success'] == true) {
         AppLogger.info(

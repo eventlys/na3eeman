@@ -17,7 +17,9 @@ class ComplianceTrackerWidget extends StatelessWidget {
     final inventory = context.watch<InventoryProvider>();
     final owner = context.watch<OwnerProvider>();
 
-    if (!inventory.isLoading && inventory.items.isEmpty && owner.activeSalonId != null) {
+    if (!inventory.isLoading &&
+        inventory.items.isEmpty &&
+        owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         inventory.loadInventory(owner.activeSalonId!);
       });
@@ -52,25 +54,34 @@ class ComplianceTrackerWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.verified_user_rounded,
-                size: 18, color: Colors.green),
+            const Icon(
+              Icons.verified_user_rounded,
+              size: 18,
+              color: Colors.green,
+            ),
             const SizedBox(width: 8),
-            Text("compliance_tracker".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "compliance_tracker".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             if (inventory.isLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         if (all.isEmpty && !inventory.isLoading)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text('No inventory data to track compliance.',
-                style: TextStyle(color: theme.hintColor, fontSize: 12)),
+            child: Text(
+              'No inventory data to track compliance.',
+              style: TextStyle(color: theme.hintColor, fontSize: 12),
+            ),
           ),
         const SizedBox(height: 14),
         ...complianceItems.map((f) {
@@ -84,20 +95,26 @@ class ComplianceTrackerWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(f.name,
-                        style: const TextStyle(fontWeight: FontWeight.w600)),
-                    Text('${f.completed}/${f.total}',
-                        style: TextStyle(
-                            color: done ? Colors.green : Colors.orange,
-                            fontWeight: FontWeight.bold)),
+                    Text(
+                      f.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      '${f.completed}/${f.total}',
+                      style: TextStyle(
+                        color: done ? Colors.green : Colors.orange,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 LinearProgressIndicator(
                   value: pct,
                   backgroundColor: Colors.grey.withOpacity(0.2),
-                  valueColor:
-                      AlwaysStoppedAnimation(done ? Colors.green : Colors.orange),
+                  valueColor: AlwaysStoppedAnimation(
+                    done ? Colors.green : Colors.orange,
+                  ),
                   minHeight: 7,
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -114,6 +131,9 @@ class _ComplianceItem {
   final String name;
   final int completed;
   final int total;
-  const _ComplianceItem(
-      {required this.name, required this.completed, required this.total});
+  const _ComplianceItem({
+    required this.name,
+    required this.completed,
+    required this.total,
+  });
 }

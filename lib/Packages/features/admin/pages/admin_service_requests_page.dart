@@ -8,7 +8,8 @@ class AdminServiceRequestsPage extends StatefulWidget {
   const AdminServiceRequestsPage({super.key});
 
   @override
-  State<AdminServiceRequestsPage> createState() => _AdminServiceRequestsPageState();
+  State<AdminServiceRequestsPage> createState() =>
+      _AdminServiceRequestsPageState();
 }
 
 class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
@@ -28,7 +29,10 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("service_requests".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "service_requests".tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -39,15 +43,15 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : provider.requests.isEmpty
-              ? const Center(child: Text('No service requests found.'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(24),
-                  itemCount: provider.requests.length,
-                  itemBuilder: (context, index) {
-                    final request = provider.requests[index];
-                    return _buildRequestCard(context, request, isDark);
-                  },
-                ),
+          ? const Center(child: Text('No service requests found.'))
+          : ListView.builder(
+              padding: const EdgeInsets.all(24),
+              itemCount: provider.requests.length,
+              itemBuilder: (context, index) {
+                final request = provider.requests[index];
+                return _buildRequestCard(context, request, isDark);
+              },
+            ),
     );
   }
 
@@ -56,8 +60,10 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
     final user = request['user_name'] ?? 'Anonymous';
     final userType = request['user_type'] ?? 'Unknown';
     final text = request['text'] ?? '';
-    final createdAt = request['created_at'] != null 
-        ? DateTime.parse(request['created_at']).toLocal().toString().split('.')[0]
+    final createdAt = request['created_at'] != null
+        ? DateTime.parse(
+            request['created_at'],
+          ).toLocal().toString().split('.')[0]
         : 'Unknown date';
 
     final statusColors = {
@@ -95,8 +101,20 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(user, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text('$userType • $createdAt', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+                    Text(
+                      user,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      '$userType • $createdAt',
+                      style: const TextStyle(
+                        color: AppColors.almostBlack300,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -104,16 +122,17 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
             ],
           ),
           const Divider(height: 32),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 14, height: 1.5),
-          ),
+          Text(text, style: const TextStyle(fontSize: 14, height: 1.5)),
         ],
       ),
     );
   }
 
-  Widget _buildStatusDropdown(BuildContext context, int id, String currentStatus) {
+  Widget _buildStatusDropdown(
+    BuildContext context,
+    int id,
+    String currentStatus,
+  ) {
     final statusColors = {
       'done': AppColors.success,
       'low_requests': AppColors.almostBlack300,
@@ -134,7 +153,10 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
     ];
 
     if (!statuses.any((s) => s['value'] == currentStatus)) {
-        statuses.insert(0, {'value': currentStatus, 'label': currentStatus.replaceAll('_', ' ').toUpperCase()});
+      statuses.insert(0, {
+        'value': currentStatus,
+        'label': currentStatus.replaceAll('_', ' ').toUpperCase(),
+      });
     }
 
     return Container(
@@ -149,7 +171,10 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
           value: currentStatus,
           onChanged: (newValue) {
             if (newValue != null) {
-              context.read<AdminServiceProvider>().updateRequestStatus(id, newValue);
+              context.read<AdminServiceProvider>().updateRequestStatus(
+                id,
+                newValue,
+              );
             }
           },
           items: statuses.map((s) {
@@ -158,7 +183,11 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
               value: s['value'],
               child: Text(
                 s['label']!,
-                style: TextStyle(color: itemColor, fontWeight: FontWeight.bold, fontSize: 12),
+                style: TextStyle(
+                  color: itemColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             );
           }).toList(),

@@ -30,16 +30,21 @@ class ExpertDto {
   factory ExpertDto.fromJson(Map<String, dynamic> json) {
     return ExpertDto(
       id: json['id']?.toString() ?? '',
-      name: json['name'] ?? '${json['first_name'] ?? ''} ${json['last_name'] ?? ''}'.trim(),
+      name:
+          json['name'] ??
+          '${json['first_name'] ?? ''} ${json['last_name'] ?? ''}'.trim(),
       email: json['email'] ?? '',
       phone: json['phone'] ?? json['contact_phone'] ?? '',
       rating: (json['rating'] ?? json['avg_rating'] ?? 0.0).toDouble(),
-      totalAppointments: json['total_appointments'] ?? json['appointments_count'] ?? 0,
+      totalAppointments:
+          json['total_appointments'] ?? json['appointments_count'] ?? 0,
       specialties: _parseSpecialties(json['specialties']),
       profileImage: json['profile_image'] ?? json['image_url'],
       isActive: json['is_active'] ?? true,
       hourlyRate: (json['hourly_rate'] ?? json['rate'] ?? 0.0).toDouble(),
-      lastActive: json['last_active'] != null ? DateTime.parse(json['last_active']) : null,
+      lastActive: json['last_active'] != null
+          ? DateTime.parse(json['last_active'])
+          : null,
       salonId: json['salon_id'],
     );
   }
@@ -48,7 +53,11 @@ class ExpertDto {
     if (specialties is List) {
       return specialties.map((e) => e.toString()).toList();
     } else if (specialties is String) {
-      return specialties.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      return specialties
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
     return [];
   }
@@ -101,7 +110,6 @@ class ExpertDto {
   }
 }
 
-
 class ExpertPerformanceData {
   final String expertId;
   final String expertName;
@@ -121,7 +129,9 @@ class ExpertPerformanceData {
 }
 
 class PerformanceHelper {
-  List<ExpertPerformanceData> calculatePerformanceMetrics(List<ExpertDto> experts) {
+  List<ExpertPerformanceData> calculatePerformanceMetrics(
+    List<ExpertDto> experts,
+  ) {
     return experts.map((expert) {
       // Calculate performance metrics based on expert data
       final efficiencyScore = _calculateEfficiencyScore(
@@ -150,7 +160,8 @@ class PerformanceHelper {
   double _calculateTotalEarnings(ExpertDto expert) {
     // Calculate earnings based on appointments and hourly rate
     final baseRate = expert.hourlyRate ?? 25.0; // Default rate if not provided
-    final avgAppointmentDuration = 0.75; // Average appointment duration in hours
+    final avgAppointmentDuration =
+        0.75; // Average appointment duration in hours
     return expert.totalAppointments * baseRate * avgAppointmentDuration;
   }
 
@@ -166,7 +177,9 @@ class PerformanceHelper {
     return sorted;
   }
 
-  List<ExpertPerformanceData> sortByEfficiency(List<ExpertPerformanceData> data) {
+  List<ExpertPerformanceData> sortByEfficiency(
+    List<ExpertPerformanceData> data,
+  ) {
     final sorted = List<ExpertPerformanceData>.from(data);
     sorted.sort((a, b) => b.efficiencyScore.compareTo(a.efficiencyScore));
     return sorted;

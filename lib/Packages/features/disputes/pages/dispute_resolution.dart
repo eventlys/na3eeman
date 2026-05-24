@@ -134,7 +134,8 @@ class _NewReportTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Issue type
-            Text("issue_type".tr(),
+            Text(
+              "issue_type".tr(),
               style: Theme.of(
                 context,
               ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),

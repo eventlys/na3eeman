@@ -25,10 +25,19 @@ class PasswordHelper {
     final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
     final hasLowercase = RegExp(r'[a-z]').hasMatch(password);
     final hasDigits = RegExp(r'[0-9]').hasMatch(password);
-    final hasSpecialChars = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+    final hasSpecialChars = RegExp(
+      r'[!@#$%^&*(),.?":{}|<>]',
+    ).hasMatch(password);
 
-    final strengthCriteria = [hasUppercase, hasLowercase, hasDigits, hasSpecialChars];
-    final metCriteriaCount = strengthCriteria.where((criteria) => criteria).length;
+    final strengthCriteria = [
+      hasUppercase,
+      hasLowercase,
+      hasDigits,
+      hasSpecialChars,
+    ];
+    final metCriteriaCount = strengthCriteria
+        .where((criteria) => criteria)
+        .length;
 
     String strength;
     if (metCriteriaCount >= 4) {
@@ -77,10 +86,7 @@ class PasswordHelper {
 
     return {
       'requirements': [
-        {
-          'text': 'At least 8 characters',
-          'isMet': criteria['length'] ?? false,
-        },
+        {'text': 'At least 8 characters', 'isMet': criteria['length'] ?? false},
         {
           'text': 'Uppercase letter (A-Z)',
           'isMet': criteria['uppercase'] ?? false,
@@ -89,10 +95,7 @@ class PasswordHelper {
           'text': 'Lowercase letter (a-z)',
           'isMet': criteria['lowercase'] ?? false,
         },
-        {
-          'text': 'Number (0-9)',
-          'isMet': criteria['digits'] ?? false,
-        },
+        {'text': 'Number (0-9)', 'isMet': criteria['digits'] ?? false},
         {
           'text': 'Special character (!@#\$ etc.)',
           'isMet': criteria['specialChars'] ?? false,

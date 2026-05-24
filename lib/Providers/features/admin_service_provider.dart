@@ -16,7 +16,9 @@ class AdminServiceProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
     try {
-      final response = await _apiService.get('/analytics/admin/service-requests/');
+      final response = await _apiService.get(
+        '/analytics/admin/service-requests/',
+      );
       _requests = response['results'] ?? response;
     } catch (e) {
       _error = e.toString();
@@ -28,7 +30,10 @@ class AdminServiceProvider with ChangeNotifier {
 
   Future<void> updateRequestStatus(int id, String status) async {
     try {
-      await _apiService.patch('/analytics/admin/service-requests/$id/', data: {'status': status});
+      await _apiService.patch(
+        '/analytics/admin/service-requests/$id/',
+        data: {'status': status},
+      );
       final index = _requests.indexWhere((r) => r['id'] == id);
       if (index != -1) {
         _requests[index]['status'] = status;

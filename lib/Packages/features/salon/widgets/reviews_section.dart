@@ -15,16 +15,27 @@ class ReviewsSection extends StatefulWidget {
     required this.salonData, // Add this parameter
   });
 
-
   @override
   ReviewsSectionState createState() => ReviewsSectionState();
 }
 
 class ReviewsSectionState extends State<ReviewsSection> {
   final List<Map<String, dynamic>> reviews = [
-    {'name': 'John Doe', 'rating': 5.0, 'comment': 'Great service! Very professional.'},
-    {'name': 'Jane Smith', 'rating': 4.5, 'comment': 'Good haircut, friendly staff.'},
-    {'name': 'Mike Johnson', 'rating': 4.0, 'comment': 'Nice atmosphere, will come again.'},
+    {
+      'name': 'John Doe',
+      'rating': 5.0,
+      'comment': 'Great service! Very professional.',
+    },
+    {
+      'name': 'Jane Smith',
+      'rating': 4.5,
+      'comment': 'Good haircut, friendly staff.',
+    },
+    {
+      'name': 'Mike Johnson',
+      'rating': 4.0,
+      'comment': 'Nice atmosphere, will come again.',
+    },
   ];
 
   final TextEditingController _reviewController = TextEditingController();
@@ -82,8 +93,6 @@ class ReviewsSectionState extends State<ReviewsSection> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -100,14 +109,16 @@ class ReviewsSectionState extends State<ReviewsSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("customer_reviews".tr(),
+              Text(
+                "customer_reviews".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFFFFFFF),
                 ),
               ),
-              Text("see_all".tr(),
+              Text(
+                "see_all".tr(),
                 style: TextStyle(
                   color: Color(0xFF2196F3),
                   fontWeight: FontWeight.w500,
@@ -116,11 +127,13 @@ class ReviewsSectionState extends State<ReviewsSection> {
             ],
           ),
           SizedBox(height: 16),
-          ...reviews.map((review) => _buildReviewItem(
-            name: review['name'] as String,
-            rating: review['rating'] as double,
-            comment: review['comment'] as String,
-          )),
+          ...reviews.map(
+            (review) => _buildReviewItem(
+              name: review['name'] as String,
+              rating: review['rating'] as double,
+              comment: review['comment'] as String,
+            ),
+          ),
 
           // Add Review Section
           SizedBox(height: 16),
@@ -133,7 +146,8 @@ class ReviewsSectionState extends State<ReviewsSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("add_your_review".tr(),
+                Text(
+                  "add_your_review".tr(),
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontSize: 16,
@@ -143,19 +157,19 @@ class ReviewsSectionState extends State<ReviewsSection> {
                 SizedBox(height: 12),
 
                 // Rating Section
-               Row(
-                children: [
-                  Flexible(
-                    child: RatingWithPointsWidget(
-                      salonData: widget.salonData,
-                      initialRating: _userRating,
-                      onRatingChanged: (newRating) {
-                        print('Rating changed to: $newRating');
-                      },
+                Row(
+                  children: [
+                    Flexible(
+                      child: RatingWithPointsWidget(
+                        salonData: widget.salonData,
+                        initialRating: _userRating,
+                        onRatingChanged: (newRating) {
+                          print('Rating changed to: $newRating');
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
 
                 SizedBox(height: 12),
 
@@ -237,10 +251,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
                   SizedBox(width: 4),
                   Text(
                     rating.toString(),
-                    style: TextStyle(
-                      color: Color(0xFFFFFFFF),
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14),
                   ),
                 ],
               ),
@@ -249,14 +260,10 @@ class ReviewsSectionState extends State<ReviewsSection> {
           SizedBox(height: 8),
           Text(
             comment,
-            style: TextStyle(
-              color: Color(0xFFCCCCCC),
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Color(0xFFCCCCCC), fontSize: 14),
           ),
         ],
       ),
     );
   }
 }
-

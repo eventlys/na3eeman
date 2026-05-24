@@ -22,11 +22,13 @@ class ErrorReporter {
       print('Zone Error: $error');
       print('Stack Trace: $stackTrace');
     } else {
-      _reportToService(FlutterErrorDetails(
-        exception: error,
-        stack: stackTrace,
-        library: 'Dart Zone',
-      ));
+      _reportToService(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'Dart Zone',
+        ),
+      );
     }
   }
 

@@ -18,10 +18,20 @@ class InventoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = item['name'] ?? item['productName'] ?? item['product_name'] ?? 'Unknown Item';
-    final count = item['count'] ?? item['current_stock'] ?? item['quantityInStock'] ?? item['quantity_in_stock'] ?? 0;
+    final name =
+        item['name'] ??
+        item['productName'] ??
+        item['product_name'] ??
+        'Unknown Item';
+    final count =
+        item['count'] ??
+        item['current_stock'] ??
+        item['quantityInStock'] ??
+        item['quantity_in_stock'] ??
+        0;
     final description = item['description'];
-    final minStockLevel = item['lowStockThreshold'] ?? item['low_stock_threshold'] ?? 3;
+    final minStockLevel =
+        item['lowStockThreshold'] ?? item['low_stock_threshold'] ?? 3;
 
     final isLowStock = InventoryHelpers.isLowStock(count, minStockLevel);
 
@@ -58,17 +68,16 @@ class InventoryListItem extends StatelessWidget {
             Text(
               '${InventoryHelpers.getStockStatusMessage(count, minStockLevel)} ${InventoryHelpers.getStockEmoji(count, minStockLevel)}',
               style: TextStyle(
-                color: isLowStock ? AppColor.lightWarning : AppColor.lightTextSecondary,
+                color: isLowStock
+                    ? AppColor.lightWarning
+                    : AppColor.lightTextSecondary,
                 fontSize: 12,
               ),
             ),
             if (description != null)
               Text(
                 description,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColor.lightTextHint,
-                ),
+                style: TextStyle(fontSize: 12, color: AppColor.lightTextHint),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

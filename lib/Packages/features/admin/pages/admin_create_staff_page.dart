@@ -22,7 +22,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
   final _lastNameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   String _selectedRole = 'EXPERT';
   int? _selectedSalonId;
   bool _isLoading = false;
@@ -78,17 +78,17 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
   Future<void> _createStaff() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedSalonId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a salon')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a salon')));
       return;
     }
 
     setState(() => _isLoading = true);
-    
+
     try {
       final authProvider = context.read<AuthProvider>();
-      
+
       final staffData = {
         'role': _selectedRole,
         'salon_id': _selectedSalonId,
@@ -97,11 +97,13 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
         'email': _emailController.text,
         'username': _usernameController.text,
         'phone': _phoneController.text,
-        'password': _passwordController.text.isNotEmpty ? _passwordController.text : null,
+        'password': _passwordController.text.isNotEmpty
+            ? _passwordController.text
+            : null,
       };
 
       final success = await authProvider.adminCreateStaff(staffData);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("staff_created_successfully".tr())),
@@ -110,9 +112,9 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -124,7 +126,10 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("create_staff".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "create_staff".tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -137,12 +142,17 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
             children: [
               Text(
                 'Create a new staff member for a salon.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.almostBlack400),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.almostBlack400,
+                ),
               ),
               const SizedBox(height: 32),
-              
+
               // Role Selection
-              Text("role".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                "role".tr(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 initialValue: _selectedRole,
@@ -156,36 +166,48 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Salon Selection
-              Text("salon".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                "salon".tr(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
-              _fetchingSalons 
-                ? const Center(child: CircularProgressIndicator())
-                : DropdownButtonFormField<int>(
-                    initialValue: _selectedSalonId,
-                    hint: const Text('Select Salon'),
-                    items: _salons.map((salon) {
-                      return DropdownMenuItem<int>(
-                        value: salon['id'] as int,
-                        child: Text(salon['salon_name']?.toString() ?? 'Unnamed Salon'),
-                      );
-                    }).toList(),
-                    onChanged: (val) => setState(() => _selectedSalonId = val),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Theme.of(context).cardColor,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+              _fetchingSalons
+                  ? const Center(child: CircularProgressIndicator())
+                  : DropdownButtonFormField<int>(
+                      initialValue: _selectedSalonId,
+                      hint: const Text('Select Salon'),
+                      items: _salons.map((salon) {
+                        return DropdownMenuItem<int>(
+                          value: salon['id'] as int,
+                          child: Text(
+                            salon['salon_name']?.toString() ?? 'Unnamed Salon',
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) =>
+                          setState(() => _selectedSalonId = val),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Theme.of(context).cardColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                     ),
-                  ),
-              
+
               const SizedBox(height: 24),
-              
+
               AppTextField(
                 controller: _firstNameController,
                 label: "first_name".tr(),
@@ -229,9 +251,9 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
                 obscureText: true,
                 hint: 'Leave empty for auto-generated',
               ),
-              
+
               const SizedBox(height: 48),
-              
+
               PrimaryButton(
                 text: "create_staff_member".tr(),
                 isLoading: _isLoading,

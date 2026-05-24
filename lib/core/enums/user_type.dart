@@ -37,8 +37,9 @@ enum UserType {
   String get value => name.toUpperCase();
 
   static UserType fromString(String value) {
+    final cleanValue = value.toUpperCase().replaceAll('_', '');
     return UserType.values.firstWhere(
-      (e) => e.name.toUpperCase() == value.toUpperCase(),
+      (e) => e.name.toUpperCase() == cleanValue,
       orElse: () => UserType.customer,
     );
   }
@@ -46,20 +47,16 @@ enum UserType {
   bool get isStaff => this != customer;
 
   bool get isManagement => [
-        admin,
-        owner,
-        cofounder,
-        manager,
-        ownerExpert,
-        cofounderExpert,
-      ].contains(this);
+    admin,
+    owner,
+    cofounder,
+    manager,
+    ownerExpert,
+    cofounderExpert,
+  ].contains(this);
 
-  bool get isExpertType => [
-        ownerExpert,
-        cofounderExpert,
-        artisan,
-        expert,
-      ].contains(this);
+  bool get isExpertType =>
+      [ownerExpert, cofounderExpert, artisan, expert].contains(this);
 
   String get displayName {
     switch (this) {

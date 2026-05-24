@@ -3,21 +3,23 @@ import 'package:logger/logger.dart';
 import '../Packages/Core/constants/app_color.dart';
 import '../Packages/Core/constants/app_images.dart';
 
-
 class LoginHelper {
   final Logger _logger = Logger();
 
-  static Future<bool> login(BuildContext context, String email, String password) async {
-    throw UnimplementedError('Use AuthProvider for login instead of LoginHelper');
+  static Future<bool> login(
+    BuildContext context,
+    String email,
+    String password,
+  ) async {
+    throw UnimplementedError(
+      'Use AuthProvider for login instead of LoginHelper',
+    );
   }
 
   /// Validates email format
   Map<String, dynamic> validateEmail(String email) {
     if (email.isEmpty) {
-      return {
-        'isValid': false,
-        'message': 'Email cannot be empty',
-      };
+      return {'isValid': false, 'message': 'Email cannot be empty'};
     }
 
     final emailRegex = RegExp(
@@ -31,19 +33,13 @@ class LoginHelper {
       };
     }
 
-    return {
-      'isValid': true,
-      'message': 'Valid email',
-    };
+    return {'isValid': true, 'message': 'Valid email'};
   }
 
   /// Validates password format
   Map<String, dynamic> validatePassword(String password) {
     if (password.isEmpty) {
-      return {
-        'isValid': false,
-        'message': 'Password cannot be empty',
-      };
+      return {'isValid': false, 'message': 'Password cannot be empty'};
     }
 
     if (password.length < 6) {
@@ -53,10 +49,7 @@ class LoginHelper {
       };
     }
 
-    return {
-      'isValid': true,
-      'message': 'Valid password',
-    };
+    return {'isValid': true, 'message': 'Valid password'};
   }
 
   /// Validates login form
@@ -74,10 +67,7 @@ class LoginHelper {
       return passwordValidation;
     }
 
-    return {
-      'isValid': true,
-      'message': 'Form is valid',
-    };
+    return {'isValid': true, 'message': 'Form is valid'};
   }
 
   /// Get role-based configuration with theme colors
@@ -162,17 +152,11 @@ class LoginHelper {
   Map<String, dynamic> getSocialLoginConfig(String provider) {
     switch (provider.toLowerCase()) {
       case 'google':
-        return {
-          'icon': ImageIcon(AssetImage(AppImages.google)),
-        };
+        return {'icon': ImageIcon(AssetImage(AppImages.google))};
       case 'facebook':
-        return {
-          'icon': ImageIcon(AssetImage(AppImages.facebook)),
-        };
+        return {'icon': ImageIcon(AssetImage(AppImages.facebook))};
       default:
-        return {
-          'icon': ImageIcon(AssetImage(AppImages.apple)),
-        };
+        return {'icon': ImageIcon(AssetImage(AppImages.apple))};
     }
   }
 
@@ -265,10 +249,19 @@ class LoginHelper {
   bool canAccessFeature(String userRole, String feature) {
     final rolePermissions = {
       'admin': ['all'],
-      'owner': ['manage_salon', 'manage_staff', 'view_reports', 'manage_appointments'],
+      'owner': [
+        'manage_salon',
+        'manage_staff',
+        'view_reports',
+        'manage_appointments',
+      ],
       'manager': ['manage_staff', 'view_reports', 'manage_appointments'],
       'expert': ['manage_appointments', 'view_schedule', 'update_availability'],
-      'receptionist': ['manage_appointments', 'view_schedule', 'customer_management'],
+      'receptionist': [
+        'manage_appointments',
+        'view_schedule',
+        'customer_management',
+      ],
       'assistant': ['view_schedule', 'assist_appointments'],
       'customer': ['book_appointments', 'view_history', 'manage_profile'],
     };

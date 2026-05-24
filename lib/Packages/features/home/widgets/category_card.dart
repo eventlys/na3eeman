@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../Models/salon/category_model.dart';
 
@@ -6,16 +7,62 @@ class CategoryCard extends StatelessWidget {
   final Category category;
   final VoidCallback onTap;
 
-  const CategoryCard({
-    super.key,
-    required this.category,
-    required this.onTap,
-  });
+  const CategoryCard({super.key, required this.category, required this.onTap});
+
+  String _getLocalAssetPath() {
+    final gender = category.targetGender.toLowerCase().trim();
+    final name = category.nameEn.toLowerCase().trim();
+    
+    String fileName = '';
+    
+    if (gender == 'female') {
+      if (name.contains('hair')) {
+        fileName = 'Hair.jpg';
+      } else if (name.contains('nail')) {
+        fileName = 'Nails.jpeg';
+      } else if (name.contains('makeup')) {
+        fileName = 'Makeup.jpg';
+      } else if (name.contains('skin') || name.contains('care')) {
+        fileName = 'Skincare.jpg';
+      } else if (name.contains('bride') || name.contains('bridal')) {
+        fileName = 'Bridal.jpg';
+      } else if (name.contains('henna')) {
+        fileName = 'Henna.jpg';
+      } else if (name.contains('private')) {
+        fileName = 'Private.jpg';
+      } else if (name.contains('spa') || name.contains('massage')) {
+        fileName = 'Spa.jpg';
+      } else {
+        fileName = 'Hair.jpg'; // fallback
+      }
+      return 'assets/categories/female/$fileName';
+    } else {
+      // male
+      if (name.contains('hair') || name.contains('beard')) {
+        fileName = 'Hair.jpg';
+      } else if (name.contains('nail')) {
+        fileName = 'Nails.jpg';
+      } else if (name.contains('groom')) {
+        fileName = 'Groom.jpg';
+      } else if (name.contains('spa') || name.contains('massage')) {
+        fileName = 'Spa.jpg';
+      } else if (name.contains('private')) {
+        fileName = 'Private.jpg';
+      } else if (name.contains('group')) {
+        fileName = 'Group.jpg';
+      } else if (name.contains('skin') || name.contains('care')) {
+        fileName = 'Skin.jpg';
+      } else {
+        fileName = 'Hair.jpg'; // fallback
+      }
+      return 'assets/categories/male/$fileName';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final hasImage = category.image != null && category.image!.isNotEmpty;
+    final localAsset = _getLocalAssetPath();
 
     return GestureDetector(
       onTap: onTap,
@@ -23,16 +70,14 @@ class CategoryCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? AppColors.almostBlack600 : AppColors.white,
           borderRadius: BorderRadius.circular(24),
-          image: hasImage ? DecorationImage(
-            image: category.image!.startsWith('http') 
-                ? NetworkImage(category.image!) 
-                : AssetImage(category.image!) as ImageProvider,
+          image: DecorationImage(
+            image: AssetImage(localAsset),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.4),
+              Colors.black.withOpacity(0.2),
               BlendMode.darken,
             ),
-          ) : null,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
@@ -45,69 +90,50 @@ class CategoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           child: Stack(
             children: [
-              if (!hasImage)
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: _buildIcon(context),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        category.nameEn,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                )
-              else
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.8),
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          category.nameEn.toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        if (category.icon.isNotEmpty && category.icon != 'none')
-                          Text(
-                            category.icon, // Using icon field for sub-description or similar if needed
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: 10,
-                            ),
-                          ),
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.5),
                       ],
                     ),
                   ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'category_${category.nameEn.toLowerCase().replaceAll(' & ', '_').replaceAll(' ', '_')}'.tr().toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      if (category.icon.isNotEmpty && category.icon != 'none')
+                        Text(
+                          category.icon.split(',').map((s) {
+                            final name = s.trim();
+                            final key = 'service_${name.toLowerCase().replaceAll(' + ', '_').replaceAll(' +', '_').replaceAll('+ ', '_').replaceAll(' ', '_').replaceAll('-', '_').replaceAll('&', '_').replaceAll('\'', '').replaceAll('(', '').replaceAll(')', '').replaceAll('/', '_')}';
+                            return key.tr();
+                          }).join(', '),
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 10,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
                 ),
+              ),
             ],
           ),
         ),
@@ -144,10 +170,6 @@ class CategoryCard extends StatelessWidget {
         iconData = Icons.category_rounded;
     }
 
-    return Icon(
-      iconData,
-      color: Theme.of(context).primaryColor,
-      size: 32,
-    );
+    return Icon(iconData, color: Theme.of(context).primaryColor, size: 32);
   }
 }

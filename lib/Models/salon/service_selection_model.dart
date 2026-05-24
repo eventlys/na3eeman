@@ -75,14 +75,14 @@ class ServiceSelection {
   }
 
   ServiceSelection addService(SalonService service) {
-    return copyWith(
-      additionalServices: [...additionalServices, service],
-    );
+    return copyWith(additionalServices: [...additionalServices, service]);
   }
 
   ServiceSelection removeService(SalonService service) {
     return copyWith(
-      additionalServices: additionalServices.where((s) => s != service).toList(),
+      additionalServices: additionalServices
+          .where((s) => s != service)
+          .toList(),
     );
   }
 
@@ -97,13 +97,17 @@ class ServiceSelection {
       'start_time': selectedDate != null && selectedTime != null
           ? '${selectedDate!.toIso8601String().split('T')[0]}T$selectedTime'
           : null,
-      'services': allServices.map((service) => {
-        'service_type': service.type.toUpperCase(),
-        'option': service.type == 'OPTION' ? service.id : null,
-        'package': service.type == 'PACKAGE' ? service.id : null,
-        'product': service.type == 'PRODUCT' ? service.id : null,
-        'quantity': 1,
-      }).toList(),
+      'services': allServices
+          .map(
+            (service) => {
+              'service_type': service.type.toUpperCase(),
+              'option': service.type == 'OPTION' ? service.id : null,
+              'package': service.type == 'PACKAGE' ? service.id : null,
+              'product': service.type == 'PRODUCT' ? service.id : null,
+              'quantity': 1,
+            },
+          )
+          .toList(),
     };
   }
 

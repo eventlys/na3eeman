@@ -22,7 +22,7 @@ class SubscriptionConfig {
       tier: OwnerSubscriptionTier.artisan,
       displayName: 'Artisan',
       tagline: 'Solo practitioner, personal tools',
-      monthlyPrice: 0,    // free / base
+      monthlyPrice: 0, // free / base
       yearlyPrice: 0,
       trialDays: 14,
       maxStaff: 1,
@@ -92,7 +92,7 @@ class SubscriptionConfig {
       monthlyPrice: 79.99,
       yearlyPrice: 767.99, // 20% off
       trialDays: 7,
-      maxStaff: -1,   // -1 = unlimited
+      maxStaff: -1, // -1 = unlimited
       maxBranches: 3,
       enabledFeatures: {
         // All Studio features +
@@ -140,7 +140,7 @@ class SubscriptionConfig {
       monthlyPrice: 199.99,
       yearlyPrice: 1919.99, // 20% off
       trialDays: 0,
-      maxStaff: -1,   // unlimited
+      maxStaff: -1, // unlimited
       maxBranches: -1, // unlimited
       enabledFeatures: {
         // All Elite features +

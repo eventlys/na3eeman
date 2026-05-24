@@ -50,18 +50,22 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
 
   void _toggleService(Map<String, dynamic> service) {
     final authProvider = context.read<AuthProvider>();
-    if (!RolePermissionManager.canBookAppointments(authProvider.user?.userRole ?? UserRole.customer)) {
+    if (!RolePermissionManager.canBookAppointments(
+      authProvider.user?.userRole ?? UserRole.customer,
+    )) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Staff members cannot book appointments')),
       );
       return;
     }
-    
+
     setState(() {
       final name = service['name'] ?? service['serviceName'] ?? 'Service';
       if (_selectedServiceNames.contains(name)) {
         _selectedServiceNames.remove(name);
-        _selectedServices.removeWhere((s) => (s['name'] ?? s['serviceName'] ?? 'Service') == name);
+        _selectedServices.removeWhere(
+          (s) => (s['name'] ?? s['serviceName'] ?? 'Service') == name,
+        );
       } else {
         _selectedServiceNames.add(name);
         _selectedServices.add(service);
@@ -71,21 +75,30 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
 
   double _calculateTotalCost() {
     return _selectedServices.fold(0.0, (sum, service) {
-      final priceStr = (service['price'] ?? '0').toString().replaceAll(RegExp(r'[^0-9.]'), '');
+      final priceStr = (service['price'] ?? '0').toString().replaceAll(
+        RegExp(r'[^0-9.]'),
+        '',
+      );
       return sum + (double.tryParse(priceStr) ?? 0.0);
     });
   }
 
   int _calculateTotalDuration() {
     return _selectedServices.fold(0, (sum, service) {
-      final durationStr = (service['duration'] ?? '30').toString().replaceAll(RegExp(r'[^0-9]'), '');
+      final durationStr = (service['duration'] ?? '30').toString().replaceAll(
+        RegExp(r'[^0-9]'),
+        '',
+      );
       return sum + (int.tryParse(durationStr) ?? 30);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final salonName = widget.salonData['salonName'] ?? widget.salonData['title'] ?? 'Salon Details';
+    final salonName =
+        widget.salonData['salonName'] ??
+        widget.salonData['title'] ??
+        'Salon Details';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -98,7 +111,10 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 salonName,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.white),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
               ),
               background: Stack(
                 fit: StackFit.expand,
@@ -125,20 +141,34 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
               IconButton(
                 icon: const Icon(Icons.favorite_border, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("added_to_favorites".tr())));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("added_to_favorites".tr())),
+                  );
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("share_dialog_opened".tr())));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("share_dialog_opened".tr())),
+                  );
                 },
               ),
-              if (RolePermissionManager.canEditSalonInfo(context.read<AuthProvider>().user?.userRole ?? UserRole.customer))
+              if (RolePermissionManager.canEditSalonInfo(
+                context.read<AuthProvider>().user?.userRole ??
+                    UserRole.customer,
+              ))
                 IconButton(
-                  icon: const Icon(Icons.edit_note_rounded, color: AppColors.white),
+                  icon: const Icon(
+                    Icons.edit_note_rounded,
+                    color: AppColors.white,
+                  ),
                   onPressed: () {
-                     Navigator.pushNamed(context, '/edit_salon', arguments: {'salonData': widget.salonData});
+                    Navigator.pushNamed(
+                      context,
+                      '/edit_salon',
+                      arguments: {'salonData': widget.salonData},
+                    );
                   },
                   tooltip: "edit_salon".tr(),
                 ),
@@ -149,7 +179,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
           SliverList(
             delegate: SliverChildListDelegate([
               const SizedBox(height: 24),
-              
+
               // Salon Gallery
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -175,19 +205,35 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("catigories".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    Text(
+                      "catigories".tr(),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
                     ServicesSection(
                       selectedServiceNames: _selectedServiceNames,
                       onToggleService: _toggleService,
                       services: widget.salonData['services'] != null
-                          ? List<Map<String, dynamic>>.from(widget.salonData['services'])
+                          ? List<Map<String, dynamic>>.from(
+                              widget.salonData['services'],
+                            )
                           : [
-                              {'name': 'Classic Haircut', 'price': '15.00', 'duration': '30 min'},
-                              {'name': 'Beard Grooming', 'price': '10.00', 'duration': '20 min'},
-                              {'name': 'Premium Shave', 'price': '20.00', 'duration': '40 min'},
+                              {
+                                'name': 'Classic Haircut',
+                                'price': '15.00',
+                                'duration': '30 min',
+                              },
+                              {
+                                'name': 'Beard Grooming',
+                                'price': '10.00',
+                                'duration': '20 min',
+                              },
+                              {
+                                'name': 'Premium Shave',
+                                'price': '20.00',
+                                'duration': '40 min',
+                              },
                             ],
                     ),
                   ],
@@ -202,8 +248,10 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("packages".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    Text(
+                      "packages".tr(),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
@@ -222,8 +270,10 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("products".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    Text(
+                      "products".tr(),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
@@ -242,8 +292,10 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("offers_groups".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    Text(
+                      "offers_groups".tr(),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
@@ -262,24 +314,35 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("salon_feedback".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    Text(
+                      "salon_feedback".tr(),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       children: [
                         const Icon(Icons.star, color: Colors.orange, size: 30),
                         const SizedBox(width: 8),
-                        Text("key485".tr(), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(
+                          "key485".tr(),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(width: 8),
-                        Text("key120_reviews".tr(), style: TextStyle(color: Colors.grey)),
+                        Text(
+                          "key120_reviews".tr(),
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.almostBlack600 : AppColors.white,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.almostBlack600
+                            : AppColors.white,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: AppColors.almostBlack50),
                       ),
@@ -288,9 +351,15 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
+                              CircleAvatar(
+                                radius: 16,
+                                child: Icon(Icons.person, size: 16),
+                              ),
                               SizedBox(width: 8),
-                              Text("ahmed_m".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                "ahmed_m".tr(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                               Spacer(),
                               Icon(Icons.star, color: Colors.orange, size: 16),
                               Icon(Icons.star, color: Colors.orange, size: 16),
@@ -300,14 +369,19 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text("great_service_completely_transformed_my_look_highl".tr()),
+                          Text(
+                            "great_service_completely_transformed_my_look_highl"
+                                .tr(),
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
                       onPressed: () {
-                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("feedback_entry_dialog".tr())));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("feedback_entry_dialog".tr())),
+                        );
                       },
                       icon: const Icon(Icons.rate_review),
                       label: Text("add_your_feedback".tr()),
@@ -316,62 +390,75 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                         side: BorderSide(color: Theme.of(context).primaryColor),
                         foregroundColor: Theme.of(context).primaryColor,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
 
               const SizedBox(height: 48),
-
             ]),
           ),
         ],
       ),
-      bottomNavigationBar: _selectedServices.isNotEmpty && RolePermissionManager.canBookAppointments(context.watch<AuthProvider>().user?.userRole ?? UserRole.customer) ? Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            )
-          ],
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${_selectedServices.length} Services Selected',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    'Total: \$${_calculateTotalCost().toStringAsFixed(2)} | ${_calculateTotalDuration()} min',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+      bottomNavigationBar:
+          _selectedServices.isNotEmpty &&
+              RolePermissionManager.canBookAppointments(
+                context.watch<AuthProvider>().user?.userRole ??
+                    UserRole.customer,
+              )
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              PrimaryButton(
-                text: "book_appointment".tr(),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/book_appointment', arguments: {
-                    'salonData': widget.salonData,
-                    'selectedServices': _selectedServices,
-                    'giftMode': widget.giftMode,
-                    'giftGender': widget.giftGender,
-                  });
-                },
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${_selectedServices.length} Services Selected',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          'Total: \$${_calculateTotalCost().toStringAsFixed(2)} | ${_calculateTotalDuration()} min',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    PrimaryButton(
+                      text: "book_appointment".tr(),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/book_appointment',
+                          arguments: {
+                            'salonData': widget.salonData,
+                            'selectedServices': _selectedServices,
+                            'giftMode': widget.giftMode,
+                            'giftGender': widget.giftGender,
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ) : const SizedBox.shrink(),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

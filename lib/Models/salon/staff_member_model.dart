@@ -14,6 +14,8 @@ class StaffMember {
   final double hourlyRate;
   final List<String> specialties;
   final Map<String, dynamic> performanceMetrics;
+  final String? status;
+  final String? statusNote;
 
   StaffMember({
     required this.id,
@@ -29,23 +31,33 @@ class StaffMember {
     required this.hourlyRate,
     required this.specialties,
     required this.performanceMetrics,
+    this.status,
+    this.statusNote,
   });
 
   factory StaffMember.fromJson(Map<String, dynamic> json) {
     return StaffMember(
       id: json['id'].toString(),
-      userId: json['user_id'] as int,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      role: StaffRoleExtension.fromString(json['role'] as String),
-      joinDate: DateTime.parse(json['join_date'] as String),
+      userId: (json['user_id'] ?? json['expert']) as int,
+      name: (json['name'] ?? json['expert_name'] ?? '') as String,
+      email: (json['email'] ?? json['expert_email'] ?? '') as String,
+      phone: (json['phone'] ?? '') as String,
+      role: StaffRoleExtension.fromString(json['role'] as String? ?? 'EXPERT'),
+      joinDate: DateTime.parse(
+        json['join_date'] ??
+            json['hired_at'] ??
+            DateTime.now().toIso8601String(),
+      ),
       profileImage: json['profile_image'] as String?,
-      salonId: json['salon_id'] as int,
+      salonId: (json['salon_id'] ?? 0) as int,
       isActive: json['is_active'] as bool? ?? true,
-      hourlyRate: (json['hourly_rate'] as num).toDouble(),
+      hourlyRate: (json['hourly_rate'] as num? ?? 0.0).toDouble(),
       specialties: List<String>.from(json['specialties'] ?? []),
-      performanceMetrics: Map<String, dynamic>.from(json['performance_metrics'] ?? {}),
+      performanceMetrics: Map<String, dynamic>.from(
+        json['performance_metrics'] ?? {},
+      ),
+      status: json['status'] as String?,
+      statusNote: json['status_note'] as String?,
     );
   }
 

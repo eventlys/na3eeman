@@ -66,8 +66,11 @@ class UpgradePromptCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.lock_outline_rounded,
-              size: 36, color: theme.primaryColor.withOpacity(0.6)),
+          Icon(
+            Icons.lock_outline_rounded,
+            size: 36,
+            color: theme.primaryColor.withOpacity(0.6),
+          ),
           const SizedBox(height: 12),
           Text(
             requiredTier != null
@@ -81,9 +84,7 @@ class UpgradePromptCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             denial?.message ?? 'Upgrade your plan to unlock this feature.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.hintColor,
-            ),
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 14),

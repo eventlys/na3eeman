@@ -76,7 +76,11 @@ class SidebarItem extends StatelessWidget {
         onTap: onTap,
         leading: leadingContent,
         title: Text(title, style: titleStyle),
-        trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.almostBlack200, size: 20),
+        trailing: const Icon(
+          Icons.chevron_right_rounded,
+          color: AppColors.almostBlack200,
+          size: 20,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       ),
@@ -90,9 +94,14 @@ class SidebarItem extends StatelessWidget {
         width: 20,
         height: 20,
         color: Theme.of(context).primaryColor,
-        errorBuilder: (_, _, _) => Icon(Icons.circle, size: 20, color: Theme.of(context).primaryColor),
+        errorBuilder: (_, _, _) =>
+            Icon(Icons.circle, size: 20, color: Theme.of(context).primaryColor),
       );
     }
-    return Icon(icon ?? Icons.circle, size: 20, color: Theme.of(context).primaryColor);
+    return Icon(
+      icon ?? Icons.circle,
+      size: 20,
+      color: Theme.of(context).primaryColor,
+    );
   }
 }

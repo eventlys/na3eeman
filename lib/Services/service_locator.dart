@@ -48,9 +48,9 @@ class ServiceLocator {
     locator.registerLazySingleton(() => AnalyticsService());
 
     // ============ API INTERCEPTOR ============
-    locator.registerLazySingleton(() => ApiInterceptorService(
-      locator.get<ApiService>(),
-    ));
+    locator.registerLazySingleton(
+      () => ApiInterceptorService(locator.get<ApiService>()),
+    );
 
     // ============ BUSINESS SERVICES ============
     locator.registerLazySingleton(() => BusinessService());
@@ -68,26 +68,26 @@ class ServiceLocator {
     locator.registerLazySingleton(() => AppManagementService());
 
     // ============ REPOSITORIES ============
-    locator.registerLazySingleton(() => AuthRepository(
-      locator.get<ApiService>(),
-    ));
+    locator.registerLazySingleton(
+      () => AuthRepository(locator.get<ApiService>()),
+    );
 
-    locator.registerLazySingleton(() => SalonRepository(
-      locator.get<ApiService>(),
-    ));
+    locator.registerLazySingleton(
+      () => SalonRepository(locator.get<ApiService>()),
+    );
 
     // ============ USE CASES ============
-    locator.registerLazySingleton(() => LoginUseCase(
-      locator.get<AuthRepository>(),
-    ));
+    locator.registerLazySingleton(
+      () => LoginUseCase(locator.get<AuthRepository>()),
+    );
 
-    locator.registerLazySingleton(() => GetSalonsUseCase(
-      locator.get<SalonRepository>(),
-    ));
+    locator.registerLazySingleton(
+      () => GetSalonsUseCase(locator.get<SalonRepository>()),
+    );
 
-    locator.registerLazySingleton(() => AppointmentUseCases(
-      locator.get<BusinessService>(),
-    ));
+    locator.registerLazySingleton(
+      () => AppointmentUseCases(locator.get<BusinessService>()),
+    );
 
     // ============ UTILITY SERVICES ============
     locator.registerLazySingleton(() => LocationService());

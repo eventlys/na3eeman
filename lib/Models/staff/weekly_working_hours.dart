@@ -42,7 +42,15 @@ class WeeklyWorkingHours {
   }
 
   String get dayName {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     if (dayOfWeek >= 0 && dayOfWeek < days.length) {
       return days[dayOfWeek];
     }

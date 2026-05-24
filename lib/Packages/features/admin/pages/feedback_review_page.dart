@@ -42,7 +42,12 @@ class _FeedbackReviewPageState extends State<FeedbackReviewPage> {
     try {
       final api = ApiService();
       await api.reviewFeedback(id, status);
-      AppSnackBar.success(context, status == 'valuable' ? 'Feedback marked as valuable! Points awarded.' : 'Feedback marked as read.');
+      AppSnackBar.success(
+        context,
+        status == 'valuable'
+            ? 'Feedback marked as valuable! Points awarded.'
+            : 'Feedback marked as read.',
+      );
       _loadFeedback();
     } catch (e) {
       AppSnackBar.error(context, 'Failed to update feedback status');
@@ -52,33 +57,31 @@ class _FeedbackReviewPageState extends State<FeedbackReviewPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Customer Feedback Review'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadFeedback,
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadFeedback),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _feedbacks.isEmpty
-              ? const Center(child: Text('No feedback entries found.'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _feedbacks.length,
-                  itemBuilder: (context, index) {
-                    final feedback = _feedbacks[index];
-                    return _FeedbackCard(
-                      feedback: feedback,
-                      onMarkRead: () => _reviewFeedback(feedback.id, 'read'),
-                      onMarkValuable: () => _reviewFeedback(feedback.id, 'valuable'),
-                    );
-                  },
-                ),
+          ? const Center(child: Text('No feedback entries found.'))
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _feedbacks.length,
+              itemBuilder: (context, index) {
+                final feedback = _feedbacks[index];
+                return _FeedbackCard(
+                  feedback: feedback,
+                  onMarkRead: () => _reviewFeedback(feedback.id, 'read'),
+                  onMarkValuable: () =>
+                      _reviewFeedback(feedback.id, 'valuable'),
+                );
+              },
+            ),
     );
   }
 }
@@ -97,8 +100,10 @@ class _FeedbackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dateStr = DateFormat('MMM d, yyyy • HH:mm').format(feedback.createdAt);
-    
+    final dateStr = DateFormat(
+      'MMM d, yyyy • HH:mm',
+    ).format(feedback.createdAt);
+
     Color statusColor;
     String statusText;
     switch (feedback.status) {
@@ -127,7 +132,10 @@ class _FeedbackCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -154,10 +162,7 @@ class _FeedbackCard extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text(
-              feedback.content,
-              style: const TextStyle(fontSize: 15),
-            ),
+            Text(feedback.content, style: const TextStyle(fontSize: 15)),
 
             if (feedback.status == 'pending') ...[
               const SizedBox(height: 16),

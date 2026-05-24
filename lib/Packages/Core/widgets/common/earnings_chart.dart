@@ -5,10 +5,7 @@ import '../../constants/app_color.dart';
 class EarningsChart extends StatelessWidget {
   final dynamic earningsData;
 
-  const EarningsChart({
-    super.key,
-    required this.earningsData,
-  });
+  const EarningsChart({super.key, required this.earningsData});
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +47,13 @@ class EarningsChart extends StatelessWidget {
       return _buildEmptyChart(theme, isDark, context);
     }
 
-    final Color cardColor = theme.cardTheme.color ?? (isDark ? AppColor.darkCard : AppColor.lightCard);
+    final Color cardColor =
+        theme.cardTheme.color ??
+        (isDark ? AppColor.darkCard : AppColor.lightCard);
     final Color textColor = theme.colorScheme.onSurface;
-    final Color textSecondaryColor = isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
+    final Color textSecondaryColor = isDark
+        ? AppColor.darkTextSecondary
+        : AppColor.lightTextSecondary;
     final Color barColor = theme.primaryColor;
 
     return Container(
@@ -71,7 +72,8 @@ class EarningsChart extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text("weekly_earnings_trend".tr(),
+          Text(
+            "weekly_earnings_trend".tr(),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: textColor,
@@ -84,7 +86,9 @@ class EarningsChart extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: chartData.map((day) {
                 final amount = (day['amount'] ?? 0).toDouble();
-                final date = DateTime.parse(day['date'] ?? DateTime.now().toIso8601String());
+                final date = DateTime.parse(
+                  day['date'] ?? DateTime.now().toIso8601String(),
+                );
 
                 return Expanded(
                   child: Column(
@@ -112,7 +116,9 @@ class EarningsChart extends StatelessWidget {
                               ],
                             ),
                           ),
-                          height: maxAmount > 0 ? (amount / maxAmount) * 150 : 0,
+                          height: maxAmount > 0
+                              ? (amount / maxAmount) * 150
+                              : 0,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -141,9 +147,15 @@ class EarningsChart extends StatelessWidget {
     bool isDark,
     BuildContext context,
   ) {
-    final totalEarnings = chartData.map((e) => (e['amount'] ?? 0).toDouble()).reduce((a, b) => a + b);
-    final totalAppointments = chartData.map((e) => (e['appointments'] ?? 0) as int).reduce((a, b) => a + b);
-    final averagePerAppointment = totalAppointments > 0 ? totalEarnings / totalAppointments : 0;
+    final totalEarnings = chartData
+        .map((e) => (e['amount'] ?? 0).toDouble())
+        .reduce((a, b) => a + b);
+    final totalAppointments = chartData
+        .map((e) => (e['appointments'] ?? 0) as int)
+        .reduce((a, b) => a + b);
+    final averagePerAppointment = totalAppointments > 0
+        ? totalEarnings / totalAppointments
+        : 0;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -171,8 +183,12 @@ class EarningsChart extends StatelessWidget {
   }
 
   Widget _buildEmptyChart(ThemeData theme, bool isDark, BuildContext context) {
-    final Color cardColor = theme.cardTheme.color ?? (isDark ? AppColor.darkCard : AppColor.lightCard);
-    final Color textColor = isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
+    final Color cardColor =
+        theme.cardTheme.color ??
+        (isDark ? AppColor.darkCard : AppColor.lightCard);
+    final Color textColor = isDark
+        ? AppColor.darkTextSecondary
+        : AppColor.lightTextSecondary;
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -189,10 +205,9 @@ class EarningsChart extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Text("no_earnings_data_available".tr(),
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: textColor,
-          ),
+        child: Text(
+          "no_earnings_data_available".tr(),
+          style: theme.textTheme.bodyLarge?.copyWith(color: textColor),
         ),
       ),
     );
@@ -220,7 +235,9 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = theme.brightness == Brightness.dark;
-    final Color textColor = isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
+    final Color textColor = isDark
+        ? AppColor.darkTextSecondary
+        : AppColor.lightTextSecondary;
 
     return Column(
       children: [
@@ -233,9 +250,7 @@ class _StatItem extends StatelessWidget {
         ),
         Text(
           label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: textColor,
-          ),
+          style: theme.textTheme.bodySmall?.copyWith(color: textColor),
         ),
       ],
     );

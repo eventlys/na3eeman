@@ -19,8 +19,7 @@ class SalonRepository {
     double? minRating,
     String? location,
     bool? openNow,
-  })
-  async {
+  }) async {
     try {
       final response = await _apiService.getSalons(
         page: page,
@@ -31,7 +30,9 @@ class SalonRepository {
         openNow: openNow,
       );
 
-      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+      final List<dynamic> data = response is List
+          ? response
+          : (response['results'] ?? response['data'] ?? []);
       return data.map((json) => Salon.fromJson(json)).toList();
     } catch (error) {
       AppLogger.error('Get salons failed', error: error);
@@ -76,15 +77,11 @@ class SalonRepository {
     required int salonId,
     int page = 1,
     int limit = 20,
-  })
-  async {
+  }) async {
     try {
       final response = await _apiService.get(
         '/salons/$salonId/reviews',
-        queryParams: {
-          'page': page.toString(),
-          'limit': limit.toString(),
-        },
+        queryParams: {'page': page.toString(), 'limit': limit.toString()},
       );
 
       final List<dynamic> data = response['data'] ?? [];
@@ -112,17 +109,19 @@ class SalonRepository {
     required String comment,
     int? appointmentId,
     List<String>? photos,
-  })
-  async {
+  }) async {
     try {
-      final response = await _apiService.post('/reviews', data: {
-        'salon': salonId,
-        'customer': customerId,
-        'rating': rating,
-        'comment': comment,
-        'appointment': appointmentId,
-        'photos': photos,
-      });
+      final response = await _apiService.post(
+        '/reviews',
+        data: {
+          'salon': salonId,
+          'customer': customerId,
+          'rating': rating,
+          'comment': comment,
+          'appointment': appointmentId,
+          'photos': photos,
+        },
+      );
 
       return Review.fromJson(response['data']);
     } catch (error) {
@@ -133,7 +132,10 @@ class SalonRepository {
 
   Future<List<Salon>> searchSalons(String query) async {
     try {
-      final response = await _apiService.get('/salons/search', queryParams: {'q': query});
+      final response = await _apiService.get(
+        '/salons/search',
+        queryParams: {'q': query},
+      );
       final List<dynamic> data = response['data'] ?? [];
       return data.map((json) => Salon.fromJson(json)).toList();
     } catch (error) {
@@ -142,7 +144,11 @@ class SalonRepository {
     }
   }
 
-  Future<List<Salon>> getNearbySalons(double lat, double lng, double radiusKm) async {
+  Future<List<Salon>> getNearbySalons(
+    double lat,
+    double lng,
+    double radiusKm,
+  ) async {
     try {
       final response = await _apiService.get(
         '/salons/nearby',

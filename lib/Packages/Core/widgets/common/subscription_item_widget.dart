@@ -30,13 +30,14 @@ class SubscriptionItemWidget extends StatelessWidget {
   double get price => (subscription['price'] as num?)?.toDouble() ?? 0.0;
   String get duration => subscription['duration'] ?? 'MONTHLY';
   bool get isPopular => subscription['isPopular'] == true;
-  List<String> get features => List<String>.from(subscription['features'] ?? []);
+  List<String> get features =>
+      List<String>.from(subscription['features'] ?? []);
   String get id => subscription['id'] ?? '';
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return ErrorBoundary(
       isDarkMode: isDark,
       userGender: gender,
@@ -50,11 +51,13 @@ class SubscriptionItemWidget extends StatelessWidget {
     }
 
     final size = MediaQuery.of(context).size;
-    
+
     return Card(
       shadowColor: Colors.transparent,
       elevation: isSelected ? 4 : 2,
-      color: isDark ? AppColor.darkCard.withValues(alpha: 0.1) : AppColor.lightCard.withValues(alpha: 0.3),
+      color: isDark
+          ? AppColor.darkCard.withValues(alpha: 0.1)
+          : AppColor.lightCard.withValues(alpha: 0.3),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -74,24 +77,23 @@ class SubscriptionItemWidget extends StatelessWidget {
             children: [
               // Header with name and popular badge
               _buildHeader(context, isDark),
-              
+
               const SizedBox(height: 8),
-              
+
               // Description
               _buildDescription(context, isDark),
-              
+
               const SizedBox(height: 12),
-              
+
               // Price and duration
               _buildPriceSection(context, isDark),
-              
+
               // Monthly price for longer durations
               if (_isLongDuration(duration))
                 _buildMonthlyPrice(context, isDark),
 
               // Features preview
-              if (features.isNotEmpty)
-                _buildFeaturesPreview(context, isDark),
+              if (features.isNotEmpty) _buildFeaturesPreview(context, isDark),
             ],
           ),
         ),
@@ -103,11 +105,15 @@ class SubscriptionItemWidget extends StatelessWidget {
     return Card(
       shadowColor: Colors.transparent,
       elevation: 2,
-      color: isDark ? AppColor.darkCard.withValues(alpha: 0.1) : AppColor.lightCard.withValues(alpha: 0.3),
+      color: isDark
+          ? AppColor.darkCard.withValues(alpha: 0.1)
+          : AppColor.lightCard.withValues(alpha: 0.3),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
+        side: BorderSide(
+          color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
+        ),
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -121,7 +127,9 @@ class SubscriptionItemWidget extends StatelessWidget {
                   child: Container(
                     height: 24,
                     decoration: BoxDecoration(
-                      color: isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight,
+                      color: isDark
+                          ? AppColor.skeletonBaseDark
+                          : AppColor.skeletonBaseLight,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -130,38 +138,44 @@ class SubscriptionItemWidget extends StatelessWidget {
                   width: 60,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight,
+                    color: isDark
+                        ? AppColor.skeletonBaseDark
+                        : AppColor.skeletonBaseLight,
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 8),
-            
+
             // Skeleton description
             Container(
               height: 16,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight,
+                color: isDark
+                    ? AppColor.skeletonBaseDark
+                    : AppColor.skeletonBaseLight,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            
+
             const SizedBox(height: 4),
-            
+
             Container(
               height: 16,
               width: MediaQuery.of(context).size.width * 0.6,
               decoration: BoxDecoration(
-                color: isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight,
+                color: isDark
+                    ? AppColor.skeletonBaseDark
+                    : AppColor.skeletonBaseLight,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Skeleton price section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,7 +184,9 @@ class SubscriptionItemWidget extends StatelessWidget {
                   height: 20,
                   width: 80,
                   decoration: BoxDecoration(
-                    color: isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight,
+                    color: isDark
+                        ? AppColor.skeletonBaseDark
+                        : AppColor.skeletonBaseLight,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -178,7 +194,9 @@ class SubscriptionItemWidget extends StatelessWidget {
                   height: 16,
                   width: 60,
                   decoration: BoxDecoration(
-                    color: isDark ? AppColor.skeletonBaseDark : AppColor.skeletonBaseLight,
+                    color: isDark
+                        ? AppColor.skeletonBaseDark
+                        : AppColor.skeletonBaseLight,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -205,20 +223,20 @@ class SubscriptionItemWidget extends StatelessWidget {
         ),
         if (isPopular)
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  isDark ? AppColor.darkSecondary.withValues(alpha: 0.4) : AppColor.lightSecondary.withValues(alpha: 0.4),
+                  isDark
+                      ? AppColor.darkSecondary.withValues(alpha: 0.4)
+                      : AppColor.lightSecondary.withValues(alpha: 0.4),
                   isDark ? AppColor.darkSecondary : AppColor.lightSecondary,
                 ],
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text("popular".tr(),
+            child: Text(
+              "popular".tr(),
               style: TextStyle(
                 fontSize: 12,
                 color: AppColor.light,
@@ -229,19 +247,12 @@ class SubscriptionItemWidget extends StatelessWidget {
         if (isSelected)
           Container(
             margin: EdgeInsets.only(left: 8),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              Icons.check,
-              size: 16,
-              color: AppColor.light,
-            ),
+            child: Icon(Icons.check, size: 16, color: AppColor.light),
           ),
       ],
     );
@@ -252,7 +263,9 @@ class SubscriptionItemWidget extends StatelessWidget {
       description,
       style: TextStyle(
         fontSize: 14,
-        color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+        color: isDark
+            ? AppColor.darkTextSecondary
+            : AppColor.lightTextSecondary,
       ),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
@@ -275,7 +288,9 @@ class SubscriptionItemWidget extends StatelessWidget {
           _getReadableDuration(duration),
           style: TextStyle(
             fontSize: 14,
-            color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            color: isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
           ),
         ),
       ],
@@ -298,36 +313,42 @@ class SubscriptionItemWidget extends StatelessWidget {
 
   Widget _buildFeaturesPreview(BuildContext context, bool isDark) {
     final previewFeatures = features.take(2).toList();
-    
+
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...previewFeatures.map((feature) => Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  size: 16,
-                  color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    feature,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+          ...previewFeatures.map(
+            (feature) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    size: 16,
+                    color: isDark
+                        ? AppColor.darkSuccess
+                        : AppColor.lightSuccess,
                   ),
-                ),
-              ],
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      feature,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )),
+          ),
           if (features.length > 2)
             Text(
               '+ ${features.length - 2} more features',
@@ -345,18 +366,18 @@ class SubscriptionItemWidget extends StatelessWidget {
   BorderSide _getBorderSide(BuildContext context, bool isDark) {
     if (isSelected) {
       return BorderSide(
-        color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess, 
-        width: 2
+        color: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
+        width: 2,
       );
     } else if (isPopular) {
       return BorderSide(
-        color: isDark ? AppColor.darkSecondary : AppColor.lightSecondary, 
-        width: 2
+        color: isDark ? AppColor.darkSecondary : AppColor.lightSecondary,
+        width: 2,
       );
     } else {
       return BorderSide(
         color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-        width: 1
+        width: 1,
       );
     }
   }
@@ -369,24 +390,42 @@ class SubscriptionItemWidget extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isDark
-                ? [AppColor.darkMaleBackgroundStart, AppColor.darkMaleBackgroundEnd]
-                : [AppColor.lightMaleBackgroundStart, AppColor.lightMaleBackgroundEnd],
+                ? [
+                    AppColor.darkMaleBackgroundStart,
+                    AppColor.darkMaleBackgroundEnd,
+                  ]
+                : [
+                    AppColor.lightMaleBackgroundStart,
+                    AppColor.lightMaleBackgroundEnd,
+                  ],
           );
         case UserGender.female:
           return LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isDark
-                ? [AppColor.darkFemaleBackgroundStart, AppColor.darkFemaleBackgroundEnd]
-                : [AppColor.lightFemaleBackgroundStart, AppColor.lightFemaleBackgroundEnd],
+                ? [
+                    AppColor.darkFemaleBackgroundStart,
+                    AppColor.darkFemaleBackgroundEnd,
+                  ]
+                : [
+                    AppColor.lightFemaleBackgroundStart,
+                    AppColor.lightFemaleBackgroundEnd,
+                  ],
           );
         case UserGender.nonBinary:
           return LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isDark
-                ? [AppColor.darkNonBinaryBackgroundStart, AppColor.darkNonBinaryBackgroundEnd]
-                : [AppColor.lightNonBinaryBackgroundStart, AppColor.lightNonBinaryBackgroundEnd],
+                ? [
+                    AppColor.darkNonBinaryBackgroundStart,
+                    AppColor.darkNonBinaryBackgroundEnd,
+                  ]
+                : [
+                    AppColor.lightNonBinaryBackgroundStart,
+                    AppColor.lightNonBinaryBackgroundEnd,
+                  ],
           );
       }
     }
@@ -411,9 +450,9 @@ class SubscriptionItemWidget extends StatelessWidget {
 
   bool _isLongDuration(String duration) {
     final upperDuration = duration.toUpperCase();
-    return upperDuration == 'YEARLY' || 
-           upperDuration == 'ANNUAL' || 
-           upperDuration == 'QUARTERLY';
+    return upperDuration == 'YEARLY' ||
+        upperDuration == 'ANNUAL' ||
+        upperDuration == 'QUARTERLY';
   }
 }
 
@@ -454,48 +493,52 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
       _error = null;
     });
 
-    _subscriptionsFuture = SubscriptionHelper.getSubscriptions().then((subscriptions) {
-      setState(() => _isLoading = false);
-      
-      // Convert to Map format if needed
-      final List<Map<String, dynamic>> subscriptionMaps = subscriptions.map((sub) {
-        return {
-          'id': sub.id,
-          'name': sub.name,
-          'description': sub.description,
-          'price': sub.price,
-          'duration': sub.duration,
-          'features': sub.features,
-          'isPopular': sub.isPopular,
-          'salonId': sub.salonId,
-        };
-      }).toList();
+    _subscriptionsFuture = SubscriptionHelper.getSubscriptions()
+        .then((subscriptions) {
+          setState(() => _isLoading = false);
 
-      if (widget.showFeaturedOnly) {
-        return subscriptionMaps.where((sub) => sub['isPopular'] == true).toList();
-      }
-      return subscriptionMaps;
-    }).catchError((error) {
-      setState(() {
-        _isLoading = false;
-        _error = error.toString();
-      });
-      return <Map<String, dynamic>>[];
-    });
+          // Convert to Map format if needed
+          final List<Map<String, dynamic>> subscriptionMaps = subscriptions.map(
+            (sub) {
+              return {
+                'id': sub.id,
+                'name': sub.name,
+                'description': sub.description,
+                'price': sub.price,
+                'duration': sub.duration,
+                'features': sub.features,
+                'isPopular': sub.isPopular,
+                'salonId': sub.salonId,
+              };
+            },
+          ).toList();
+
+          if (widget.showFeaturedOnly) {
+            return subscriptionMaps
+                .where((sub) => sub['isPopular'] == true)
+                .toList();
+          }
+          return subscriptionMaps;
+        })
+        .catchError((error) {
+          setState(() {
+            _isLoading = false;
+            _error = error.toString();
+          });
+          return <Map<String, dynamic>>[];
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return ErrorBoundary(
       isDarkMode: isDark,
       userGender: widget.gender,
       onRetry: _loadSubscriptions,
       child: Container(
-        decoration: BoxDecoration(
-          gradient: _getBackgroundGradient(isDark),
-        ),
+        decoration: BoxDecoration(gradient: _getBackgroundGradient(isDark)),
         child: _buildContent(isDark),
       ),
     );
@@ -560,7 +603,8 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
     return EmptyState.error(
       context: context,
       title: "failed_to_load_subscriptions".tr(),
-      description: error ?? _error ?? 'Please check your connection and try again.',
+      description:
+          error ?? _error ?? 'Please check your connection and try again.',
       onRetry: _loadSubscriptions,
       gender: widget.gender,
     );
@@ -570,13 +614,15 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
     return EmptyState.noItems(
       context: context,
       title: "no_subscriptions_available".tr(),
-      description: widget.showFeaturedOnly 
+      description: widget.showFeaturedOnly
           ? 'There are no featured subscriptions at the moment.'
           : 'There are no subscription plans available right now.',
       actionButton: ElevatedButton(
         onPressed: _loadSubscriptions,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isDark ? AppColor.darkPrimary : AppColor.lightPrimary,
+          backgroundColor: isDark
+              ? AppColor.darkPrimary
+              : AppColor.lightPrimary,
           foregroundColor: AppColor.light,
         ),
         child: Text("refresh".tr()),
@@ -585,7 +631,10 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
     );
   }
 
-  Widget _buildSubscriptionList(List<Map<String, dynamic>> subscriptions, bool isDark) {
+  Widget _buildSubscriptionList(
+    List<Map<String, dynamic>> subscriptions,
+    bool isDark,
+  ) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -610,24 +659,42 @@ class _SubscriptionListViewState extends State<SubscriptionListView> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: isDark
-                ? [AppColor.darkMaleBackgroundStart, AppColor.darkMaleBackgroundEnd]
-                : [AppColor.lightMaleBackgroundStart, AppColor.lightMaleBackgroundEnd],
+                ? [
+                    AppColor.darkMaleBackgroundStart,
+                    AppColor.darkMaleBackgroundEnd,
+                  ]
+                : [
+                    AppColor.lightMaleBackgroundStart,
+                    AppColor.lightMaleBackgroundEnd,
+                  ],
           );
         case UserGender.female:
           return LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: isDark
-                ? [AppColor.darkFemaleBackgroundStart, AppColor.darkFemaleBackgroundEnd]
-                : [AppColor.lightFemaleBackgroundStart, AppColor.lightFemaleBackgroundEnd],
+                ? [
+                    AppColor.darkFemaleBackgroundStart,
+                    AppColor.darkFemaleBackgroundEnd,
+                  ]
+                : [
+                    AppColor.lightFemaleBackgroundStart,
+                    AppColor.lightFemaleBackgroundEnd,
+                  ],
           );
         case UserGender.nonBinary:
           return LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: isDark
-                ? [AppColor.darkNonBinaryBackgroundStart, AppColor.darkNonBinaryBackgroundEnd]
-                : [AppColor.lightNonBinaryBackgroundStart, AppColor.lightNonBinaryBackgroundEnd],
+                ? [
+                    AppColor.darkNonBinaryBackgroundStart,
+                    AppColor.darkNonBinaryBackgroundEnd,
+                  ]
+                : [
+                    AppColor.lightNonBinaryBackgroundStart,
+                    AppColor.lightNonBinaryBackgroundEnd,
+                  ],
           );
       }
     }
@@ -665,7 +732,7 @@ class SubscriptionServiceHelper {
   static Future<List<Map<String, dynamic>>> getSubscriptionPlans() async {
     try {
       final plans = await SubscriptionHelper.getSubscriptions();
-      
+
       return plans.map((plan) {
         return {
           'id': plan.id,
@@ -676,8 +743,13 @@ class SubscriptionServiceHelper {
           'features': plan.features,
           'isPopular': plan.isPopular,
           'formattedPrice': SubscriptionHelper.formatPrice(plan.price),
-          'monthlyPrice': SubscriptionHelper.getPricePerMonth(plan.price, plan.duration),
-          'readableDuration': SubscriptionHelper.getReadableDuration(plan.duration),
+          'monthlyPrice': SubscriptionHelper.getPricePerMonth(
+            plan.price,
+            plan.duration,
+          ),
+          'readableDuration': SubscriptionHelper.getReadableDuration(
+            plan.duration,
+          ),
         };
       }).toList();
     } catch (e) {
@@ -688,9 +760,9 @@ class SubscriptionServiceHelper {
   static Future<Map<String, dynamic>?> getCurrentSubscription() async {
     try {
       final subscription = await SubscriptionHelper.getCurrentSubscription();
-      
+
       if (subscription == null) return null;
-      
+
       return {
         'id': subscription.id,
         'planName': subscription.planName,
@@ -715,7 +787,7 @@ class SubscriptionServiceHelper {
       // This would call your actual subscription service
       // For now, we'll simulate the response
       await Future.delayed(Duration(seconds: 2));
-      
+
       return {
         'success': true,
         'subscriptionId': 'sub_${DateTime.now().millisecondsSinceEpoch}',

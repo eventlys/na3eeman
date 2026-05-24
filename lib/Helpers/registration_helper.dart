@@ -15,8 +15,7 @@ class SocialRegistrationHelper {
     required Map<String, dynamic> socialData,
     String? selectedRole,
     String? selectedGender,
-  })
-  async {
+  }) async {
     try {
       _logger.d('Processing social registration for $provider');
 
@@ -53,11 +52,17 @@ class SocialRegistrationHelper {
   String _extractFirstName(Map<String, dynamic> socialData, String provider) {
     switch (provider) {
       case googleProvider:
-        return socialData['givenName'] ?? socialData['displayName']?.split(' ').first ?? 'User';
+        return socialData['givenName'] ??
+            socialData['displayName']?.split(' ').first ??
+            'User';
       case facebookProvider:
-        return socialData['first_name'] ?? socialData['name']?.split(' ').first ?? 'User';
+        return socialData['first_name'] ??
+            socialData['name']?.split(' ').first ??
+            'User';
       case appleProvider:
-        return socialData['givenName'] ?? socialData['fullName']?.givenName ?? 'User';
+        return socialData['givenName'] ??
+            socialData['fullName']?.givenName ??
+            'User';
       default:
         return 'User';
     }
@@ -67,11 +72,17 @@ class SocialRegistrationHelper {
   String _extractLastName(Map<String, dynamic> socialData, String provider) {
     switch (provider) {
       case googleProvider:
-        return socialData['familyName'] ?? socialData['displayName']?.split(' ').last ?? 'Social';
+        return socialData['familyName'] ??
+            socialData['displayName']?.split(' ').last ??
+            'Social';
       case facebookProvider:
-        return socialData['last_name'] ?? socialData['name']?.split(' ').last ?? 'Social';
+        return socialData['last_name'] ??
+            socialData['name']?.split(' ').last ??
+            'Social';
       case appleProvider:
-        return socialData['familyName'] ?? socialData['fullName']?.familyName ?? 'Social';
+        return socialData['familyName'] ??
+            socialData['fullName']?.familyName ??
+            'Social';
       default:
         return 'Social';
     }
@@ -87,23 +98,26 @@ class SocialRegistrationHelper {
   }
 
   /// Extract phone number from social data
-  String? _extractPhoneNumber(Map<String, dynamic> socialData, String provider) {
+  String? _extractPhoneNumber(
+    Map<String, dynamic> socialData,
+    String provider,
+  ) {
     return socialData['phoneNumber'] ?? socialData['phone'];
   }
 
   /// Extract social ID from social data
   String _extractSocialId(Map<String, dynamic> socialData, String provider) {
     return socialData['id'] ??
-           socialData['userId'] ??
-           socialData['sub'] ??
-           DateTime.now().millisecondsSinceEpoch.toString();
+        socialData['userId'] ??
+        socialData['sub'] ??
+        DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   /// Extract avatar URL from social data
   String? _extractAvatarUrl(Map<String, dynamic> socialData, String provider) {
     return socialData['photoUrl'] ??
-           socialData['picture']?['data']?['url'] ??
-           socialData['avatarUrl'];
+        socialData['picture']?['data']?['url'] ??
+        socialData['avatarUrl'];
   }
 
   /// Infer gender from social data
@@ -127,7 +141,8 @@ class SocialRegistrationHelper {
       return {'valid': false, 'message': 'Email is required'};
     }
 
-    if (userData['first_name'] == null || userData['first_name'].toString().isEmpty) {
+    if (userData['first_name'] == null ||
+        userData['first_name'].toString().isEmpty) {
       return {'valid': false, 'message': 'First name is required'};
     }
 

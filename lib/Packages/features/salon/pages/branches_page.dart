@@ -114,8 +114,8 @@ class _BranchesPageState extends State<BranchesPage> {
               'Status: ${branch['is_active'] == true ? 'Active' : 'Inactive'}',
               style: TextStyle(
                 color: branch['is_active'] == true
-                  ? AppColor.lightSuccess
-                  : AppColor.lightError,
+                    ? AppColor.lightSuccess
+                    : AppColor.lightError,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -124,7 +124,8 @@ class _BranchesPageState extends State<BranchesPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text("close".tr(),
+            child: Text(
+              "close".tr(),
               style: TextStyle(color: AppColor.lightTextSecondary),
             ),
           ),
@@ -161,7 +162,8 @@ class _BranchesPageState extends State<BranchesPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("assign_manager".tr(),
+        title: Text(
+          "assign_manager".tr(),
           style: TextStyle(color: AppColor.lightText),
         ),
         backgroundColor: AppColor.lightCard,
@@ -172,7 +174,8 @@ class _BranchesPageState extends State<BranchesPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text("cancel".tr(),
+            child: Text(
+              "cancel".tr(),
               style: TextStyle(color: AppColor.lightTextSecondary),
             ),
           ),
@@ -191,7 +194,9 @@ class _BranchesPageState extends State<BranchesPage> {
                         color: AppColor.light,
                       ),
                       SizedBox(width: 8),
-                      Text('Manager assigned for ${branch['name'] ?? 'branch'}'),
+                      Text(
+                        'Manager assigned for ${branch['name'] ?? 'branch'}',
+                      ),
                     ],
                   ),
                   backgroundColor: AppColor.lightSuccess,
@@ -202,9 +207,7 @@ class _BranchesPageState extends State<BranchesPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColor.lightPrimary,
             ),
-            child: Text("assign".tr(),
-              style: TextStyle(color: AppColor.light),
-            ),
+            child: Text("assign".tr(), style: TextStyle(color: AppColor.light)),
           ),
         ],
       ),
@@ -218,7 +221,8 @@ class _BranchesPageState extends State<BranchesPage> {
       child: Scaffold(
         backgroundColor: AppColor.lightBackground,
         appBar: AppBar(
-          title: Text("branches".tr(),
+          title: Text(
+            "branches".tr(),
             style: TextStyle(
               color: AppColor.lightText,
               fontWeight: FontWeight.bold,
@@ -265,11 +269,9 @@ class _BranchesPageState extends State<BranchesPage> {
                       color: AppColor.lightError,
                     ),
                     const SizedBox(height: 16),
-                    Text("failed_to_load_branches".tr(),
-                      style: TextStyle(
-                        color: AppColor.lightText,
-                        fontSize: 16,
-                      ),
+                    Text(
+                      "failed_to_load_branches".tr(),
+                      style: TextStyle(color: AppColor.lightText, fontSize: 16),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -286,7 +288,8 @@ class _BranchesPageState extends State<BranchesPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.lightPrimary,
                       ),
-                      child: Text("retry".tr(),
+                      child: Text(
+                        "retry".tr(),
                         style: TextStyle(color: AppColor.light),
                       ),
                     ),
@@ -309,7 +312,8 @@ class _BranchesPageState extends State<BranchesPage> {
                       color: AppColor.lightTextSecondary,
                     ),
                     const SizedBox(height: 16),
-                    Text("no_branches_found".tr(),
+                    Text(
+                      "no_branches_found".tr(),
                       style: TextStyle(
                         color: AppColor.lightTextSecondary,
                         fontSize: 16,
@@ -324,7 +328,8 @@ class _BranchesPageState extends State<BranchesPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColor.lightPrimary,
                             ),
-                            child: Text("add_first_branch".tr(),
+                            child: Text(
+                              "add_first_branch".tr(),
                               style: TextStyle(color: AppColor.light),
                             ),
                           );

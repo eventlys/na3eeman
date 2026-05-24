@@ -7,7 +7,7 @@ class InventoryHelpers {
 
   static String getStockStatusMessage(int currentStock, int? minStockLevel) {
     final minStock = minStockLevel ?? 3;
-    
+
     if (currentStock == 0) {
       return 'Out of Stock';
     } else if (currentStock <= minStock) {
@@ -21,7 +21,7 @@ class InventoryHelpers {
 
   static String getStockEmoji(int currentStock, int? minStockLevel) {
     final minStock = minStockLevel ?? 3;
-    
+
     if (currentStock == 0) {
       return '🔴';
     } else if (currentStock <= minStock) {
@@ -43,7 +43,9 @@ class InventoryHelpers {
 
   Future<bool> shouldShowLowStockAlert({int? salonId}) async {
     try {
-      final lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
+      final lowStockItems = await _inventoryService.getLowStockItems(
+        salonId: salonId,
+      );
       return lowStockItems.isNotEmpty;
     } catch (e) {
       print('Error checking low stock alert: $e');
@@ -53,11 +55,17 @@ class InventoryHelpers {
 
   Future<String> formatLowStockAlert({int? salonId}) async {
     try {
-      final lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
+      final lowStockItems = await _inventoryService.getLowStockItems(
+        salonId: salonId,
+      );
 
       if (lowStockItems.isEmpty) return '';
 
-      final itemNames = lowStockItems.map((item) => item['name'] ?? item['product_name'] ?? 'Unknown Product').join(', ');
+      final itemNames = lowStockItems
+          .map(
+            (item) => item['name'] ?? item['product_name'] ?? 'Unknown Product',
+          )
+          .join(', ');
       return 'Low stock alert: $itemNames';
     } catch (e) {
       print('Error formatting low stock alert: $e');
@@ -80,7 +88,9 @@ class InventoryHelpers {
 
   Future<List<dynamic>> getCriticalStockItems({int? salonId}) async {
     try {
-      final allItems = await _inventoryService.getInventoryItems(salonId: salonId);
+      final allItems = await _inventoryService.getInventoryItems(
+        salonId: salonId,
+      );
       return _inventoryService.getCriticalStockItemsFromList(allItems);
     } catch (e) {
       print('Error getting critical stock items: $e');
@@ -90,7 +100,9 @@ class InventoryHelpers {
 
   Future<int> getLowStockCount({int? salonId}) async {
     try {
-      final lowStockItems = await _inventoryService.getLowStockItems(salonId: salonId);
+      final lowStockItems = await _inventoryService.getLowStockItems(
+        salonId: salonId,
+      );
       return lowStockItems.length;
     } catch (e) {
       print('Error getting low stock count: $e');
@@ -100,7 +112,9 @@ class InventoryHelpers {
 
   Future<int> getOutOfStockCount({int? salonId}) async {
     try {
-      final allItems = await _inventoryService.getInventoryItems(salonId: salonId);
+      final allItems = await _inventoryService.getInventoryItems(
+        salonId: salonId,
+      );
       return allItems.where((item) {
         final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 1;
         return stock == 0;
@@ -114,35 +128,41 @@ class InventoryHelpers {
   Future<List<dynamic>> getItemsByStockLevel({
     int? salonId,
     required StockLevel level,
-  })
-  async {
+  }) async {
     try {
-      final allItems = await _inventoryService.getInventoryItems(salonId: salonId);
+      final allItems = await _inventoryService.getInventoryItems(
+        salonId: salonId,
+      );
 
       switch (level) {
         case StockLevel.critical:
           return allItems.where((item) {
-            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            final stock =
+                item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
             return stock <= 2;
           }).toList();
         case StockLevel.low:
           return allItems.where((item) {
-            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            final stock =
+                item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
             return stock > 2 && stock < 5;
           }).toList();
         case StockLevel.normal:
           return allItems.where((item) {
-            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            final stock =
+                item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
             return stock >= 5 && stock < 10;
           }).toList();
         case StockLevel.wellStocked:
           return allItems.where((item) {
-            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+            final stock =
+                item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
             return stock >= 10;
           }).toList();
         case StockLevel.outOfStock:
           return allItems.where((item) {
-            final stock = item['current_stock'] ?? item['quantity_in_stock'] ?? 1;
+            final stock =
+                item['current_stock'] ?? item['quantity_in_stock'] ?? 1;
             return stock == 0;
           }).toList();
       }
@@ -154,9 +174,9 @@ class InventoryHelpers {
 }
 
 enum StockLevel {
-  critical,    // <= 2
-  low,         // 3-4
-  normal,      // 5-9
+  critical, // <= 2
+  low, // 3-4
+  normal, // 5-9
   wellStocked, // >= 10
-  outOfStock,  // 0
+  outOfStock, // 0
 }

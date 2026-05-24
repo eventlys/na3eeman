@@ -40,14 +40,18 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
     final success = await provider.updateWorkingHours(hours.id!, {
       'is_closed': !hours.isClosed,
     });
-    
+
     if (success) {
       _fetchData();
     }
   }
 
-  Future<void> _selectTime(BuildContext context, WeeklyWorkingHours hours, bool isStart) async {
-    final initialTime = isStart 
+  Future<void> _selectTime(
+    BuildContext context,
+    WeeklyWorkingHours hours,
+    bool isStart,
+  ) async {
+    final initialTime = isStart
         ? _parseTime(hours.openingTime)
         : _parseTime(hours.closingTime);
 
@@ -55,13 +59,15 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
       context: context,
       initialTime: initialTime,
     );
-    
+
     if (picked != null) {
-      final newTime = '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-      final success = await context.read<ScheduleProvider>().updateWorkingHours(hours.id!, {
-        isStart ? 'opening_time' : 'closing_time': newTime,
-      });
-      
+      final newTime =
+          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+      final success = await context.read<ScheduleProvider>().updateWorkingHours(
+        hours.id!,
+        {isStart ? 'opening_time' : 'closing_time': newTime},
+      );
+
       if (success) {
         _fetchData();
       }
@@ -96,7 +102,10 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('My Schedule'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'My Schedule'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButtonStyled(
@@ -111,12 +120,18 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
           children: [
             Text(
               'Set Your Weekly availability'.tr(),
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Manage your working hours and off days. Customers can only book you during these hours.'.tr(),
-              style: const TextStyle(color: AppColors.almostBlack300, fontSize: 13),
+              'Manage your working hours and off days. Customers can only book you during these hours.'
+                  .tr(),
+              style: const TextStyle(
+                color: AppColors.almostBlack300,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 32),
 
@@ -126,7 +141,7 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
                 if (schedule.isLoading && _isInitialLoad) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 if (schedule.workingHours.isEmpty) {
                   return Center(
                     child: Padding(
@@ -146,9 +161,15 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.almostBlack600 : AppColors.white,
+                        color: isDark
+                            ? AppColors.almostBlack600
+                            : AppColors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.white.withOpacity(0.05)
+                              : AppColors.almostBlack50,
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -157,10 +178,23 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(hours.dayName.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                Text(
+                                  hours.dayName.tr(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                                 const SizedBox(height: 4),
-                                Text(isOn ? '$start - $end' : 'Off Day'.tr(), 
-                                     style: TextStyle(color: isOn ? Theme.of(context).primaryColor : AppColors.error, fontSize: 13)),
+                                Text(
+                                  isOn ? '$start - $end' : 'Off Day'.tr(),
+                                  style: TextStyle(
+                                    color: isOn
+                                        ? Theme.of(context).primaryColor
+                                        : AppColors.error,
+                                    fontSize: 13,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -169,9 +203,23 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
                             child: isOn
                                 ? Row(
                                     children: [
-                                      _timeChip(start, () => _selectTime(context, hours, true), isDark),
-                                      const Padding(padding: EdgeInsets.symmetric(horizontal: 4), child: Text('-')),
-                                      _timeChip(end, () => _selectTime(context, hours, false), isDark),
+                                      _timeChip(
+                                        start,
+                                        () => _selectTime(context, hours, true),
+                                        isDark,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                        ),
+                                        child: Text('-'),
+                                      ),
+                                      _timeChip(
+                                        end,
+                                        () =>
+                                            _selectTime(context, hours, false),
+                                        isDark,
+                                      ),
                                     ],
                                   )
                                 : const SizedBox.shrink(),
@@ -197,14 +245,25 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
               child: ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Schedule updated successfully'.tr()), backgroundColor: AppColors.success),
+                    SnackBar(
+                      content: Text('Schedule updated successfully'.tr()),
+                      backgroundColor: AppColors.success,
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
-                child: Text('Save Changes'.tr(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Save Changes'.tr(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],
@@ -223,7 +282,11 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
             color: isDark ? AppColors.almostBlack700 : AppColors.almostBlack50,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(time, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
+          child: Text(
+            time,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 12),
+          ),
         ),
       ),
     );

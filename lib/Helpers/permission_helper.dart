@@ -16,7 +16,10 @@ class PermissionHelper {
       AppLogger.debug('Permission ${permission.toString()} status: $status');
       return status;
     } catch (e) {
-      AppLogger.error('Failed to check permission ${permission.toString()}', error: e);
+      AppLogger.error(
+        'Failed to check permission ${permission.toString()}',
+        error: e,
+      );
       return PermissionStatus.denied;
     }
   }
@@ -25,16 +28,23 @@ class PermissionHelper {
   Future<PermissionStatus> requestPermission(Permission permission) async {
     try {
       final status = await permission.request();
-      AppLogger.debug('Permission ${permission.toString()} request result: $status');
+      AppLogger.debug(
+        'Permission ${permission.toString()} request result: $status',
+      );
       return status;
     } catch (e) {
-      AppLogger.error('Failed to request permission ${permission.toString()}', error: e);
+      AppLogger.error(
+        'Failed to request permission ${permission.toString()}',
+        error: e,
+      );
       return PermissionStatus.denied;
     }
   }
 
   // Check and request permission if needed
-  Future<PermissionStatus> checkAndRequestPermission(Permission permission) async {
+  Future<PermissionStatus> checkAndRequestPermission(
+    Permission permission,
+  ) async {
     final status = await checkPermission(permission);
 
     if (status.isGranted) {
@@ -45,14 +55,18 @@ class PermissionHelper {
   }
 
   // Check multiple permissions
-  Future<Map<Permission, PermissionStatus>> checkPermissions(List<Permission> permissions) async {
+  Future<Map<Permission, PermissionStatus>> checkPermissions(
+    List<Permission> permissions,
+  ) async {
     try {
       final statuses = await permissions.request();
       AppLogger.debug('Multiple permissions checked: $statuses');
       return statuses;
     } catch (e) {
       AppLogger.error('Failed to check multiple permissions', error: e);
-      return { for (var permission in permissions) permission: PermissionStatus.denied };
+      return {
+        for (var permission in permissions) permission: PermissionStatus.denied,
+      };
     }
   }
 
@@ -124,7 +138,9 @@ class PermissionHelper {
   }
 
   // Check if we should show permission rationale
-  Future<bool> shouldShowRequestPermissionRationale(Permission permission) async {
+  Future<bool> shouldShowRequestPermissionRationale(
+    Permission permission,
+  ) async {
     final status = await checkPermission(permission);
     return status.isDenied || status.isRestricted;
   }
@@ -169,8 +185,7 @@ class PermissionHelper {
   // Request multiple permissions at once
   Future<Map<Permission, PermissionStatus>> requestMultiplePermissions(
     List<Permission> permissions,
-  )
-  async {
+  ) async {
     try {
       final results = await permissions.request();
       AppLogger.debug('Multiple permissions requested: $results');

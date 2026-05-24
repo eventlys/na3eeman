@@ -29,8 +29,10 @@ class ScheduleHelper {
     final bookedTimes = _bookedSlots[date];
     if (bookedTimes == null) return true;
 
-    return !bookedTimes.any((bookedTime) =>
-        bookedTime.hour == time.hour && bookedTime.minute == time.minute);
+    return !bookedTimes.any(
+      (bookedTime) =>
+          bookedTime.hour == time.hour && bookedTime.minute == time.minute,
+    );
   }
 
   static List<TimeOfDay> getAvailableTimesForDate(DateTime date) {
@@ -51,5 +53,3 @@ class ScheduleHelper {
     return [];
   }
 }
-
-

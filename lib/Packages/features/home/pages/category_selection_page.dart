@@ -32,8 +32,10 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   Future<void> _loadCategories() async {
     try {
       final List<dynamic> rawCategories = await _apiService.getCategories();
-      final List<Category> categories = rawCategories.map((e) => Category.fromJson(e)).toList();
-      
+      final List<Category> categories = rawCategories
+          .map((e) => Category.fromJson(e))
+          .toList();
+
       // Determine target gender for filtering
       Gender? targetGender;
       if (widget.giftGender != null) {
@@ -71,32 +73,42 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Select Category', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Select Category',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor))
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.giftMode ? 'What service would you like to gift?' : 'Which service are you looking for?',
+                    widget.giftMode
+                        ? 'What service would you like to gift?'
+                        : 'Which service are you looking for?',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   Expanded(
                     child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.85,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.85,
+                          ),
                       itemCount: _categories.length,
                       itemBuilder: (context, index) {
                         return CategoryCard(

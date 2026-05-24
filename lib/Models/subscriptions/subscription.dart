@@ -34,9 +34,15 @@ class Subscription {
       salonId: json['salon'] as int,
       planName: json['plan_name'] ?? 'Premium Plan',
       subscriptionType: json['subscription_type'] as String? ?? 'MONTHLY',
-      price: (json['price'] is double ? json['price'] : double.tryParse(json['price']?.toString() ?? '0.0')) ?? 0.0,
+      price:
+          (json['price'] is double
+              ? json['price']
+              : double.tryParse(json['price']?.toString() ?? '0.0')) ??
+          0.0,
       startDate: DateTime.parse(json['start_date'] as String),
-      endDate: json['end_date'] != null ? DateTime.parse(json['end_date'] as String) : null,
+      endDate: json['end_date'] != null
+          ? DateTime.parse(json['end_date'] as String)
+          : null,
       status: json['status'] ?? 'Active',
       isActive: json['is_active'] as bool? ?? true,
       autoRenew: json['auto_renew'] as bool? ?? true,

@@ -30,11 +30,11 @@ class InternProvider with ChangeNotifier {
     try {
       final response = await _apiService.get(Endpoints.currentUser);
       final dynamic userData = response['user'] ?? response;
-      
+
       // Extract salon ID - could be 'salon' (Object/int) or 'salon_id'
       final salonData = userData['salon'];
       debugPrint('DEBUG: Intern profile salon data: $salonData');
-      
+
       if (salonData is int) {
         _salonId = salonData;
       } else if (salonData is Map) {
@@ -42,7 +42,7 @@ class InternProvider with ChangeNotifier {
       } else if (salonData is String) {
         _salonId = int.tryParse(salonData);
       }
-      
+
       debugPrint('DEBUG: Extracted salonId: $_salonId');
       notifyListeners();
     } catch (e) {
@@ -56,7 +56,8 @@ class InternProvider with ChangeNotifier {
     notifyListeners();
     try {
       final response = await _apiService.get(Endpoints.internTasks);
-      final List<dynamic> data = response['results'] ?? response['data'] ?? response;
+      final List<dynamic> data =
+          response['results'] ?? response['data'] ?? response;
       _tasks = data.map((json) => InternTask.fromJson(json)).toList();
     } catch (e) {
       debugPrint('Error fetching intern tasks: $e');
@@ -68,7 +69,10 @@ class InternProvider with ChangeNotifier {
 
   Future<void> addTask(String title) async {
     try {
-      final response = await _apiService.post(Endpoints.internTasks, data: {'title': title});
+      final response = await _apiService.post(
+        Endpoints.internTasks,
+        data: {'title': title},
+      );
       final newTask = InternTask.fromJson(response['data'] ?? response);
       _tasks.insert(0, newTask);
       notifyListeners();
@@ -83,10 +87,10 @@ class InternProvider with ChangeNotifier {
         Endpoints.internTaskDetail(taskId),
         data: {'is_completed': isCompleted},
       );
-      
+
       final dynamic responseData = response['data'] ?? response;
       final updatedTask = InternTask.fromJson(responseData);
-      
+
       final index = _tasks.indexWhere((t) => t.id == taskId);
       if (index != -1) {
         _tasks[index] = updatedTask;
@@ -118,11 +122,13 @@ class InternProvider with ChangeNotifier {
     try {
       final response = await _apiService.getInternActivity();
       _activityData = response;
-      
+
       // Extract feedbacks if present
       if (response['feedbacks'] != null) {
         final List<dynamic> feedbackList = response['feedbacks'];
-        _feedbacks = feedbackList.map((json) => InternFeedback.fromJson(json)).toList();
+        _feedbacks = feedbackList
+            .map((json) => InternFeedback.fromJson(json))
+            .toList();
       }
     } catch (e) {
       debugPrint('Error fetching intern activity: $e');

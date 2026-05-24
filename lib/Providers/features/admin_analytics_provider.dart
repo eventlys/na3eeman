@@ -10,7 +10,7 @@ class AdminAnalyticsProvider with ChangeNotifier {
   Map<String, dynamic>? _usageStats;
   Map<String, dynamic>? _financialStats;
   Map<String, dynamic>? _systemStats;
-  
+
   bool _isLoading = false;
   String? _error;
 
@@ -78,7 +78,7 @@ class AdminAnalyticsProvider with ChangeNotifier {
       _usageStats = await _analyticsService.getAdminUsageAnalytics();
       notifyListeners();
     } catch (e) {
-       debugPrint('UsageAnalytics Error: $e');
+      debugPrint('UsageAnalytics Error: $e');
     }
   }
 
@@ -87,7 +87,7 @@ class AdminAnalyticsProvider with ChangeNotifier {
       _financialStats = await _analyticsService.getAdminFinancialAnalytics();
       notifyListeners();
     } catch (e) {
-       debugPrint('FinancialAnalytics Error: $e');
+      debugPrint('FinancialAnalytics Error: $e');
     }
   }
 

@@ -15,7 +15,9 @@ class RolePermissionManager {
   }
 
   static bool canManageInventory(UserRole role) {
-    return role.isOwnerEquivalent || role == UserRole.receptionist || role == UserRole.admin;
+    return role.isOwnerEquivalent ||
+        role == UserRole.receptionist ||
+        role == UserRole.admin;
   }
 
   static bool canManageFinancials(UserRole role) {
@@ -23,20 +25,28 @@ class RolePermissionManager {
   }
 
   static bool canManageSubscriptions(UserRole role) {
-    return role.isOwnerEquivalent || role == UserRole.receptionist || role == UserRole.admin;
+    return role.isOwnerEquivalent ||
+        role == UserRole.receptionist ||
+        role == UserRole.admin;
   }
 
   static bool canManageOffersAndAds(UserRole role) {
-    return role.isOwnerEquivalent || role == UserRole.receptionist || role == UserRole.admin;
+    return role.isOwnerEquivalent ||
+        role == UserRole.receptionist ||
+        role == UserRole.admin;
   }
 
   static bool canViewFeedback(UserRole role) {
-    return role.isOwnerEquivalent || role == UserRole.receptionist || role == UserRole.admin;
+    return role.isOwnerEquivalent ||
+        role == UserRole.receptionist ||
+        role == UserRole.admin;
   }
 
   static bool canManageAppointments(UserRole role) {
     // Only management can modify existing appointments of others
-    return role.isOwnerEquivalent || role == UserRole.receptionist || role == UserRole.admin;
+    return role.isOwnerEquivalent ||
+        role == UserRole.receptionist ||
+        role == UserRole.admin;
   }
 
   static bool canBookAppointments(UserRole role) {
@@ -45,7 +55,9 @@ class RolePermissionManager {
   }
 
   static bool canViewAllExpertSchedules(UserRole role) {
-    return role.isOwnerEquivalent || role == UserRole.receptionist || role == UserRole.admin;
+    return role.isOwnerEquivalent ||
+        role == UserRole.receptionist ||
+        role == UserRole.admin;
   }
 
   static bool canViewAdminDashboard(UserRole role) {

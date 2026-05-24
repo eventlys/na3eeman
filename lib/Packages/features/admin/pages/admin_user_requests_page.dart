@@ -78,8 +78,10 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
 
   List<HelpFeedback> get _filteredRequests {
     return _requests.where((r) {
-      final matchesSearch = _searchQuery.isEmpty ||
-          (r.userName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false) ||
+      final matchesSearch =
+          _searchQuery.isEmpty ||
+          (r.userName?.toLowerCase().contains(_searchQuery.toLowerCase()) ??
+              false) ||
           r.feedbackType.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           r.content.toLowerCase().contains(_searchQuery.toLowerCase());
       final matchesRole = _roleFilter == 'all' || r.userRole == _roleFilter;
@@ -106,8 +108,13 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("user_requests".tr(),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontLg)),
+        title: Text(
+          "user_requests".tr(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: AppSpacing.fontLg,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         bottom: PreferredSize(
@@ -125,15 +132,18 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _filteredRequests.isEmpty
-                      ? _buildEmpty(isDark)
-                      : ListView.separated(
-                          padding: AppSpacing.pagePadding,
-                          itemCount: _filteredRequests.length,
-                          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.listGap),
-                          itemBuilder: (_, i) => _buildRequestCard(
-                            _filteredRequests[i], isDark, accent,
-                          ),
-                        ),
+                  ? _buildEmpty(isDark)
+                  : ListView.separated(
+                      padding: AppSpacing.pagePadding,
+                      itemCount: _filteredRequests.length,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: AppSpacing.listGap),
+                      itemBuilder: (_, i) => _buildRequestCard(
+                        _filteredRequests[i],
+                        isDark,
+                        accent,
+                      ),
+                    ),
             ),
           ],
         ),
@@ -143,7 +153,10 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
 
   Widget _buildSearchBar(bool isDark) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.pageH,
+        vertical: AppSpacing.sm,
+      ),
       child: TextField(
         onChanged: (v) => setState(() => _searchQuery = v),
         decoration: InputDecoration(
@@ -168,7 +181,10 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         children: [
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.pageH,
+              vertical: AppSpacing.sm,
+            ),
             child: Row(
               children: _ageOptions.map((o) {
                 final (value, label) = o;
@@ -181,7 +197,9 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                     selectedColor: accent,
                     labelStyle: TextStyle(
                       color: selected ? Colors.white : null,
-                      fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: selected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                       fontSize: AppSpacing.fontMd,
                     ),
                     onSelected: (_) => setState(() {
@@ -197,21 +215,31 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH),
             child: Row(
               children: [
-                Expanded(child: _buildDropdown(
-                  'Role',
-                  _roleFilter,
-                  _roleOptions,
-                  isDark,
-                  (v) => setState(() { _roleFilter = v!; _loadRequests(); }),
-                )),
+                Expanded(
+                  child: _buildDropdown(
+                    'Role',
+                    _roleFilter,
+                    _roleOptions,
+                    isDark,
+                    (v) => setState(() {
+                      _roleFilter = v!;
+                      _loadRequests();
+                    }),
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: _buildDropdown(
-                  'Plan',
-                  _subFilter,
-                  _subOptions,
-                  isDark,
-                  (v) => setState(() { _subFilter = v!; _loadRequests(); }),
-                )),
+                Expanded(
+                  child: _buildDropdown(
+                    'Plan',
+                    _subFilter,
+                    _subOptions,
+                    isDark,
+                    (v) => setState(() {
+                      _subFilter = v!;
+                      _loadRequests();
+                    }),
+                  ),
+                ),
               ],
             ),
           ),
@@ -221,13 +249,23 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
     );
   }
 
-  Widget _buildDropdown(String hint, String current, List<(String, String)> options, bool isDark, ValueChanged<String?> onChanged) {
+  Widget _buildDropdown(
+    String hint,
+    String current,
+    List<(String, String)> options,
+    bool isDark,
+    ValueChanged<String?> onChanged,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack500 : Colors.white,
         borderRadius: AppSpacing.brSm,
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack100),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack100,
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -250,11 +288,18 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
 
   Widget _buildBadgeRow(bool isDark) {
     final open = _filteredRequests.where((r) => r.status == 'OPEN').length;
-    final inReview = _filteredRequests.where((r) => r.status == 'IN_REVIEW').length;
-    final resolved = _filteredRequests.where((r) => r.status == 'RESOLVED').length;
+    final inReview = _filteredRequests
+        .where((r) => r.status == 'IN_REVIEW')
+        .length;
+    final resolved = _filteredRequests
+        .where((r) => r.status == 'RESOLVED')
+        .length;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.pageH,
+        vertical: AppSpacing.sm,
+      ),
       child: Row(
         children: [
           _buildBadge('Open', '$open', AppColors.error, isDark),
@@ -278,8 +323,18 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         ),
         child: Column(
           children: [
-            Text(count, style: TextStyle(fontSize: AppSpacing.fontXl, fontWeight: FontWeight.bold, color: color)),
-            Text(label, style: TextStyle(fontSize: AppSpacing.fontXs, color: color)),
+            Text(
+              count,
+              style: TextStyle(
+                fontSize: AppSpacing.fontXl,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(fontSize: AppSpacing.fontXs, color: color),
+            ),
           ],
         ),
       ),
@@ -306,10 +361,20 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : Colors.white,
         borderRadius: AppSpacing.brLg,
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
-        boxShadow: isDark ? null : [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2)),
-        ],
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -330,43 +395,81 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                         color: accent.withOpacity(0.1),
                         borderRadius: AppSpacing.brXs,
                       ),
-                      child: Icon(typeIcon, color: accent, size: AppSpacing.iconMd),
+                      child: Icon(
+                        typeIcon,
+                        color: accent,
+                        size: AppSpacing.iconMd,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    Expanded(child: Text(type,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontMd),
-                    )),
+                    Expanded(
+                      child: Text(
+                        type,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppSpacing.fontMd,
+                        ),
+                      ),
+                    ),
                     _buildStatusChip(status, statusColor),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                Text(req.content,
+                Text(
+                  req.content,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: AppSpacing.fontMd,
-                    color: isDark ? AppColors.cream100 : AppColors.almostBlack700,
+                    color: isDark
+                        ? AppColors.cream100
+                        : AppColors.almostBlack700,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
-                    Icon(Icons.person_rounded, size: AppSpacing.iconSm, color: AppColors.almostBlack300),
+                    Icon(
+                      Icons.person_rounded,
+                      size: AppSpacing.iconSm,
+                      color: AppColors.almostBlack300,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(req.userName ?? 'Unknown', style: const TextStyle(fontSize: AppSpacing.fontSm, color: AppColors.almostBlack300)),
+                    Text(
+                      req.userName ?? 'Unknown',
+                      style: const TextStyle(
+                        fontSize: AppSpacing.fontSm,
+                        color: AppColors.almostBlack300,
+                      ),
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.xs,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.white.withOpacity(0.07) : AppColors.almostBlack50,
+                        color: isDark
+                            ? AppColors.white.withOpacity(0.07)
+                            : AppColors.almostBlack50,
                         borderRadius: AppSpacing.brXs,
                       ),
-                      child: Text(req.userRole ?? 'USER',
-                        style: const TextStyle(fontSize: AppSpacing.fontXs, fontWeight: FontWeight.bold)),
+                      child: Text(
+                        req.userRole ?? 'USER',
+                        style: const TextStyle(
+                          fontSize: AppSpacing.fontXs,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const Spacer(),
-                    Text(_formatDate(req.createdAt.toIso8601String()),
-                      style: const TextStyle(fontSize: AppSpacing.fontXs, color: AppColors.almostBlack300)),
+                    Text(
+                      _formatDate(req.createdAt.toIso8601String()),
+                      style: const TextStyle(
+                        fontSize: AppSpacing.fontXs,
+                        color: AppColors.almostBlack300,
+                      ),
+                    ),
                   ],
                 ),
                 if (status != 'RESOLVED') ...[
@@ -375,9 +478,17 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                     alignment: AlignmentDirectional.centerEnd,
                     child: TextButton.icon(
                       onPressed: () => _markResolved(req),
-                      icon: const Icon(Icons.check_circle_outline_rounded, size: AppSpacing.iconSm),
-                      label: Text("mark_resolved".tr(), style: const TextStyle(fontSize: AppSpacing.fontSm)),
-                      style: TextButton.styleFrom(foregroundColor: AppColors.success),
+                      icon: const Icon(
+                        Icons.check_circle_outline_rounded,
+                        size: AppSpacing.iconSm,
+                      ),
+                      label: Text(
+                        "mark_resolved".tr(),
+                        style: const TextStyle(fontSize: AppSpacing.fontSm),
+                      ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.success,
+                      ),
                     ),
                   ),
                 ],
@@ -391,14 +502,23 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
 
   Widget _buildStatusChip(String status, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: AppSpacing.brSm,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
-      child: Text(status.replaceAll('_', ' '),
-        style: TextStyle(color: color, fontSize: AppSpacing.fontXs, fontWeight: FontWeight.bold)),
+      child: Text(
+        status.replaceAll('_', ' '),
+        style: TextStyle(
+          color: color,
+          fontSize: AppSpacing.fontXs,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
@@ -419,9 +539,12 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.white.withOpacity(0.2) : AppColors.almostBlack100,
+                  color: isDark
+                      ? AppColors.white.withOpacity(0.2)
+                      : AppColors.almostBlack100,
                   borderRadius: AppSpacing.brRound,
                 ),
               ),
@@ -430,27 +553,68 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                   controller: sc,
                   padding: AppSpacing.sheetPadding,
                   children: [
-                    Text(req.feedbackTypeDisplay ?? req.feedbackType,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontXl)),
+                    Text(
+                      req.feedbackTypeDisplay ?? req.feedbackType,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppSpacing.fontXl,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.md),
-                    _detailRow("submitted_by".tr(), req.userName ?? 'Unknown', Icons.person_rounded),
-                    _detailRow('Role', req.userRole ?? 'USER', Icons.badge_rounded),
-                    _detailRow("submitted_at".tr(), _formatDate(req.createdAt.toIso8601String()), Icons.access_time_rounded),
-                    _detailRow("request_status".tr(), req.status.replaceAll('_', ' '), Icons.info_rounded),
+                    _detailRow(
+                      "submitted_by".tr(),
+                      req.userName ?? 'Unknown',
+                      Icons.person_rounded,
+                    ),
+                    _detailRow(
+                      'Role',
+                      req.userRole ?? 'USER',
+                      Icons.badge_rounded,
+                    ),
+                    _detailRow(
+                      "submitted_at".tr(),
+                      _formatDate(req.createdAt.toIso8601String()),
+                      Icons.access_time_rounded,
+                    ),
+                    _detailRow(
+                      "request_status".tr(),
+                      req.status.replaceAll('_', ' '),
+                      Icons.info_rounded,
+                    ),
                     const SizedBox(height: AppSpacing.lg),
-                    const Text('Message', style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontMd)),
+                    const Text(
+                      'Message',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppSpacing.fontMd,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.almostBlack700 : Colors.grey[50],
+                        color: isDark
+                            ? AppColors.almostBlack700
+                            : Colors.grey[50],
                         borderRadius: AppSpacing.brMd,
                       ),
-                      child: Text(req.content, style: const TextStyle(fontSize: AppSpacing.fontMd, height: 1.6)),
+                      child: Text(
+                        req.content,
+                        style: const TextStyle(
+                          fontSize: AppSpacing.fontMd,
+                          height: 1.6,
+                        ),
+                      ),
                     ),
                     if (req.adminNotes != null) ...[
                       const SizedBox(height: AppSpacing.lg),
-                      const Text('Admin Notes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontMd)),
+                      const Text(
+                        'Admin Notes',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppSpacing.fontMd,
+                        ),
+                      ),
                       const SizedBox(height: AppSpacing.sm),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
@@ -459,7 +623,13 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                           borderRadius: AppSpacing.brMd,
                           border: Border.all(color: accent.withOpacity(0.1)),
                         ),
-                        child: Text(req.adminNotes!, style: const TextStyle(fontSize: AppSpacing.fontMd, height: 1.6)),
+                        child: Text(
+                          req.adminNotes!,
+                          style: const TextStyle(
+                            fontSize: AppSpacing.fontMd,
+                            height: 1.6,
+                          ),
+                        ),
                       ),
                     ],
                     if (req.status != 'RESOLVED') ...[
@@ -476,7 +646,9 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                           label: Text("mark_resolved".tr()),
                           style: FilledButton.styleFrom(
                             backgroundColor: AppColors.success,
-                            shape: RoundedRectangleBorder(borderRadius: AppSpacing.brMd),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppSpacing.brMd,
+                            ),
                           ),
                         ),
                       ),
@@ -498,8 +670,22 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         children: [
           Icon(icon, size: AppSpacing.iconMd, color: AppColors.almostBlack300),
           const SizedBox(width: AppSpacing.md),
-          Text('$label: ', style: const TextStyle(color: AppColors.almostBlack300, fontSize: AppSpacing.fontMd)),
-          Expanded(child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppSpacing.fontMd))),
+          Text(
+            '$label: ',
+            style: const TextStyle(
+              color: AppColors.almostBlack300,
+              fontSize: AppSpacing.fontMd,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: AppSpacing.fontMd,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -512,8 +698,14 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         children: [
           Icon(Icons.inbox_rounded, size: 64, color: AppColors.almostBlack100),
           const SizedBox(height: AppSpacing.md),
-          Text("no_requests".tr(),
-            style: const TextStyle(fontSize: AppSpacing.fontLg, fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
+          Text(
+            "no_requests".tr(),
+            style: const TextStyle(
+              fontSize: AppSpacing.fontLg,
+              fontWeight: FontWeight.bold,
+              color: AppColors.almostBlack300,
+            ),
+          ),
         ],
       ),
     );

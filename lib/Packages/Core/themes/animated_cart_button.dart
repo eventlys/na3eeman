@@ -30,20 +30,12 @@ class _CustomAnimatedIconState extends State<CustomAnimatedIcon>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
 
-    _animation = TweenSequence<double>(
-      [
-        TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 50),
-        TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 50),
-      ],
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
+    _animation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 50),
+      TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 50),
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
   }
 
   @override
@@ -69,11 +61,7 @@ class _CustomAnimatedIconState extends State<CustomAnimatedIcon>
             color: widget.backgroundColor,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            widget.icon,
-            color: widget.iconColor,
-            size: widget.size,
-          ),
+          child: Icon(widget.icon, color: widget.iconColor, size: widget.size),
         ),
       ),
     );

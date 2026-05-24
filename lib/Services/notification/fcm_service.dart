@@ -18,7 +18,9 @@ class FCMService {
     try {
       _fcm = FirebaseMessaging.instance;
     } catch (e) {
-      AppLogger.error('FCMService skipped: Firebase is not initialized properly. $e');
+      AppLogger.error(
+        'FCMService skipped: Firebase is not initialized properly. $e',
+      );
       _hasFirebase = false;
       return;
     }
@@ -43,7 +45,9 @@ class FCMService {
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        AppLogger.info('FCM Foreground Message: ${message.notification?.title}');
+        AppLogger.info(
+          'FCM Foreground Message: ${message.notification?.title}',
+        );
         _showLocalNotification(message);
       });
 

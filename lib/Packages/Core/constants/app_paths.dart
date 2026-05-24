@@ -59,7 +59,8 @@ class AppPaths {
   static const String appointments = '$apiBase/appointments';
   static String appointmentById(String id) => '$appointments/$id';
   static String cancelAppointment(String id) => '$appointments/$id/cancel';
-  static String rescheduleAppointment(String id) => '$appointments/$id/reschedule';
+  static String rescheduleAppointment(String id) =>
+      '$appointments/$id/reschedule';
 
   static const String payments = '$apiBase/payments';
   static String paymentStatus(String id) => '$payments/$id/status';

@@ -198,14 +198,17 @@ class PointsTrackerHelpers {
     VoidCallback onTap,
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
+            colors: [
+              color.withValues(alpha: 0.1),
+              color.withValues(alpha: 0.05),
+            ],
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: color.withValues(alpha: 0.3)),
@@ -229,13 +232,21 @@ class PointsTrackerHelpers {
     );
   }
 
-  static Widget buildPointsRule(String title, String points, String description) {
+  static Widget buildPointsRule(
+    String title,
+    String points,
+    String description,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColor.lightTextHint),
+          Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 16,
+            color: AppColor.lightTextHint,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -249,7 +260,10 @@ class PointsTrackerHelpers {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColor.lightSuccess.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(4),
@@ -291,8 +305,8 @@ class PointsTrackerHelpers {
     final subtitle = getActionSubtitle(type);
     final points = getPointsValue(type);
 
-    final pointsColor = points == 'Redeem' 
-        ? AppColor.lightAccent 
+    final pointsColor = points == 'Redeem'
+        ? AppColor.lightAccent
         : AppColor.lightSuccess;
     final pointsBackgroundColor = points == 'Redeem'
         ? AppColor.lightAccent.withValues(alpha: 0.2)

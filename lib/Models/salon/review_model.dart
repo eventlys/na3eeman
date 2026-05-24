@@ -45,9 +45,7 @@ class Review {
           ? DateTime.parse(json['updated_at'] as String)
           : null,
       isVerified: json['is_verified'] as bool? ?? false,
-      photos: json['photos'] != null
-          ? List<String>.from(json['photos'])
-          : null,
+      photos: json['photos'] != null ? List<String>.from(json['photos']) : null,
     );
   }
 

@@ -36,7 +36,6 @@ import 'locale_provider.dart';
 // Service Locator
 final GetIt locator = GetIt.instance;
 
-
 class DependencyInjection {
   static void setup() {
     // Services
@@ -58,11 +57,13 @@ List<SingleChildWidget> providers = [
   // ── Theme & RBAC (now depends on Auth to sync gender & roles) ──
   ChangeNotifierProxyProvider<AuthProvider, ThemeProvider>(
     create: (_) => ThemeProvider(brightness: Brightness.light),
-    update: (_, authProvider, themeProvider) => themeProvider!..updateAuth(authProvider),
+    update: (_, authProvider, themeProvider) =>
+        themeProvider!..updateAuth(authProvider),
   ),
   ChangeNotifierProxyProvider<AuthProvider, RBACProvider>(
     create: (_) => RBACProvider(),
-    update: (_, authProvider, rbacProvider) => rbacProvider!..updateAuth(authProvider),
+    update: (_, authProvider, rbacProvider) =>
+        rbacProvider!..updateAuth(authProvider),
   ),
   ChangeNotifierProvider(create: (_) => LocaleProvider()),
 
@@ -148,4 +149,3 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider(create: (_) => ScheduleProvider()),
   ChangeNotifierProvider(create: (_) => GiftCardProvider(ApiService())),
 ];
-

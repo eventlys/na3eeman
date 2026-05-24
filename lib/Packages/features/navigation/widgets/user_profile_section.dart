@@ -7,7 +7,6 @@ import '../../../../core/enums/app_enums.dart';
 import '../../../Core/constants/app_roles.dart';
 import '../sidebar_controller.dart';
 
-
 class UserProfileSection extends StatelessWidget {
   final SidebarController controller;
 
@@ -25,20 +24,18 @@ class UserProfileSection extends StatelessWidget {
     final userGender = appStateProvider.userGender;
 
     // Extract name from email or use provider data
-    final displayName = _getDisplayName(authProvider, appStateProvider, userEmail);
+    final displayName = _getDisplayName(
+      authProvider,
+      appStateProvider,
+      userEmail,
+    );
 
     return AnimatedBuilder(
       animation: controller.animation,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(
-            -100 + (controller.animation.value * 100),
-            0,
-          ),
-          child: Opacity(
-            opacity: controller.animation.value,
-            child: child,
-          ),
+          offset: Offset(-100 + (controller.animation.value * 100), 0),
+          child: Opacity(opacity: controller.animation.value, child: child),
         );
       },
       child: DelayedWidget(
@@ -65,10 +62,7 @@ class UserProfileSection extends StatelessWidget {
               // User Email
               Text(
                 userEmail,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -77,7 +71,10 @@ class UserProfileSection extends StatelessWidget {
               // User Role Badge
               if (isAuthenticated)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: _getRoleColor(userRole),
                     borderRadius: BorderRadius.circular(12),
@@ -133,12 +130,18 @@ class UserProfileSection extends StatelessWidget {
         return Icons.business; // Business icon for owner
       case UserRole.customer:
       default:
-        return gender == Gender.female ? Icons.face_3 : Icons.face; // Male/female face icons
+        return gender == Gender.female
+            ? Icons.face_3
+            : Icons.face; // Male/female face icons
     }
   }
 
   // Helper methods
-  String _getDisplayName(AuthProvider authProvider, AppStateProvider appStateProvider, String userEmail) {
+  String _getDisplayName(
+    AuthProvider authProvider,
+    AppStateProvider appStateProvider,
+    String userEmail,
+  ) {
     if (!authProvider.isAuthenticated) {
       return 'Guest User';
     }
@@ -149,7 +152,9 @@ class UserProfileSection extends StatelessWidget {
       // Capitalize first letter of each word
       final nameParts = emailName.split('.');
       if (nameParts.length > 1) {
-        return nameParts.map((part) => part[0].toUpperCase() + part.substring(1)).join(' ');
+        return nameParts
+            .map((part) => part[0].toUpperCase() + part.substring(1))
+            .join(' ');
       }
       return emailName[0].toUpperCase() + emailName.substring(1);
     }
@@ -199,4 +204,3 @@ class UserProfileSection extends StatelessWidget {
     }
   }
 }
-

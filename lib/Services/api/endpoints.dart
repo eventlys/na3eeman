@@ -1,7 +1,7 @@
 import 'package:na3eeman/Helpers/config.dart';
 
 /// API Endpoints
-/// 
+///
 /// All endpoints are aligned with the new backend /api/v1/ structure.
 /// Base URL from AppConfig already includes /api/v1
 class Endpoints {
@@ -13,21 +13,25 @@ class Endpoints {
   static const String register = '/auth/register/';
   static const String logout = '/auth/logout/';
   static const String socialLogin = '/auth/social-login/';
-  
+
   // JWT Tokens
   static const String tokenRefresh = '/auth/token/refresh/';
   static const String tokenVerify = '/auth/token/verify/';
 
   // Password Management
   static const String passwordReset = '/auth/password/reset/';
+  static const String passwordResetVerify = '/auth/password/reset/verify/';
   static const String passwordResetConfirm = '/auth/password/reset/confirm/';
   static const String passwordChange = '/auth/password/change/';
-  static const String firstLoginPasswordChange = '/auth/password/first-login-change/';
+  static const String firstLoginPasswordChange =
+      '/auth/password/first-login-change/';
 
   // ==================== USER PROFILE ====================
-  static const String currentUser = '/auth/me/';  // Current user profile (was /auth/profile)
-  static const String profile = '/auth/me/';  // Alias for backward compatibility
-  static const String profileExpert = '/auth/profile/expert/';  // Changed from expert/expert
+  static const String currentUser =
+      '/auth/me/'; // Current user profile (was /auth/profile)
+  static const String profile = '/auth/me/'; // Alias for backward compatibility
+  static const String profileExpert =
+      '/auth/profile/expert/'; // Changed from expert/expert
   static const String profileOwner = '/auth/profile/owner/';
   static const String profilePicture = '/auth/profile/picture/';
   static const String profileLocation = '/auth/profile/location/';
@@ -56,8 +60,10 @@ class Endpoints {
 
   // ==================== ADMIN ENDPOINTS ====================
   static const String adminCreateStaff = '/auth/admin/create-staff/';
-  static String adminResetStaffPassword(int userId) => '/auth/admin/reset-staff-password/$userId/';
-  static String adminChangeUserRole(int userId) => '/auth/admin/change-role/$userId/';
+  static String adminResetStaffPassword(int userId) =>
+      '/auth/admin/reset-staff-password/$userId/';
+  static String adminChangeUserRole(int userId) =>
+      '/auth/admin/change-role/$userId/';
   static const String adminUsers = '/auth/admin/users/';
   static String adminUserDetail(int userId) => '/auth/admin/users/$userId/';
   static const String adminUserStats = '/auth/admin/stats/';
@@ -83,39 +89,52 @@ class Endpoints {
   // ==================== SALONS ====================
   static const String salons = '/salons/salons/';
   static String salonDetails(int id) => '/salons/salons/$id/';
-  static const String salonSearch = '/salons/salons/';  // Use query params  
-  static const String nearbySalons = '/salons/salons/';  // Use query params with lat/lng
-  static const String favoriteSalons = '/salons/salons/';  // Filter by favorites
+  static const String salonSearch = '/salons/salons/'; // Use query params
+  static const String nearbySalons =
+      '/salons/salons/'; // Use query params with lat/lng
+  static const String favoriteSalons = '/salons/salons/'; // Filter by favorites
   static const String categories = '/salons/categories/';
   static const String allOffers = '/salons/all-offers/';
   static const String allCampaigns = '/salons/all-campaigns/';
-  
+
   // Salon nested resources
   static String salonOptions(int salonId) => '/salons/salons/$salonId/options/';
-  static String salonPackages(int salonId) => '/salons/salons/$salonId/packages/';
-  static String salonProducts(int salonId) => '/salons/salons/$salonId/products/';
-  static String salonInventory(int salonId) => '/salons/salons/$salonId/inventory/';
+  static String salonPackages(int salonId) =>
+      '/salons/salons/$salonId/packages/';
+  static String salonProducts(int salonId) =>
+      '/salons/salons/$salonId/products/';
+  static String salonInventory(int salonId) =>
+      '/salons/salons/$salonId/inventory/';
   static String salonExperts(int salonId) => '/salons/salons/$salonId/experts/';
   static String salonReviews(int salonId) => '/salons/salons/$salonId/reviews/';
   static String salonGallery(int salonId) => '/salons/salons/$salonId/gallery/';
-  static String salonServices(int salonId) => '/salons/salons/$salonId/options/';  // Same as options
-  static String salonSchedule(int salonId) => '/salons/salons/$salonId/schedule/';
+  static String salonServices(int salonId) =>
+      '/salons/salons/$salonId/options/'; // Same as options
+  static String salonSchedule(int salonId) =>
+      '/salons/salons/$salonId/schedule/';
   static const String workingHours = '/salons/working-hours/';
   static const String pto = '/salons/pto/';
 
   // ==================== APPOINTMENTS ====================
   static const String appointments = '/salons/appointments/';
   static String appointmentDetails(int id) => '/salons/appointments/$id/';
-  static const String appointmentBook = '/salons/appointments/';  // POST to list endpoint
+  static const String appointmentBook =
+      '/salons/appointments/'; // POST to list endpoint
   static String appointmentCancel(int id) => '/salons/appointments/$id/cancel/';
-  static String appointmentReschedule(int id) => '/salons/appointments/$id/reschedule/';
-  static String appointmentComplete(int id) => '/salons/appointments/$id/complete/';
-  static String appointmentConfirmCashPayment(int id) => '/salons/appointments/$id/confirm_payment/';  // Fixed: backend uses confirm_payment not confirm-cash
-  
+  static String appointmentReschedule(int id) =>
+      '/salons/appointments/$id/reschedule/';
+  static String appointmentComplete(int id) =>
+      '/salons/appointments/$id/complete/';
+  static String appointmentConfirmCashPayment(int id) =>
+      '/salons/appointments/$id/confirm_payment/'; // Fixed: backend uses confirm_payment not confirm-cash
+
   // User appointments
-  static const String userAppointments = '/salons/appointments/';  // Filter by user
-  static const String soonestAppointment = '/salons/appointments/';  // Sort by date, limit 1
-  static const String freeAppointment = '/salons/appointments/free/';  // If endpoint exists
+  static const String userAppointments =
+      '/salons/appointments/'; // Filter by user
+  static const String soonestAppointment =
+      '/salons/appointments/'; // Sort by date, limit 1
+  static const String freeAppointment =
+      '/salons/appointments/free/'; // If endpoint exists
 
   // ==================== REVIEWS ====================
   static const String reviews = '/salons/reviews/';
@@ -168,23 +187,32 @@ class Endpoints {
   static const String adminAnalyticsFinancial = '/analytics/financial/';
   static const String adminAnalyticsSystem = '/analytics/system/';
   static const String analyticsEvents = '/analytics/events/';
-  static String salonRetailSnapshot(int salonId) => '/salons/salons/$salonId/retail_snapshot/';
-  static String salonTeamLeaderboard(int salonId) => '/salons/salons/$salonId/team_leaderboard/';
-  static String salonDailyEarnings(int salonId) => '/salons/salons/$salonId/daily_earnings/';
-  static String salonResourceOccupancy(int salonId) => '/salons/salons/$salonId/resource_occupancy/';
-  static String salonPaymentConfig(int salonId) => '/salons/salons/$salonId/payment-config/';
+  static String salonRetailSnapshot(int salonId) =>
+      '/salons/salons/$salonId/retail_snapshot/';
+  static String salonTeamLeaderboard(int salonId) =>
+      '/salons/salons/$salonId/team_leaderboard/';
+  static String salonDailyEarnings(int salonId) =>
+      '/salons/salons/$salonId/daily_earnings/';
+  static String salonResourceOccupancy(int salonId) =>
+      '/salons/salons/$salonId/resource_occupancy/';
+  static String salonPaymentConfig(int salonId) =>
+      '/salons/salons/$salonId/payment-config/';
   static const String vouchers = '/salons/vouchers/';
 
   // Notifications
   static const String notifications = '/auth/notifications/';
-  static String notificationMarkRead(int id) => '/auth/notifications/$id/mark-read/';
-  static const String notificationsMarkAllRead = '/auth/notifications/mark-all-read/';
+  static String notificationMarkRead(int id) =>
+      '/auth/notifications/$id/mark-read/';
+  static const String notificationsMarkAllRead =
+      '/auth/notifications/mark-all-read/';
 
   // Campaigns
   static String salonOffers(int salonId) => '/salons/salons/$salonId/offers/';
-  static String salonAdCampaigns(int salonId) => '/salons/salons/$salonId/campaigns/';
+  static String salonAdCampaigns(int salonId) =>
+      '/salons/salons/$salonId/campaigns/';
+  static const String expertInsights = '/salons/expert-insights/';
 
-  // ==================== CONTENT ====================
+  // ==================== EXPERTS & STAFF ====================
   static const String faqs = '/content/faqs/';
   static String faqDetails(int id) => '/content/faqs/$id/';
   static const String rules = '/content/rules/';
@@ -197,7 +225,7 @@ class Endpoints {
   static const String health = '/health/';
 
   // ==================== HELPER METHODS ====================
-  
+
   /// Build URL with query parameters
   static String buildUrl(String endpoint, Map<String, dynamic>? params) {
     if (params == null || params.isEmpty) {
@@ -210,7 +238,10 @@ class Endpoints {
     if (cleanParams.isEmpty) return endpoint;
 
     final queryString = cleanParams.entries
-        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}')
+        .map(
+          (e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}',
+        )
         .join('&');
 
     final separator = endpoint.contains('?') ? '&' : '?';
@@ -220,17 +251,18 @@ class Endpoints {
   /// Build full URL with base
   static String fullUrl(String endpoint) {
     // Remove leading slash if base URL already has it
-    final cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-    final cleanBase = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+    final cleanEndpoint = endpoint.startsWith('/')
+        ? endpoint.substring(1)
+        : endpoint;
+    final cleanBase = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
     return '$cleanBase/$cleanEndpoint';
   }
 
   /// Get paginated URL
   static String withPagination(String endpoint, {int page = 1, int? pageSize}) {
-    return buildUrl(endpoint, {
-      'page': page,
-      'page_size': ?pageSize,
-    });
+    return buildUrl(endpoint, {'page': page, 'page_size': pageSize});
   }
 
   /// Get search URL
@@ -252,7 +284,7 @@ class Endpoints {
     return buildUrl(salons, {
       'lat': latitude,
       'lng': longitude,
-      'radius': ?radiusKm,
+      'radius': radiusKm,
     });
   }
 
@@ -269,14 +301,17 @@ class Endpoints {
       'lat': latitude,
       'lng': longitude,
       'category': categoryId,
-      'radius': ?radiusKm,
-      'for_gift': ?forGift,
-      'gift_gender': ?giftGender,
+      'radius': radiusKm,
+      'for_gift': forGift,
+      'gift_gender': giftGender,
     });
   }
 
   /// Replace path parameters (e.g., /salons/{id} -> /salons/123)
-  static String replacePathParams(String endpoint, Map<String, dynamic> params) {
+  static String replacePathParams(
+    String endpoint,
+    Map<String, dynamic> params,
+  ) {
     String result = endpoint;
     params.forEach((key, value) {
       result = result.replaceAll('{$key}', value.toString());
@@ -294,20 +329,20 @@ class ApiEndpoints {
   static const String refresh = '/auth/token/refresh/';
   static const String currentUser = '/auth/me/';
   static const String profile = '/auth/me/';
-  
+
   // Map old endpoint names to new ones
   static String get forgotPassword => Endpoints.passwordReset;
   static String get resetPassword => Endpoints.passwordResetConfirm;
   static String get changePassword => Endpoints.passwordChange;
   static String get socialLogin => Endpoints.socialLogin;
-  
+
   static String get salons => Endpoints.salons;
   static String get salonSearch => Endpoints.salonSearch;
   static String get nearbySalons => Endpoints.nearbySalons;
-  
+
   static String get appointments => Endpoints.appointments;
   static String get appointmentBook => Endpoints.appointmentBook;
-  
+
   // Helper to replace {id} placeholder
   static String salonDetails(int id) => Endpoints.salonDetails(id);
   static String appointmentDetails(int id) => Endpoints.appointmentDetails(id);

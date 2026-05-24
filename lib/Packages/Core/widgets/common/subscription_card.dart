@@ -40,27 +40,21 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     try {
       // Fetch live data from backend
       final plansData = await _apiService.getSubscriptionPlans();
-      
+
       // Try to fetch current user subscription
       dynamic currentSub;
       try {
-        final subResponse = await _apiService.get('/salons/subscriptions/current/');
+        final subResponse = await _apiService.get(
+          '/salons/subscriptions/current/',
+        );
         currentSub = subResponse?['data'];
       } catch (_) {
         // Fallback or handle as no active subscription
       }
-      
-      return {
-        'subscription': currentSub,
-        'plans': plansData,
-        'error': null,
-      };
+
+      return {'subscription': currentSub, 'plans': plansData, 'error': null};
     } catch (e) {
-      return {
-        'subscription': null,
-        'plans': [],
-        'error': e.toString(),
-      };
+      return {'subscription': null, 'plans': [], 'error': e.toString()};
     }
   }
 
@@ -134,10 +128,14 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     );
   }
 
-  Widget _buildNoSubscriptionCard(List<dynamic> plans, bool isDark, Gender gender) {
+  Widget _buildNoSubscriptionCard(
+    List<dynamic> plans,
+    bool isDark,
+    Gender gender,
+  ) {
     return EmptyState(
       title: "no_active_subscription".tr(),
-      description: plans.isNotEmpty 
+      description: plans.isNotEmpty
           ? 'Choose from ${plans.length} available plans to get started'
           : 'No subscription plans available at the moment',
       icon: Icons.subscriptions_outlined,
@@ -157,7 +155,9 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     required Gender gender,
   }) {
     final theme = Theme.of(context);
-    final cardColor = theme.cardTheme.color ?? (isDark ? AppColor.darkCard : AppColor.lightCard);
+    final cardColor =
+        theme.cardTheme.color ??
+        (isDark ? AppColor.darkCard : AppColor.lightCard);
     final primaryColor = theme.primaryColor;
     final textColor = isDark ? AppColor.light : AppColor.dark;
     final successColor = isDark ? AppColor.lightSuccess : AppColor.darkSuccess;
@@ -165,20 +165,28 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     final errorColor = isDark ? AppColor.lightError : AppColor.darkError;
 
     // Mapping backend fields to UI
-    final planName = subscription['plan_name'] ?? subscription['plan']?['name'] ?? 'Plan';
+    final planName =
+        subscription['plan_name'] ?? subscription['plan']?['name'] ?? 'Plan';
     final price = (subscription['price'] ?? 0.0).toDouble();
     final status = subscription['status'] ?? 'Active';
     final endDateStr = subscription['end_date'] ?? subscription['expires_at'];
-    final DateTime endDate = endDateStr != null ? DateTime.parse(endDateStr) : DateTime.now().add(const Duration(days: 30));
-    final daysRemaining = endDate.difference(DateTime.now()).inDays.clamp(0, 365);
-    final features = List<String>.from(subscription['plan']?['features'] ?? subscription['features'] ?? []);
+    final DateTime endDate = endDateStr != null
+        ? DateTime.parse(endDateStr)
+        : DateTime.now().add(const Duration(days: 30));
+    final daysRemaining = endDate
+        .difference(DateTime.now())
+        .inDays
+        .clamp(0, 365);
+    final features = List<String>.from(
+      subscription['plan']?['features'] ?? subscription['features'] ?? [],
+    );
 
     return Card(
       elevation: theme.cardTheme.elevation ?? 4,
       color: cardColor,
-      shape: theme.cardTheme.shape ?? RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape:
+          theme.cardTheme.shape ??
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -187,7 +195,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("subscription".tr(),
+                Text(
+                  "subscription".tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -195,15 +204,28 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(status, successColor, warningColor, isDark).withValues(alpha: 0.2),
+                    color: _getStatusColor(
+                      status,
+                      successColor,
+                      warningColor,
+                      isDark,
+                    ).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     status,
                     style: TextStyle(
-                      color: _getStatusColor(status, successColor, warningColor, isDark),
+                      color: _getStatusColor(
+                        status,
+                        successColor,
+                        warningColor,
+                        isDark,
+                      ),
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -243,12 +265,19 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   int _calculateDaysRemaining(dynamic endDate) {
     if (endDate == null) return 0;
     final now = DateTime.now();
-    final DateTime endDateTime = endDate is DateTime ? endDate : DateTime.now().add(const Duration(days: 30));
+    final DateTime endDateTime = endDate is DateTime
+        ? endDate
+        : DateTime.now().add(const Duration(days: 30));
     final difference = endDateTime.difference(now);
     return difference.inDays.clamp(0, 365);
   }
 
-  Color _getStatusColor(String status, Color successColor, Color warningColor, bool isDark) {
+  Color _getStatusColor(
+    String status,
+    Color successColor,
+    Color warningColor,
+    bool isDark,
+  ) {
     switch (status.toLowerCase()) {
       case 'active':
         return successColor;
@@ -262,44 +291,66 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     }
   }
 
-  Widget _buildRemainingDays(int daysRemaining, Color errorColor, Color textColor) {
+  Widget _buildRemainingDays(
+    int daysRemaining,
+    Color errorColor,
+    Color textColor,
+  ) {
     return Row(
       children: [
-        Icon(Icons.calendar_today, size: 16, color: textColor.withValues(alpha: 0.7)),
+        Icon(
+          Icons.calendar_today,
+          size: 16,
+          color: textColor.withValues(alpha: 0.7),
+        ),
         const SizedBox(width: 8),
         Text(
           '$daysRemaining ${daysRemaining == 1 ? 'day' : 'days'} remaining',
           style: TextStyle(
-            color: daysRemaining < 7 ? errorColor : textColor.withValues(alpha: 0.8),
+            color: daysRemaining < 7
+                ? errorColor
+                : textColor.withValues(alpha: 0.8),
             fontWeight: daysRemaining < 7 ? FontWeight.bold : FontWeight.normal,
           ),
         ),
         if (daysRemaining < 7) ...[
           const SizedBox(width: 8),
-          Icon(
-            Icons.warning_amber_rounded,
-            size: 16,
-            color: errorColor,
-          ),
+          Icon(Icons.warning_amber_rounded, size: 16, color: errorColor),
         ],
       ],
     );
   }
 
-  Widget _buildFeaturesList(List<String> features, Color primaryColor, Color textColor) {
+  Widget _buildFeaturesList(
+    List<String> features,
+    Color primaryColor,
+    Color textColor,
+  ) {
     if (features.isEmpty) return const SizedBox.shrink();
     return Wrap(
       spacing: 8,
       runSpacing: 4,
-      children: features.map((feature) => Chip(
-        label: Text(feature, style: TextStyle(color: primaryColor, fontSize: 12)),
-        backgroundColor: primaryColor.withValues(alpha: 0.1),
-        side: BorderSide.none,
-      )).toList(),
+      children: features
+          .map(
+            (feature) => Chip(
+              label: Text(
+                feature,
+                style: TextStyle(color: primaryColor, fontSize: 12),
+              ),
+              backgroundColor: primaryColor.withValues(alpha: 0.1),
+              side: BorderSide.none,
+            ),
+          )
+          .toList(),
     );
   }
 
-  Widget _buildUpgradeButton(ThemeData theme, Gender gender, bool isDark, String status) {
+  Widget _buildUpgradeButton(
+    ThemeData theme,
+    Gender gender,
+    bool isDark,
+    String status,
+  ) {
     final accentColor = _getGenderAccentColor(gender, isDark);
     return ElevatedButton(
       onPressed: widget.onUpgrade,
@@ -310,7 +361,9 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
-        status.toLowerCase() == 'active' ? 'Upgrade Plan' : 'Renew Subscription',
+        status.toLowerCase() == 'active'
+            ? 'Upgrade Plan'
+            : 'Renew Subscription',
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
     );

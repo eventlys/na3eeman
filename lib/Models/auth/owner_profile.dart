@@ -101,10 +101,16 @@ class OwnerProfile {
       isOwner: json['is_owner'] as bool? ?? true,
       isWorker: json['is_worker'] as bool? ?? true,
       // Backend sends 'is_subscription_active'; 'is_subscribed' is Flutter-only fallback
-      isSubscribed: (json['is_subscription_active'] ?? json['is_subscribed']) as bool? ?? false,
+      isSubscribed:
+          (json['is_subscription_active'] ?? json['is_subscribed']) as bool? ??
+          false,
       hasBranches: json['has_branches'] as bool? ?? false, // not on backend yet
-      hasOffers: json['has_offers'] as bool? ?? false,    // not on backend yet
-      avgRating: double.tryParse((json['average_rating'] ?? json['avg_rating'] ?? 0.0).toString()) ?? 0.0,
+      hasOffers: json['has_offers'] as bool? ?? false, // not on backend yet
+      avgRating:
+          double.tryParse(
+            (json['average_rating'] ?? json['avg_rating'] ?? 0.0).toString(),
+          ) ??
+          0.0,
       // subscription_tier maps to subscription_type on current backend
       subscriptionTier: OwnerSubscriptionTierExtension.fromString(
         (json['subscription_tier'] ?? json['subscription_type']) as String?,

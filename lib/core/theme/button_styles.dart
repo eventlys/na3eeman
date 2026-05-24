@@ -12,9 +12,7 @@ class AppButtonStyles {
       elevation: 4,
       shadowColor: primary.withOpacity(0.3),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
@@ -31,9 +29,7 @@ class AppButtonStyles {
       elevation: 4,
       shadowColor: secondary.withOpacity(0.3),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
@@ -48,13 +44,8 @@ class AppButtonStyles {
       foregroundColor: primary,
       side: BorderSide(color: primary, width: 2),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      textStyle: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
 
@@ -63,9 +54,7 @@ class AppButtonStyles {
       backgroundColor: AppColors.error,
       foregroundColor: AppColors.white,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 

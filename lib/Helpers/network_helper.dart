@@ -40,7 +40,9 @@ class NetworkHelper {
   }
 
   void _startMonitoring() {
-    _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) async {
+    _connectivity.onConnectivityChanged.listen((
+      List<ConnectivityResult> results,
+    ) async {
       await _checkNetworkStatus();
     });
 
@@ -69,10 +71,14 @@ class NetworkHelper {
     }
   }
 
-  Future<NetworkStatus> _getNetworkStatus(List<ConnectivityResult> connectivityResults) async {
+  Future<NetworkStatus> _getNetworkStatus(
+    List<ConnectivityResult> connectivityResults,
+  ) async {
     // Check if none of the connectivity results indicate connection
     if (connectivityResults.isEmpty ||
-        connectivityResults.every((result) => result == ConnectivityResult.none)) {
+        connectivityResults.every(
+          (result) => result == ConnectivityResult.none,
+        )) {
       return NetworkStatus.disconnected;
     }
 
@@ -108,8 +114,9 @@ class NetworkHelper {
       }
 
       // Try to reach a reliable server
-      final result = await InternetAddress.lookup('google.com')
-          .timeout(const Duration(seconds: 5));
+      final result = await InternetAddress.lookup(
+        'google.com',
+      ).timeout(const Duration(seconds: 5));
 
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } catch (e) {
@@ -160,7 +167,9 @@ class NetworkHelper {
 
       // Download a small file or make a request to measure speed
       final client = HttpClient();
-      final request = await client.getUrl(Uri.parse('https://httpbin.org/bytes/1024'));
+      final request = await client.getUrl(
+        Uri.parse('https://httpbin.org/bytes/1024'),
+      );
       final response = await request.close();
       await response.drain();
 
@@ -190,7 +199,9 @@ class NetworkHelper {
   }
 
   // Wait for network connection with timeout
-  Future<bool> waitForConnection({Duration timeout = const Duration(seconds: 30)}) async {
+  Future<bool> waitForConnection({
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
     if (isConnected) return true;
 
     final completer = Completer<bool>();
@@ -225,11 +236,7 @@ class NetworkHelper {
   }
 }
 
-enum NetworkStatus {
-  connected,
-  disconnected,
-  unknown,
-}
+enum NetworkStatus { connected, disconnected, unknown }
 
 enum NetworkType {
   wifi,

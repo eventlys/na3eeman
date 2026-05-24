@@ -61,10 +61,7 @@ class CustomInnerShadowPainter extends CustomPainter {
   final List<ShadowConfig> shadows;
   final double borderRadius;
 
-  CustomInnerShadowPainter({
-    required this.shadows,
-    this.borderRadius = 0,
-  });
+  CustomInnerShadowPainter({required this.shadows, this.borderRadius = 0});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -74,10 +71,7 @@ class CustomInnerShadowPainter extends CustomPainter {
     for (final shadow in shadows) {
       final paint = Paint()
         ..color = shadow.color
-        ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal,
-          shadow.blurRadius,
-        );
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadow.blurRadius);
 
       canvas.drawRRect(
         RRect.fromRectAndRadius(rect, radius).deflate(shadow.spread),
@@ -120,15 +114,9 @@ class CustomOuterShadowPainter extends CustomPainter {
     for (final shadow in shadows) {
       final paint = Paint()
         ..color = shadow.color
-        ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal,
-          shadow.blurRadius,
-        );
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadow.blurRadius);
 
-      canvas.drawRRect(
-        rrect.shift(shadow.offset),
-        paint,
-      );
+      canvas.drawRRect(rrect.shift(shadow.offset), paint);
     }
   }
 

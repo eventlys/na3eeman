@@ -13,11 +13,18 @@ class AnimationHelpers {
   static const Duration slow = Duration(milliseconds: 500);
   static const Duration pageTransition = Duration(milliseconds: 400);
 
-  static Duration staggeredDelay(int index, {Duration baseDelay = const Duration(milliseconds: 100)}) {
+  static Duration staggeredDelay(
+    int index, {
+    Duration baseDelay = const Duration(milliseconds: 100),
+  }) {
     return baseDelay * index;
   }
 
-  static double calculateParallaxOffset(ScrollMetrics position, double extent, double cardHeight) {
+  static double calculateParallaxOffset(
+    ScrollMetrics position,
+    double extent,
+    double cardHeight,
+  ) {
     return -((position.pixels - extent) / cardHeight);
   }
 }

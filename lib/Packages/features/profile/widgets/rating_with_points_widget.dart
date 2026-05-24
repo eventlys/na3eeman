@@ -38,17 +38,17 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
 
     // Award points only if they haven't been awarded yet and rating is valid
     if (!_hasAwardedPoints && rating > 0) {
-      final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+      final pointsProvider = Provider.of<PointsProvider>(
+        context,
+        listen: false,
+      );
 
       try {
         // You'll need to get the customer ID from somewhere
         // For now, using a placeholder
         final customerId = 1; // Replace with actual customer ID
 
-        await pointsProvider.rateApp(
-          customerId: customerId,
-          rating: rating,
-        );
+        await pointsProvider.rateApp(customerId: customerId, rating: rating);
 
         setState(() {
           _hasAwardedPoints = true;
@@ -57,7 +57,9 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Thanks for rating ${widget.salonData['title']}! +25 points'),
+            content: Text(
+              'Thanks for rating ${widget.salonData['title']}! +25 points',
+            ),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
           ),
@@ -84,10 +86,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
           children: [
             Text(
               'Rating: ',
-              style: TextStyle(
-                color: Color(0xFFFFFFFF),
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14),
             ),
             SizedBox(width: 8),
             ...List.generate(5, (index) {
@@ -103,10 +102,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
             SizedBox(width: 8),
             Text(
               _userRating.toStringAsFixed(1),
-              style: TextStyle(
-                color: Color(0xFFFFFFFF),
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14),
             ),
             if (!_hasAwardedPoints && _userRating > 0) ...[
               SizedBox(width: 8),

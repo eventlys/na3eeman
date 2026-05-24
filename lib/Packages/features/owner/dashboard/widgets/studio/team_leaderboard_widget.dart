@@ -21,20 +21,38 @@ class TeamLeaderboardWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.leaderboard_rounded, size: 18, color: theme.primaryColor),
+                Icon(
+                  Icons.leaderboard_rounded,
+                  size: 18,
+                  color: theme.primaryColor,
+                ),
                 const SizedBox(width: 8),
-                Text("team_leaderboard".tr(), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  "team_leaderboard".tr(),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
             if (owner.isAnalyticsLoading)
-              const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+              const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 14),
         if (leaderboard.isEmpty && !owner.isAnalyticsLoading)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Center(child: Text("no_data_available".tr(), style: TextStyle(color: theme.hintColor, fontSize: 12))),
+            child: Center(
+              child: Text(
+                "no_data_available".tr(),
+                style: TextStyle(color: theme.hintColor, fontSize: 12),
+              ),
+            ),
           ),
         ...leaderboard.asMap().entries.map((entry) {
           final rank = entry.key + 1;
@@ -49,31 +67,61 @@ class TeamLeaderboardWidget extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 28, height: 28,
+                  width: 28,
+                  height: 28,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: rank == 1 ? Colors.amber : rank == 2 ? Colors.grey.shade400 : Colors.brown.shade300,
+                    color: rank == 1
+                        ? Colors.amber
+                        : rank == 2
+                        ? Colors.grey.shade400
+                        : Colors.brown.shade300,
                     shape: BoxShape.circle,
                   ),
-                  child: Text('$rank', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                  child: Text(
+                    '$rank',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      Text(
+                        name,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       Row(
                         children: [
-                          const Icon(Icons.star_rounded, size: 13, color: Colors.amber),
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 13,
+                            color: Colors.amber,
+                          ),
                           const SizedBox(width: 2),
-                          Text('$rating  · $bookings books', style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor)),
+                          Text(
+                            '$rating  · $bookings books',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.hintColor,
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                Text(earnings, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.primaryColor)),
+                Text(
+                  earnings,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.primaryColor,
+                  ),
+                ),
               ],
             ),
           );

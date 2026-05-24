@@ -10,11 +10,7 @@ class BranchCard2 extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onAssignManager;
 
-  const BranchCard2({
-    super.key,
-    this.onTap,
-    this.onAssignManager,
-  });
+  const BranchCard2({super.key, this.onTap, this.onAssignManager});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +46,9 @@ class BranchCard2 extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                      color: isDarkTheme
+                          ? AppColor.darkText
+                          : AppColor.lightText,
                     ),
                   ),
                   Chip(
@@ -63,8 +61,12 @@ class BranchCard2 extends StatelessWidget {
                       ),
                     ),
                     backgroundColor: branch.isActive
-                      ? (isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess)
-                      : (isDarkTheme ? AppColor.darkError : AppColor.lightError),
+                        ? (isDarkTheme
+                              ? AppColor.darkSuccess
+                              : AppColor.lightSuccess)
+                        : (isDarkTheme
+                              ? AppColor.darkError
+                              : AppColor.lightError),
                   ),
                 ],
               ),
@@ -72,7 +74,9 @@ class BranchCard2 extends StatelessWidget {
               Text(
                 branch.address,
                 style: TextStyle(
-                  color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDarkTheme
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -98,14 +102,21 @@ class BranchCard2 extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: onAssignManager,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+                      foregroundColor: isDarkTheme
+                          ? AppColor.darkPrimary
+                          : AppColor.lightPrimary,
                       side: BorderSide(
-                        color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+                        color: isDarkTheme
+                            ? AppColor.darkPrimary
+                            : AppColor.lightPrimary,
                       ),
                     ),
-                    child: Text("assign_manager".tr(),
+                    child: Text(
+                      "assign_manager".tr(),
                       style: TextStyle(
-                        color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+                        color: isDarkTheme
+                            ? AppColor.darkPrimary
+                            : AppColor.lightPrimary,
                       ),
                     ),
                   ),
@@ -127,7 +138,9 @@ class BranchCard2 extends StatelessWidget {
           iconAsset,
           width: 16,
           height: 16,
-          color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+          color: isDarkTheme
+              ? AppColor.darkTextSecondary
+              : AppColor.lightTextSecondary,
         ),
         const SizedBox(width: 6),
         Text(

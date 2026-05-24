@@ -23,7 +23,10 @@ class MenuItem {
     this.requiresAuth = false,
     this.requiredRoles,
     this.children,
-  }) : assert(icon != null || assetIcon != null, 'Either icon or assetIcon must be provided');
+  }) : assert(
+         icon != null || assetIcon != null,
+         'Either icon or assetIcon must be provided',
+       );
 
   bool isAccessible(UserRole userRole) {
     if (!requiresAuth!) return true;
@@ -83,4 +86,3 @@ class PendingConfirmation {
     };
   }
 }
-

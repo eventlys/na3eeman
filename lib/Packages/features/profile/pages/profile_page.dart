@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       setState(() => _isLoading = true);
       final authProvider = context.read<AuthProvider>();
-      
+
       if (authProvider.user != null) {
         final user = authProvider.user!;
         final data = {
@@ -70,7 +70,9 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -140,14 +142,17 @@ class _ProfilePageState extends State<ProfilePage> {
     return Theme(
       data: Theme.of(context).copyWith(
         primaryColor: primaryColor,
-        colorScheme: Theme.of(context).colorScheme.copyWith(
-          primary: primaryColor,
-        ),
+        colorScheme: Theme.of(
+          context,
+        ).colorScheme.copyWith(primary: primaryColor),
       ),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          title: Text("profile".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(
+            "profile".tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
@@ -197,12 +202,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           elevation: 0,
                         ),
                         child: Text(
                           _isEditing ? 'Save Changes' : 'Edit Profile',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
@@ -210,7 +220,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 12),
                       TextButton(
                         onPressed: _toggleEdit,
-                        child: Text("cancel".tr(), style: TextStyle(color: isDark ? Colors.grey[400] : AppColors.almostBlack400)),
+                        child: Text(
+                          "cancel".tr(),
+                          style: TextStyle(
+                            color: isDark
+                                ? Colors.grey[400]
+                                : AppColors.almostBlack400,
+                          ),
+                        ),
                       ),
                     ],
                   ],

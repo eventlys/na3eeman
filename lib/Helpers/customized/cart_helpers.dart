@@ -39,15 +39,17 @@ class CartHelpers {
     if (existingItem.id.isNotEmpty) {
       existingItem.quantity++;
     } else {
-      cartItems.add(CartItem(
-        id: product.id.toString(), // Convert int to String
-        name: product.name,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        type: 'PRODUCT', // Added required 'type' parameter
-        itemId: product.id, // Added itemId for PRODUCT type
-        quantity: 1,
-      ));
+      cartItems.add(
+        CartItem(
+          id: product.id.toString(), // Convert int to String
+          name: product.name,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          type: 'PRODUCT', // Added required 'type' parameter
+          itemId: product.id, // Added itemId for PRODUCT type
+          quantity: 1,
+        ),
+      );
     }
   }
 }

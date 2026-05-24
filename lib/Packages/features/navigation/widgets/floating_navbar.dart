@@ -36,14 +36,14 @@ class CustomNeomorphicNavBar extends StatelessWidget {
         boxShadow: [
           // Bottom right shadow
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(5, 5),
             spreadRadius: 1,
           ),
           // Top left light
           BoxShadow(
-            color: Colors.white.withValues(alpha:0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             blurRadius: 15,
             offset: const Offset(-5, -5),
             spreadRadius: 1,
@@ -55,25 +55,16 @@ class CustomNeomorphicNavBar extends StatelessWidget {
         children: sphereItems.map((sphere) {
           return Flexible(
             flex: 1,
-            child: Container(
-              alignment: Alignment.center,
-              child: sphere,
-            ),
+            child: Container(alignment: Alignment.center, child: sphere),
           );
         }).toList(),
       ),
     );
 
     if (floating) {
-      return Positioned(
-        bottom: 20,
-        left: 20,
-        right: 20,
-        child: container,
-      );
+      return Positioned(bottom: 20, left: 20, right: 20, child: container);
     } else {
       return container;
     }
   }
 }
-

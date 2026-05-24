@@ -4,10 +4,14 @@ import 'package:intl/intl.dart';
 class DateTimeHelper {
   // Date formats
   static final DateFormat _apiDateFormat = DateFormat('yyyy-MM-dd');
-  static final DateFormat _apiDateTimeFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  static final DateFormat _apiDateTimeFormat = DateFormat(
+    "yyyy-MM-dd'T'HH:mm:ss'Z'",
+  );
   static final DateFormat _displayDateFormat = DateFormat('MMM dd, yyyy');
   static final DateFormat _displayTimeFormat = DateFormat('HH:mm');
-  static final DateFormat _displayDateTimeFormat = DateFormat('MMM dd, yyyy HH:mm');
+  static final DateFormat _displayDateTimeFormat = DateFormat(
+    'MMM dd, yyyy HH:mm',
+  );
   static final DateFormat _shortDateFormat = DateFormat('MM/dd/yyyy');
   static final DateFormat _monthYearFormat = DateFormat('MMMM yyyy');
   static final DateFormat _dayMonthFormat = DateFormat('dd MMM');
@@ -153,7 +157,9 @@ class DateTimeHelper {
 
   static DateTime getEndOfWeek(DateTime date) {
     final startOfWeek = _getStartOfWeek(date);
-    return startOfWeek.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
+    return startOfWeek.add(
+      const Duration(days: 6, hours: 23, minutes: 59, seconds: 59),
+    );
   }
 
   static DateTime getStartOfMonth(DateTime date) {
@@ -165,14 +171,18 @@ class DateTimeHelper {
   }
 
   // Business hours and appointment helpers
-  static bool isBusinessHours(DateTime date, {TimeOfDay? open, TimeOfDay? close}) {
+  static bool isBusinessHours(
+    DateTime date, {
+    TimeOfDay? open,
+    TimeOfDay? close,
+  }) {
     final openTime = open ?? const TimeOfDay(hour: 9, minute: 0);
     final closeTime = close ?? const TimeOfDay(hour: 18, minute: 0);
 
     final currentTime = TimeOfDay.fromDateTime(date);
 
     return _isTimeAfterOrEqual(currentTime, openTime) &&
-           _isTimeBeforeOrEqual(currentTime, closeTime);
+        _isTimeBeforeOrEqual(currentTime, closeTime);
   }
 
   static bool isWeekend(DateTime date) {
@@ -212,7 +222,8 @@ class DateTimeHelper {
     int age = currentDate.year - birthDate.year;
 
     if (currentDate.month < birthDate.month ||
-        (currentDate.month == birthDate.month && currentDate.day < birthDate.day)) {
+        (currentDate.month == birthDate.month &&
+            currentDate.day < birthDate.day)) {
       age--;
     }
 

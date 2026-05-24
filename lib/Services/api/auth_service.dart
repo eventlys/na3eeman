@@ -48,8 +48,7 @@ class AuthService {
     required String gender,
     required String password,
     required String role,
-  })
-  async {
+  }) async {
     try {
       AppLogger.debug('Signup attempt for: $email');
 
@@ -90,8 +89,7 @@ class AuthService {
     required Map<String, dynamic> socialData,
     String? selectedRole,
     String? selectedGender,
-  })
-  async {
+  }) async {
     try {
       AppLogger.debug('Social signup attempt for: $provider');
 
@@ -116,7 +114,9 @@ class AuthService {
           );
         }
 
-        AppLogger.info('Social registration successful for ${userData['email']}');
+        AppLogger.info(
+          'Social registration successful for ${userData['email']}',
+        );
       }
 
       return response;
@@ -131,8 +131,7 @@ class AuthService {
     required String provider,
     required String socialId,
     required String email,
-  })
-  async {
+  }) async {
     try {
       AppLogger.debug('Social login attempt for: $provider - $email');
 
@@ -165,8 +164,7 @@ class AuthService {
     required String provider,
     required String socialId,
     required String email,
-  })
-  async {
+  }) async {
     try {
       AppLogger.debug('Checking social user existence: $provider - $email');
 
@@ -185,57 +183,55 @@ class AuthService {
 
   // Unified social authentication - automatically handles login or signup
   Future<Map<String, dynamic>> handleSocialAuthentication({
-  required String provider,
-  required Map<String, dynamic> socialData,
-  String? selectedRole,
-  String? selectedGender,
-})
-  async {
-  try {
-    AppLogger.debug('Handling social authentication for: $provider');
+    required String provider,
+    required Map<String, dynamic> socialData,
+    String? selectedRole,
+    String? selectedGender,
+  }) async {
+    try {
+      AppLogger.debug('Handling social authentication for: $provider');
 
-    // Extract essential data using the helper's process method
-    final processedData = await _socialHelper.processSocialRegistration(
-      provider: provider,
-      socialData: socialData,
-      selectedRole: selectedRole,
-      selectedGender: selectedGender,
-    );
-
-    final email = processedData['email'];
-    final socialId = processedData['social_id'];
-
-    // Check if user already exists
-    final userExists = await checkSocialUserExists(
-      provider: provider,
-      socialId: socialId,
-      email: email,
-    );
-
-    if (userExists) {
-      // User exists - perform social login
-      AppLogger.debug('Existing social user found, performing login');
-      return await socialLogin(
-        provider: provider,
-        socialId: socialId,
-        email: email,
-      );
-    } else {
-      // New user - perform social registration
-      AppLogger.debug('New social user, performing registration');
-      return await socialSignup(
+      // Extract essential data using the helper's process method
+      final processedData = await _socialHelper.processSocialRegistration(
         provider: provider,
         socialData: socialData,
         selectedRole: selectedRole,
         selectedGender: selectedGender,
       );
-    }
-  } catch (e) {
-    AppLogger.error('Social authentication error: $e');
-    rethrow;
-  }
-}
 
+      final email = processedData['email'];
+      final socialId = processedData['social_id'];
+
+      // Check if user already exists
+      final userExists = await checkSocialUserExists(
+        provider: provider,
+        socialId: socialId,
+        email: email,
+      );
+
+      if (userExists) {
+        // User exists - perform social login
+        AppLogger.debug('Existing social user found, performing login');
+        return await socialLogin(
+          provider: provider,
+          socialId: socialId,
+          email: email,
+        );
+      } else {
+        // New user - perform social registration
+        AppLogger.debug('New social user, performing registration');
+        return await socialSignup(
+          provider: provider,
+          socialData: socialData,
+          selectedRole: selectedRole,
+          selectedGender: selectedGender,
+        );
+      }
+    } catch (e) {
+      AppLogger.error('Social authentication error: $e');
+      rethrow;
+    }
+  }
 
   // Other existing methods...
   Future<User> getCurrentUser() async {
@@ -275,8 +271,7 @@ class AuthService {
   Future<Map<String, dynamic>> resetPassword({
     required String token,
     required String newPassword,
-  })
-  async {
+  }) async {
     try {
       AppLogger.debug('Resetting password');
       return await _authRepository.resetPassword(
@@ -319,21 +314,10 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>> sendPasswordResetOtp(String email) async {
-    try {
-      AppLogger.debug('Send password reset OTP for: $email');
-      return await _authRepository.sendPasswordResetOtp(email);
-    } catch (e) {
-      AppLogger.error('Send password reset OTP error: $e');
-      rethrow;
-    }
-  }
-
   Future<Map<String, dynamic>> verifyPasswordResetOtp({
     required String email,
     required String otp,
-  })
-  async {
+  }) async {
     try {
       AppLogger.debug('Verify password reset OTP for: $email');
       return await _authRepository.verifyPasswordResetOtp(
@@ -363,10 +347,7 @@ class AuthService {
   }) async {
     try {
       AppLogger.debug('Verify email OTP for: $email');
-      return await _authRepository.verifyEmailOtp(
-        email: email,
-        otp: otp,
-      );
+      return await _authRepository.verifyEmailOtp(email: email, otp: otp);
     } catch (e) {
       AppLogger.error('Verify email OTP error: $e');
       rethrow;
@@ -377,7 +358,9 @@ class AuthService {
     await _secureStorage.clearAuthData();
   }
 
-  Future<Map<String, dynamic>> adminCreateStaff(Map<String, dynamic> staffData) async {
+  Future<Map<String, dynamic>> adminCreateStaff(
+    Map<String, dynamic> staffData,
+  ) async {
     return await _authRepository.adminCreateStaff(staffData);
   }
 

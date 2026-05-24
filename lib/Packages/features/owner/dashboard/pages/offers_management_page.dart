@@ -14,7 +14,8 @@ class OffersManagementPage extends StatefulWidget {
   State<OffersManagementPage> createState() => _OffersManagementPageState();
 }
 
-class _OffersManagementPageState extends State<OffersManagementPage> with SingleTickerProviderStateMixin {
+class _OffersManagementPageState extends State<OffersManagementPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<Map<String, dynamic>> _offers = [];
   List<Map<String, dynamic>> _packages = [];
@@ -51,7 +52,9 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
       } else if (res is Map && res['results'] is List) {
         setState(() {
           _offers = List<Map<String, dynamic>>.from(
-            (res['results'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+            (res['results'] as List).map(
+              (e) => Map<String, dynamic>.from(e as Map),
+            ),
           );
         });
       }
@@ -77,7 +80,9 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
       } else if (res is Map && res['results'] is List) {
         setState(() {
           _packages = List<Map<String, dynamic>>.from(
-            (res['results'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+            (res['results'] as List).map(
+              (e) => Map<String, dynamic>.from(e as Map),
+            ),
           );
         });
       }
@@ -112,8 +117,16 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('New Offer', style: Theme.of(ctx).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                  IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                  Text(
+                    'New Offer',
+                    style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -121,7 +134,9 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
                 controller: titleCtrl,
                 decoration: InputDecoration(
                   labelText: 'Offer Title',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -130,7 +145,9 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
                 maxLines: 2,
                 decoration: InputDecoration(
                   labelText: 'Description',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -139,10 +156,14 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
                   Expanded(
                     child: TextField(
                       controller: priceCtrl,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'Offer Price (JOD)',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -150,10 +171,14 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
                   Expanded(
                     child: TextField(
                       controller: originalCtrl,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'Original Price (JOD)',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -167,16 +192,23 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
                   onPressed: () async {
                     Navigator.pop(ctx);
                     try {
-                      final auth = Provider.of<AuthProvider>(context, listen: false);
+                      final auth = Provider.of<AuthProvider>(
+                        context,
+                        listen: false,
+                      );
                       final salonId = auth.user?.salonId ?? 1;
                       final api = ApiService();
-                      await api.post('/salons/$salonId/offers/', data: {
-                        'title': titleCtrl.text,
-                        'description': descCtrl.text,
-                        'price': double.tryParse(priceCtrl.text) ?? 0,
-                        'original_price': double.tryParse(originalCtrl.text),
-                      });
-                      if (mounted) AppSnackBar.success(context, 'Offer created!');
+                      await api.post(
+                        '/salons/$salonId/offers/',
+                        data: {
+                          'title': titleCtrl.text,
+                          'description': descCtrl.text,
+                          'price': double.tryParse(priceCtrl.text) ?? 0,
+                          'original_price': double.tryParse(originalCtrl.text),
+                        },
+                      );
+                      if (mounted)
+                        AppSnackBar.success(context, 'Offer created!');
                       _loadOffers();
                     } catch (e) {
                       if (mounted) AppSnackBar.error(context, 'Error: $e');
@@ -186,7 +218,9 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
                   label: const Text('Create Offer'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                 ),
               ),
@@ -221,10 +255,7 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _buildOffersList(theme),
-          _buildPackagesList(theme),
-        ],
+        children: [_buildOffersList(theme), _buildPackagesList(theme)],
       ),
     );
   }
@@ -232,7 +263,12 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
   Widget _buildOffersList(ThemeData theme) {
     if (_loadingOffers) return const Center(child: CircularProgressIndicator());
     if (_offers.isEmpty) {
-      return _buildEmpty(theme, 'No offers yet', 'Create promotional offers to attract more customers', Icons.local_offer_outlined);
+      return _buildEmpty(
+        theme,
+        'No offers yet',
+        'Create promotional offers to attract more customers',
+        Icons.local_offer_outlined,
+      );
     }
     return RefreshIndicator(
       onRefresh: _loadOffers,
@@ -246,9 +282,15 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
   }
 
   Widget _buildPackagesList(ThemeData theme) {
-    if (_loadingPackages) return const Center(child: CircularProgressIndicator());
+    if (_loadingPackages)
+      return const Center(child: CircularProgressIndicator());
     if (_packages.isEmpty) {
-      return _buildEmpty(theme, 'No packages yet', 'Create service bundles to increase your average order value', Icons.inventory_2_outlined);
+      return _buildEmpty(
+        theme,
+        'No packages yet',
+        'Create service bundles to increase your average order value',
+        Icons.inventory_2_outlined,
+      );
     }
     return RefreshIndicator(
       onRefresh: _loadPackages,
@@ -261,7 +303,12 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
     );
   }
 
-  Widget _buildEmpty(ThemeData theme, String title, String subtitle, IconData icon) {
+  Widget _buildEmpty(
+    ThemeData theme,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -270,9 +317,20 @@ class _OffersManagementPageState extends State<OffersManagementPage> with Single
           children: [
             Icon(icon, size: 64, color: theme.hintColor),
             const SizedBox(height: 16),
-            Text(title, style: theme.textTheme.titleMedium?.copyWith(color: theme.hintColor)),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.hintColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text(subtitle, textAlign: TextAlign.center, style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor)),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.hintColor,
+              ),
+            ),
           ],
         ),
       ),
@@ -308,10 +366,16 @@ class _OfferCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFF3B82F6)]),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF8B5CF6), Color(0xFF3B82F6)],
+              ),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.local_offer_rounded, color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.local_offer_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -320,33 +384,66 @@ class _OfferCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold))),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     if (discount != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Text('-$discount%', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 11)),
+                        child: Text(
+                          '-$discount%',
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
+                        ),
                       ),
                   ],
                 ),
                 if (desc.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text(desc, style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  Text(
+                    desc,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.hintColor,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Text('${price.toStringAsFixed(2)} JOD', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 16)),
+                    Text(
+                      '${price.toStringAsFixed(2)} JOD',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                        fontSize: 16,
+                      ),
+                    ),
                     if (original != null) ...[
                       const SizedBox(width: 8),
-                      Text('${original.toStringAsFixed(2)} JOD',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.hintColor,
-                            decoration: TextDecoration.lineThrough,
-                          )),
+                      Text(
+                        '${original.toStringAsFixed(2)} JOD',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.hintColor,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
                     ],
                   ],
                 ),
@@ -382,24 +479,48 @@ class _PackageCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [Color(0xFF10B981), Color(0xFF059669)]),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF10B981), Color(0xFF059669)],
+              ),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.inventory_2_rounded, color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.inventory_2_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  name,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 if (desc.isNotEmpty)
-                  Text(desc, style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  Text(
+                    desc,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.hintColor,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
               ],
             ),
           ),
-          Text('${price.toStringAsFixed(2)} JOD',
-              style: TextStyle(fontWeight: FontWeight.bold, color: const Color(0xFF10B981), fontSize: 15)),
+          Text(
+            '${price.toStringAsFixed(2)} JOD',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF10B981),
+              fontSize: 15,
+            ),
+          ),
         ],
       ),
     );

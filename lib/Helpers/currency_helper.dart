@@ -46,7 +46,9 @@ class CurrencyHelper {
     } else {
       _currentCurrency = defaultCurrency;
       _currentFormatter = _createFormatter(defaultCurrency);
-      AppLogger.warning('Unsupported currency: $currencyCode, defaulting to $defaultCurrency');
+      AppLogger.warning(
+        'Unsupported currency: $currencyCode, defaulting to $defaultCurrency',
+      );
     }
   }
 
@@ -67,13 +69,20 @@ class CurrencyHelper {
 
       return formatted;
     } catch (e) {
-      AppLogger.error('Failed to format currency: $amount $_currentCurrency', error: e);
+      AppLogger.error(
+        'Failed to format currency: $amount $_currentCurrency',
+        error: e,
+      );
       return _formatFallback(amount, showSymbol: showSymbol);
     }
   }
 
   // Format amount with specific currency
-  String formatWithCurrency(double amount, String currencyCode, {bool showSymbol = true}) {
+  String formatWithCurrency(
+    double amount,
+    String currencyCode, {
+    bool showSymbol = true,
+  }) {
     try {
       final formatter = _createFormatter(currencyCode);
       var formatted = formatter.format(amount);
@@ -85,8 +94,15 @@ class CurrencyHelper {
 
       return formatted;
     } catch (e) {
-      AppLogger.error('Failed to format currency: $amount $currencyCode', error: e);
-      return _formatFallback(amount, currencyCode: currencyCode, showSymbol: showSymbol);
+      AppLogger.error(
+        'Failed to format currency: $amount $currencyCode',
+        error: e,
+      );
+      return _formatFallback(
+        amount,
+        currencyCode: currencyCode,
+        showSymbol: showSymbol,
+      );
     }
   }
 
@@ -108,12 +124,14 @@ class CurrencyHelper {
 
   // Get currency symbol
   String getCurrencySymbol(String currencyCode) {
-    return supportedCurrencies[currencyCode]?['symbol'] ?? defaultCurrencySymbol;
+    return supportedCurrencies[currencyCode]?['symbol'] ??
+        defaultCurrencySymbol;
   }
 
   // Get decimal digits for currency
   int getDecimalDigits(String currencyCode) {
-    return supportedCurrencies[currencyCode]?['decimalDigits'] ?? defaultDecimalDigits;
+    return supportedCurrencies[currencyCode]?['decimalDigits'] ??
+        defaultDecimalDigits;
   }
 
   // Get currency name
@@ -132,7 +150,12 @@ class CurrencyHelper {
   }
 
   // Convert amount between currencies (basic implementation)
-  double convertAmount(double amount, String fromCurrency, String toCurrency, double exchangeRate) {
+  double convertAmount(
+    double amount,
+    String fromCurrency,
+    String toCurrency,
+    double exchangeRate,
+  ) {
     if (fromCurrency == toCurrency) return amount;
 
     return amount * exchangeRate;
@@ -184,7 +207,10 @@ class CurrencyHelper {
   }
 
   // Calculate amount after discount
-  double calculateAmountAfterDiscount(double amount, double discountPercentage) {
+  double calculateAmountAfterDiscount(
+    double amount,
+    double discountPercentage,
+  ) {
     return amount - calculateDiscount(amount, discountPercentage);
   }
 
@@ -210,13 +236,14 @@ class CurrencyHelper {
     final symbol = getCurrencySymbol(currencyCode);
     final decimalDigits = getDecimalDigits(currencyCode);
 
-    return NumberFormat.currency(
-      symbol: symbol,
-      decimalDigits: decimalDigits,
-    );
+    return NumberFormat.currency(symbol: symbol, decimalDigits: decimalDigits);
   }
 
-  String _formatFallback(double amount, {String? currencyCode, bool showSymbol = true}) {
+  String _formatFallback(
+    double amount, {
+    String? currencyCode,
+    bool showSymbol = true,
+  }) {
     final code = currencyCode ?? _currentCurrency;
     final symbol = showSymbol ? getCurrencySymbol(code) : '';
     final decimalDigits = getDecimalDigits(code);
@@ -227,20 +254,29 @@ class CurrencyHelper {
 
   // Round amount to currency decimal places
   double roundToCurrencyDecimal(double amount, {String? currencyCode}) {
-    final digits = currencyCode != null ? getDecimalDigits(currencyCode) : currentDecimalDigits;
+    final digits = currencyCode != null
+        ? getDecimalDigits(currencyCode)
+        : currentDecimalDigits;
     final factor = pow(10, digits);
     return (amount * factor).round() / factor;
   }
 
   // Compare amounts with currency consideration
-  int compareAmounts(double amount1, double amount2, {String? currency1, String? currency2}) {
+  int compareAmounts(
+    double amount1,
+    double amount2, {
+    String? currency1,
+    String? currency2,
+  }) {
     if (currency1 == currency2 || (currency1 == null && currency2 == null)) {
       return amount1.compareTo(amount2);
     }
 
     // For different currencies, we'd need exchange rates
     // For now, just compare the numeric values
-    AppLogger.warning('Comparing amounts in different currencies without exchange rate');
+    AppLogger.warning(
+      'Comparing amounts in different currencies without exchange rate',
+    );
     return amount1.compareTo(amount2);
   }
 }

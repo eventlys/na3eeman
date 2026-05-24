@@ -19,11 +19,15 @@ class SimpleReportDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Report: ${initialRequest.reportType.toString().split('.').last}'),
+          Text(
+            'Report: ${initialRequest.reportType.toString().split('.').last}',
+          ),
           const SizedBox(height: 8),
           Text('Period: ${_getTimeDisplayName(initialRequest.time)}'),
           const SizedBox(height: 8),
-          Text('Date Range: ${_formatDate(initialRequest.startDate)} - ${_formatDate(initialRequest.endDate)}'),
+          Text(
+            'Date Range: ${_formatDate(initialRequest.startDate)} - ${_formatDate(initialRequest.endDate)}',
+          ),
         ],
       ),
       actions: [
@@ -41,10 +45,14 @@ class SimpleReportDialog extends StatelessWidget {
 
   String _getTimeDisplayName(ReportTime time) {
     switch (time) {
-      case ReportTime.daily: return 'Daily';
-      case ReportTime.weekly: return 'Weekly';
-      case ReportTime.monthly: return 'Monthly';
-      case ReportTime.annually: return 'Annually';
+      case ReportTime.daily:
+        return 'Daily';
+      case ReportTime.weekly:
+        return 'Weekly';
+      case ReportTime.monthly:
+        return 'Monthly';
+      case ReportTime.annually:
+        return 'Annually';
     }
   }
 

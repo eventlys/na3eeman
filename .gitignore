@@ -20,6 +20,7 @@ migrate_working_dir/
 
 .agent
 .env
+.env.dev
 .env.example
 .metadata
 

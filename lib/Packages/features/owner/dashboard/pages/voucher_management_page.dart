@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import '../../../../../../Providers/features/owner_provider.dart';
+import '../../../../../../Providers/features/auth_provider.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/Models/salon/voucher_model.dart';
 import '../../../../../../core/theme/colors.dart';
@@ -31,12 +33,8 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
 
     try {
       setState(() => _isLoading = true);
-      // In real scenario, await _apiService.getSalonVouchers(salonId);
-      // For now, since API for vouchers might be under development, we keep it empty
-      // but remove the hardcoded mock data.
-      final response = await _apiService.get('/salons/vouchers/', queryParams: {'salon': salonId});
-      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
-      
+      final List<dynamic> data = await _apiService.getSalonVouchers(salonId);
+
       setState(() {
         _vouchers = data.map((e) => Voucher.fromJson(e)).toList();
         _isLoading = false;
@@ -65,21 +63,24 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Prepaid Vouchers', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'prepaid_vouchers'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _vouchers.isEmpty
-              ? _buildEmptyState()
-              : ListView.builder(
-                  padding: const EdgeInsets.all(20),
-                  itemCount: _vouchers.length,
-                  itemBuilder: (context, index) {
-                    final v = _vouchers[index];
-                    return _buildVoucherCard(v, isDark);
-                  },
-                ),
+          ? _buildEmptyState()
+          : ListView.builder(
+              padding: const EdgeInsets.all(20),
+              itemCount: _vouchers.length,
+              itemBuilder: (context, index) {
+                final v = _vouchers[index];
+                return _buildVoucherCard(v, isDark);
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showVoucherDialog(),
         backgroundColor: Theme.of(context).primaryColor,
@@ -93,11 +94,25 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.confirmation_num_outlined, size: 80, color: Colors.grey.withValues(alpha: 0.3)),
+          Icon(
+            Icons.confirmation_num_outlined,
+            size: 80,
+            color: Colors.grey.withValues(alpha: 0.3),
+          ),
           const SizedBox(height: 24),
-          const Text('No vouchers found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
+          Text(
+            'no_vouchers_found'.tr(),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
           const SizedBox(height: 8),
-          const Text('Create gift cards or prepaid service vouchers.', style: TextStyle(color: Colors.grey)),
+          Text(
+            'create_gift_cards_prepaid'.tr(),
+            style: const TextStyle(color: Colors.grey),
+          ),
         ],
       ),
     );
@@ -112,7 +127,11 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
@@ -122,7 +141,10 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -146,16 +168,30 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
           const SizedBox(height: 16),
           Row(
             children: [
-              _buildInfoItem('Value', '${v.fixedAmount} JOD', Icons.payments_rounded),
+              _buildInfoItem(
+                'value'.tr(),
+                '${v.fixedAmount} ${'jod'.tr()}',
+                Icons.payments_rounded,
+              ),
               const SizedBox(width: 24),
-              _buildInfoItem('Valid For', '${v.expiresAt.difference(DateTime.now()).inDays} Days', Icons.timer_rounded),
+              _buildInfoItem(
+                'valid_for'.tr(),
+                '${v.expiresAt.difference(DateTime.now()).inDays} ${'days'.tr()}',
+                Icons.timer_rounded,
+              ),
             ],
           ),
           const Divider(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Send to Customer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              Text(
+                'send_to_customer'.tr(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
               Row(
                 children: [
                   _buildSocialIcon(Icons.message_rounded, Colors.blue),
@@ -178,11 +214,20 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
           children: [
             Icon(icon, size: 14, color: AppColors.almostBlack300),
             const SizedBox(width: 4),
-            Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.almostBlack300,
+                fontSize: 11,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
       ],
     );
   }
@@ -200,8 +245,13 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
 
   void _showVoucherDialog({Voucher? voucher}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final priceCtrl = TextEditingController(text: voucher?.fixedAmount.toString() ?? '');
-    final daysCtrl = TextEditingController(text: '30');
+    final priceCtrl = TextEditingController(
+      text: voucher?.fixedAmount?.toString() ?? '',
+    );
+    final daysUntilExpiry = voucher != null
+        ? voucher.expiresAt.difference(DateTime.now()).inDays
+        : 30;
+    final daysCtrl = TextEditingController(text: daysUntilExpiry.toString());
 
     showModalBottomSheet(
       context: context,
@@ -214,29 +264,86 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
         ),
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom + 32,
-          top: 32, left: 32, right: 32,
+          top: 32,
+          left: 32,
+          right: 32,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              voucher == null ? 'Create New Voucher' : 'Edit Voucher',
+              voucher == null ? 'create_new_voucher'.tr() : 'edit_voucher'.tr(),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 32),
-            _buildDialogField('Voucher Value (JOD)', priceCtrl, Icons.payments_rounded, keyboardType: TextInputType.number),
+            _buildDialogField(
+              'voucher_value_jod'.tr(),
+              priceCtrl,
+              Icons.payments_rounded,
+              keyboardType: TextInputType.number,
+            ),
             const SizedBox(height: 16),
-            _buildDialogField('Valid For (Days)', daysCtrl, Icons.timer_rounded, keyboardType: TextInputType.number),
+            _buildDialogField(
+              'valid_for_days'.tr(),
+              daysCtrl,
+              Icons.timer_rounded,
+              keyboardType: TextInputType.number,
+            ),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               height: 56,
               child: PrimaryButton(
-                text: voucher == null ? 'Create Voucher' : 'Update Voucher',
-                onPressed: () {
-                  Navigator.pop(context);
-                  _loadVouchers();
+                text: voucher == null
+                    ? 'create_voucher'.tr()
+                    : 'update_voucher'.tr(),
+                onPressed: () async {
+                  final amount = double.tryParse(priceCtrl.text);
+                  final days = int.tryParse(daysCtrl.text);
+
+                  if (amount == null || days == null) return;
+
+                  final ownerProvider = context.read<OwnerProvider>();
+                  final authProvider = context.read<AuthProvider>();
+                  final salonId = ownerProvider.activeSalonId ?? 1;
+                  final purchaserEmail = authProvider.user?.email ?? '';
+
+                  try {
+                    if (voucher == null) {
+                      await _apiService.createVoucher({
+                        'salon': salonId,
+                        'fixed_amount': amount,
+                        'expires_at': DateTime.now()
+                            .add(Duration(days: days))
+                            .toIso8601String(),
+                        'voucher_type': 'VALUE',
+                        'purchaser_email': purchaserEmail,
+                        'code': _generateVoucherCode(
+                          salonId,
+                          Random().nextInt(100),
+                        ),
+                      });
+                    } else {
+                      await _apiService.updateVoucher(voucher.id, {
+                        'fixed_amount': amount,
+                        'expires_at': DateTime.now()
+                            .add(Duration(days: days))
+                            .toIso8601String(),
+                      });
+                    }
+
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      _loadVouchers();
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                    }
+                  }
                 },
               ),
             ),
@@ -246,22 +353,46 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
     );
   }
 
-  Widget _buildDialogField(String label, TextEditingController ctrl, IconData icon, {TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildDialogField(
+    String label,
+    TextEditingController ctrl,
+    IconData icon, {
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.almostBlack300)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            color: AppColors.almostBlack300,
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           controller: ctrl,
           keyboardType: keyboardType,
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+            prefixIcon: Icon(
+              icon,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
             filled: true,
-            fillColor: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.almostBlack50.withValues(alpha: 0.3),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            fillColor: isDark
+                ? AppColors.white.withValues(alpha: 0.05)
+                : AppColors.almostBlack50.withValues(alpha: 0.3),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
           ),
         ),
       ],

@@ -7,12 +7,12 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../Services/content_service.dart';
 
 class RulesGuideSheet extends StatefulWidget {
-  final bool showGuide; 
+  final bool showGuide;
   final bool showPrivacy;
   final bool isPointsRules;
 
   const RulesGuideSheet({
-    super.key, 
+    super.key,
     required this.showGuide,
     this.showPrivacy = false,
     this.isPointsRules = false,
@@ -23,7 +23,8 @@ class RulesGuideSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const RulesGuideSheet(showGuide: false, isPointsRules: true),
+      builder: (_) =>
+          const RulesGuideSheet(showGuide: false, isPointsRules: true),
     );
   }
 
@@ -50,7 +51,8 @@ class RulesGuideSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const RulesGuideSheet(showGuide: false, showPrivacy: true),
+      builder: (_) =>
+          const RulesGuideSheet(showGuide: false, showPrivacy: true),
     );
   }
 
@@ -72,7 +74,7 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
   Future<void> _fetchContent() async {
     final role = context.read<AuthProvider>().user?.role ?? UserRole.customer;
     final roleName = role.toString().split('.').last;
-    
+
     String fetchedContent = '';
     if (widget.isPointsRules) {
       fetchedContent = await _contentService.getAppRules('LOYALTY');
@@ -101,17 +103,17 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
     switch (role) {
       case UserRole.owner:
       case UserRole.ownerExpert:
-        return 'Owner';
+        return 'owner'.tr();
       case UserRole.receptionist:
-        return 'Receptionist';
+        return 'receptionist'.tr();
       case UserRole.cofounder:
         return "cofounder".tr();
       case UserRole.intern:
-        return 'Intern';
+        return 'intern'.tr();
       case UserRole.expert:
-        return 'Expert';
+        return 'expert'.tr();
       default:
-        return 'Customer';
+        return 'customer'.tr();
     }
   }
 
@@ -119,25 +121,29 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final role = _currentRole(context);
-    
+
     final String title;
     final IconData icon;
     final Color accent;
 
     if (widget.isPointsRules) {
-      title = 'Loyalty Points Rules';
+      title = 'loyalty_points_rules'.tr();
       icon = Icons.stars_rounded;
       accent = AppColors.pink;
     } else {
-      title = widget.showPrivacy 
-          ? "privacy_policy".tr() 
-          : (widget.showGuide ? "user_guide_title".tr() : "app_rules_title".tr());
-      icon = widget.showPrivacy 
-          ? Icons.lock_person_rounded 
+      title = widget.showPrivacy
+          ? "privacy_policy".tr()
+          : (widget.showGuide
+                ? "user_guide_title".tr()
+                : "app_rules_title".tr());
+      icon = widget.showPrivacy
+          ? Icons.lock_person_rounded
           : (widget.showGuide ? Icons.menu_book_rounded : Icons.gavel_rounded);
-      accent = widget.showPrivacy 
-          ? const Color(0xFF2E7D32) 
-          : (widget.showGuide ? const Color(0xFF1565C0) : const Color(0xFF6A1B9A));
+      accent = widget.showPrivacy
+          ? const Color(0xFF2E7D32)
+          : (widget.showGuide
+                ? const Color(0xFF1565C0)
+                : const Color(0xFF6A1B9A));
     }
 
     return DraggableScrollableSheet(
@@ -157,7 +163,9 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
                 width: 50,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.white.withOpacity(0.15) : AppColors.almostBlack100,
+                  color: isDark
+                      ? AppColors.white.withOpacity(0.15)
+                      : AppColors.almostBlack100,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -178,9 +186,26 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                          Text('${"rules_for_your_role".tr()}: ${_currentRoleName(context, role)}',
-                            style: TextStyle(fontSize: 12, color: accent, fontWeight: FontWeight.bold)),
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'rules_for_role_display'.tr(
+                              args: [
+                                "rules_for_your_role".tr(),
+                                _currentRoleName(context, role),
+                              ],
+                            ),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: accent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -189,15 +214,19 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
               ),
               const Divider(height: 1),
               Expanded(
-                child: _isLoading 
+                child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : _content.isEmpty
-                        ? Center(child: Text("no_data_available".tr() ?? 'No content available.'))
-                        : SingleChildScrollView(
-                            controller: scrollController,
-                            padding: const EdgeInsets.all(24),
-                            child: _buildContent(context, _content, isDark, accent),
-                          ),
+                    ? Center(
+                        child: Text(
+                          "no_data_available".tr() ?? 'No content available.',
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(24),
+                        child: _buildContent(context, _content, isDark, accent),
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.all(24),
@@ -207,12 +236,21 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isDark ? AppColors.almostBlack700 : Colors.grey[100],
-                      foregroundColor: isDark ? Colors.white : AppColors.almostBlack,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      backgroundColor: isDark
+                          ? AppColors.almostBlack700
+                          : Colors.grey[100],
+                      foregroundColor: isDark
+                          ? Colors.white
+                          : AppColors.almostBlack,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       elevation: 0,
                     ),
-                    child: Text("close".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "close".tr(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
@@ -223,7 +261,12 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
     );
   }
 
-  Widget _buildContent(BuildContext context, String text, bool isDark, Color accent) {
+  Widget _buildContent(
+    BuildContext context,
+    String text,
+    bool isDark,
+    Color accent,
+  ) {
     final lines = text.split('\n');
     final List<Widget> widgets = [];
     String? currentHeader;
@@ -231,10 +274,20 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
 
     void flushSection() {
       if (currentHeader != null) {
-        widgets.add(_buildAccordionSection(context, currentHeader!, currentItems, isDark, accent));
+        widgets.add(
+          _buildAccordionSection(
+            context,
+            currentHeader!,
+            currentItems,
+            isDark,
+            accent,
+          ),
+        );
         widgets.add(const SizedBox(height: 12));
       } else if (currentItems.isNotEmpty) {
-         widgets.addAll(currentItems.map((item) => _buildSimpleLine(item, isDark, accent)));
+        widgets.addAll(
+          currentItems.map((item) => _buildSimpleLine(item, isDark, accent)),
+        );
       }
       currentHeader = null;
       currentItems = [];
@@ -244,7 +297,9 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
       final trimmed = line.trim();
       if (trimmed.isEmpty) continue;
 
-      if (!trimmed.startsWith('•') && !trimmed.startsWith('-') && !RegExp(r'^[\d١٢٣٤٥٦٧٨٩٠]+[.\)]').hasMatch(trimmed)) {
+      if (!trimmed.startsWith('•') &&
+          !trimmed.startsWith('-') &&
+          !RegExp(r'^[\d١٢٣٤٥٦٧٨٩٠]+[.\)]').hasMatch(trimmed)) {
         flushSection();
         currentHeader = trimmed;
       } else {
@@ -253,10 +308,19 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
     }
     flushSection();
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
   }
 
-  Widget _buildAccordionSection(BuildContext context, String title, List<String> items, bool isDark, Color accent) {
+  Widget _buildAccordionSection(
+    BuildContext context,
+    String title,
+    List<String> items,
+    bool isDark,
+    Color accent,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack500 : Colors.grey[50],
@@ -267,9 +331,22 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           leading: Icon(Icons.info_outline_rounded, color: accent, size: 20),
-          title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: isDark ? Colors.white : AppColors.almostBlack)),
-          childrenPadding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          children: items.map((item) => _buildSimpleLine(item, isDark, accent)).toList(),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: isDark ? Colors.white : AppColors.almostBlack,
+            ),
+          ),
+          childrenPadding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            bottom: 20,
+          ),
+          children: items
+              .map((item) => _buildSimpleLine(item, isDark, accent))
+              .toList(),
         ),
       ),
     );
@@ -283,11 +360,18 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 6, right: 10),
-            child: Container(width: 6, height: 6, decoration: BoxDecoration(color: accent, shape: BoxShape.circle)),
+            child: Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
+            ),
           ),
           Expanded(
             child: Text(
-              line.replaceFirst(RegExp(r'^([•\-]|[\d١٢٣٤٥٦٧٨٩٠]+[.\)])\s*'), ''),
+              line.replaceFirst(
+                RegExp(r'^([•\-]|[\d١٢٣٤٥٦٧٨٩٠]+[.\)])\s*'),
+                '',
+              ),
               style: TextStyle(
                 fontSize: 14,
                 color: isDark ? Colors.grey[300] : Colors.grey[700],

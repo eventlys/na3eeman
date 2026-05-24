@@ -188,7 +188,11 @@ class FileMediaService {
     }
   }
 
-  Future<File> resizeImage(File imageFile, {int maxWidth = 1080, int maxHeight = 1080}) async {
+  Future<File> resizeImage(
+    File imageFile, {
+    int maxWidth = 1080,
+    int maxHeight = 1080,
+  }) async {
     try {
       AppLogger.debug('Resizing image to ${maxWidth}x$maxHeight');
       // Implement image resizing logic here
@@ -226,7 +230,9 @@ class FileMediaService {
         }
       }
 
-      AppLogger.debug('Processed ${processedImages.length} images successfully');
+      AppLogger.debug(
+        'Processed ${processedImages.length} images successfully',
+      );
       return processedImages;
     } catch (e) {
       AppLogger.error('Failed to process multiple images: $e');
@@ -255,7 +261,9 @@ class FileMediaService {
       final isValid = sizeInMB <= maxSizeInMB;
 
       if (!isValid) {
-        AppLogger.debug('File size validation failed: ${sizeInMB.toStringAsFixed(2)}MB > ${maxSizeInMB}MB');
+        AppLogger.debug(
+          'File size validation failed: ${sizeInMB.toStringAsFixed(2)}MB > ${maxSizeInMB}MB',
+        );
       }
 
       return isValid;
@@ -279,7 +287,8 @@ class FileMediaService {
   String _formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 
@@ -340,7 +349,10 @@ class FileMediaService {
     }
   }
 
-  Future<bool> validateFileIntegrity(String filePath, String expectedHash) async {
+  Future<bool> validateFileIntegrity(
+    String filePath,
+    String expectedHash,
+  ) async {
     try {
       final file = File(filePath);
       final bytes = await file.readAsBytes();

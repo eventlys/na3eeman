@@ -30,7 +30,8 @@ class SubscriptionDetailsModal extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("subscription_details".tr(),
+              Text(
+                "subscription_details".tr(),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : AppColors.almostBlack,
@@ -49,20 +50,27 @@ class SubscriptionDetailsModal extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Features List
-          Text("plan_features".tr(),
+          Text(
+            "plan_features".tr(),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white70 : AppColors.almostBlack400,
             ),
           ),
           const SizedBox(height: 12),
-          ...tierConfig.enabledFeatures.take(5).map((f) => _buildFeatureItem(context, _featureLabel(f))),
+          ...tierConfig.enabledFeatures
+              .take(5)
+              .map((f) => _buildFeatureItem(context, _featureLabel(f))),
           if (tierConfig.enabledFeatures.length > 5)
             Padding(
               padding: const EdgeInsets.only(top: 8, left: 28),
               child: Text(
                 '+ ${tierConfig.enabledFeatures.length - 5} more features',
-                style: TextStyle(color: theme.primaryColor, fontSize: 13, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: theme.primaryColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
 
@@ -76,7 +84,9 @@ class SubscriptionDetailsModal extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                   child: Text("close".tr()),
                 ),
@@ -98,7 +108,11 @@ class SubscriptionDetailsModal extends StatelessWidget {
     );
   }
 
-  Widget _buildPlanCard(BuildContext context, OwnerProvider owner, dynamic tierConfig) {
+  Widget _buildPlanCard(
+    BuildContext context,
+    OwnerProvider owner,
+    dynamic tierConfig,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final theme = Theme.of(context);
     final color = _getTierColor(owner.tier);
@@ -141,7 +155,9 @@ class SubscriptionDetailsModal extends StatelessWidget {
                     Text(
                       tierConfig.tagline,
                       style: TextStyle(
-                        color: isDark ? Colors.white60 : AppColors.almostBlack300,
+                        color: isDark
+                            ? Colors.white60
+                            : AppColors.almostBlack300,
                         fontSize: 13,
                       ),
                     ),
@@ -149,15 +165,22 @@ class SubscriptionDetailsModal extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: owner.isSubscriptionActive ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
+                  color: owner.isSubscriptionActive
+                      ? AppColors.success.withOpacity(0.1)
+                      : AppColors.error.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   owner.isSubscriptionActive ? 'ACTIVE' : 'EXPIRED',
                   style: TextStyle(
-                    color: owner.isSubscriptionActive ? AppColors.success : AppColors.error,
+                    color: owner.isSubscriptionActive
+                        ? AppColors.success
+                        : AppColors.error,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -171,7 +194,12 @@ class SubscriptionDetailsModal extends StatelessWidget {
             children: [
               _buildInfoColumn('Staff Limit', tierConfig.staffLimitLabel),
               _buildInfoColumn('Branches', tierConfig.branchLimitLabel),
-              _buildInfoColumn('Expiry Date', owner.daysRemaining != null ? '${owner.daysRemaining} days' : 'N/A'),
+              _buildInfoColumn(
+                'Expiry Date',
+                owner.daysRemaining != null
+                    ? '${owner.daysRemaining} days'
+                    : 'N/A',
+              ),
             ],
           ),
         ],
@@ -183,9 +211,15 @@ class SubscriptionDetailsModal extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11)),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11),
+        ),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+        ),
       ],
     );
   }
@@ -195,7 +229,11 @@ class SubscriptionDetailsModal extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 18),
+          const Icon(
+            Icons.check_circle_rounded,
+            color: AppColors.success,
+            size: 18,
+          ),
           const SizedBox(width: 12),
           Text(label, style: const TextStyle(fontSize: 14)),
         ],
@@ -205,17 +243,24 @@ class SubscriptionDetailsModal extends StatelessWidget {
 
   Color _getTierColor(OwnerSubscriptionTier tier) {
     switch (tier) {
-      case OwnerSubscriptionTier.artisan: return Colors.teal;
-      case OwnerSubscriptionTier.studio: return Colors.blue;
-      case OwnerSubscriptionTier.elite: return Colors.purple;
-      case OwnerSubscriptionTier.empire: return Colors.amber.shade800;
+      case OwnerSubscriptionTier.artisan:
+        return Colors.teal;
+      case OwnerSubscriptionTier.studio:
+        return Colors.blue;
+      case OwnerSubscriptionTier.elite:
+        return Colors.purple;
+      case OwnerSubscriptionTier.empire:
+        return Colors.amber.shade800;
     }
   }
 
   String _featureLabel(FeatureKey key) {
     final name = key.name;
     // Simple CamelCase to Space conversion
-    final result = name.replaceAllMapped(RegExp(r'([A-Z])'), (match) => ' ${match.group(0)}');
+    final result = name.replaceAllMapped(
+      RegExp(r'([A-Z])'),
+      (match) => ' ${match.group(0)}',
+    );
     return result[0].toUpperCase() + result.substring(1);
   }
 

@@ -10,12 +10,7 @@ class ProfitGraph extends StatefulWidget {
   final DateTime? endDate;
   final String? branchId;
 
-  const ProfitGraph({
-    super.key,
-    this.startDate,
-    this.endDate,
-    this.branchId,
-  });
+  const ProfitGraph({super.key, this.startDate, this.endDate, this.branchId});
 
   @override
   State<ProfitGraph> createState() => _ProfitGraphState();
@@ -32,7 +27,9 @@ class _ProfitGraphState extends State<ProfitGraph> {
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
         ),
       ),
       child: Column(
@@ -41,17 +38,26 @@ class _ProfitGraphState extends State<ProfitGraph> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("financial_performance".tr(),
+              Text(
+                "financial_performance".tr(),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text("monthly".tr(),
-                  style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                child: Text(
+                  "monthly".tr(),
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ],
@@ -94,7 +100,11 @@ class _ProfitGraphState extends State<ProfitGraph> {
             children: [
               _buildStat('Total Profit', '\$4,250', AppColors.success),
               _buildStat('Expenses', '\$850', AppColors.error),
-              _buildStat('Net Profit', '\$3,400', Theme.of(context).primaryColor),
+              _buildStat(
+                'Net Profit',
+                '\$3,400',
+                Theme.of(context).primaryColor,
+              ),
             ],
           ),
         ],
@@ -108,12 +118,20 @@ class _ProfitGraphState extends State<ProfitGraph> {
       children: [
         Text(
           label,
-          style: const TextStyle(color: AppColors.almostBlack300, fontSize: 11, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: AppColors.almostBlack300,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: color,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );

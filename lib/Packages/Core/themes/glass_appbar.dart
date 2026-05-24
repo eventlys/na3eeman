@@ -53,8 +53,8 @@ class _GlassSliverAppBarState extends State<GlassSliverAppBar> {
           ? AppColor.darkBackground.withOpacity(0.9)
           : AppColor.white.withOpacity(0.9),
       elevation: 0,
-      leading: widget.leading ??
-          (widget.showBackButton ? _buildBackButton() : null),
+      leading:
+          widget.leading ?? (widget.showBackButton ? _buildBackButton() : null),
       actions: widget.actions,
       pinned: widget.pinned,
       floating: widget.floating,
@@ -64,9 +64,7 @@ class _GlassSliverAppBarState extends State<GlassSliverAppBar> {
       flexibleSpace: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            color: Colors.transparent,
-          ),
+          child: Container(color: Colors.transparent),
         ),
       ),
     );

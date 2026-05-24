@@ -1,4 +1,3 @@
-
 class HelpFeedback {
   final int id;
   final int userId;

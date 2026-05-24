@@ -28,12 +28,10 @@ class CustomAnimations {
   }
 
   static Animation<double> scale(AnimationController controller) {
-    return Tween<double>(begin: 0.8, end: 1).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: easeInOut,
-      ),
-    );
+    return Tween<double>(
+      begin: 0.8,
+      end: 1,
+    ).animate(CurvedAnimation(parent: controller, curve: easeInOut));
   }
 }
 
@@ -55,7 +53,8 @@ class FadeInWidget extends StatefulWidget {
   State<FadeInWidget> createState() => _FadeInWidgetState();
 }
 
-class _FadeInWidgetState extends State<FadeInWidget> with SingleTickerProviderStateMixin {
+class _FadeInWidgetState extends State<FadeInWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacity;
   late Animation<double> _offset;
@@ -64,18 +63,17 @@ class _FadeInWidgetState extends State<FadeInWidget> with SingleTickerProviderSt
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
-    _opacity = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: widget.curve),
-    );
+    _opacity = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
-    _offset = Tween<double>(begin: widget.offset, end: 0).animate(
-      CurvedAnimation(parent: _controller, curve: widget.curve),
-    );
+    _offset = Tween<double>(
+      begin: widget.offset,
+      end: 0,
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     _controller.forward();
   }
@@ -148,7 +146,8 @@ class BounceAnimation extends StatefulWidget {
   State<BounceAnimation> createState() => _BounceAnimationState();
 }
 
-class _BounceAnimationState extends State<BounceAnimation> with SingleTickerProviderStateMixin {
+class _BounceAnimationState extends State<BounceAnimation>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scale;
 
@@ -156,18 +155,12 @@ class _BounceAnimationState extends State<BounceAnimation> with SingleTickerProv
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scale = Tween<double>(
       begin: 1,
       end: widget.scale,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
   }
 
   void bounce() {
@@ -181,10 +174,7 @@ class _BounceAnimationState extends State<BounceAnimation> with SingleTickerProv
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _scale.value,
-            child: child,
-          );
+          return Transform.scale(scale: _scale.value, child: child);
         },
         child: widget.child,
       ),

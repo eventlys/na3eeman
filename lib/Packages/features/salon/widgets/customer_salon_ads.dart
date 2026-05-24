@@ -36,7 +36,11 @@ class _HorizontalSalonScrollState extends State<HorizontalSalonScroll> {
     if (offersProvider.isLoading && offers.isEmpty) {
       return SizedBox(
         height: 170,
-        child: Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
       );
     }
 
@@ -105,13 +109,20 @@ class OfferCard extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+                      colors: [
+                        Theme.of(context).primaryColor,
+                        Theme.of(context).primaryColor,
+                      ],
                     ),
                   ),
                   child: Center(
                     child: Opacity(
                       opacity: 0.1,
-                      child: Icon(Icons.stars_rounded, color: Colors.white, size: 120),
+                      child: Icon(
+                        Icons.stars_rounded,
+                        color: Colors.white,
+                        size: 120,
+                      ),
                     ),
                   ),
                 ),
@@ -127,7 +138,10 @@ class OfferCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
@@ -169,15 +183,18 @@ class OfferCard extends StatelessWidget {
                 top: 12,
                 right: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.amber,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    offer.validityPeriod.contains('until') 
-                      ? 'Limited Time'
-                      : offer.validityPeriod,
+                    offer.validityPeriod.contains('until')
+                        ? 'Limited Time'
+                        : offer.validityPeriod,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 10,

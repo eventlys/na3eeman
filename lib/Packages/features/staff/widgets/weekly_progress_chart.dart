@@ -8,7 +8,7 @@ class WeeklyProgressChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       height: 200,
       padding: const EdgeInsets.all(16),
@@ -25,7 +25,11 @@ class WeeklyProgressChart extends StatelessWidget {
                 'Weekly Progress',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
-              const Icon(Icons.show_chart_rounded, size: 16, color: AppColors.almostBlack300),
+              const Icon(
+                Icons.show_chart_rounded,
+                size: 16,
+                color: AppColors.almostBlack300,
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -36,9 +40,15 @@ class WeeklyProgressChart extends StatelessWidget {
                 maxY: 10,
                 gridData: FlGridData(show: false),
                 titlesData: FlTitlesData(
-                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
@@ -48,7 +58,10 @@ class WeeklyProgressChart extends StatelessWidget {
                           meta: meta,
                           child: Text(
                             days[value.toInt() % 7],
-                            style: const TextStyle(color: AppColors.almostBlack300, fontSize: 10),
+                            style: const TextStyle(
+                              color: AppColors.almostBlack300,
+                              fontSize: 10,
+                            ),
                           ),
                         );
                       },

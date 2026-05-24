@@ -13,7 +13,9 @@ class BranchManagementPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("branch_management".tr()),
-        backgroundColor: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+        backgroundColor: isDarkTheme
+            ? AppColor.darkPrimary
+            : AppColor.lightPrimary,
         foregroundColor: isDarkTheme ? AppColor.darkText : AppColor.lightText,
         elevation: 2,
       ),
@@ -27,10 +29,13 @@ class BranchManagementPage extends StatelessWidget {
                 isDarkTheme ? AppImages.store_view : AppImages.store,
                 width: 80,
                 height: 80,
-                color: (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary).withOpacity(0.5),
+                color:
+                    (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary)
+                        .withOpacity(0.5),
               ),
               SizedBox(height: 20),
-              Text("branch_management".tr(),
+              Text(
+                "branch_management".tr(),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -38,10 +43,12 @@ class BranchManagementPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Text("manage_all_your_branches_view_performance_metrics".tr(),
+              Text(
+                "manage_all_your_branches_view_performance_metrics".tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: (isDarkTheme ? AppColor.darkText : AppColor.lightText).withValues(alpha: 0.7),
+                  color: (isDarkTheme ? AppColor.darkText : AppColor.lightText)
+                      .withValues(alpha: 0.7),
                 ),
               ),
             ],

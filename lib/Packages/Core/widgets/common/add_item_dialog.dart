@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../utils/helpers/themes_helpers.dart';
 
-
 class AppDialogThemes {
   // Main dialog theme getters - using DialogThemeData
   static DialogThemeData get lightDialogTheme {
     return DialogThemeData(
       backgroundColor: AppColor.lightCard,
       elevation: 8.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       titleTextStyle: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w600,
@@ -29,9 +26,7 @@ class AppDialogThemes {
     return DialogThemeData(
       backgroundColor: AppColor.darkCard,
       elevation: 8.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       titleTextStyle: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w600,
@@ -52,9 +47,7 @@ class AppDialogThemes {
     return DialogThemeData(
       backgroundColor: config.cardColor,
       elevation: 8.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       titleTextStyle: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w600,
@@ -77,7 +70,7 @@ class AppDialogThemes {
         borderRadius: BorderRadius.circular(8.0),
         side: BorderSide(
           color: isDark ? Colors.white : Colors.black,
-          width: 2.0
+          width: 2.0,
         ),
       ),
       titleTextStyle: TextStyle(
@@ -110,10 +103,7 @@ class AppDialogThemes {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              gradientColors.startColor,
-              gradientColors.endColor,
-            ],
+            colors: [gradientColors.startColor, gradientColors.endColor],
           ),
           borderRadius: BorderRadius.circular(16.0),
           boxShadow: [
@@ -200,17 +190,11 @@ class AppDialogThemes {
           final dialogTheme = getGenderDialogTheme(gender, isDark);
           return Theme(
             data: theme.copyWith(dialogTheme: dialogTheme),
-            child: Dialog(
-              insetPadding: insetPadding,
-              child: child,
-            ),
+            child: Dialog(insetPadding: insetPadding, child: child),
           );
         }
 
-        return Dialog(
-          insetPadding: insetPadding,
-          child: child,
-        );
+        return Dialog(insetPadding: insetPadding, child: child);
       },
     );
   }

@@ -10,10 +10,10 @@ abstract class BaseRepository<T> {
 
   Future<List<T>> getAll({int page = 1, int limit = 20}) async {
     try {
-      final response = await apiService.get('/${_getEndpoint()}', queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      });
+      final response = await apiService.get(
+        '/${_getEndpoint()}',
+        queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      );
 
       return (response['data'] as List).map((item) => _fromJson(item)).toList();
     } catch (e) {
@@ -34,7 +34,10 @@ abstract class BaseRepository<T> {
 
   Future<T> create(T item) async {
     try {
-      final response = await apiService.post('/${_getEndpoint()}', data: _toJson(item));
+      final response = await apiService.post(
+        '/${_getEndpoint()}',
+        data: _toJson(item),
+      );
       return _fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Failed to create ${_getEndpoint()}', error: e);
@@ -44,7 +47,10 @@ abstract class BaseRepository<T> {
 
   Future<T> update(String id, T item) async {
     try {
-      final response = await apiService.put('/${_getEndpoint()}/$id', data: _toJson(item));
+      final response = await apiService.put(
+        '/${_getEndpoint()}/$id',
+        data: _toJson(item),
+      );
       return _fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Failed to update ${_getEndpoint()}: $id', error: e);
@@ -54,7 +60,10 @@ abstract class BaseRepository<T> {
 
   Future<T> patch(String id, Map<String, dynamic> data) async {
     try {
-      final response = await apiService.patch('/${_getEndpoint()}/$id', data: data);
+      final response = await apiService.patch(
+        '/${_getEndpoint()}/$id',
+        data: data,
+      );
       return _fromJson(response['data']);
     } catch (e) {
       AppLogger.error('Failed to patch ${_getEndpoint()}: $id', error: e);
@@ -75,11 +84,14 @@ abstract class BaseRepository<T> {
   // Search method
   Future<List<T>> search(String query, {int page = 1, int limit = 20}) async {
     try {
-      final response = await apiService.get('/${_getEndpoint()}/search', queryParams: {
-        'q': query,
-        'page': page.toString(),
-        'limit': limit.toString(),
-      });
+      final response = await apiService.get(
+        '/${_getEndpoint()}/search',
+        queryParams: {
+          'q': query,
+          'page': page.toString(),
+          'limit': limit.toString(),
+        },
+      );
 
       return (response['data'] as List).map((item) => _fromJson(item)).toList();
     } catch (e) {
@@ -112,13 +124,19 @@ abstract class SalonRepositoryInterface {
 
 abstract class AppointmentRepositoryInterface {
   Future<List<dynamic>> getAppointments({int page, int limit});
-  Future<Map<String, dynamic>> bookAppointment(Map<String, dynamic> appointmentData);
+  Future<Map<String, dynamic>> bookAppointment(
+    Map<String, dynamic> appointmentData,
+  );
   Future<bool> cancelAppointment(String appointmentId);
   Future<bool> rescheduleAppointment(String appointmentId, DateTime newTime);
 }
 
 abstract class LoyaltyRepositoryInterface {
   Future<Map<String, dynamic>> getLoyaltyBalance(int customerId);
-  Future<Map<String, dynamic>> awardPoints(int customerId, int points, String source);
+  Future<Map<String, dynamic>> awardPoints(
+    int customerId,
+    int points,
+    String source,
+  );
   Future<Map<String, dynamic>> redeemFreeHaircut(int customerId);
 }

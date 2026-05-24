@@ -11,7 +11,8 @@ class ReceptionistProductsPage extends StatefulWidget {
   const ReceptionistProductsPage({super.key});
 
   @override
-  State<ReceptionistProductsPage> createState() => _ReceptionistProductsPageState();
+  State<ReceptionistProductsPage> createState() =>
+      _ReceptionistProductsPageState();
 }
 
 class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
@@ -35,62 +36,85 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products Management', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'products_management'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
-      body: _isLoading 
-        ? const Center(child: CircularProgressIndicator()) 
-        : SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Analytics Quick Stat Row
-                const Text('Insights', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: DashboardSummaryCard(
-                        title: 'Total items',
-                        value: '${inventory.length}',
-                        icon: Icons.trending_up_rounded,
-                        color: AppColors.success,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Analytics Quick Stat Row
+                  Text(
+                    'insights'.tr(),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DashboardSummaryCard(
+                          title: 'total_items'.tr(),
+                          value: '${inventory.length}',
+                          icon: Icons.trending_up_rounded,
+                          color: AppColors.success,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: DashboardSummaryCard(
-                        title: 'Low Stock',
-                        value: '${inventory.where((e) => e.quantityInStock < 10).length}',
-                        icon: Icons.trending_down_rounded,
-                        color: AppColors.error,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DashboardSummaryCard(
+                          title: 'low_stock'.tr(),
+                          value:
+                              '${inventory.where((e) => e.quantityInStock < 10).length}',
+                          icon: Icons.trending_down_rounded,
+                          color: AppColors.error,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
 
-                const SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('All Products', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    TextButton.icon(
-                      onPressed: () => _showCreateProductModal(context),
-                      icon: const Icon(Icons.add_circle_outline_rounded),
-                      label: const Text('New Product'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                
-                if (inventory.isEmpty)
-                  const Center(child: Padding(padding: EdgeInsets.all(32), child: Text('No products available.', style: TextStyle(color: AppColors.almostBlack300))))
-                else
-                  ...inventory.map((item) => _buildProductItem(item)),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'all_products'.tr(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () => _showCreateProductModal(context),
+                        icon: const Icon(Icons.add_circle_outline_rounded),
+                        label: Text('new_product'.tr()),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  if (inventory.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Text(
+                          'no_products_available'.tr(),
+                          style: const TextStyle(
+                            color: AppColors.almostBlack300,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    ...inventory.map((item) => _buildProductItem(item)),
+                ],
+              ),
             ),
-          ),
     );
   }
 
@@ -106,23 +130,44 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
         decoration: BoxDecoration(
           color: isDark ? AppColors.almostBlack600 : AppColors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+          border: Border.all(
+            color: isDark
+                ? AppColors.white.withOpacity(0.1)
+                : AppColors.almostBlack50,
+          ),
         ),
         child: Row(
           children: [
             Container(
-              width: 50, height: 50,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-              child: const Icon(Icons.inventory_2_rounded, color: AppColors.almostBlack300),
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.inventory_2_rounded,
+                color: AppColors.almostBlack300,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.productName ?? 'Product', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    item.productName ?? 'product'.tr(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 4),
-                  Text('Price: \$${(item.productPrice ?? 0.0).toStringAsFixed(2)}', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 13)),
+                  Text(
+                    'price'.tr() +
+                        ': \$${(item.productPrice ?? 0.0).toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: AppColors.almostBlack300,
+                      fontSize: 13,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -131,26 +176,48 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 8,
+                  ),
                   decoration: BoxDecoration(
-                    color: stock < 10 ? AppColors.error.withOpacity(0.1) : AppColors.success.withOpacity(0.1),
+                    color: stock < 10
+                        ? AppColors.error.withOpacity(0.1)
+                        : AppColors.success.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    '$stock left',
-                    style: TextStyle(color: stock < 10 ? AppColors.error : AppColors.success, fontWeight: FontWeight.bold, fontSize: 11),
+                    '$stock ${'left'.tr()}',
+                    style: TextStyle(
+                      color: stock < 10 ? AppColors.error : AppColors.success,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {
                     // Actual increment
-                    context.read<SalonProvider>().adjustStockOnBackend(item.id, 1);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Incrementing stock for ${item.productName}')));
+                    context.read<SalonProvider>().adjustStockOnBackend(
+                      item.id,
+                      1,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'incrementing_stock'.tr() + ' ${item.productName}',
+                        ),
+                      ),
+                    );
                   },
                   child: Text(
-                    '+ Add Stock',
-                    style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                    '+ ' + 'add_stock'.tr(),
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -167,24 +234,41 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        decoration: BoxDecoration(color: isDark ? AppColors.almostBlack600 : AppColors.white, borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : AppColors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(item.productName ?? 'Product Details', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              item.productName ?? 'product_details'.tr(),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 4),
-            Text(item.productDescription ?? 'No description available.', style: const TextStyle(color: AppColors.almostBlack300)),
+            Text(
+              item.productDescription ?? 'no_description_available'.tr(),
+              style: const TextStyle(color: AppColors.almostBlack300),
+            ),
             const Divider(height: 32),
-            _buildDetailRow('Price', '\$${(item.productPrice ?? 0.0).toStringAsFixed(2)}'),
-            _buildDetailRow('Current Stock', '${item.quantityInStock} left'),
+            _buildDetailRow(
+              'price'.tr(),
+              '\$${(item.productPrice ?? 0.0).toStringAsFixed(2)}',
+            ),
+            _buildDetailRow(
+              'current_stock'.tr(),
+              '${item.quantityInStock} ${'left'.tr()}',
+            ),
             const SizedBox(height: 24),
             PrimaryButton(
-              text: 'Edit Product Info',
+              text: 'edit_product_info'.tr(),
               onPressed: () {
-                 Navigator.pop(context);
-                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Edit UI details setup triggers...')));
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('edit_product_info_triggers'.tr())),
+                );
               },
             ),
           ],
@@ -215,23 +299,44 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add New Product', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'add_new_product'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDialogField('Product Name', controller: nameController),
+              _buildDialogField(
+                'product_name'.tr(),
+                controller: nameController,
+              ),
               const SizedBox(height: 12),
-              _buildDialogField('Price', controller: priceController, keyboard: TextInputType.number),
+              _buildDialogField(
+                'price'.tr(),
+                controller: priceController,
+                keyboard: TextInputType.number,
+              ),
               const SizedBox(height: 12),
-              _buildDialogField('Description', controller: descController, maxLines: 3),
+              _buildDialogField(
+                'description'.tr(),
+                controller: descController,
+                maxLines: 3,
+              ),
               const SizedBox(height: 12),
-              _buildDialogField('Stock Count', controller: stockController, keyboard: TextInputType.number),
+              _buildDialogField(
+                'stock_count'.tr(),
+                controller: stockController,
+                keyboard: TextInputType.number,
+              ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr())),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("cancel".tr()),
+          ),
           ElevatedButton(
             onPressed: () {
               final name = nameController.text.trim();
@@ -247,7 +352,9 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                   stock: stock,
                 );
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Creating $name...')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('creating'.tr() + ' $name...')),
+                );
               }
             },
             child: Text("create".tr()),
@@ -257,7 +364,12 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
     );
   }
 
-  Widget _buildDialogField(String label, {required TextEditingController controller, TextInputType keyboard = TextInputType.text, int maxLines = 1}) {
+  Widget _buildDialogField(
+    String label, {
+    required TextEditingController controller,
+    TextInputType keyboard = TextInputType.text,
+    int maxLines = 1,
+  }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboard,

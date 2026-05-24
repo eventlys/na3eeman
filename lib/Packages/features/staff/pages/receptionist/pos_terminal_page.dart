@@ -5,6 +5,9 @@ import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/points_provider.dart';
+import 'package:na3eeman/Providers/features/auth_provider.dart';
+import 'package:na3eeman/Providers/features/appointment_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PosTerminalPage extends StatefulWidget {
   const PosTerminalPage({super.key});
@@ -23,7 +26,10 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
 
   String _selectedMethod = 'CASH';
   String? _voucherCode;
-  final bool _isProcessing = false;
+  bool _isProcessing = false;
+
+  int? _selectedExpertId;
+  DateTime? _selectedDateTime;
 
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
@@ -31,11 +37,15 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   final _voucherCtrl = TextEditingController();
 
   static const _paymentMethods = [
-    {'value': 'CASH', 'label': 'Cash', 'icon': Icons.money_rounded},
-    {'value': 'CLIQ', 'label': 'CliQ', 'icon': Icons.qr_code_rounded},
-    {'value': 'VISA', 'label': 'Card', 'icon': Icons.credit_card_rounded},
-    {'value': 'VOUCHER', 'label': 'Voucher', 'icon': Icons.card_giftcard_rounded},
-    {'value': 'POINTS', 'label': 'Points', 'icon': Icons.stars_rounded},
+    {'value': 'CASH', 'label': 'cash', 'icon': Icons.money_rounded},
+    {'value': 'CLIQ', 'label': 'cliq_label', 'icon': Icons.qr_code_rounded},
+    {'value': 'VISA', 'label': 'card', 'icon': Icons.credit_card_rounded},
+    {
+      'value': 'VOUCHER',
+      'label': 'voucher_label',
+      'icon': Icons.card_giftcard_rounded,
+    },
+    {'value': 'POINTS', 'label': 'points_label', 'icon': Icons.stars_rounded},
   ];
 
   @override
@@ -47,21 +57,29 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   Future<void> _loadData() async {
     setState(() => _loading = true);
     try {
-      // Mocking data for now
-      _services = [
-        {'id': 's1', 'name': 'Classic Haircut', 'price': 8.0},
-        {'id': 's2', 'name': 'Beard Trim', 'price': 5.0},
-      ];
-      _products = [
-        {'id': 'p1', 'name': 'Hair Wax', 'price': 12.0},
-        {'id': 'p2', 'name': 'Face Cream', 'price': 15.0},
-      ];
-      _offers = [
-        {'id': 'o1', 'name': 'Summer Offer', 'price': 10.0},
-      ];
-      _packages = [
-        {'id': 'pk1', 'name': 'Full Grooming', 'price': 25.0},
-      ];
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final salonId = authProvider.user?.salonId;
+
+      if (salonId == null) {
+        AppSnackBar.error(context, 'No salon associated with this account');
+        return;
+      }
+
+      final results = await Future.wait([
+        ApiService().getSalonServices(salonId),
+        ApiService().getSalonPackages(salonId),
+        ApiService().getSalonOffers(salonId),
+        ApiService().getSalonProducts(salonId),
+      ]);
+
+      setState(() {
+        _services = List<Map<String, dynamic>>.from(results[0]);
+        _packages = List<Map<String, dynamic>>.from(results[1]);
+        _offers = List<Map<String, dynamic>>.from(results[2]);
+        _products = List<Map<String, dynamic>>.from(results[3]);
+      });
+    } catch (e) {
+      AppSnackBar.error(context, 'Failed to load data: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -69,13 +87,27 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
 
   double get _subtotal => _cartItems.fold(0.0, (s, i) => s + i.total);
 
-  void _addItem(String id, String name, double price, String type) {
-    final existing = _cartItems.indexWhere((c) => c.id == id);
+  void _addItem(Map<String, dynamic> item, String type) {
+    final id = item['id'].toString();
+    final name = item['name'] ?? '';
+    final price = (item['price'] as num?)?.toDouble() ?? 0.0;
+    final duration = item['duration'] as int?;
+
+    final existing = _cartItems.indexWhere((c) => c.id == id && c.type == type);
     setState(() {
       if (existing >= 0) {
         _cartItems[existing].quantity++;
       } else {
-        _cartItems.add(_CartItem(id: id, name: name, price: price, quantity: 1, type: type));
+        _cartItems.add(
+          _CartItem(
+            id: id,
+            name: name,
+            price: price,
+            quantity: 1,
+            type: type,
+            duration: duration,
+          ),
+        );
       }
     });
   }
@@ -100,10 +132,14 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
         setModalState(() {
           _voucherCode = _voucherCtrl.text;
         });
-        AppSnackBar.success(context, 'Voucher applied! Balance: ${res['balance']} JOD');
+        AppSnackBar.success(
+          context,
+          'voucher_applied_balance_msg'.tr(args: [res['balance'].toString()]),
+        );
       }
     } catch (e) {
-      if (mounted) AppSnackBar.error(context, 'Invalid voucher code');
+      if (mounted)
+        AppSnackBar.error(context, 'invalid_voucher_code_error'.tr());
     }
   }
 
@@ -115,10 +151,19 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('POS Terminal', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'pos_terminal'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           if (_cartItems.isNotEmpty)
-            IconButton(onPressed: _clearCart, icon: const Icon(Icons.delete_sweep_rounded, color: AppColors.error)),
+            IconButton(
+              onPressed: _clearCart,
+              icon: const Icon(
+                Icons.delete_sweep_rounded,
+                color: AppColors.error,
+              ),
+            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -142,28 +187,52 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Customer Information', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            'customer_information'.tr(),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 20),
           Row(
             children: [
-              Expanded(child: _buildTextField(_firstNameCtrl, 'First Name', Icons.person_rounded)),
+              Expanded(
+                child: _buildTextField(
+                  _firstNameCtrl,
+                  'first_name_label'.tr(),
+                  Icons.person_rounded,
+                ),
+              ),
               const SizedBox(width: 12),
-              Expanded(child: _buildTextField(_lastNameCtrl, 'Last Name', Icons.person_rounded)),
+              Expanded(
+                child: _buildTextField(
+                  _lastNameCtrl,
+                  'last_name_label'.tr(),
+                  Icons.person_rounded,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _buildTextField(_phoneCtrl, 'Phone Number', Icons.phone_rounded, keyboardType: TextInputType.phone)),
+              Expanded(
+                child: _buildTextField(
+                  _phoneCtrl,
+                  'phone_number'.tr(),
+                  Icons.phone_rounded,
+                  keyboardType: TextInputType.phone,
+                ),
+              ),
               const SizedBox(width: 12),
               SizedBox(
                 height: 48,
                 child: OutlinedButton(
                   onPressed: _lookupCustomer,
                   style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  child: const Text('Verify'),
+                  child: Text('verify_label'.tr()),
                 ),
               ),
             ],
@@ -173,24 +242,49 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _hasCustomerPenalty ? Colors.red.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+                color: _hasCustomerPenalty
+                    ? Colors.red.withValues(alpha: 0.1)
+                    : Colors.green.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _hasCustomerPenalty ? Colors.red.withValues(alpha: 0.3) : Colors.green.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: _hasCustomerPenalty
+                      ? Colors.red.withValues(alpha: 0.3)
+                      : Colors.green.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(_hasCustomerPenalty ? Icons.warning_amber_rounded : Icons.stars_rounded, 
-                       color: _hasCustomerPenalty ? Colors.red : Colors.green),
+                  Icon(
+                    _hasCustomerPenalty
+                        ? Icons.warning_amber_rounded
+                        : Icons.stars_rounded,
+                    color: _hasCustomerPenalty ? Colors.red : Colors.green,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Loyalty Balance: $_customerBalance pts', 
-                             style: TextStyle(fontWeight: FontWeight.bold, color: _hasCustomerPenalty ? Colors.red : Colors.green)),
+                        Text(
+                          'loyalty_balance_pts'.tr(
+                            args: [_customerBalance.toString()],
+                          ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: _hasCustomerPenalty
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                        ),
                         if (_hasCustomerPenalty)
-                          const Text('⚠️ Pending Penalty Detected (>24h delay)', 
-                                     style: TextStyle(fontSize: 11, color: Colors.red, fontWeight: FontWeight.bold)),
+                          Text(
+                            'pending_penalty_detected'.tr(),
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -209,18 +303,28 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   Future<void> _lookupCustomer() async {
     if (_phoneCtrl.text.isEmpty) return;
     try {
-      final res = await ApiService().get('/loyalty/balance-by-phone/', queryParams: {'phone': _phoneCtrl.text});
+      final res = await ApiService().get(
+        '/loyalty/balance-by-phone/',
+        queryParams: {'phone': _phoneCtrl.text},
+      );
       setState(() {
         _customerBalance = res['points'];
         _hasCustomerPenalty = res['has_pending_penalty'] ?? false;
+        if (res['first_name'] != null) _firstNameCtrl.text = res['first_name'];
+        if (res['last_name'] != null) _lastNameCtrl.text = res['last_name'];
       });
-      AppSnackBar.success(context, 'Customer found!');
+      AppSnackBar.success(context, 'customer_found_success'.tr());
     } catch (e) {
-      AppSnackBar.error(context, 'Customer not found');
+      AppSnackBar.error(context, 'customer_not_found_error'.tr());
     }
   }
 
-  Widget _buildTextField(TextEditingController ctrl, String label, IconData icon, {TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildTextField(
+    TextEditingController ctrl,
+    String label,
+    IconData icon, {
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return TextFormField(
       controller: ctrl,
       keyboardType: keyboardType,
@@ -240,23 +344,46 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildCategorySection('Services', _services, Colors.blue, 'Service'),
+          _buildCategorySection(
+            'services'.tr(),
+            _services,
+            Colors.blue,
+            'Service',
+          ),
           const SizedBox(height: 32),
-          _buildCategorySection('Packages', _packages, Colors.purple, 'Package'),
+          _buildCategorySection(
+            'packages'.tr(),
+            _packages,
+            Colors.purple,
+            'Package',
+          ),
           const SizedBox(height: 32),
-          _buildCategorySection('Offers', _offers, Colors.orange, 'Offer'),
+          _buildCategorySection('offers'.tr(), _offers, Colors.orange, 'Offer'),
           const SizedBox(height: 32),
-          _buildCategorySection('Products', _products, Colors.green, 'Product'),
+          _buildCategorySection(
+            'products'.tr(),
+            _products,
+            Colors.green,
+            'Product',
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCategorySection(String title, List<Map<String, dynamic>> items, Color color, String type) {
+  Widget _buildCategorySection(
+    String title,
+    List<Map<String, dynamic>> items,
+    Color color,
+    String type,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 16),
         GridView.builder(
           shrinkWrap: true,
@@ -271,7 +398,7 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
           itemBuilder: (context, i) {
             final item = items[i];
             return GestureDetector(
-              onTap: () => _addItem(item['id'], item['name'], item['price'], type),
+              onTap: () => _addItem(item, type),
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -286,12 +413,29 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                          Text('${item['price']} JOD', style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+                          Text(
+                            item['name'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            '${item['price']} JOD',
+                            style: TextStyle(
+                              color: color,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    Icon(Icons.add_circle_outline_rounded, color: color, size: 20),
+                    Icon(
+                      Icons.add_circle_outline_rounded,
+                      color: color,
+                      size: 20,
+                    ),
                   ],
                 ),
               ),
@@ -315,7 +459,10 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Cart Summary', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            'cart_summary'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
           ..._cartItems.asMap().entries.map((entry) {
             final i = entry.key;
@@ -324,12 +471,23 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
                 children: [
-                  Expanded(child: Text('${item.name} (${item.type}) x${item.quantity}')),
-                  Text('${item.total.toStringAsFixed(2)} JOD', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Expanded(
+                    child: Text(
+                      '${item.name} (${item.type}) x${item.quantity}',
+                    ),
+                  ),
+                  Text(
+                    '${item.total.toStringAsFixed(2)} JOD',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(width: 12),
                   GestureDetector(
                     onTap: () => _removeItem(i),
-                    child: const Icon(Icons.remove_circle_outline_rounded, size: 18, color: AppColors.error),
+                    child: const Icon(
+                      Icons.remove_circle_outline_rounded,
+                      size: 18,
+                      color: AppColors.error,
+                    ),
                   ),
                 ],
               ),
@@ -345,7 +503,13 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: SafeArea(
         child: Column(
@@ -354,8 +518,18 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Total Amount', style: TextStyle(color: AppColors.almostBlack300)),
-                Text('${_subtotal.toStringAsFixed(2)} JOD', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Theme.of(context).primaryColor)),
+                Text(
+                  'total_amount'.tr(),
+                  style: const TextStyle(color: AppColors.almostBlack300),
+                ),
+                Text(
+                  '${_subtotal.toStringAsFixed(2)} JOD',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -363,8 +537,8 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
               width: double.infinity,
               height: 56,
               child: PrimaryButton(
-                text: 'Proceed to Checkout',
-                onPressed: () => _showPaymentModal(theme, isDark),
+                text: 'proceed_to_checkout'.tr(),
+                onPressed: () => _showAppointmentDetailsModal(theme, isDark),
               ),
             ),
           ],
@@ -373,13 +547,22 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
     );
   }
 
-  void _showPaymentModal(ThemeData theme, bool isDark) {
+  void _showAppointmentDetailsModal(ThemeData theme, bool isDark) {
     if (_cartItems.isEmpty) {
-      AppSnackBar.error(context, 'Cart is empty');
+      AppSnackBar.error(context, 'cart_is_empty_error'.tr());
       return;
     }
     if (_phoneCtrl.text.isEmpty) {
-      AppSnackBar.error(context, 'Please enter customer phone');
+      AppSnackBar.error(context, 'please_enter_customer_phone'.tr());
+      return;
+    }
+
+    final hasServiceOrPackage = _cartItems.any(
+      (i) => i.type == 'Service' || i.type == 'Package' || i.type == 'Offer',
+    );
+
+    if (!hasServiceOrPackage) {
+      _showPaymentModal(theme, isDark);
       return;
     }
 
@@ -389,44 +572,215 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       backgroundColor: Colors.transparent,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => Container(
-          decoration: BoxDecoration(color: isDark ? AppColors.almostBlack600 : Colors.white, borderRadius: const BorderRadius.vertical(top: Radius.circular(32))),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          ),
           padding: const EdgeInsets.all(32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Payment Method', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                'select_expert_label'.tr(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildExpertSelector(setModalState),
+              const SizedBox(height: 24),
+              Text(
+                'select_date_time_label'.tr(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildDateTimePicker(setModalState),
+              const SizedBox(height: 32),
+              PrimaryButton(
+                text: 'continue'.tr(),
+                onPressed: () {
+                  if (_selectedExpertId == null || _selectedDateTime == null) {
+                    AppSnackBar.error(
+                      context,
+                      'please_select_both_date_and_time'.tr(),
+                    );
+                    return;
+                  }
+                  Navigator.pop(context);
+                  _showPaymentModal(theme, isDark);
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExpertSelector(StateSetter setModalState) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    return FutureBuilder<List<dynamic>>(
+      future: ApiService().getSalonExperts(authProvider.user!.salonId!),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting)
+          return const CircularProgressIndicator();
+        if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+        final experts = snapshot.data ?? [];
+        return DropdownButtonFormField<int>(
+          value: _selectedExpertId,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            hintText: 'select_expert'.tr(),
+          ),
+          items: experts.map((e) {
+            return DropdownMenuItem<int>(
+              value: e['id'],
+              child: Text(
+                e['user']['first_name'] + ' ' + e['user']['last_name'],
+              ),
+            );
+          }).toList(),
+          onChanged: (val) => setModalState(() => _selectedExpertId = val),
+        );
+      },
+    );
+  }
+
+  Widget _buildDateTimePicker(StateSetter setModalState) {
+    return InkWell(
+      onTap: () async {
+        final date = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 30)),
+        );
+        if (date != null) {
+          final time = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+          if (time != null) {
+            setModalState(() {
+              _selectedDateTime = DateTime(
+                date.year,
+                date.month,
+                date.day,
+                time.hour,
+                time.minute,
+              );
+            });
+          }
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_today_rounded),
+            const SizedBox(width: 12),
+            Text(
+              _selectedDateTime == null
+                  ? 'select_date_time'.tr()
+                  : DateFormat('yyyy-MM-dd HH:mm').format(_selectedDateTime!),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showPaymentModal(ThemeData theme, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          ),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'payment_method'.tr(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 24),
               Wrap(
-                spacing: 12, runSpacing: 12,
+                spacing: 12,
+                runSpacing: 12,
                 children: _paymentMethods.map((m) {
                   final isSelected = _selectedMethod == m['value'];
-                  final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+                  final pointsProvider = Provider.of<PointsProvider>(
+                    context,
+                    listen: false,
+                  );
                   final pointsNeeded = (_subtotal * 200).toInt();
-                  final canPayWithPoints = pointsProvider.currentBalance >= pointsNeeded;
+                  final canPayWithPoints =
+                      pointsProvider.currentBalance >= pointsNeeded;
 
                   return GestureDetector(
                     onTap: () {
                       if (m['value'] == 'POINTS' && !canPayWithPoints) {
-                        AppSnackBar.error(context, 'Insufficient points balance');
+                        AppSnackBar.error(
+                          context,
+                          'insufficient_points_balance'.tr(),
+                        );
                         return;
                       }
-                      setModalState(() => _selectedMethod = m['value'] as String);
+                      setModalState(
+                        () => _selectedMethod = m['value'] as String,
+                      );
                     },
                     child: Opacity(
-                      opacity: (m['value'] == 'POINTS' && !canPayWithPoints) ? 0.5 : 1.0,
+                      opacity: (m['value'] == 'POINTS' && !canPayWithPoints)
+                          ? 0.5
+                          : 1.0,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withValues(alpha: 0.1),
+                          color: isSelected
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(m['icon'] as IconData, size: 18, color: isSelected ? Colors.white : null),
+                            Icon(
+                              m['icon'] as IconData,
+                              size: 18,
+                              color: isSelected ? Colors.white : null,
+                            ),
                             const SizedBox(width: 8),
-                            Text(m['label'] as String, style: TextStyle(color: isSelected ? Colors.white : null, fontWeight: FontWeight.bold)),
+                            Text(
+                              (m['label'] as String).tr(),
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : null,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -438,12 +792,20 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
                 const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(color: Colors.amber.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Row(
                     children: [
                       const Icon(Icons.stars_rounded, color: Colors.amber),
                       const SizedBox(width: 12),
-                      Text('Required: ${(_subtotal * 200).toInt()} Points', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'required_points_count'.tr(
+                          args: [(_subtotal * 200).toInt().toString()],
+                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                 ),
@@ -453,19 +815,21 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
                 TextField(
                   controller: _voucherCtrl,
                   decoration: InputDecoration(
-                    labelText: 'Voucher Code',
-                    suffixIcon: TextButton(onPressed: () => _verifyVoucher(setModalState), child: const Text('Verify')),
+                    labelText: 'voucher_code'.tr(),
+                    suffixIcon: TextButton(
+                      onPressed: () => _verifyVoucher(setModalState),
+                      child: Text('verify_label'.tr()),
+                    ),
                     border: const OutlineInputBorder(),
                   ),
                 ),
               ],
               const SizedBox(height: 32),
               PrimaryButton(
-                text: 'Complete Booking',
-                onPressed: () {
-                  Navigator.pop(context);
-                  AppSnackBar.success(context, 'Booking completed for ${_firstNameCtrl.text}!');
-                  Navigator.pop(context);
+                text: 'complete_booking'.tr(),
+                isLoading: _isProcessing,
+                onPressed: () async {
+                  await _handleCompleteBooking();
                 },
               ),
               const SizedBox(height: 16),
@@ -475,6 +839,70 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       ),
     );
   }
+
+  Future<void> _handleCompleteBooking() async {
+    setState(() => _isProcessing = true);
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final appointmentProvider = Provider.of<AppointmentProvider>(
+        context,
+        listen: false,
+      );
+
+      final totalDuration = _cartItems.fold(0, (sum, item) {
+        // Items might have duration from API, fallback to 30
+        return sum + (item.duration ?? 30);
+      });
+
+      final startTime = _selectedDateTime ?? DateTime.now();
+      final endTime = startTime.add(Duration(minutes: totalDuration));
+
+      final appointmentData = {
+        'salon': authProvider.user?.salonId,
+        'expert': _selectedExpertId,
+        'customer_phone': _phoneCtrl.text,
+        'customer_first_name': _firstNameCtrl.text,
+        'customer_last_name': _lastNameCtrl.text,
+        'start_time': startTime.toIso8601String(),
+        'end_time': endTime.toIso8601String(),
+        'services': _cartItems.map((i) {
+          final type = i.type.toUpperCase();
+          return {
+            'service_type': type == 'SERVICE' ? 'OPTION' : type,
+            if (type == 'SERVICE') 'option': int.tryParse(i.id),
+            if (type == 'PACKAGE') 'package': int.tryParse(i.id),
+            if (type == 'PRODUCT') 'product': int.tryParse(i.id),
+            if (type == 'OFFER') 'offer': int.tryParse(i.id),
+            'quantity': i.quantity,
+          };
+        }).toList(),
+        'payment_method': _selectedMethod,
+        if (_voucherCode != null) 'voucher_code': _voucherCode,
+        'status': 'COMPLETED',
+      };
+
+      await appointmentProvider.bookAppointment(appointmentData);
+
+      if (mounted) {
+        Navigator.pop(context); // Close modal
+        AppSnackBar.success(
+          context,
+          'booking_completed_for_user'.tr(args: [_firstNameCtrl.text]),
+        );
+        _clearCart();
+        _firstNameCtrl.clear();
+        _lastNameCtrl.clear();
+        _phoneCtrl.clear();
+        _selectedExpertId = null;
+        _selectedDateTime = null;
+      }
+    } catch (e) {
+      if (mounted)
+        AppSnackBar.error(context, 'booking_failed'.tr(args: [e.toString()]));
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
 }
 
 class _CartItem {
@@ -482,9 +910,17 @@ class _CartItem {
   final String name;
   final double price;
   final String type;
+  final int? duration;
   int quantity;
 
-  _CartItem({required this.id, required this.name, required this.price, required this.quantity, required this.type});
+  _CartItem({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.quantity,
+    required this.type,
+    this.duration,
+  });
 
   double get total => price * quantity;
 }

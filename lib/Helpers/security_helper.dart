@@ -14,7 +14,8 @@ class SecurityHelper {
   // Generate secure random string
   static String generateSecureRandomString(int length) {
     final random = Random.secure();
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     return String.fromCharCodes(
       Iterable.generate(
@@ -191,14 +192,26 @@ class SecurityHelper {
 
   // Validate file type
   static bool isValidFileType(String fileName, List<String> allowedExtensions) {
-    final extension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
+    final extension = fileName.toLowerCase().substring(
+      fileName.lastIndexOf('.'),
+    );
     return allowedExtensions.contains(extension);
   }
 
   // Check for malicious file names
   static bool isSafeFileName(String fileName) {
     final dangerousPatterns = [
-      '..', '//', '\\', '~', '/etc/', '/bin/', '/usr/', 'cmd', 'bat', 'exe', 'sh'
+      '..',
+      '//',
+      '\\',
+      '~',
+      '/etc/',
+      '/bin/',
+      '/usr/',
+      'cmd',
+      'bat',
+      'exe',
+      'sh',
     ];
 
     for (final pattern in dangerousPatterns) {
@@ -218,7 +231,10 @@ class SecurityHelper {
   }
 
   // Verify data integrity
-  static bool verifyDataIntegrity(Map<String, dynamic> data, String expectedHash) {
+  static bool verifyDataIntegrity(
+    Map<String, dynamic> data,
+    String expectedHash,
+  ) {
     final calculatedHash = calculateDataIntegrityHash(data);
     return calculatedHash == expectedHash;
   }
@@ -289,69 +305,65 @@ class SecurityHelper {
 
 // Rate limiting helper
 class RateLimiter {
-    final Map<String, List<DateTime>> _attempts = {};
-    final Duration _timeWindow;
-    final int _maxAttempts;
+  final Map<String, List<DateTime>> _attempts = {};
+  final Duration _timeWindow;
+  final int _maxAttempts;
 
-    RateLimiter({required Duration timeWindow, required int maxAttempts})
-        : _timeWindow = timeWindow,
-          _maxAttempts = maxAttempts;
+  RateLimiter({required Duration timeWindow, required int maxAttempts})
+    : _timeWindow = timeWindow,
+      _maxAttempts = maxAttempts;
 
-    bool checkLimit(String identifier) {
-      _cleanOldAttempts(identifier);
+  bool checkLimit(String identifier) {
+    _cleanOldAttempts(identifier);
 
-      final now = DateTime.now();
-      final attempts = _attempts[identifier] ?? [];
+    final now = DateTime.now();
+    final attempts = _attempts[identifier] ?? [];
 
-      if (attempts.length >= _maxAttempts) {
-        return false;
-      }
-
-      attempts.add(now);
-      _attempts[identifier] = attempts;
-      return true;
+    if (attempts.length >= _maxAttempts) {
+      return false;
     }
 
-    int getRemainingAttempts(String identifier) {
-      _cleanOldAttempts(identifier);
-      final attempts = _attempts[identifier] ?? [];
-      return _maxAttempts - attempts.length;
-    }
-
-    Duration getTimeUntilReset(String identifier) {
-      _cleanOldAttempts(identifier);
-      final attempts = _attempts[identifier] ?? [];
-
-      if (attempts.isEmpty) {
-        return Duration.zero;
-      }
-
-      final oldestAttempt = attempts.first;
-      final resetTime = oldestAttempt.add(_timeWindow);
-      final now = DateTime.now();
-
-      return resetTime.isAfter(now) ? resetTime.difference(now) : Duration.zero;
-    }
-
-    void resetAttempts(String identifier) {
-      _attempts.remove(identifier);
-    }
-
-    void _cleanOldAttempts(String identifier) {
-      final now = DateTime.now();
-      final attempts = _attempts[identifier] ?? [];
-
-      _attempts[identifier] = attempts
-          .where((attempt) => now.difference(attempt) < _timeWindow)
-          .toList();
-    }
+    attempts.add(now);
+    _attempts[identifier] = attempts;
+    return true;
   }
 
-enum PasswordStrength {
-  weak,
-  medium,
-  strong,
+  int getRemainingAttempts(String identifier) {
+    _cleanOldAttempts(identifier);
+    final attempts = _attempts[identifier] ?? [];
+    return _maxAttempts - attempts.length;
+  }
+
+  Duration getTimeUntilReset(String identifier) {
+    _cleanOldAttempts(identifier);
+    final attempts = _attempts[identifier] ?? [];
+
+    if (attempts.isEmpty) {
+      return Duration.zero;
+    }
+
+    final oldestAttempt = attempts.first;
+    final resetTime = oldestAttempt.add(_timeWindow);
+    final now = DateTime.now();
+
+    return resetTime.isAfter(now) ? resetTime.difference(now) : Duration.zero;
+  }
+
+  void resetAttempts(String identifier) {
+    _attempts.remove(identifier);
+  }
+
+  void _cleanOldAttempts(String identifier) {
+    final now = DateTime.now();
+    final attempts = _attempts[identifier] ?? [];
+
+    _attempts[identifier] = attempts
+        .where((attempt) => now.difference(attempt) < _timeWindow)
+        .toList();
+  }
 }
+
+enum PasswordStrength { weak, medium, strong }
 
 extension PasswordStrengthExtension on PasswordStrength {
   String get description {

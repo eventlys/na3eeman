@@ -27,13 +27,19 @@ class ApiErrorWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: isNetworkError ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : AppColors.error.withValues(alpha: 0.1),
+                color: isNetworkError
+                    ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                    : AppColors.error.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                isNetworkError ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                isNetworkError
+                    ? Icons.wifi_off_rounded
+                    : Icons.error_outline_rounded,
                 size: 64,
-                color: isNetworkError ? Theme.of(context).primaryColor : AppColors.error,
+                color: isNetworkError
+                    ? Theme.of(context).primaryColor
+                    : AppColors.error,
               ),
             ),
             const SizedBox(height: 24),
@@ -45,13 +51,12 @@ class ApiErrorWidget extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(color: isDark ? AppColors.cream600 : AppColors.almostBlack300),
+              style: TextStyle(
+                color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
+              ),
             ),
             const SizedBox(height: 32),
-            PrimaryButton(
-              text: 'Try Again',
-              onPressed: onRetry,
-            ),
+            PrimaryButton(text: 'Try Again', onPressed: onRetry),
           ],
         ),
       ),

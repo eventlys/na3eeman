@@ -84,12 +84,16 @@ class DeviceInfoHelper {
       // Get more specific capabilities based on device info
       if (Platform.isAndroid) {
         final androidInfo = await _deviceInfo.androidInfo;
-        capabilities['has_biometrics'] = androidInfo.version.sdkInt >= 23; // Android 6.0+
+        capabilities['has_biometrics'] =
+            androidInfo.version.sdkInt >= 23; // Android 6.0+
         capabilities['is_tablet'] = _isAndroidTablet(androidInfo);
       } else if (Platform.isIOS) {
         final iosInfo = await _deviceInfo.iosInfo;
-        capabilities['has_biometrics'] = iosInfo.model.contains('iPhone') || iosInfo.model.contains('iPad');
-        capabilities['is_tablet'] = iosInfo.model.toLowerCase().contains('ipad');
+        capabilities['has_biometrics'] =
+            iosInfo.model.contains('iPhone') || iosInfo.model.contains('iPad');
+        capabilities['is_tablet'] = iosInfo.model.toLowerCase().contains(
+          'ipad',
+        );
       }
 
       // General capabilities
@@ -145,13 +149,13 @@ class DeviceInfoHelper {
       if (Platform.isAndroid) {
         final androidInfo = await _deviceInfo.androidInfo;
         return androidInfo.version.sdkInt <= 23 || // Android 6.0 or below
-               androidInfo.systemFeatures.length < 10; // Limited features
+            androidInfo.systemFeatures.length < 10; // Limited features
       } else if (Platform.isIOS) {
         final iosInfo = await _deviceInfo.iosInfo;
         return iosInfo.model.contains('iPhone6') ||
-               iosInfo.model.contains('iPhone7') ||
-               iosInfo.model.contains('iPad4') ||
-               iosInfo.model.contains('iPad5');
+            iosInfo.model.contains('iPhone7') ||
+            iosInfo.model.contains('iPad4') ||
+            iosInfo.model.contains('iPad5');
       }
       return false;
     } catch (e) {
@@ -165,9 +169,9 @@ class DeviceInfoHelper {
     final screenSize = width * height;
 
     if (screenSize > 2000000) return 'xlarge'; // Tablets and large devices
-    if (screenSize > 1000000) return 'large';  // Phablets
-    if (screenSize > 500000) return 'medium';  // Normal phones
-    return 'small';                            // Small phones
+    if (screenSize > 1000000) return 'large'; // Phablets
+    if (screenSize > 500000) return 'medium'; // Normal phones
+    return 'small'; // Small phones
   }
 
   // Check for specific device features
@@ -253,13 +257,15 @@ class DeviceInfoHelper {
   bool _isAndroidTablet(AndroidDeviceInfo androidInfo) {
     // Various heuristics to detect tablets on Android
     final model = androidInfo.model.toLowerCase();
-    final isTabletModel = model.contains('tab') ||
-                         model.contains('pad') ||
-                         model.contains('tablet');
+    final isTabletModel =
+        model.contains('tab') ||
+        model.contains('pad') ||
+        model.contains('tablet');
 
     // Check screen size through system features
-    final hasLargeScreen = androidInfo.systemFeatures.contains('android.hardware.touchscreen') &&
-                          androidInfo.systemFeatures.contains('android.hardware.wifi');
+    final hasLargeScreen =
+        androidInfo.systemFeatures.contains('android.hardware.touchscreen') &&
+        androidInfo.systemFeatures.contains('android.hardware.wifi');
 
     return isTabletModel || hasLargeScreen;
   }

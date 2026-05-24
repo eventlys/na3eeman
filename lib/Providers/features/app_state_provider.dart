@@ -25,8 +25,7 @@ class AppStateProvider extends BaseProvider {
   bool get isLoggedIn => _isAuthenticated;
   bool get isExpert => _expertProfile != null;
   bool get isOwner => _ownerProfile != null;
-  bool get isCustomer =>
-      !isExpert && !isOwner && _isAuthenticated;
+  bool get isCustomer => !isExpert && !isOwner && _isAuthenticated;
 
   // Initialize app state
   Future<void> initialize() async {
@@ -181,9 +180,9 @@ class AppStateProvider extends BaseProvider {
 
   // Permission checks
   bool canAccessSalonManagement() {
-    return _userRole == UserRole.owner || 
-           _userRole == UserRole.ownerExpert || 
-           _userRole == UserRole.owner;
+    return _userRole == UserRole.owner ||
+        _userRole == UserRole.ownerExpert ||
+        _userRole == UserRole.owner;
   }
 
   // Private methods

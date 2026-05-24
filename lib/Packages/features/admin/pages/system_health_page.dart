@@ -13,7 +13,10 @@ class AdminSystemHealthPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("system_health_title".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "system_health_title".tr(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -22,7 +25,10 @@ class AdminSystemHealthPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('API Response Times', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'API Response Times',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             _buildMetricsCard('Core API', '120ms', AppColors.success),
             _buildMetricsCard('Auth Service', '240ms', AppColors.success),
@@ -30,14 +36,32 @@ class AdminSystemHealthPage extends StatelessWidget {
             _buildMetricsCard('Media Storage', '1.2s', AppColors.error),
 
             const SizedBox(height: 32),
-            const Text('Active Workers', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Active Workers',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
-            _buildWorkerStatus('Email Dispatcher', 'Running', AppColors.success),
-            _buildWorkerStatus('Push Service', 'Idle', Theme.of(context).primaryColor),
-            _buildWorkerStatus('Backup Job', 'Failed (Retry in 5m)', AppColors.error),
+            _buildWorkerStatus(
+              'Email Dispatcher',
+              'Running',
+              AppColors.success,
+            ),
+            _buildWorkerStatus(
+              'Push Service',
+              'Idle',
+              Theme.of(context).primaryColor,
+            ),
+            _buildWorkerStatus(
+              'Backup Job',
+              'Failed (Retry in 5m)',
+              AppColors.error,
+            ),
 
             const SizedBox(height: 32),
-            const Text('Server Capacity', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Server Capacity',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             _buildCapacityGauge('CPU Usage', 0.45, 'Optimal', context),
             _buildCapacityGauge('Memory usage', 0.78, 'High', context),
@@ -61,7 +85,10 @@ class AdminSystemHealthPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(service, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(time, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+          Text(
+            time,
+            style: TextStyle(color: color, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -75,12 +102,27 @@ class AdminSystemHealthPage extends StatelessWidget {
         height: 12,
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
-      title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-      trailing: Text(status, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+      title: Text(
+        name,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+      ),
+      trailing: Text(
+        status,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 
-  Widget _buildCapacityGauge(String label, double percent, String note, BuildContext context) {
+  Widget _buildCapacityGauge(
+    String label,
+    double percent,
+    String note,
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -89,8 +131,20 @@ class AdminSystemHealthPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-              Text('${(percent * 100).toInt()}% • $note', style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                '${(percent * 100).toInt()}% • $note',
+                style: const TextStyle(
+                  color: AppColors.almostBlack300,
+                  fontSize: 12,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -100,7 +154,9 @@ class AdminSystemHealthPage extends StatelessWidget {
               value: percent,
               minHeight: 6,
               backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-              color: percent > 0.8 ? AppColors.error : Theme.of(context).primaryColor,
+              color: percent > 0.8
+                  ? AppColors.error
+                  : Theme.of(context).primaryColor,
             ),
           ),
         ],

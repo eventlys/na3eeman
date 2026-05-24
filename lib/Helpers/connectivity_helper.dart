@@ -17,11 +17,14 @@ class ConnectivityHelper {
   List<ConnectivityResult> _currentStatus = [ConnectivityResult.none];
   bool _isInitialized = false;
 
-  Stream<List<ConnectivityResult>> get connectionStatus => _connectionStatusController.stream;
+  Stream<List<ConnectivityResult>> get connectionStatus =>
+      _connectionStatusController.stream;
   List<ConnectivityResult> get currentStatus => _currentStatus;
 
   // Check if there's any connectivity (not none)
-  bool get isConnected => !_currentStatus.contains(ConnectivityResult.none) && _currentStatus.isNotEmpty;
+  bool get isConnected =>
+      !_currentStatus.contains(ConnectivityResult.none) &&
+      _currentStatus.isNotEmpty;
 
   Future<void> initialize() async {
     if (_isInitialized) return;
@@ -32,7 +35,9 @@ class ConnectivityHelper {
       _connectionStatusController.add(_currentStatus);
 
       // Listen for connectivity changes
-      _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> result) {
+      _connectivity.onConnectivityChanged.listen((
+        List<ConnectivityResult> result,
+      ) {
         _currentStatus = result;
         _connectionStatusController.add(result);
 
@@ -94,16 +99,21 @@ class ConnectivityHelper {
   bool get isOnCellular => _currentStatus.contains(ConnectivityResult.mobile);
   bool get isOnEthernet => _currentStatus.contains(ConnectivityResult.ethernet);
   bool get isOnVpn => _currentStatus.contains(ConnectivityResult.vpn);
-  bool get isOnBluetooth => _currentStatus.contains(ConnectivityResult.bluetooth);
+  bool get isOnBluetooth =>
+      _currentStatus.contains(ConnectivityResult.bluetooth);
 
   // Method to wait for connection with timeout
-  Future<bool> waitForConnection({Duration timeout = const Duration(seconds: 30)}) async {
+  Future<bool> waitForConnection({
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
     if (isConnected) return true;
 
     final completer = Completer<bool>();
     final timer = Timer(timeout, () => completer.complete(false));
 
-    final subscription = connectionStatus.listen((List<ConnectivityResult> status) {
+    final subscription = connectionStatus.listen((
+      List<ConnectivityResult> status,
+    ) {
       if (!status.contains(ConnectivityResult.none) && status.isNotEmpty) {
         timer.cancel();
         completer.complete(true);
@@ -122,7 +132,7 @@ class ConnectivityHelper {
 
     // For now, consider WiFi and Ethernet as stable
     return _currentStatus.contains(ConnectivityResult.wifi) ||
-           _currentStatus.contains(ConnectivityResult.ethernet);
+        _currentStatus.contains(ConnectivityResult.ethernet);
   }
 
   // Get connection quality (simplified)
@@ -137,7 +147,7 @@ class ConnectivityHelper {
     } else if (_currentStatus.contains(ConnectivityResult.vpn)) {
       return 'Variable';
     } else if (_currentStatus.contains(ConnectivityResult.bluetooth) ||
-               _currentStatus.contains(ConnectivityResult.other)) {
+        _currentStatus.contains(ConnectivityResult.other)) {
       return 'Poor';
     } else {
       return 'Unknown';

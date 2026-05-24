@@ -89,7 +89,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 'description': _descriptionController.text.isNotEmpty
                     ? _descriptionController.text
                     : null,
-                'productId': 0, // You might need to generate this or get from product list
+                'productId':
+                    0, // You might need to generate this or get from product list
                 'salonId': 1, // Default salon ID
               });
             }

@@ -6,7 +6,8 @@ class Offer {
   final DateTime startDate;
   final DateTime endDate;
   final bool isActive;
-  final List<String> applicableServices; // Service types or specific service IDs
+  final List<String>
+  applicableServices; // Service types or specific service IDs
   final int? salonId;
 
   Offer({
@@ -26,9 +27,14 @@ class Offer {
       id: json['id']?.toString() ?? '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
-      discountPercentage: (json['discount_percentage'] as num?)?.toDouble() ?? 0.0,
-      startDate: DateTime.parse(json['start_date'] as String? ?? DateTime.now().toString()),
-      endDate: DateTime.parse(json['end_date'] as String? ?? DateTime.now().toString()),
+      discountPercentage:
+          (json['discount_percentage'] as num?)?.toDouble() ?? 0.0,
+      startDate: DateTime.parse(
+        json['start_date'] as String? ?? DateTime.now().toString(),
+      ),
+      endDate: DateTime.parse(
+        json['end_date'] as String? ?? DateTime.now().toString(),
+      ),
       isActive: json['is_active'] ?? true,
       applicableServices: List<String>.from(json['applicable_services'] ?? []),
       salonId: json['salon'] as int?,

@@ -104,14 +104,14 @@ class ErrorHandler {
 
   static bool isNetworkError(dynamic error) {
     return error is SocketException ||
-           error is HttpException ||
-           error is TimeoutException ||
-           (error is AppError && error.type == ErrorType.network);
+        error is HttpException ||
+        error is TimeoutException ||
+        (error is AppError && error.type == ErrorType.network);
   }
 
   static bool isAuthenticationError(dynamic error) {
     return (error is AppError && error.type == ErrorType.authentication) ||
-           (error is AppError && error.type == ErrorType.authorization);
+        (error is AppError && error.type == ErrorType.authorization);
   }
 
   static String getUserFriendlyMessage(dynamic error) {

@@ -43,7 +43,8 @@ class LowStockDetailedAlert extends StatelessWidget {
                     color: AppColor.lightWarning,
                   ),
                   const SizedBox(width: 8),
-                  Text("low_stock_alert".tr(),
+                  Text(
+                    "low_stock_alert".tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColor.lightWarning,
@@ -76,9 +77,12 @@ class LowStockDetailedAlert extends StatelessWidget {
   String _formatLowStockAlert(List<dynamic> lowStockItems) {
     if (lowStockItems.isEmpty) return '';
 
-    final itemNames = lowStockItems.take(3).map((item) {
-      return item['name'] ?? item['product_name'] ?? 'Unknown Product';
-    }).join(', ');
+    final itemNames = lowStockItems
+        .take(3)
+        .map((item) {
+          return item['name'] ?? item['product_name'] ?? 'Unknown Product';
+        })
+        .join(', ');
 
     if (lowStockItems.length > 3) {
       return '$itemNames and ${lowStockItems.length - 3} more items are low in stock';

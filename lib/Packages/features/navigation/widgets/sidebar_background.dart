@@ -24,7 +24,6 @@ class SidebarBackground extends StatelessWidget {
           // Background circles removed to match cleaner design
         ],
       ),
-
     );
   }
 
@@ -34,10 +33,7 @@ class SidebarBackground extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     );
   }

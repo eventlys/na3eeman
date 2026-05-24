@@ -4,7 +4,7 @@ import 'package:na3eeman/Services/api/api_service.dart';
 
 class ScheduleProvider with ChangeNotifier {
   final ApiService _api = ApiService();
-  
+
   List<WeeklyWorkingHours> _workingHours = [];
   bool _isLoading = false;
   String? _error;
@@ -23,12 +23,14 @@ class ScheduleProvider with ChangeNotifier {
         salonId: salonId,
         expertId: expertId,
       );
-      
-      _workingHours = data.map((json) => WeeklyWorkingHours.fromJson(json)).toList();
-      
+
+      _workingHours = data
+          .map((json) => WeeklyWorkingHours.fromJson(json))
+          .toList();
+
       // Sort by day of week
       _workingHours.sort((a, b) => a.dayOfWeek.compareTo(b.dayOfWeek));
-      
+
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -77,6 +79,31 @@ class ScheduleProvider with ChangeNotifier {
     try {
       await _api.patch('/salons/working-hours/$id/', data: data);
       // Refresh local data or update optimisticly
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Map<String, dynamic>? _staffAvailability;
+  Map<String, dynamic>? get staffAvailability => _staffAvailability;
+
+  Future<void> fetchStaffAvailability() async {
+    try {
+      _staffAvailability = await _api.getStaffAvailability();
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  Future<bool> updateStaffAvailability(Map<String, dynamic> data) async {
+    try {
+      _staffAvailability = await _api.updateStaffAvailability(data);
+      notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString();

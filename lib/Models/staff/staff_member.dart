@@ -41,7 +41,11 @@ class StaffMember {
       email: json['expert_email'] as String? ?? json['email'] as String? ?? '',
       phone: json['phone'] as String?,
       role: StaffRoleExtension.fromString(json['role']?.toString() ?? 'expert'),
-      joinDate: DateTime.parse(json['hired_at']?.toString() ?? json['join_date']?.toString() ?? DateTime.now().toString()),
+      joinDate: DateTime.parse(
+        json['hired_at']?.toString() ??
+            json['join_date']?.toString() ??
+            DateTime.now().toString(),
+      ),
       profileImage: json['profile_image'] as String?,
       salonId: json['salon'] as int?,
       isActive: json['is_active'] as bool? ?? true,

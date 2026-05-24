@@ -70,9 +70,9 @@ class ProfileHelperFunctions {
       print('Profile saved successfully');
     } catch (e) {
       print('Error saving profile: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save profile: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
       onError();
     }
   }
@@ -117,16 +117,16 @@ class ProfileHelperFunctions {
       // Replace with your actual API call:
       // await ApiService.deleteProfile();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("profile_deleted".tr())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("profile_deleted".tr())));
 
       onSuccess();
     } catch (e) {
       print('Error deleting profile: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete profile: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to delete profile: $e')));
     }
   }
 

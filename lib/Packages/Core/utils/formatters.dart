@@ -6,7 +6,9 @@ class Formatters {
   static final DateFormat _timeFormat = DateFormat('HH:mm');
   static final DateFormat _dateTimeFormat = DateFormat('MMM dd, yyyy HH:mm');
   static final DateFormat _apiDateFormat = DateFormat('yyyy-MM-dd');
-  static final DateFormat _apiDateTimeFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  static final DateFormat _apiDateTimeFormat = DateFormat(
+    "yyyy-MM-dd'T'HH:mm:ss'Z'",
+  );
 
   // Currency Formatter
   static final NumberFormat _currencyFormat = NumberFormat.currency(
@@ -120,12 +122,14 @@ class Formatters {
 
     if (cleaned.startsWith('+')) {
       // International format
-      if (cleaned.length == 13) { // +123456789012
+      if (cleaned.length == 13) {
+        // +123456789012
         return '+${cleaned.substring(1, 4)} ${cleaned.substring(4, 7)} ${cleaned.substring(7, 10)} ${cleaned.substring(10)}';
       }
     } else {
       // Local format
-      if (cleaned.length == 10) { // 1234567890
+      if (cleaned.length == 10) {
+        // 1234567890
         return '(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)}-${cleaned.substring(6)}';
       }
     }
@@ -163,7 +167,9 @@ class Formatters {
 
   // Validation Formatting
   static String formatValidationError(Map<String, dynamic> errors) {
-    return errors.entries.map((entry) => '${capitalize(entry.key)}: ${entry.value}').join('\n');
+    return errors.entries
+        .map((entry) => '${capitalize(entry.key)}: ${entry.value}')
+        .join('\n');
   }
 
   // Rating Formatting

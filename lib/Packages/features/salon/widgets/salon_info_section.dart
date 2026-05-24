@@ -7,15 +7,13 @@ import 'dart:io';
 class SalonInfoSection extends StatelessWidget {
   final Map<String, dynamic> salonData;
 
-  const SalonInfoSection({
-    super.key,
-    required this.salonData,
-  });
+  const SalonInfoSection({super.key, required this.salonData});
 
   @override
   Widget build(BuildContext context) {
     final rating = (salonData['salonRating'] as num?)?.toDouble() ?? 4.5;
-    final location = salonData['salonLocation'] ?? salonData['location'] ?? 'Jordan';
+    final location =
+        salonData['salonLocation'] ?? salonData['location'] ?? 'Jordan';
     final workingHours = salonData['workingHours'] ?? '9:00 AM - 9:00 PM';
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -26,7 +24,9 @@ class SalonInfoSection extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
         ),
         boxShadow: [
           BoxShadow(
@@ -42,24 +42,35 @@ class SalonInfoSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("salon_details".tr(),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+              Text(
+                "salon_details".tr(),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
+                    const Icon(
+                      Icons.star_rounded,
+                      color: Colors.amber,
+                      size: 20,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       rating.toStringAsFixed(1),
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ],
                 ),
@@ -88,7 +99,10 @@ class SalonInfoSection extends StatelessWidget {
             context: context,
             icon: Icons.phone_rounded,
             title: "phone".tr(),
-            subTitle: salonData['salonPhoneNumber'] ?? salonData['phoneNumber'] ?? 'Click for info',
+            subTitle:
+                salonData['salonPhoneNumber'] ??
+                salonData['phoneNumber'] ??
+                'Click for info',
             iconColor: AppColors.success,
           ),
           const SizedBox(height: 24),
@@ -100,7 +114,9 @@ class SalonInfoSection extends StatelessWidget {
               label: Text("show_on_map".tr()),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),
@@ -119,7 +135,10 @@ class SalonInfoSection extends StatelessWidget {
       if (await canLaunchUrl(iosUri)) {
         await launchUrl(iosUri);
       } else {
-        await launchUrl(Uri.parse(googleUrl), mode: LaunchMode.externalApplication);
+        await launchUrl(
+          Uri.parse(googleUrl),
+          mode: LaunchMode.externalApplication,
+        );
       }
     } else {
       final googleUri = Uri.parse(googleUrl);
@@ -161,9 +180,9 @@ class SalonInfoSection extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 subTitle,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),

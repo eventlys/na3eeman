@@ -45,7 +45,8 @@ class HorizontalExpertScroll extends StatelessWidget {
           // Title
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 15.0),
-            child: Text("our_experts".tr(),
+            child: Text(
+              "our_experts".tr(),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -88,8 +89,12 @@ class HorizontalExpertScroll extends StatelessWidget {
               style: MyProfileAvatarStyle(
                 border: Border.all(
                   color: expert.available
-                    ? (isDarkTheme ? AppColor.darkSuccess : AppColor.lightSuccess)
-                    : (isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary),
+                      ? (isDarkTheme
+                            ? AppColor.darkSuccess
+                            : AppColor.lightSuccess)
+                      : (isDarkTheme
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary),
                   width: 2,
                 ),
               ),
@@ -107,7 +112,7 @@ class HorizontalExpertScroll extends StatelessWidget {
             height: 1.25,
             letterSpacing: 0.20,
           ),
-        )
+        ),
       ],
     );
   }

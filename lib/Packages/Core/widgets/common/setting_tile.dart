@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 
-
 class SettingTile extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -31,21 +30,20 @@ class SettingTile extends StatelessWidget {
     return Container(
       width: double.infinity, // This makes it 100% of parent width
       decoration: BoxDecoration(
-        color: backgroundColor ??
-              (isDark ? AppColor.darkCard : AppColor.lightCard),
+        color:
+            backgroundColor ??
+            (isDark ? AppColor.darkCard : AppColor.lightCard),
         border: Border.all(
-          color: borderColor ??
-                (isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
+          color:
+              borderColor ??
+              (isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
         title: Text(
           title,
           style: TextStyle(
@@ -56,15 +54,21 @@ class SettingTile extends StatelessWidget {
             ? Text(
                 subtitle!,
                 style: TextStyle(
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               )
             : null,
-        trailing: trailing ?? Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
-        ),
+        trailing:
+            trailing ??
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: isDark
+                  ? AppColor.darkTextSecondary
+                  : AppColor.lightTextSecondary,
+            ),
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       ),

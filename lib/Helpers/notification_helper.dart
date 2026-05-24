@@ -14,30 +14,34 @@ class NotificationHelper {
 
   NotificationHelper._internal();
 
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
   // Notification channels
-  static const AndroidNotificationChannel _generalChannel = AndroidNotificationChannel(
-    'general_channel',
-    'General Notifications',
-    description: 'General notifications for the app',
-    importance: Importance.defaultImportance,
-  );
+  static const AndroidNotificationChannel _generalChannel =
+      AndroidNotificationChannel(
+        'general_channel',
+        'General Notifications',
+        description: 'General notifications for the app',
+        importance: Importance.defaultImportance,
+      );
 
-  static const AndroidNotificationChannel _appointmentChannel = AndroidNotificationChannel(
-    'appointment_channel',
-    'Appointment Notifications',
-    description: 'Notifications for appointments and bookings',
-    importance: Importance.high,
-  );
+  static const AndroidNotificationChannel _appointmentChannel =
+      AndroidNotificationChannel(
+        'appointment_channel',
+        'Appointment Notifications',
+        description: 'Notifications for appointments and bookings',
+        importance: Importance.high,
+      );
 
-  static const AndroidNotificationChannel _promotionChannel = AndroidNotificationChannel(
-    'promotion_channel',
-    'Promotion Notifications',
-    description: 'Notifications for promotions and offers',
-    importance: Importance.defaultImportance,
-  );
+  static const AndroidNotificationChannel _promotionChannel =
+      AndroidNotificationChannel(
+        'promotion_channel',
+        'Promotion Notifications',
+        description: 'Notifications for promotions and offers',
+        importance: Importance.defaultImportance,
+      );
 
   // Initialize notifications
   Future<bool> initialize() async {
@@ -53,11 +57,11 @@ class NotificationHelper {
 
       const DarwinInitializationSettings iosSettings =
           DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        // onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
-      );
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+            // onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
+          );
 
       const InitializationSettings settings = InitializationSettings(
         android: androidSettings,
@@ -85,15 +89,21 @@ class NotificationHelper {
   Future<void> _createNotificationChannels() async {
     try {
       await _notifications
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.createNotificationChannel(_generalChannel);
 
       await _notifications
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.createNotificationChannel(_appointmentChannel);
 
       await _notifications
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.createNotificationChannel(_promotionChannel);
 
       AppLogger.debug('Notification channels created');
@@ -125,11 +135,10 @@ class NotificationHelper {
         payload: payload,
       );
 
-      AppLogger.debug('Notification shown: $title', extra: {
-        'id': id,
-        'type': type.toString(),
-        'payload': payload,
-      });
+      AppLogger.debug(
+        'Notification shown: $title',
+        extra: {'id': id, 'type': type.toString(), 'payload': payload},
+      );
     } catch (e) {
       AppLogger.error('Failed to show notification: $title', error: e);
     }
@@ -162,11 +171,14 @@ class NotificationHelper {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
 
-      AppLogger.debug('Notification scheduled: $title at $scheduledTime', extra: {
-        'id': id,
-        'type': type.toString(),
-        'scheduled_time': scheduledTime.toIso8601String(),
-      });
+      AppLogger.debug(
+        'Notification scheduled: $title at $scheduledTime',
+        extra: {
+          'id': id,
+          'type': type.toString(),
+          'scheduled_time': scheduledTime.toIso8601String(),
+        },
+      );
     } catch (e) {
       AppLogger.error('Failed to schedule notification: $title', error: e);
     }
@@ -183,7 +195,8 @@ class NotificationHelper {
     try {
       final reminderTime = appointmentTime.subtract(reminderBefore);
       final title = 'Appointment Reminder';
-      final body = 'Your appointment at $salonName is in ${reminderBefore.inHours} hour(s)';
+      final body =
+          'Your appointment at $salonName is in ${reminderBefore.inHours} hour(s)';
 
       await scheduleNotification(
         id: appointmentId.hashCode,
@@ -198,11 +211,14 @@ class NotificationHelper {
         type: NotificationType.appointment,
       );
 
-      AppLogger.debug('Appointment reminder scheduled', extra: {
-        'appointment_id': appointmentId,
-        'reminder_time': reminderTime.toIso8601String(),
-        'appointment_time': appointmentTime.toIso8601String(),
-      });
+      AppLogger.debug(
+        'Appointment reminder scheduled',
+        extra: {
+          'appointment_id': appointmentId,
+          'reminder_time': reminderTime.toIso8601String(),
+          'appointment_time': appointmentTime.toIso8601String(),
+        },
+      );
     } catch (e) {
       AppLogger.error('Failed to schedule appointment reminder', error: e);
     }
@@ -231,11 +247,10 @@ class NotificationHelper {
         type: NotificationType.promotion,
       );
 
-      AppLogger.debug('Loyalty points notification shown', extra: {
-        'points': points,
-        'source': source,
-        'customer_id': customerId,
-      });
+      AppLogger.debug(
+        'Loyalty points notification shown',
+        extra: {'points': points, 'source': source, 'customer_id': customerId},
+      );
     } catch (e) {
       AppLogger.error('Failed to show loyalty points notification', error: e);
     }
@@ -276,12 +291,10 @@ class NotificationHelper {
     try {
       if (Platform.isIOS) {
         final result = await _notifications
-            .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-            ?.requestPermissions(
-              alert: true,
-              badge: true,
-              sound: true,
-            );
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true);
 
         return result ?? false;
       }
@@ -363,11 +376,14 @@ class NotificationHelper {
         _handleNotificationPayload(data);
       }
 
-      AppLogger.debug('Notification response received', extra: {
-        'id': response.id,
-        'action': response.actionId,
-        'payload': payload,
-      });
+      AppLogger.debug(
+        'Notification response received',
+        extra: {
+          'id': response.id,
+          'action': response.actionId,
+          'payload': payload,
+        },
+      );
     } catch (e) {
       AppLogger.error('Error handling notification response', error: e);
     }
@@ -380,12 +396,10 @@ class NotificationHelper {
     String? body,
     String? payload,
   ) {
-    AppLogger.debug('Local notification received', extra: {
-      'id': id,
-      'title': title,
-      'body': body,
-      'payload': payload,
-    });
+    AppLogger.debug(
+      'Local notification received',
+      extra: {'id': id, 'title': title, 'body': body, 'payload': payload},
+    );
   }
 
   // Handle notification payload
@@ -396,20 +410,23 @@ class NotificationHelper {
       case 'appointment_reminder':
         final appointmentId = payload['appointment_id'] as String?;
         final appointmentTime = payload['appointment_time'] as String?;
-        AppLogger.debug('Appointment reminder tapped', extra: {
-          'appointment_id': appointmentId,
-          'appointment_time': appointmentTime,
-        });
+        AppLogger.debug(
+          'Appointment reminder tapped',
+          extra: {
+            'appointment_id': appointmentId,
+            'appointment_time': appointmentTime,
+          },
+        );
         // Navigate to appointment details
         break;
 
       case 'loyalty_points':
         final points = payload['points'] as int?;
         final source = payload['source'] as String?;
-        AppLogger.debug('Loyalty points notification tapped', extra: {
-          'points': points,
-          'source': source,
-        });
+        AppLogger.debug(
+          'Loyalty points notification tapped',
+          extra: {'points': points, 'source': source},
+        );
         // Navigate to loyalty screen
         break;
 
@@ -431,18 +448,19 @@ class NotificationHelper {
         await cancelNotification(notification.id);
       }
 
-      AppLogger.debug('Cleared ${toRemove.length} scheduled notifications of type: $type');
+      AppLogger.debug(
+        'Cleared ${toRemove.length} scheduled notifications of type: $type',
+      );
     } catch (e) {
-      AppLogger.error('Failed to clear scheduled notifications by type', error: e);
+      AppLogger.error(
+        'Failed to clear scheduled notifications by type',
+        error: e,
+      );
     }
   }
 }
 
-enum NotificationType {
-  general,
-  appointment,
-  promotion,
-}
+enum NotificationType { general, appointment, promotion }
 
 extension NotificationTypeExtension on NotificationType {
   String get name {

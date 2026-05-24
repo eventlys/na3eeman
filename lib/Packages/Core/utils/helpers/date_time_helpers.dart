@@ -61,7 +61,9 @@ class DateTimeHelpers {
 
   static int getWeekNumber(DateTime date) {
     final firstDay = DateTime(date.year, 1, 1);
-    final firstMonday = firstDay.add(Duration(days: (8 - firstDay.weekday) % 7));
+    final firstMonday = firstDay.add(
+      Duration(days: (8 - firstDay.weekday) % 7),
+    );
     if (date.isBefore(firstMonday)) {
       return 52;
     }

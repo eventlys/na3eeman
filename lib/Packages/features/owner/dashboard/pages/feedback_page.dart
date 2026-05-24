@@ -59,7 +59,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("feedback".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "feedback".tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: _buildBody(),
     );
@@ -90,9 +93,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.rate_review_outlined, size: 64, color: AppColors.almostBlack200),
+            Icon(
+              Icons.rate_review_outlined,
+              size: 64,
+              color: AppColors.almostBlack200,
+            ),
             const SizedBox(height: 16),
-            Text('No reviews yet.', style: TextStyle(color: AppColors.almostBlack300)),
+            Text(
+              'No reviews yet.',
+              style: TextStyle(color: AppColors.almostBlack300),
+            ),
           ],
         ),
       );
@@ -107,8 +117,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark 
-                  ? AppColors.almostBlack600 
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.almostBlack600
                   : AppColors.white,
               borderRadius: BorderRadius.circular(16),
             ),
@@ -119,12 +129,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   children: [
                     Text(
                       _averageRating.toStringAsFixed(1),
-                      style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Row(
                       children: List.generate(5, (index) {
                         return Icon(
-                          index < _averageRating.round() ? Icons.star_rounded : Icons.star_border_rounded,
+                          index < _averageRating.round()
+                              ? Icons.star_rounded
+                              : Icons.star_border_rounded,
                           color: Colors.amber,
                           size: 20,
                         );
@@ -136,7 +151,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   children: [
                     Text(
                       _reviews.length.toString(),
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const Text('Total Reviews'),
                   ],
@@ -145,7 +163,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
           ),
           const SizedBox(height: 24),
-          const Text('All Reviews', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            'All Reviews',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           ..._reviews.map((review) => _buildReviewCard(review)),
         ],
@@ -161,7 +182,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +197,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
               Row(
                 children: List.generate(5, (index) {
                   return Icon(
-                    index < review.rating ? Icons.star_rounded : Icons.star_border_rounded,
+                    index < review.rating
+                        ? Icons.star_rounded
+                        : Icons.star_border_rounded,
                     color: Colors.amber,
                     size: 16,
                   );

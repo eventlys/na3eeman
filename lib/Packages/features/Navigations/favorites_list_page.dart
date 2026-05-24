@@ -77,7 +77,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
     _refreshController.refreshCompleted();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -89,10 +88,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _clearAllFavorites,
         backgroundColor: AppColor.secondary,
-        child: ImageIcon(
-          AssetImage(AppImages.trash),
-          color: AppColor.light,
-        ),
+        child: ImageIcon(AssetImage(AppImages.trash), color: AppColor.light),
       ),
       actions: [
         IconButton(
@@ -123,7 +119,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
             );
           }
 
-          final List<Map<String, dynamic>> favoriteSalons = provider.favoriteSalons;
+          final List<Map<String, dynamic>> favoriteSalons =
+              provider.favoriteSalons;
 
           if (favoriteSalons.isEmpty) {
             return Center(
@@ -133,20 +130,32 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   ImageIcon(
                     AssetImage(AppImages.heart),
                     size: 64,
-                    color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.5),
+                    color:
+                        (isDark
+                                ? AppColor.darkTextSecondary
+                                : AppColor.lightTextSecondary)
+                            .withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No favorite salons yet',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                      color:
+                          (isDark
+                                  ? AppColor.darkTextSecondary
+                                  : AppColor.lightTextSecondary)
+                              .withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Start adding salons to see them here!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.5),
+                      color:
+                          (isDark
+                                  ? AppColor.darkTextSecondary
+                                  : AppColor.lightTextSecondary)
+                              .withValues(alpha: 0.5),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -190,11 +199,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   child: ExpertSalonCard(
                     title: salon['salonName'] ?? 'Unknown Salon',
                     workingHours: salon['businessHours'] ?? '9:00 AM - 6:00 PM',
-                    bottomLeftIconPath: AppImages.location, // Use your location icon
+                    bottomLeftIconPath:
+                        AppImages.location, // Use your location icon
                     bottomRightIconPath: AppImages.star, // Use your star icon
-                    middleRightIconPath: AppImages.heart, // Use your heart outline icon
-                    middleRightActiveIconPath: AppImages.heart, // Use your heart filled icon
-                    profilePicture: salon['image'] ?? AppImages.salon1, // Use your default salon image
+                    middleRightIconPath:
+                        AppImages.heart, // Use your heart outline icon
+                    middleRightActiveIconPath:
+                        AppImages.heart, // Use your heart filled icon
+                    profilePicture:
+                        salon['image'] ??
+                        AppImages.salon1, // Use your default salon image
                     size: const Size(350, 115), // Adjust size as needed
                     isClickable: true,
                     salonLocation: salon['address'] ?? '',
@@ -257,30 +271,65 @@ class _FavoritesPageState extends State<FavoritesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildDetailRow(AppImages.location, 'Address', salon['address'] ?? 'Not available', isDark),
+            _buildDetailRow(
+              AppImages.location,
+              'Address',
+              salon['address'] ?? 'Not available',
+              isDark,
+            ),
             const SizedBox(height: 12),
             if (salon['phone'] != null) ...[
-              _buildDetailRow(AppImages.phone, 'Phone', salon['phone']!, isDark),
+              _buildDetailRow(
+                AppImages.phone,
+                'Phone',
+                salon['phone']!,
+                isDark,
+              ),
               const SizedBox(height: 12),
             ],
             if (salon['rating'] != null) ...[
-              _buildDetailRow(AppImages.star, 'Rating', salon['rating'].toStringAsFixed(1), isDark),
+              _buildDetailRow(
+                AppImages.star,
+                'Rating',
+                salon['rating'].toStringAsFixed(1),
+                isDark,
+              ),
               const SizedBox(height: 12),
             ],
             if (salon['totalReviews'] != null) ...[
-              _buildDetailRow(AppImages.X_view, 'Reviews', salon['totalReviews'].toString(), isDark),
+              _buildDetailRow(
+                AppImages.X_view,
+                'Reviews',
+                salon['totalReviews'].toString(),
+                isDark,
+              ),
               const SizedBox(height: 12),
             ],
             if (salon['services'] != null && salon['services'] is List) ...[
-              _buildDetailRow(AppImages.scissors, 'Services', (salon['services'] as List).join(', '), isDark),
+              _buildDetailRow(
+                AppImages.scissors,
+                'Services',
+                (salon['services'] as List).join(', '),
+                isDark,
+              ),
               const SizedBox(height: 12),
             ],
             if (salon['businessHours'] != null) ...[
-              _buildDetailRow(AppImages.clock, 'Hours', salon['businessHours']!, isDark),
+              _buildDetailRow(
+                AppImages.clock,
+                'Hours',
+                salon['businessHours']!,
+                isDark,
+              ),
               const SizedBox(height: 12),
             ],
             if (salon['description'] != null) ...[
-              _buildDetailRow(AppImages.info, 'Description', salon['description']!, isDark),
+              _buildDetailRow(
+                AppImages.info,
+                'Description',
+                salon['description']!,
+                isDark,
+              ),
               const SizedBox(height: 12),
             ],
             const SizedBox(height: 24),
@@ -299,9 +348,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 const SizedBox(width: 12),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("close".tr(),
+                  child: Text(
+                    "close".tr(),
                     style: TextStyle(
-                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                      color:
+                          (isDark
+                                  ? AppColor.darkTextSecondary
+                                  : AppColor.lightTextSecondary)
+                              .withValues(alpha: 0.7),
                     ),
                   ),
                 ),
@@ -313,15 +367,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  Widget _buildDetailRow(String iconPath, String label, String value, bool isDark) {
+  Widget _buildDetailRow(
+    String iconPath,
+    String label,
+    String value,
+    bool isDark,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ImageIcon(
-          AssetImage(iconPath),
-          size: 20,
-          color: AppColor.primary,
-        ),
+        ImageIcon(AssetImage(iconPath), size: 20, color: AppColor.primary),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -330,7 +385,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                  color:
+                      (isDark
+                              ? AppColor.darkTextSecondary
+                              : AppColor.lightTextSecondary)
+                          .withValues(alpha: 0.7),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -419,7 +478,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
             Text(
               'Are you sure you want to remove all ${provider.favoritesCount} salons from your favorites?',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.8),
+                color:
+                    (isDark
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary)
+                        .withValues(alpha: 0.8),
               ),
             ),
             const SizedBox(height: 24),
@@ -428,9 +491,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("cancel".tr(),
+                  child: Text(
+                    "cancel".tr(),
                     style: TextStyle(
-                      color: (isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary).withValues(alpha: 0.7),
+                      color:
+                          (isDark
+                                  ? AppColor.darkTextSecondary
+                                  : AppColor.lightTextSecondary)
+                              .withValues(alpha: 0.7),
                     ),
                   ),
                 ),

@@ -22,12 +22,19 @@ class ExpertProfile {
   });
 
   List<String> get specialtiesList =>
-      specialties?.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList() ?? [];
+      specialties
+          ?.split(',')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList() ??
+      [];
 
   factory ExpertProfile.fromJson(Map<String, dynamic> json) {
     return ExpertProfile(
       id: (json['id'] as int?) ?? 0,
-      expertId: (json['expert'] ?? json['id'] as int?) ?? 0, // Changed from User object to ID
+      expertId:
+          (json['expert'] ?? json['id'] as int?) ??
+          0, // Changed from User object to ID
       bio: json['bio'] as String?,
       specialties: json['specialties'] is List
           ? (json['specialties'] as List).join(', ')

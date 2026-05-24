@@ -21,12 +21,14 @@ class ModernSalonGallery extends StatefulWidget {
 class _ModernSalonGalleryState extends State<ModernSalonGallery> {
   @override
   Widget build(BuildContext context) {
-    final images = widget.imageUrls ?? [
-      'assets/images/gallery1.png',
-      'assets/images/gallery2.png',
-      'assets/images/gallery3.png',
-      'assets/images/gallery4.png',
-    ];
+    final images =
+        widget.imageUrls ??
+        [
+          'assets/images/gallery1.png',
+          'assets/images/gallery2.png',
+          'assets/images/gallery3.png',
+          'assets/images/gallery4.png',
+        ];
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -35,12 +37,18 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("showcase".tr(),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            Text(
+              "showcase".tr(),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () {},
-              child: Text("view_all".tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
+              child: Text(
+                "view_all".tr(),
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
             ),
           ],
         ),

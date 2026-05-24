@@ -9,7 +9,6 @@ import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
-
 class UserReportsOverlay extends StatefulWidget {
   const UserReportsOverlay({super.key});
 
@@ -97,9 +96,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
           const SizedBox(height: 10),
           _buildStatsSection(),
           const SizedBox(height: 10),
-          Expanded(
-            child: _buildReportsList(authProvider),
-          ),
+          Expanded(child: _buildReportsList(authProvider)),
         ],
       ),
     );
@@ -123,10 +120,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             const SizedBox(height: 4),
             Text(
               'Role: ${authProvider.user?.userRole.name ?? 'Customer'}',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.white70,
-              ),
+              style: const TextStyle(fontSize: 12, color: Colors.white70),
             ),
           ],
         ),
@@ -148,9 +142,9 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     }
 
     final totalCount = _reports.length;
-    final resolvedCount = _reports.where((r) =>
-      _getReportStatus(r) == 'resolved'
-    ).length;
+    final resolvedCount = _reports
+        .where((r) => _getReportStatus(r) == 'resolved')
+        .length;
     final pendingCount = totalCount - resolvedCount;
 
     return Container(
@@ -179,11 +173,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
       ),
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _LoadingStatItem(),
-          _LoadingStatItem(),
-          _LoadingStatItem(),
-        ],
+        children: [_LoadingStatItem(), _LoadingStatItem(), _LoadingStatItem()],
       ),
     );
   }
@@ -198,10 +188,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
       child: Center(
         child: Text(
           'Error loading reports',
-          style: TextStyle(
-            color: Colors.red.shade300,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Colors.red.shade300, fontSize: 14),
         ),
       ),
     );
@@ -229,9 +216,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
 
   Widget _buildReportsList(AuthProvider authProvider) {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_error != null) {
@@ -259,7 +244,11 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.check_circle_outline, size: 48, color: Colors.green),
+            const Icon(
+              Icons.check_circle_outline,
+              size: 48,
+              color: Colors.green,
+            ),
             const SizedBox(height: 16),
             const Text(
               'No reports found',
@@ -272,20 +261,14 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
             const SizedBox(height: 8),
             Text(
               'Great! You have no reports against you.',
-              style: TextStyle(
-                color: Colors.white60,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.white60, fontSize: 14),
               textAlign: TextAlign.center,
             ),
             if (authProvider.isCustomer) ...[
               const SizedBox(height: 16),
               const Text(
                 'Keep following the community guidelines',
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.white54, fontSize: 12),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -460,14 +443,20 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
               Text('Reported by: $reporterName ($reporterRole)'),
               Text('Date: ${_formatDate(date)}'),
               const SizedBox(height: 16),
-              const Text('Description:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Description:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               Text(description),
               const SizedBox(height: 16),
-              const Text('Status:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Status:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               Text(
                 status == 'resolved'
-                  ? 'Resolved - Issue has been addressed'
-                  : status == 'new'
+                    ? 'Resolved - Issue has been addressed'
+                    : status == 'new'
                     ? 'New - Under Review'
                     : 'Pending - Investigation in progress',
               ),

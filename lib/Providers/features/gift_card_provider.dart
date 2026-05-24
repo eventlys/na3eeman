@@ -11,7 +11,12 @@ class GiftCardProvider with ChangeNotifier {
   GiftCardProvider(this._apiService);
 
   List<UserGiftCard> get myCards => _myCards;
-  List<UserGiftCard> get activeCards => _myCards.where((c) => c.isActive && c.expiresAt.isAfter(DateTime.now()) && c.balance > 0).toList();
+  List<UserGiftCard> get activeCards => _myCards
+      .where(
+        (c) =>
+            c.isActive && c.expiresAt.isAfter(DateTime.now()) && c.balance > 0,
+      )
+      .toList();
   bool get isLoading => _isLoading;
 
   Future<void> loadMyCards() async {
@@ -29,7 +34,7 @@ class GiftCardProvider with ChangeNotifier {
   }
 
   Future<void> refreshBalance(int userGiftCardId) async {
-     // Optional: implemented if there's a specific endpoint to check balance
-     await loadMyCards();
+    // Optional: implemented if there's a specific endpoint to check balance
+    await loadMyCards();
   }
 }

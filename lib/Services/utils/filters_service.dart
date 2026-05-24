@@ -62,7 +62,11 @@ class FilterService {
   }
 
   // Main filter application method
-  List<dynamic> applyFilters(List<dynamic> items, Map<String, dynamic> filters, FilterType type) {
+  List<dynamic> applyFilters(
+    List<dynamic> items,
+    Map<String, dynamic> filters,
+    FilterType type,
+  ) {
     if (items.isEmpty) return items;
 
     var filteredItems = List<dynamic>.from(items);
@@ -92,11 +96,16 @@ class FilterService {
     // Apply sorting
     filteredItems = _applySorting(filteredItems, filters, type);
 
-    AppLogger.debug('Applied $type filters: ${filters.length} filters, ${filteredItems.length} results');
+    AppLogger.debug(
+      'Applied $type filters: ${filters.length} filters, ${filteredItems.length} results',
+    );
     return filteredItems;
   }
 
-  List<dynamic> _applySalonFilters(List<dynamic> items, Map<String, dynamic> filters) {
+  List<dynamic> _applySalonFilters(
+    List<dynamic> items,
+    Map<String, dynamic> filters,
+  ) {
     var filteredItems = items;
 
     if (filters['price_range'] != null) {
@@ -110,20 +119,24 @@ class FilterService {
       }).toList();
     }
 
-    if (filters['services'] != null && (filters['services'] as List).isNotEmpty) {
+    if (filters['services'] != null &&
+        (filters['services'] as List).isNotEmpty) {
       final requiredServices = filters['services'] as List<String>;
       filteredItems = filteredItems.where((item) {
         final salonServices = (item['services'] ?? []) as List;
-        return requiredServices.every((requiredService) =>
-          salonServices.any((salonService) =>
-            _containsIgnoreCase(salonService.toString(), requiredService)
-          )
+        return requiredServices.every(
+          (requiredService) => salonServices.any(
+            (salonService) =>
+                _containsIgnoreCase(salonService.toString(), requiredService),
+          ),
         );
       }).toList();
     }
 
     if (filters['availability'] == true) {
-      filteredItems = filteredItems.where((item) => _isSalonOpenNow(item)).toList();
+      filteredItems = filteredItems
+          .where((item) => _isSalonOpenNow(item))
+          .toList();
     }
 
     if (filters['category'] != null) {
@@ -136,7 +149,10 @@ class FilterService {
     return filteredItems;
   }
 
-  List<dynamic> _applyAppointmentFilters(List<dynamic> items, Map<String, dynamic> filters) {
+  List<dynamic> _applyAppointmentFilters(
+    List<dynamic> items,
+    Map<String, dynamic> filters,
+  ) {
     var filteredItems = items;
 
     if (filters['status'] != null) {
@@ -154,7 +170,8 @@ class FilterService {
       if (startDate != null && endDate != null) {
         filteredItems = filteredItems.where((item) {
           final appointmentDate = DateTime.parse(item['start_time'] as String);
-          return appointmentDate.isAfter(startDate) && appointmentDate.isBefore(endDate);
+          return appointmentDate.isAfter(startDate) &&
+              appointmentDate.isBefore(endDate);
         }).toList();
       }
     }
@@ -178,7 +195,10 @@ class FilterService {
     return filteredItems;
   }
 
-  List<dynamic> _applyStaffFilters(List<dynamic> items, Map<String, dynamic> filters) {
+  List<dynamic> _applyStaffFilters(
+    List<dynamic> items,
+    Map<String, dynamic> filters,
+  ) {
     var filteredItems = items;
 
     if (filters['role'] != null) {
@@ -195,14 +215,16 @@ class FilterService {
       }).toList();
     }
 
-    if (filters['specialties'] != null && (filters['specialties'] as List).isNotEmpty) {
+    if (filters['specialties'] != null &&
+        (filters['specialties'] as List).isNotEmpty) {
       final requiredSpecialties = filters['specialties'] as List<String>;
       filteredItems = filteredItems.where((item) {
         final staffSpecialties = (item['specialties'] ?? []) as List;
-        return requiredSpecialties.every((requiredSpecialty) =>
-          staffSpecialties.any((specialty) =>
-            _containsIgnoreCase(specialty.toString(), requiredSpecialty)
-          )
+        return requiredSpecialties.every(
+          (requiredSpecialty) => staffSpecialties.any(
+            (specialty) =>
+                _containsIgnoreCase(specialty.toString(), requiredSpecialty),
+          ),
         );
       }).toList();
     }
@@ -210,7 +232,11 @@ class FilterService {
     return filteredItems;
   }
 
-  List<dynamic> _applySorting(List<dynamic> items, Map<String, dynamic> filters, FilterType type) {
+  List<dynamic> _applySorting(
+    List<dynamic> items,
+    Map<String, dynamic> filters,
+    FilterType type,
+  ) {
     final sortBy = filters['sort_by'] ?? _getDefaultSortBy(type);
     final sortOrder = filters['sort_order'] ?? _getDefaultSortOrder(type);
 
@@ -229,25 +255,40 @@ class FilterService {
     switch (type) {
       case FilterType.salon:
         switch (sortBy) {
-          case 'rating': return item['avgRating'] ?? 0.0;
-          case 'distance': return item['distance'] ?? double.infinity;
-          case 'name': return (item['salonName'] ?? item['name'] ?? '').toString().toLowerCase();
-          case 'price': return item['averagePrice'] ?? 0.0;
-          default: return 0;
+          case 'rating':
+            return item['avgRating'] ?? 0.0;
+          case 'distance':
+            return item['distance'] ?? double.infinity;
+          case 'name':
+            return (item['salonName'] ?? item['name'] ?? '')
+                .toString()
+                .toLowerCase();
+          case 'price':
+            return item['averagePrice'] ?? 0.0;
+          default:
+            return 0;
         }
       case FilterType.appointment:
         switch (sortBy) {
-          case 'date': return DateTime.parse(item['start_time'] as String);
-          case 'price': return (item['total_amount'] ?? 0.0) as double;
-          case 'status': return (item['status'] ?? '').toString();
-          default: return 0;
+          case 'date':
+            return DateTime.parse(item['start_time'] as String);
+          case 'price':
+            return (item['total_amount'] ?? 0.0) as double;
+          case 'status':
+            return (item['status'] ?? '').toString();
+          default:
+            return 0;
         }
       case FilterType.staff:
         switch (sortBy) {
-          case 'name': return (item['name'] ?? '').toString().toLowerCase();
-          case 'rating': return item['rating'] ?? 0.0;
-          case 'join_date': return item['joinDate'] ?? '';
-          default: return 0;
+          case 'name':
+            return (item['name'] ?? '').toString().toLowerCase();
+          case 'rating':
+            return item['rating'] ?? 0.0;
+          case 'join_date':
+            return item['joinDate'] ?? '';
+          default:
+            return 0;
         }
     }
   }
@@ -261,17 +302,23 @@ class FilterService {
 
   String _getDefaultSortBy(FilterType type) {
     switch (type) {
-      case FilterType.salon: return 'rating';
-      case FilterType.appointment: return 'date';
-      case FilterType.staff: return 'name';
+      case FilterType.salon:
+        return 'rating';
+      case FilterType.appointment:
+        return 'date';
+      case FilterType.staff:
+        return 'name';
     }
   }
 
   String _getDefaultSortOrder(FilterType type) {
     switch (type) {
-      case FilterType.salon: return 'desc';
-      case FilterType.appointment: return 'desc';
-      case FilterType.staff: return 'asc';
+      case FilterType.salon:
+        return 'desc';
+      case FilterType.appointment:
+        return 'desc';
+      case FilterType.staff:
+        return 'asc';
     }
   }
 
@@ -316,7 +363,10 @@ class FilterService {
   }
 
   // Extract available filter options from data
-  Map<String, List<dynamic>> getAvailableFilters(List<dynamic> items, FilterType type) {
+  Map<String, List<dynamic>> getAvailableFilters(
+    List<dynamic> items,
+    FilterType type,
+  ) {
     final filters = <String, List<dynamic>>{};
 
     switch (type) {
@@ -334,8 +384,14 @@ class FilterService {
     return filters;
   }
 
-  void _extractSalonFilters(Map<String, List<dynamic>> filters, List<dynamic> items) {
-    final ratings = items.map((item) => (item['avgRating'] ?? 0.0) as double).toSet().toList();
+  void _extractSalonFilters(
+    Map<String, List<dynamic>> filters,
+    List<dynamic> items,
+  ) {
+    final ratings = items
+        .map((item) => (item['avgRating'] ?? 0.0) as double)
+        .toSet()
+        .toList();
     ratings.sort();
     filters['ratings'] = ratings;
 
@@ -348,37 +404,63 @@ class FilterService {
     }
     filters['services'] = allServices.toList()..sort();
 
-    final prices = items.map((item) => (item['averagePrice'] ?? 0.0) as double).toList();
+    final prices = items
+        .map((item) => (item['averagePrice'] ?? 0.0) as double)
+        .toList();
     if (prices.isNotEmpty) {
       final minPrice = prices.reduce((a, b) => a < b ? a : b);
       final maxPrice = prices.reduce((a, b) => a > b ? a : b);
       filters['price_range'] = [minPrice, maxPrice];
     }
 
-    final categories = items.map((item) => (item['category'] ?? '').toString())
-        .where((cat) => cat.isNotEmpty).toSet().toList();
+    final categories = items
+        .map((item) => (item['category'] ?? '').toString())
+        .where((cat) => cat.isNotEmpty)
+        .toSet()
+        .toList();
     filters['categories'] = categories..sort();
   }
 
-  void _extractAppointmentFilters(Map<String, List<dynamic>> filters, List<dynamic> items) {
-    final statuses = items.map((item) => (item['status'] ?? '').toString())
-        .where((status) => status.isNotEmpty).toSet().toList();
+  void _extractAppointmentFilters(
+    Map<String, List<dynamic>> filters,
+    List<dynamic> items,
+  ) {
+    final statuses = items
+        .map((item) => (item['status'] ?? '').toString())
+        .where((status) => status.isNotEmpty)
+        .toSet()
+        .toList();
     filters['statuses'] = statuses..sort();
 
-    final salonIds = items.map((item) => (item['salon'] ?? item['salon_id']) as int).toSet().toList();
+    final salonIds = items
+        .map((item) => (item['salon'] ?? item['salon_id']) as int)
+        .toSet()
+        .toList();
     filters['salon_ids'] = salonIds..sort();
 
-    final expertIds = items.map((item) => (item['expert'] ?? item['expert_id']) as int).toSet().toList();
+    final expertIds = items
+        .map((item) => (item['expert'] ?? item['expert_id']) as int)
+        .toSet()
+        .toList();
     filters['expert_ids'] = expertIds..sort();
   }
 
-  void _extractStaffFilters(Map<String, List<dynamic>> filters, List<dynamic> items) {
-    final roles = items.map((item) => (item['role'] ?? '').toString())
-        .where((role) => role.isNotEmpty).toSet().toList();
+  void _extractStaffFilters(
+    Map<String, List<dynamic>> filters,
+    List<dynamic> items,
+  ) {
+    final roles = items
+        .map((item) => (item['role'] ?? '').toString())
+        .where((role) => role.isNotEmpty)
+        .toSet()
+        .toList();
     filters['roles'] = roles..sort();
 
-    final statuses = items.map((item) => (item['status'] ?? '').toString())
-        .where((status) => status.isNotEmpty).toSet().toList();
+    final statuses = items
+        .map((item) => (item['status'] ?? '').toString())
+        .where((status) => status.isNotEmpty)
+        .toSet()
+        .toList();
     filters['statuses'] = statuses..sort();
 
     final allSpecialties = <String>{};
@@ -396,25 +478,90 @@ enum FilterType { salon, appointment, staff }
 
 class SortOptions {
   static const List<Map<String, dynamic>> salonSortOptions = [
-    {'key': 'rating_desc', 'name': 'Highest Rating', 'sort_by': 'rating', 'sort_order': 'desc'},
-    {'key': 'rating_asc', 'name': 'Lowest Rating', 'sort_by': 'rating', 'sort_order': 'asc'},
-    {'key': 'name_asc', 'name': 'Name A-Z', 'sort_by': 'name', 'sort_order': 'asc'},
-    {'key': 'name_desc', 'name': 'Name Z-A', 'sort_by': 'name', 'sort_order': 'desc'},
-    {'key': 'distance_asc', 'name': 'Nearest First', 'sort_by': 'distance', 'sort_order': 'asc'},
+    {
+      'key': 'rating_desc',
+      'name': 'Highest Rating',
+      'sort_by': 'rating',
+      'sort_order': 'desc',
+    },
+    {
+      'key': 'rating_asc',
+      'name': 'Lowest Rating',
+      'sort_by': 'rating',
+      'sort_order': 'asc',
+    },
+    {
+      'key': 'name_asc',
+      'name': 'Name A-Z',
+      'sort_by': 'name',
+      'sort_order': 'asc',
+    },
+    {
+      'key': 'name_desc',
+      'name': 'Name Z-A',
+      'sort_by': 'name',
+      'sort_order': 'desc',
+    },
+    {
+      'key': 'distance_asc',
+      'name': 'Nearest First',
+      'sort_by': 'distance',
+      'sort_order': 'asc',
+    },
   ];
 
   static const List<Map<String, dynamic>> appointmentSortOptions = [
-    {'key': 'date_desc', 'name': 'Newest First', 'sort_by': 'date', 'sort_order': 'desc'},
-    {'key': 'date_asc', 'name': 'Oldest First', 'sort_by': 'date', 'sort_order': 'asc'},
-    {'key': 'price_desc', 'name': 'Highest Price', 'sort_by': 'price', 'sort_order': 'desc'},
-    {'key': 'price_asc', 'name': 'Lowest Price', 'sort_by': 'price', 'sort_order': 'asc'},
+    {
+      'key': 'date_desc',
+      'name': 'Newest First',
+      'sort_by': 'date',
+      'sort_order': 'desc',
+    },
+    {
+      'key': 'date_asc',
+      'name': 'Oldest First',
+      'sort_by': 'date',
+      'sort_order': 'asc',
+    },
+    {
+      'key': 'price_desc',
+      'name': 'Highest Price',
+      'sort_by': 'price',
+      'sort_order': 'desc',
+    },
+    {
+      'key': 'price_asc',
+      'name': 'Lowest Price',
+      'sort_by': 'price',
+      'sort_order': 'asc',
+    },
   ];
 
   static const List<Map<String, dynamic>> staffSortOptions = [
-    {'key': 'name_asc', 'name': 'Name A-Z', 'sort_by': 'name', 'sort_order': 'asc'},
-    {'key': 'name_desc', 'name': 'Name Z-A', 'sort_by': 'name', 'sort_order': 'desc'},
-    {'key': 'rating_desc', 'name': 'Highest Rating', 'sort_by': 'rating', 'sort_order': 'desc'},
-    {'key': 'join_date_desc', 'name': 'Newest First', 'sort_by': 'join_date', 'sort_order': 'desc'},
+    {
+      'key': 'name_asc',
+      'name': 'Name A-Z',
+      'sort_by': 'name',
+      'sort_order': 'asc',
+    },
+    {
+      'key': 'name_desc',
+      'name': 'Name Z-A',
+      'sort_by': 'name',
+      'sort_order': 'desc',
+    },
+    {
+      'key': 'rating_desc',
+      'name': 'Highest Rating',
+      'sort_by': 'rating',
+      'sort_order': 'desc',
+    },
+    {
+      'key': 'join_date_desc',
+      'name': 'Newest First',
+      'sort_by': 'join_date',
+      'sort_order': 'desc',
+    },
   ];
 }
 
@@ -429,7 +576,11 @@ class FilterStateManager with ChangeNotifier {
   List<dynamic> get allItems => List.from(_allItems);
   FilterType get filterType => _filterType;
 
-  void initialize(List<dynamic> items, FilterType type, [Map<String, dynamic>? initialFilters]) {
+  void initialize(
+    List<dynamic> items,
+    FilterType type, [
+    Map<String, dynamic>? initialFilters,
+  ]) {
     _allItems = List.from(items);
     _filterType = type;
     _currentFilters = initialFilters ?? FilterService().getDefaultFilters(type);
@@ -455,7 +606,11 @@ class FilterStateManager with ChangeNotifier {
   }
 
   void _applyFilters() {
-    _filteredItems = FilterService().applyFilters(_allItems, _currentFilters, _filterType);
+    _filteredItems = FilterService().applyFilters(
+      _allItems,
+      _currentFilters,
+      _filterType,
+    );
   }
 
   void updateItems(List<dynamic> newItems) {
@@ -492,19 +647,31 @@ class SearchService {
     AppLogger.debug('Indexed ${data.length} ${type.name} for search');
   }
 
-  List<dynamic> search(String query, SearchIndexType type, {List<dynamic>? customData}) {
+  List<dynamic> search(
+    String query,
+    SearchIndexType type, {
+    List<dynamic>? customData,
+  }) {
     final searchData = customData ?? _searchIndex[type.name] ?? [];
     if (query.isEmpty) return searchData;
 
     _historyManager.addToHistory(query);
-    final searchTerms = query.toLowerCase().split(' ').where((term) => term.isNotEmpty).toList();
+    final searchTerms = query
+        .toLowerCase()
+        .split(' ')
+        .where((term) => term.isNotEmpty)
+        .toList();
 
     return searchData.where((item) {
       return _matchesAllTerms(item, searchTerms, type);
     }).toList();
   }
 
-  bool _matchesAllTerms(dynamic item, List<String> terms, SearchIndexType type) {
+  bool _matchesAllTerms(
+    dynamic item,
+    List<String> terms,
+    SearchIndexType type,
+  ) {
     final searchFields = _getSearchFields(item, type);
 
     for (final term in terms) {
@@ -525,7 +692,9 @@ class SearchService {
           item['location'] ?? '',
           item['salonDescription'] ?? item['description'] ?? '',
         ]);
-        fields.addAll((item['services'] ?? []).map((service) => service.toString()));
+        fields.addAll(
+          (item['services'] ?? []).map((service) => service.toString()),
+        );
         break;
 
       case SearchIndexType.services:
@@ -542,7 +711,9 @@ class SearchService {
           item['salonName'] ?? '',
           item['status'] ?? '',
         ]);
-        fields.addAll((item['services'] ?? []).map((service) => service.toString()));
+        fields.addAll(
+          (item['services'] ?? []).map((service) => service.toString()),
+        );
         break;
 
       case SearchIndexType.staff:
@@ -551,11 +722,16 @@ class SearchService {
           item['email'] ?? '',
           item['role'] ?? '',
         ]);
-        fields.addAll((item['specialties'] ?? []).map((specialty) => specialty.toString()));
+        fields.addAll(
+          (item['specialties'] ?? []).map((specialty) => specialty.toString()),
+        );
         break;
     }
 
-    return fields.where((field) => field.isNotEmpty).map((field) => field.toString().toLowerCase()).toList();
+    return fields
+        .where((field) => field.isNotEmpty)
+        .map((field) => field.toString().toLowerCase())
+        .toList();
   }
 
   List<String> getSearchSuggestions(String query, {int maxSuggestions = 5}) {
@@ -569,19 +745,35 @@ class SearchService {
     final queryLower = query.toLowerCase();
 
     // History matches
-    final historyMatches = _historyManager.getSearchHistory()
+    final historyMatches = _historyManager
+        .getSearchHistory()
         .where((item) => item.toLowerCase().contains(queryLower))
         .take(maxSuggestions ~/ 2);
     suggestions.addAll(historyMatches);
 
     // Data matches
     for (final salon in searchData) {
-      _addSuggestion(suggestions, salon['salonName'] ?? '', queryLower, maxSuggestions);
-      _addSuggestion(suggestions, salon['location'] ?? '', queryLower, maxSuggestions);
+      _addSuggestion(
+        suggestions,
+        salon['salonName'] ?? '',
+        queryLower,
+        maxSuggestions,
+      );
+      _addSuggestion(
+        suggestions,
+        salon['location'] ?? '',
+        queryLower,
+        maxSuggestions,
+      );
 
       final services = salon['services'] ?? [];
       for (final service in services) {
-        _addSuggestion(suggestions, service.toString(), queryLower, maxSuggestions);
+        _addSuggestion(
+          suggestions,
+          service.toString(),
+          queryLower,
+          maxSuggestions,
+        );
       }
 
       if (suggestions.length >= maxSuggestions) break;
@@ -590,13 +782,22 @@ class SearchService {
     return suggestions.take(maxSuggestions).toList();
   }
 
-  void _addSuggestion(Set<String> suggestions, String text, String query, int max) {
+  void _addSuggestion(
+    Set<String> suggestions,
+    String text,
+    String query,
+    int max,
+  ) {
     if (text.toLowerCase().contains(query) && suggestions.length < max) {
       suggestions.add(text);
     }
   }
 
-  Map<String, dynamic> getSearchAnalytics(String query, List<dynamic> results, SearchIndexType type) {
+  Map<String, dynamic> getSearchAnalytics(
+    String query,
+    List<dynamic> results,
+    SearchIndexType type,
+  ) {
     return {
       'query': query,
       'result_count': results.length,
@@ -656,35 +857,51 @@ class SearchHistoryManager {
 }
 
 class SocialSharingService {
-  static final SocialSharingService _instance = SocialSharingService._internal();
+  static final SocialSharingService _instance =
+      SocialSharingService._internal();
   factory SocialSharingService() => _instance;
   SocialSharingService._internal();
 
   Future<void> shareApp() async {
-    const shareText = 'Check out Na3eeman - The best expert salon app! '
+    const shareText =
+        'Check out Na3eeman - The best expert salon app! '
         'Find the perfect expert, book appointments, and earn loyalty points. '
         'Download now and get your perfect haircut! ✂️';
     final shareUrl = '${AppConstants.webAppUrl}/download';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'App shared successfully', 'Failed to share app');
+    await _shareContent(
+      '$shareText\n\n$shareUrl',
+      'App shared successfully',
+      'Failed to share app',
+    );
   }
 
   Future<void> shareSalon(String salonName, String salonId) async {
-    final shareText = 'Check out $salonName on Na3eeman! '
+    final shareText =
+        'Check out $salonName on Na3eeman! '
         'They provide excellent haircut services with professional experts. '
         'Book your appointment now! 💈';
     final shareUrl = '${AppConstants.webAppUrl}/salon/$salonId';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Salon shared: $salonName', 'Failed to share salon');
+    await _shareContent(
+      '$shareText\n\n$shareUrl',
+      'Salon shared: $salonName',
+      'Failed to share salon',
+    );
   }
 
   Future<void> shareAppointment(String appointmentId) async {
-    final shareText = 'I just booked an appointment using Na3eeman! '
+    final shareText =
+        'I just booked an appointment using Na3eeman! '
         'The app makes it so easy to find great experts and book appointments. '
         'You should try it too! 📅';
     final shareUrl = '${AppConstants.webAppUrl}/appointment/$appointmentId';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Appointment shared: $appointmentId', 'Failed to share appointment');
+    await _shareContent(
+      '$shareText\n\n$shareUrl',
+      'Appointment shared: $appointmentId',
+      'Failed to share appointment',
+    );
   }
 
   Future<void> openSocialMedia(String platform) async {
@@ -710,7 +927,8 @@ class SocialSharingService {
   }
 
   Future<void> inviteFriends(String referralCode) async {
-    final inviteText = '''
+    final inviteText =
+        '''
 Join me on Na3eeman - The ultimate expert salon experience! ✂️
 
 🌟 Why you'll love it:
@@ -727,40 +945,63 @@ Download now: ${AppConstants.webAppUrl}/download
 #Na3eeman #ExpertApp #HaircutApp
     ''';
 
-    await _shareContent(inviteText, 'Friends invited with code: $referralCode', 'Failed to invite friends');
+    await _shareContent(
+      inviteText,
+      'Friends invited with code: $referralCode',
+      'Failed to invite friends',
+    );
   }
 
   Future<void> shareLoyaltyAchievement(int points, String achievement) async {
-    final shareText = 'I just earned $points loyalty points on Na3eeman for $achievement! '
+    final shareText =
+        'I just earned $points loyalty points on Na3eeman for $achievement! '
         'The loyalty program is amazing - you get points for bookings, reviews, and more! '
         'Join me and start earning free haircuts! 🏆';
     final shareUrl = '${AppConstants.webAppUrl}/loyalty';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Loyalty achievement shared: $points points', 'Failed to share loyalty achievement');
+    await _shareContent(
+      '$shareText\n\n$shareUrl',
+      'Loyalty achievement shared: $points points',
+      'Failed to share loyalty achievement',
+    );
   }
 
   Future<void> shareReview(String salonName, int rating) async {
     final stars = '⭐' * rating;
-    final shareText = 'I just rated $salonName $rating stars on Na3eeman! $stars\n\n'
+    final shareText =
+        'I just rated $salonName $rating stars on Na3eeman! $stars\n\n'
         'The app makes it so easy to find and review great expert salons. '
         'Check it out if you\'re looking for a fresh cut! 💈';
     final shareUrl = AppConstants.webAppUrl;
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Review shared for: $salonName', 'Failed to share review');
+    await _shareContent(
+      '$shareText\n\n$shareUrl',
+      'Review shared for: $salonName',
+      'Failed to share review',
+    );
   }
 
   Future<void> sharePromoCode(String promoCode, String description) async {
-    final shareText = '🚨 Exclusive Na3eeman Promo Code! 🚨\n\n'
+    final shareText =
+        '🚨 Exclusive Na3eeman Promo Code! 🚨\n\n'
         'Use code: $promoCode\n'
         '$description\n\n'
         'Download the app and enjoy your discount! '
         'Perfect haircuts are just a tap away! ✂️';
     final shareUrl = '${AppConstants.webAppUrl}/download';
 
-    await _shareContent('$shareText\n\n$shareUrl', 'Promo code shared: $promoCode', 'Failed to share promo code');
+    await _shareContent(
+      '$shareText\n\n$shareUrl',
+      'Promo code shared: $promoCode',
+      'Failed to share promo code',
+    );
   }
 
-  Future<void> shareViaEmail({required String recipient, required String subject, required String body}) async {
+  Future<void> shareViaEmail({
+    required String recipient,
+    required String subject,
+    required String body,
+  }) async {
     try {
       final uri = Uri(
         scheme: 'mailto',
@@ -780,7 +1021,10 @@ Download now: ${AppConstants.webAppUrl}/download
     }
   }
 
-  Future<void> shareViaSMS({required String recipient, required String message}) async {
+  Future<void> shareViaSMS({
+    required String recipient,
+    required String message,
+  }) async {
     try {
       final uri = Uri(
         scheme: 'sms',
@@ -810,15 +1054,22 @@ Download now: ${AppConstants.webAppUrl}/download
   }
 
   void logShareEvent(String type, {String? itemId, String? platform}) {
-    AppLogger.debug('Share event logged', extra: {
-      'type': type,
-      'item_id': itemId,
-      'platform': platform,
-      'timestamp': DateTime.now().toIso8601String(),
-    });
+    AppLogger.debug(
+      'Share event logged',
+      extra: {
+        'type': type,
+        'item_id': itemId,
+        'platform': platform,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
   }
 
-  Future<void> _shareContent(String content, String successMessage, String errorMessage) async {
+  Future<void> _shareContent(
+    String content,
+    String successMessage,
+    String errorMessage,
+  ) async {
     try {
       await Share.share(content);
       AppLogger.debug(successMessage);

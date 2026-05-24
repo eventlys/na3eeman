@@ -16,7 +16,8 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateMixin {
+class _SignupPageState extends State<SignupPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -24,7 +25,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  
+
   String _selectedGender = 'male';
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -44,13 +45,10 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       parent: _animController,
       curve: Curves.easeOut,
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
     _animController.forward();
   }
 
@@ -60,9 +58,13 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     final isArabic = locale == 'ar';
 
     if (isArabic) {
-      return isDark ? 'assets/images/logo_ar_dark.png' : 'assets/images/logo_ar_light.png';
+      return isDark
+          ? 'assets/images/logo_ar_dark.png'
+          : 'assets/images/logo_ar_light.png';
     } else {
-      return isDark ? 'assets/images/logo_en_dark.png' : 'assets/images/logo_en_light.png';
+      return isDark
+          ? 'assets/images/logo_en_dark.png'
+          : 'assets/images/logo_en_light.png';
     }
   }
 
@@ -82,13 +84,18 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 "select_language".tr(),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ListTile(
               leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
               title: const Text('English'),
-              trailing: context.locale.languageCode == 'en' ? Icon(Icons.check, color: AppColors.primary) : null,
+              trailing: context.locale.languageCode == 'en'
+                  ? Icon(Icons.check, color: AppColors.primary)
+                  : null,
               onTap: () async {
                 await context.setLocale(const Locale('en', 'US'));
                 await localeProvider.setLocale(const Locale('en'));
@@ -98,7 +105,9 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
             ListTile(
               leading: const Text('🇸🇦', style: TextStyle(fontSize: 24)),
               title: const Text('العربية'),
-              trailing: context.locale.languageCode == 'ar' ? Icon(Icons.check, color: AppColors.primary) : null,
+              trailing: context.locale.languageCode == 'ar'
+                  ? Icon(Icons.check, color: AppColors.primary)
+                  : null,
               onTap: () async {
                 await context.setLocale(const Locale('ar', 'EG'));
                 await localeProvider.setLocale(const Locale('ar'));
@@ -115,7 +124,10 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Passwords do not match'), backgroundColor: Colors.red),
+          const SnackBar(
+            content: Text('Passwords do not match'),
+            backgroundColor: Colors.red,
+          ),
         );
         return;
       }
@@ -134,16 +146,23 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
           role: 'customer', // Default role as requested
         );
 
-        if (mounted && (response['user'] != null || response['email'] != null)) {
+        if (mounted &&
+            (response['user'] != null || response['email'] != null)) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Signup successful! Please login.'), backgroundColor: Colors.green),
+            const SnackBar(
+              content: Text('Signup successful! Please login.'),
+              backgroundColor: Colors.green,
+            ),
           );
           Navigator.pushReplacementNamed(context, '/login');
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Signup failed: $e'), backgroundColor: Colors.red),
+            SnackBar(
+              content: Text('Signup failed: $e'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       }
@@ -163,13 +182,16 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: isDark 
-                  ? [AppColors.almostBlack700, AppColors.almostBlack800]
-                  : [AppColors.white, AppColors.creamyBackground.withOpacity(0.5)],
+                colors: isDark
+                    ? [AppColors.almostBlack700, AppColors.almostBlack800]
+                    : [
+                        AppColors.white,
+                        AppColors.creamyBackground.withOpacity(0.5),
+                      ],
               ),
             ),
           ),
-          
+
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
@@ -189,7 +211,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 20),
 
                       // Official Logo Asset
@@ -206,14 +228,16 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 32),
-                      
+
                       Text(
                         "sign_up".tr(),
                         style: theme.textTheme.headlineLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: isDark ? AppColors.white : AppColors.almostBlack700,
+                          color: isDark
+                              ? AppColors.white
+                              : AppColors.almostBlack700,
                         ),
                       ),
                       Text(
@@ -223,7 +247,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                         ),
                       ),
                       const SizedBox(height: 48),
-                      
+
                       Form(
                         key: _formKey,
                         child: Column(
@@ -235,10 +259,15 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                                     controller: _firstNameController,
                                     decoration: InputDecoration(
                                       hintText: 'First Name',
-                                      prefixIcon: const Icon(Icons.person_outline),
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                                      prefixIcon: const Icon(
+                                        Icons.person_outline,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
                                     ),
-                                    validator: (v) => v!.isEmpty ? 'Required' : null,
+                                    validator: (v) =>
+                                        v!.isEmpty ? 'Required' : null,
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -247,10 +276,15 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                                     controller: _lastNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Last Name',
-                                      prefixIcon: const Icon(Icons.person_outline),
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                                      prefixIcon: const Icon(
+                                        Icons.person_outline,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
                                     ),
-                                    validator: (v) => v!.isEmpty ? 'Required' : null,
+                                    validator: (v) =>
+                                        v!.isEmpty ? 'Required' : null,
                                   ),
                                 ),
                               ],
@@ -262,7 +296,9 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               decoration: InputDecoration(
                                 labelText: "email".tr(),
                                 prefixIcon: const Icon(Icons.email_outlined),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                               validator: (v) => v!.isEmpty ? 'Required' : null,
                             ),
@@ -273,12 +309,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               decoration: InputDecoration(
                                 labelText: "phone_number".tr(),
                                 prefixIcon: const Icon(Icons.phone_outlined),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                               validator: (v) => v!.isEmpty ? 'Required' : null,
                             ),
                             const SizedBox(height: 16),
-                            
+
                             // Gender Chips instead of Dropdown
                             Row(
                               children: [
@@ -289,10 +327,16 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                                     selectedColor: Colors.blue.withOpacity(0.2),
                                     checkmarkColor: Colors.blue,
                                     labelStyle: TextStyle(
-                                      color: _selectedGender == 'male' ? Colors.blue : null,
-                                      fontWeight: _selectedGender == 'male' ? FontWeight.bold : null,
+                                      color: _selectedGender == 'male'
+                                          ? Colors.blue
+                                          : null,
+                                      fontWeight: _selectedGender == 'male'
+                                          ? FontWeight.bold
+                                          : null,
                                     ),
-                                    onSelected: (val) => setState(() => _selectedGender = 'male'),
+                                    onSelected: (val) => setState(
+                                      () => _selectedGender = 'male',
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -303,27 +347,44 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                                     selectedColor: Colors.pink.withOpacity(0.2),
                                     checkmarkColor: Colors.pink,
                                     labelStyle: TextStyle(
-                                      color: _selectedGender == 'female' ? Colors.pink : null,
-                                      fontWeight: _selectedGender == 'female' ? FontWeight.bold : null,
+                                      color: _selectedGender == 'female'
+                                          ? Colors.pink
+                                          : null,
+                                      fontWeight: _selectedGender == 'female'
+                                          ? FontWeight.bold
+                                          : null,
                                     ),
-                                    onSelected: (val) => setState(() => _selectedGender = 'female'),
+                                    onSelected: (val) => setState(
+                                      () => _selectedGender = 'female',
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            
+
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _passwordController,
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
                                 labelText: "password".tr(),
-                                prefixIcon: const Icon(Icons.lock_outline_rounded),
-                                suffixIcon: IconButton(
-                                  icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-                                  onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+                                prefixIcon: const Icon(
+                                  Icons.lock_outline_rounded,
                                 ),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () => setState(
+                                    () => _isPasswordVisible =
+                                        !_isPasswordVisible,
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                               validator: (v) => v!.isEmpty ? 'Required' : null,
                             ),
@@ -333,25 +394,36 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                               obscureText: !_isConfirmPasswordVisible,
                               decoration: InputDecoration(
                                 labelText: "confirm_password".tr(),
-                                prefixIcon: const Icon(Icons.lock_reset_rounded),
-                                suffixIcon: IconButton(
-                                  icon: Icon(_isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility),
-                                  onPressed: () => setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible),
+                                prefixIcon: const Icon(
+                                  Icons.lock_reset_rounded,
                                 ),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isConfirmPasswordVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () => setState(
+                                    () => _isConfirmPasswordVisible =
+                                        !_isConfirmPasswordVisible,
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                               validator: (v) => v!.isEmpty ? 'Required' : null,
                             ),
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 32),
                       PrimaryButton(
                         text: "sign_up".tr(),
                         onPressed: _handleSignup,
                       ),
-                      
+
                       const SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

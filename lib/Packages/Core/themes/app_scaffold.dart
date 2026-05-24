@@ -6,7 +6,6 @@ import 'app_theme.dart';
 import 'glass_appbar.dart';
 import '../widgets/shared/error_widget.dart';
 
-
 class AppScaffold extends StatelessWidget {
   final String? title;
   final Widget? body;
@@ -128,16 +127,15 @@ class AppScaffold extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              gradientColors.startColor,
-              gradientColors.endColor,
-            ],
+            colors: [gradientColors.startColor, gradientColors.endColor],
           ),
         ),
         child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: showAppBar && !useGlassSliverAppBar ? _buildAppBar(context) : null,
+          appBar: showAppBar && !useGlassSliverAppBar
+              ? _buildAppBar(context)
+              : null,
           drawer: drawer,
           endDrawer: endDrawer,
           body: _buildRefreshableBody(context),
@@ -146,7 +144,9 @@ class AppScaffold extends StatelessWidget {
           resizeToAvoidBottomInset: resizeToAvoidBottomInset,
           extendBody: extendBody,
           extendBodyBehindAppBar: extendBodyBehindAppBar,
-          bottomNavigationBar: bottomNavigationBar ?? (user != null ? _buildNavigationBar(context) : null),
+          bottomNavigationBar:
+              bottomNavigationBar ??
+              (user != null ? _buildNavigationBar(context) : null),
           bottomSheet: bottomSheet,
         ),
       ),
@@ -163,7 +163,10 @@ class AppScaffold extends StatelessWidget {
       elevation: 0,
       leading: showBackButton
           ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
+              icon: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               onPressed: () => Navigator.of(context).pop(),
             )
           : null,
@@ -216,9 +219,7 @@ class AppScaffold extends StatelessWidget {
           const Positioned.fill(
             child: ColoredBox(
               color: Colors.black26,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             ),
           ),
         ],
@@ -255,10 +256,7 @@ class AppScaffold extends StatelessWidget {
             ),
           ];
 
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: sliverList,
-    );
+    return CustomScrollView(controller: scrollController, slivers: sliverList);
   }
 
   GlassSliverAppBar _buildGlassSliverAppBar() {
@@ -283,7 +281,7 @@ class AppScaffold extends StatelessWidget {
 
   Widget _buildNavigationBar(BuildContext context) {
     return CustomNavigationBar(
-      currentRoute: ModalRoute.of(context)?.settings.name ?? '/',
+      currentRoute: ModalRoute.of(context)?.settings.name ?? '/login',
     );
   }
 
@@ -590,10 +588,7 @@ class _ScaffoldWithSidebarState extends State<ScaffoldWithSidebar>
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              gradientColors.startColor,
-              gradientColors.endColor,
-            ],
+            colors: [gradientColors.startColor, gradientColors.endColor],
           ),
         ),
         child: Stack(
@@ -616,8 +611,9 @@ class _ScaffoldWithSidebarState extends State<ScaffoldWithSidebar>
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha:
-                                _sidebarAnimation.value * 0.3),
+                            color: Colors.black.withValues(
+                              alpha: _sidebarAnimation.value * 0.3,
+                            ),
                             blurRadius: 20,
                             spreadRadius: 5,
                           ),
@@ -692,7 +688,9 @@ class AuthScaffold extends StatelessWidget {
               Text(
                 subtitle!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ],

@@ -30,7 +30,9 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     if (owner.activeSalonId == null) return;
 
     try {
-      final config = await _apiService.getSalonPaymentConfig(owner.activeSalonId!);
+      final config = await _apiService.getSalonPaymentConfig(
+        owner.activeSalonId!,
+      );
       setState(() {
         _config = config;
         _isLoading = false;
@@ -38,7 +40,9 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('error_loading_config'.tr(args: [e.toString()]))),
+          SnackBar(
+            content: Text('error_loading_config'.tr(args: [e.toString()])),
+          ),
         );
       }
     }
@@ -49,16 +53,21 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     setState(() => _isSaving = true);
 
     try {
-      await _apiService.updateSalonPaymentConfig(_config!.salonId, _config!.toJson());
+      await _apiService.updateSalonPaymentConfig(
+        _config!.salonId,
+        _config!.toJson(),
+      );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('config_saved_success'.tr())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('config_saved_success'.tr())));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('error_saving_config'.tr(args: [e.toString()]))),
+          SnackBar(
+            content: Text('error_saving_config'.tr(args: [e.toString()])),
+          ),
         );
       }
     } finally {
@@ -77,11 +86,23 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
         title: Text('revenue_payment_controls'.tr()),
         actions: [
           if (_isSaving)
-            const Center(child: Padding(padding: EdgeInsets.all(16.0), child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))))
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            )
           else
             TextButton(
               onPressed: _saveConfig,
-              child: Text('save'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(
+                'save'.tr(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
         ],
       ),
@@ -143,7 +164,10 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
         children: [
           Text(
             'define_deposit_rules'.tr(),
-            style: const TextStyle(color: AppColors.almostBlack300, fontSize: 13),
+            style: const TextStyle(
+              color: AppColors.almostBlack300,
+              fontSize: 13,
+            ),
           ),
           const SizedBox(height: 24),
           Row(
@@ -152,7 +176,11 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
                 child: _buildChoiceChip(
                   'percentage'.tr(),
                   _config!.depositType == DepositType.percent,
-                  () => setState(() => _config = _config!.copyWith(depositType: DepositType.percent)),
+                  () => setState(
+                    () => _config = _config!.copyWith(
+                      depositType: DepositType.percent,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -160,7 +188,11 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
                 child: _buildChoiceChip(
                   'fixed_amount'.tr(),
                   _config!.depositType == DepositType.fixed,
-                  () => setState(() => _config = _config!.copyWith(depositType: DepositType.fixed)),
+                  () => setState(
+                    () => _config = _config!.copyWith(
+                      depositType: DepositType.fixed,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -170,9 +202,17 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
             initialValue: _config!.depositValue.toString(),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: _config!.depositType == DepositType.percent ? 'percentage'.tr() : 'amount_jod'.tr(),
-              prefixIcon: Icon(_config!.depositType == DepositType.percent ? Icons.percent_rounded : Icons.money_rounded),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              labelText: _config!.depositType == DepositType.percent
+                  ? 'percentage'.tr()
+                  : 'amount_jod'.tr(),
+              prefixIcon: Icon(
+                _config!.depositType == DepositType.percent
+                    ? Icons.percent_rounded
+                    : Icons.money_rounded,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onChanged: (v) {
               final val = double.tryParse(v) ?? 0;
@@ -194,28 +234,40 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
             'cancellation_window'.tr(),
             'cancellation_subtitle'.tr(),
             _config!.cancellationWindowHours,
-            (v) => setState(() => _config = _config!.copyWith(cancellationWindowHours: v)),
+            (v) => setState(
+              () => _config = _config!.copyWith(cancellationWindowHours: v),
+            ),
           ),
           const Divider(height: 32),
           _buildNumberField(
             'no_show_tolerance'.tr(),
             'no_show_subtitle'.tr(),
             _config!.noShowEnforcementThreshold,
-            (v) => setState(() => _config = _config!.copyWith(noShowEnforcementThreshold: v)),
+            (v) => setState(
+              () => _config = _config!.copyWith(noShowEnforcementThreshold: v),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCard({required String title, required IconData icon, required Widget child}) {
+  Widget _buildCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.1)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +276,13 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
             children: [
               Icon(icon, color: Theme.of(context).primaryColor, size: 24),
               const SizedBox(width: 12),
-              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -234,11 +292,19 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     );
   }
 
-  Widget _buildToggle(String title, String subtitle, bool value, Function(bool) onChanged) {
+  Widget _buildToggle(
+    String title,
+    String subtitle,
+    bool value,
+    Function(bool) onChanged,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: SwitchListTile(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
         value: value,
         onChanged: onChanged,
@@ -257,7 +323,11 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
         decoration: BoxDecoration(
           color: selected ? Theme.of(context).primaryColor : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: selected ? Theme.of(context).primaryColor : AppColors.almostBlack100),
+          border: Border.all(
+            color: selected
+                ? Theme.of(context).primaryColor
+                : AppColors.almostBlack100,
+          ),
         ),
         child: Text(
           label,
@@ -270,15 +340,32 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     );
   }
 
-  Widget _buildNumberField(String title, String subtitle, int value, Function(int) onChanged) {
+  Widget _buildNumberField(
+    String title,
+    String subtitle,
+    int value,
+    Function(int) onChanged,
+  ) {
     return Row(
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              Text(subtitle, style: const TextStyle(fontSize: 12, color: AppColors.almostBlack300)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.almostBlack300,
+                ),
+              ),
             ],
           ),
         ),
@@ -291,7 +378,9 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
             textAlign: TextAlign.center,
             decoration: InputDecoration(
               isDense: true,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onChanged: (v) {
               final val = int.tryParse(v) ?? 0;

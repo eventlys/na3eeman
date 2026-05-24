@@ -48,8 +48,8 @@ class FeatureAccessService {
   /// Returns true for features that remain accessible even on a lapsed plan.
   static bool _artisanOnlyAccess(FeatureKey feature) {
     const gracefulFeatures = {
-      FeatureKey.viewStaffList,        // read-only, no harm
-      FeatureKey.inventoryBasic,       // view only
+      FeatureKey.viewStaffList, // read-only, no harm
+      FeatureKey.inventoryBasic, // view only
       FeatureKey.widgetTodayTimeline,
       FeatureKey.widgetDailyEarnings,
       FeatureKey.widgetQuickBook,
@@ -161,8 +161,9 @@ class FeatureAccessService {
   }) {
     if (!isSubscriptionActive) {
       // Expired: show Artisan widgets only
-      return SubscriptionConfig.forTier(OwnerSubscriptionTier.artisan)
-          .dashboardWidgets;
+      return SubscriptionConfig.forTier(
+        OwnerSubscriptionTier.artisan,
+      ).dashboardWidgets;
     }
     return SubscriptionConfig.forTier(tier).dashboardWidgets;
   }

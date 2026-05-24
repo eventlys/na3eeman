@@ -25,16 +25,18 @@ class SwitchViewToggleWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("view_mode".tr(),
-              style: theme.textTheme.labelMedium
-                  ?.copyWith(color: theme.hintColor)),
+          Text(
+            "view_mode".tr(),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.hintColor,
+            ),
+          ),
           const SizedBox(height: 10),
           const PractitionerModeToggle(),
           const SizedBox(height: 8),
           Text(
             owner.mode.description,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.hintColor),
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
           ),
         ],
       ),

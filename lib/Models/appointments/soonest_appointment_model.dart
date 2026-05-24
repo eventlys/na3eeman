@@ -93,7 +93,9 @@ class SoonestAppointment {
 }
 
 class SoonestAppointmentData {
-  static SoonestAppointment? getSoonestAppointment(List<SoonestAppointment> appointments) {
+  static SoonestAppointment? getSoonestAppointment(
+    List<SoonestAppointment> appointments,
+  ) {
     if (appointments.isEmpty) return null;
 
     DateTime now = DateTime.now();

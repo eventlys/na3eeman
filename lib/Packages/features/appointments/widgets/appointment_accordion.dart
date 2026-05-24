@@ -38,11 +38,17 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     if (widget.userGender != null) {
       switch (widget.userGender!) {
         case UserGender.male:
-          return widget.isDarkMode ? AppColor.darkMaleBG.withValues(alpha: 0.1) : AppColor.lightMaleBG.withValues(alpha: 0.1);
+          return widget.isDarkMode
+              ? AppColor.darkMaleBG.withValues(alpha: 0.1)
+              : AppColor.lightMaleBG.withValues(alpha: 0.1);
         case UserGender.female:
-          return widget.isDarkMode ? AppColor.darkFemaleBG.withValues(alpha: 0.1) : AppColor.lightFemaleBG.withValues(alpha: 0.1);
+          return widget.isDarkMode
+              ? AppColor.darkFemaleBG.withValues(alpha: 0.1)
+              : AppColor.lightFemaleBG.withValues(alpha: 0.1);
         case UserGender.nonBinary:
-          return widget.isDarkMode ? AppColor.darkNonBinaryBG.withValues(alpha: 0.1) : AppColor.lightNonBinaryBG.withValues(alpha: 0.1);
+          return widget.isDarkMode
+              ? AppColor.darkNonBinaryBG.withValues(alpha: 0.1)
+              : AppColor.lightNonBinaryBG.withValues(alpha: 0.1);
       }
     }
     return widget.isDarkMode ? AppColor.darkCard : AppColor.lightCard;
@@ -87,7 +93,9 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
       case 'pending_payment':
         return widget.isDarkMode ? AppColor.darkError : AppColor.lightError;
       default:
-        return widget.isDarkMode ? AppColor.darkTextSecondary : AppColor.lightTextSecondary;
+        return widget.isDarkMode
+            ? AppColor.darkTextSecondary
+            : AppColor.lightTextSecondary;
     }
   }
 
@@ -113,10 +121,13 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     if (status != 'scheduled' && status != 'checked_in') return false;
     if (widget.appointment['isPaid'] == true) return false;
 
-    final dateTime = widget.appointment['dateTime'] ?? widget.appointment['start_time'];
+    final dateTime =
+        widget.appointment['dateTime'] ?? widget.appointment['start_time'];
     if (dateTime == null) return false;
-    
-    final start = dateTime is DateTime ? dateTime : DateTime.tryParse(dateTime.toString());
+
+    final start = dateTime is DateTime
+        ? dateTime
+        : DateTime.tryParse(dateTime.toString());
     if (start == null) return false;
 
     return DateTime.now().difference(start).inHours >= 24;
@@ -142,11 +153,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                _getStatusIcon(status),
-                color: statusColor,
-                size: 16,
-              ),
+              Icon(_getStatusIcon(status), color: statusColor, size: 16),
               const SizedBox(width: 4),
               Text(
                 status.toUpperCase(),
@@ -164,11 +171,19 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.warning_amber_rounded, size: 14, color: Colors.red),
+              const Icon(
+                Icons.warning_amber_rounded,
+                size: 14,
+                color: Colors.red,
+              ),
               const SizedBox(width: 4),
               Text(
                 'PAYMENT OVERDUE (>24h)'.tr(),
-                style: const TextStyle(color: Colors.red, fontSize: 10, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -211,7 +226,11 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
   String _formatDate(DateTime dateTime) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final appointmentDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final appointmentDate = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+    );
 
     if (appointmentDate == today) {
       return 'today'.tr();
@@ -243,32 +262,32 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
 
   String _getTitle() {
     return widget.appointment['title']?.toString() ??
-           widget.appointment['salonName']?.toString() ??
-           'appointment'.tr();
+        widget.appointment['salonName']?.toString() ??
+        'appointment'.tr();
   }
 
   String _getExpertName() {
     return widget.appointment['expertName']?.toString() ??
-           'unknown_expert'.tr();
+        'unknown_expert'.tr();
   }
 
   String _getExpertNumber() {
     return widget.appointment['expertNumber']?.toString() ??
-           widget.appointment['salonPhoneNumber']?.toString() ??
-           'no_phone_number'.tr();
+        widget.appointment['salonPhoneNumber']?.toString() ??
+        'no_phone_number'.tr();
   }
 
   String _getExpertshopName() {
     return widget.appointment['expertSalonName']?.toString() ??
-           widget.appointment['salonName']?.toString() ??
-           'unknown_salon'.tr();
+        widget.appointment['salonName']?.toString() ??
+        'unknown_salon'.tr();
   }
 
   String _getImagePath() {
     return widget.appointment['imagePath']?.toString() ??
-           widget.appointment['expertImage']?.toString() ??
-           widget.appointment['salonImage']?.toString() ??
-           '';
+        widget.appointment['expertImage']?.toString() ??
+        widget.appointment['salonImage']?.toString() ??
+        '';
   }
 
   @override
@@ -285,10 +304,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: _getBorderColor(),
-          width: 1,
-        ),
+        side: BorderSide(color: _getBorderColor(), width: 1),
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -317,11 +333,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                   ? CachedNetworkImageProvider(_getImagePath())
                   : null,
               child: _getImagePath().isEmpty
-                  ? Icon(
-                      Icons.person,
-                      color: primaryColor,
-                      size: 30,
-                    )
+                  ? Icon(Icons.person, color: primaryColor, size: 30)
                   : null,
             ),
             title: Text(
@@ -332,7 +344,9 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                 color: textColor,
               ),
             ),
-            subtitle: _buildStatusChip(widget.appointment['status']?.toString() ?? 'unknown'),
+            subtitle: _buildStatusChip(
+              widget.appointment['status']?.toString() ?? 'unknown',
+            ),
             trailing: Icon(
               _isExpanded ? Icons.expand_less : Icons.expand_more,
               color: primaryColor,
@@ -361,11 +375,11 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                       value: _formatAppointmentTime(),
                     ),
                     const SizedBox(height: 12),
-                      _buildDetailRow(
-                        icon: Icons.attach_money,
-                        title: 'total_price'.tr(),
-                        value: _formatPrice(),
-                      ),
+                    _buildDetailRow(
+                      icon: Icons.attach_money,
+                      title: 'total_price'.tr(),
+                      value: _formatPrice(),
+                    ),
                     const SizedBox(height: 12),
                     if (services.isNotEmpty) ...[
                       _buildServicesSection(services),
@@ -395,14 +409,22 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                       _buildDetailRow(
                         icon: Icons.payments_outlined,
                         title: 'payment_status'.tr(),
-                        value: (widget.appointment['isPaid'] ?? false) ? 'paid'.tr() : 'unpaid'.tr(),
-                        valueColor: (widget.appointment['isPaid'] ?? false) ? Colors.green : Colors.red,
+                        value: (widget.appointment['isPaid'] ?? false)
+                            ? 'paid'.tr()
+                            : 'unpaid'.tr(),
+                        valueColor: (widget.appointment['isPaid'] ?? false)
+                            ? Colors.green
+                            : Colors.red,
                       ),
                       const SizedBox(height: 12),
                       _buildDetailRow(
                         icon: Icons.account_balance_wallet_outlined,
                         title: 'method'.tr(),
-                        value: widget.appointment['paymentMethod']?.toString().toUpperCase() ?? 'NONE',
+                        value:
+                            widget.appointment['paymentMethod']
+                                ?.toString()
+                                .toUpperCase() ??
+                            'NONE',
                       ),
                       if (widget.appointment['paymentEvidence'] != null) ...[
                         const SizedBox(height: 12),
@@ -473,7 +495,10 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
               if (!(widget.appointment['isPaid'] ?? false))
                 ElevatedButton.icon(
                   onPressed: () => _remindCustomer(context, appointmentId),
-                  icon: const Icon(Icons.notifications_active_outlined, size: 18),
+                  icon: const Icon(
+                    Icons.notifications_active_outlined,
+                    size: 18,
+                  ),
                   label: Text('remind_customer'.tr()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColor.femaleAccent,
@@ -481,7 +506,8 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
                   ),
                 ),
               ElevatedButton.icon(
-                onPressed: () => _showReportIncompletePaymentDialog(context, appointmentId),
+                onPressed: () =>
+                    _showReportIncompletePaymentDialog(context, appointmentId),
                 icon: const Icon(Icons.report_gmailerrorred_rounded, size: 18),
                 label: Text('report_payment_issue'.tr()),
                 style: ElevatedButton.styleFrom(
@@ -519,13 +545,18 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
             const SizedBox(height: 16),
             DropdownButton<int>(
               value: minutes,
-              items: [15, 30, 45, 60].map((m) => DropdownMenuItem(value: m, child: Text('$m min'))).toList(),
+              items: [15, 30, 45, 60]
+                  .map((m) => DropdownMenuItem(value: m, child: Text('$m min')))
+                  .toList(),
               onChanged: (val) => minutes = val!,
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr()),
+          ),
           ElevatedButton(
             onPressed: () {
               context.read<AppointmentProvider>().delayAppointment(id, minutes);
@@ -569,7 +600,10 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr()),
+          ),
           ElevatedButton(
             onPressed: () {
               context.read<AppointmentProvider>().rateCustomer(
@@ -592,34 +626,35 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
       children: [
         Text(
           'services_label'.tr(),
-          style: TextStyle(
-            color: _getTextColor(),
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: _getTextColor(), fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 6,
           children: services
-              .map((service) => Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: _getPrimaryColor().withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: _getPrimaryColor().withValues(alpha: 0.3),
-                        width: 1,
-                      ),
+              .map(
+                (service) => Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getPrimaryColor().withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _getPrimaryColor().withValues(alpha: 0.3),
+                      width: 1,
                     ),
-                    child: Text(
-                      service is AppointmentServiceModel ? service.name : service.toString(),
-                      style: TextStyle(
-                        color: _getTextColor(),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ))
+                  ),
+                  child: Text(
+                    service is AppointmentServiceModel
+                        ? service.name
+                        : service.toString(),
+                    style: TextStyle(color: _getTextColor(), fontSize: 12),
+                  ),
+                ),
+              )
               .toList(),
         ),
       ],
@@ -638,20 +673,13 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
 
     return Row(
       children: [
-        Icon(
-          icon,
-          color: primaryColor,
-          size: 20,
-        ),
+        Icon(icon, color: primaryColor, size: 20),
         const SizedBox(width: 12),
         Expanded(
           flex: 2,
           child: Text(
             title,
-            style: TextStyle(
-              color: textColor,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
           ),
         ),
         Expanded(
@@ -662,8 +690,12 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
               value,
               style: TextStyle(
                 color: valueColor ?? (isClickable ? primaryColor : textColor),
-                fontWeight: isClickable || valueColor != null ? FontWeight.w600 : FontWeight.normal,
-                decoration: isClickable ? TextDecoration.underline : TextDecoration.none,
+                fontWeight: isClickable || valueColor != null
+                    ? FontWeight.w600
+                    : FontWeight.normal,
+                decoration: isClickable
+                    ? TextDecoration.underline
+                    : TextDecoration.none,
               ),
               textAlign: TextAlign.right,
             ),
@@ -678,8 +710,10 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('payment_evidence'.tr(), 
-          style: TextStyle(fontWeight: FontWeight.bold, color: _getTextColor())),
+        Text(
+          'payment_evidence'.tr(),
+          style: TextStyle(fontWeight: FontWeight.bold, color: _getTextColor()),
+        ),
         const SizedBox(height: 8),
         InkWell(
           onTap: () => _showEvidenceImage(context, evidence),
@@ -710,7 +744,10 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
           mainAxisSize: MainAxisSize.min,
           children: [
             CachedNetworkImage(imageUrl: url),
-            TextButton(onPressed: () => Navigator.pop(context), child: Text('close'.tr())),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('close'.tr()),
+            ),
           ],
         ),
       ),
@@ -718,9 +755,9 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
   }
 
   void _remindCustomer(BuildContext context, String id) {
-     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('payment_reminder_sent'.tr())),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('payment_reminder_sent'.tr())));
   }
 
   void _showReportIncompletePaymentDialog(BuildContext context, String id) {
@@ -737,17 +774,25 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
             TextField(
               controller: reasonController,
               maxLines: 3,
-              decoration: InputDecoration(border: const OutlineInputBorder(), hintText: 'enter_reason'.tr()),
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: 'enter_reason'.tr(),
+              ),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr()),
+          ),
           ElevatedButton(
             onPressed: () {
               // Logic here
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('report_submitted_success'.tr())));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('report_submitted_success'.tr())),
+              );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text('submit_report'.tr()),
@@ -762,7 +807,8 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     if (authProvider.user?.isCustomer != true) return const SizedBox.shrink();
 
     final status = widget.appointment['status']?.toString().toLowerCase();
-    final checkoutUrl = widget.appointment['checkoutUrl'] ?? widget.appointment['checkout_url'];
+    final checkoutUrl =
+        widget.appointment['checkoutUrl'] ?? widget.appointment['checkout_url'];
 
     if (status == 'pending_payment' && checkoutUrl != null) {
       return Column(

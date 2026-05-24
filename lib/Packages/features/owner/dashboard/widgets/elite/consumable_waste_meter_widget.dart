@@ -17,7 +17,9 @@ class ConsumableWasteMeterWidget extends StatelessWidget {
     final owner = context.watch<OwnerProvider>();
 
     // Load consumables if not already loaded
-    if (!inventory.isLoading && inventory.consumables.isEmpty && owner.activeSalonId != null) {
+    if (!inventory.isLoading &&
+        inventory.consumables.isEmpty &&
+        owner.activeSalonId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         inventory.loadInventory(owner.activeSalonId!);
       });
@@ -32,23 +34,29 @@ class ConsumableWasteMeterWidget extends StatelessWidget {
           children: [
             const Icon(Icons.recycling_rounded, size: 18, color: Colors.orange),
             const SizedBox(width: 8),
-            Text("consumable_waste".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "consumable_waste".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             if (inventory.isLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 14),
         if (consumables.isEmpty && !inventory.isLoading)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text('No consumable inventory data.',
-                style: TextStyle(color: theme.hintColor, fontSize: 12)),
+            child: Text(
+              'No consumable inventory data.',
+              style: TextStyle(color: theme.hintColor, fontSize: 12),
+            ),
           ),
         ...consumables.take(6).map((item) {
           final name = item.productName;
@@ -63,15 +71,20 @@ class ConsumableWasteMeterWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: Text(name,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                      overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    name,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Row(
                   children: [
-                    Text('$qty units in stock',
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: theme.hintColor)),
+                    Text(
+                      '$qty units in stock',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Icon(
                       depleted

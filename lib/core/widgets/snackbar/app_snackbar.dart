@@ -20,7 +20,11 @@ abstract class AppSnackBar {
 
   // ─── Public API ──────────────────────────────────────────────────────────────
 
-  static void success(BuildContext context, String message, {Duration? duration}) {
+  static void success(
+    BuildContext context,
+    String message, {
+    Duration? duration,
+  }) {
     _show(
       context,
       message: message,
@@ -30,7 +34,11 @@ abstract class AppSnackBar {
     );
   }
 
-  static void error(BuildContext context, String message, {Duration? duration}) {
+  static void error(
+    BuildContext context,
+    String message, {
+    Duration? duration,
+  }) {
     _show(
       context,
       message: message,
@@ -40,7 +48,11 @@ abstract class AppSnackBar {
     );
   }
 
-  static void warning(BuildContext context, String message, {Duration? duration}) {
+  static void warning(
+    BuildContext context,
+    String message, {
+    Duration? duration,
+  }) {
     _show(
       context,
       message: message,

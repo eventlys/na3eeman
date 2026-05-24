@@ -28,7 +28,6 @@ class OfflineService {
   }
 }
 
-
 class BackgroundService {
   static final BackgroundService _instance = BackgroundService._internal();
 
@@ -52,7 +51,6 @@ class BackgroundService {
 }
 
 class AppLifecycleService {
-
   static final AppLifecycleService _instance = AppLifecycleService._internal();
 
   factory AppLifecycleService() => _instance;

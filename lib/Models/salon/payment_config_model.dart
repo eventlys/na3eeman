@@ -1,4 +1,3 @@
-
 enum DepositType { fixed, percent }
 
 class SalonPaymentConfig {
@@ -37,7 +36,9 @@ class SalonPaymentConfig {
       allowCliq: json['allow_cliq'] ?? false,
       allowPoints: json['allow_points'] ?? true,
       allowVouchers: json['allow_vouchers'] ?? true,
-      depositType: json['deposit_type'] == 'PERCENT' ? DepositType.percent : DepositType.fixed,
+      depositType: json['deposit_type'] == 'PERCENT'
+          ? DepositType.percent
+          : DepositType.fixed,
       depositValue: (json['deposit_value'] ?? 0).toDouble(),
       cancellationWindowHours: json['cancellation_window_hours'] ?? 24,
       noShowEnforcementThreshold: json['no_show_enforcement_threshold'] ?? 2,
@@ -79,8 +80,10 @@ class SalonPaymentConfig {
       allowVouchers: allowVouchers ?? this.allowVouchers,
       depositType: depositType ?? this.depositType,
       depositValue: depositValue ?? this.depositValue,
-      cancellationWindowHours: cancellationWindowHours ?? this.cancellationWindowHours,
-      noShowEnforcementThreshold: noShowEnforcementThreshold ?? this.noShowEnforcementThreshold,
+      cancellationWindowHours:
+          cancellationWindowHours ?? this.cancellationWindowHours,
+      noShowEnforcementThreshold:
+          noShowEnforcementThreshold ?? this.noShowEnforcementThreshold,
     );
   }
 }

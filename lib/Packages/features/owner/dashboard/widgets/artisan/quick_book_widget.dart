@@ -16,10 +16,7 @@ class QuickBookWidget extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              theme.primaryColor,
-              theme.primaryColor.withOpacity(0.75),
-            ],
+            colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.75)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -34,20 +31,25 @@ class QuickBookWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.add_circle_outline_rounded,
-                color: Colors.white, size: 32),
+            const Icon(
+              Icons.add_circle_outline_rounded,
+              color: Colors.white,
+              size: 32,
+            ),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("quick_book".tr(),
+                Text(
+                  "quick_book".tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text("add_a_new_appointment".tr(),
+                Text(
+                  "add_a_new_appointment".tr(),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 13,
@@ -56,8 +58,11 @@ class QuickBookWidget extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios_rounded,
-                color: Colors.white70, size: 18),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.white70,
+              size: 18,
+            ),
           ],
         ),
       ),

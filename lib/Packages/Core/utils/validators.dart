@@ -4,21 +4,16 @@ class AppValidators {
 
   // Pre-compiled regex patterns for better performance
   static final RegExp _emailRegex = RegExp(
-    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
   );
 
-  static final RegExp _phoneRegex = RegExp(
-    r'^\+?[0-9]{10,15}$'
-  );
+  static final RegExp _phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
 
   static final RegExp _strongPasswordRegex = RegExp(
-    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
   );
 
-  static final RegExp _htmlRegex = RegExp(
-    r'<[^>]*>',
-    multiLine: true,
-  );
+  static final RegExp _htmlRegex = RegExp(r'<[^>]*>', multiLine: true);
 
   static final RegExp _sqlInjectionRegex = RegExp(
     r'(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|ALTER|CREATE|TRUNCATE)\b)',
@@ -26,7 +21,7 @@ class AppValidators {
   );
 
   static final RegExp _urlRegex = RegExp(
-    r'^(https?://)?([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$'
+    r'^(https?://)?([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$',
   );
 
   static final RegExp _creditCardRegex = RegExp(r'^\d{13,19}$');
@@ -54,10 +49,10 @@ class AppValidators {
   /// Checks for potentially malicious input
   static bool isPotentialMaliciousInput(String input) {
     return _htmlRegex.hasMatch(input) ||
-           _sqlInjectionRegex.hasMatch(input) ||
-           input.contains('javascript:') ||
-           input.contains('data:') ||
-           input.length > 10000;
+        _sqlInjectionRegex.hasMatch(input) ||
+        input.contains('javascript:') ||
+        input.contains('data:') ||
+        input.length > 10000;
   }
 
   /// Sanitizes entire map of string values
@@ -158,7 +153,10 @@ class AppValidators {
   }
 
   /// Validates password with configurable security level
-  static String? validatePassword(String? value, {bool strongValidation = true}) {
+  static String? validatePassword(
+    String? value, {
+    bool strongValidation = true,
+  }) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
     }
@@ -196,7 +194,11 @@ class AppValidators {
   }
 
   /// Validates minimum length
-  static String? validateMinLength(String? value, int minLength, String fieldName) {
+  static String? validateMinLength(
+    String? value,
+    int minLength,
+    String fieldName,
+  ) {
     if (value == null || value.length < minLength) {
       return '$fieldName must be at least $minLength characters';
     }
@@ -225,13 +227,15 @@ class AppValidators {
 
   /// Pure validation without error messages
   static bool isValidEmail(String email) {
-    return _emailRegex.hasMatch(email.trim()) && !isPotentialMaliciousInput(email);
+    return _emailRegex.hasMatch(email.trim()) &&
+        !isPotentialMaliciousInput(email);
   }
 
   /// Pure phone validation
   static bool isValidPhone(String phone) {
     final cleanedPhone = phone.replaceAll(RegExp(r'[\s\-()]'), '');
-    return _phoneRegex.hasMatch(cleanedPhone) && !isPotentialMaliciousInput(phone);
+    return _phoneRegex.hasMatch(cleanedPhone) &&
+        !isPotentialMaliciousInput(phone);
   }
 
   /// URL validation

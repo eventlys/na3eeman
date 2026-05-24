@@ -61,7 +61,9 @@ class Expert {
       totalEarnings: (json['total_earnings'] as num).toDouble(),
       specialties: List<String>.from(json['specialties'] ?? []),
       servicesCount: Map<String, int>.from(json['services_count'] ?? {}),
-      lastActive: json['last_active'] != null ? DateTime.parse(json['last_active']) : null,
+      lastActive: json['last_active'] != null
+          ? DateTime.parse(json['last_active'])
+          : null,
       hourlyRate: (json['hourly_rate'] as num).toDouble(),
       salonId: json['salon_id'] as int,
     );

@@ -6,7 +6,6 @@ import '../../utils/helpers/themes_helpers.dart';
 import '../../../../Helpers/error_handler.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
-
 class ErrorBoundary extends StatefulWidget {
   final Widget child;
   final Widget? fallback;
@@ -43,8 +42,9 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
 
   Widget _buildDefaultErrorWidget() {
     final colors = _getErrorColors();
-    final isNetworkError = error is AppError && (error as AppError).type == ErrorType.network;
-    
+    final isNetworkError =
+        error is AppError && (error as AppError).type == ErrorType.network;
+
     return Scaffold(
       backgroundColor: colors['background'],
       body: Container(
@@ -72,7 +72,9 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isNetworkError ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                  isNetworkError
+                      ? Icons.wifi_off_rounded
+                      : Icons.error_outline_rounded,
                   size: 80,
                   color: colors['primary'],
                 ),
@@ -91,9 +93,10 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
             ),
             const SizedBox(height: 16),
             Text(
-              isNetworkError 
-                ? 'We couldn\'t reach our servers. Please check your internet connection and try again.'
-                : (error?.toString() ?? 'An unexpected error occurred. Our team has been notified.'),
+              isNetworkError
+                  ? 'We couldn\'t reach our servers. Please check your internet connection and try again.'
+                  : (error?.toString() ??
+                        'An unexpected error occurred. Our team has been notified.'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -118,7 +121,12 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(isNetworkError ? Icons.refresh_rounded : Icons.home_rounded, size: 24),
+                    Icon(
+                      isNetworkError
+                          ? Icons.refresh_rounded
+                          : Icons.home_rounded,
+                      size: 24,
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       isNetworkError ? 'Retry Connection' : 'Go Back Home',
@@ -136,7 +144,6 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
       ),
     );
   }
-
 
   void _showErrorDetails() {
     showDialog(
@@ -165,7 +172,8 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
               ),
               const SizedBox(height: 8),
               if (stackTrace != null) ...[
-                Text("stack_trace".tr(),
+                Text(
+                  "stack_trace".tr(),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -194,31 +202,47 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
       switch (widget.userGender!) {
         case UserGender.male:
           return {
-            'background': isDark ? AppColor.darkMaleBackground : AppColor.maleBackground,
+            'background': isDark
+                ? AppColor.darkMaleBackground
+                : AppColor.maleBackground,
             'primary': AppColor.maleAccent,
             'secondary': isDark ? AppColor.darkMaleBG : AppColor.lightMaleBG,
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'icon': AppColor.maleAccent,
             'buttonText': isDark ? AppColor.darkText : AppColor.light,
           };
         case UserGender.female:
           return {
-            'background': isDark ? AppColor.darkFemaleBackground : AppColor.femaleBackground,
+            'background': isDark
+                ? AppColor.darkFemaleBackground
+                : AppColor.femaleBackground,
             'primary': AppColor.femaleAccent,
-            'secondary': isDark ? AppColor.darkFemaleBG : AppColor.lightFemaleBG,
+            'secondary': isDark
+                ? AppColor.darkFemaleBG
+                : AppColor.lightFemaleBG,
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'icon': AppColor.femaleAccent,
             'buttonText': isDark ? AppColor.darkText : AppColor.light,
           };
         case UserGender.nonBinary:
           return {
-            'background': isDark ? AppColor.darkNonBinaryBackground : AppColor.nonBinaryBackground,
+            'background': isDark
+                ? AppColor.darkNonBinaryBackground
+                : AppColor.nonBinaryBackground,
             'primary': AppColor.nonBinaryAccent,
-            'secondary': isDark ? AppColor.darkNonBinaryBG : AppColor.lightNonBinaryBG,
+            'secondary': isDark
+                ? AppColor.darkNonBinaryBG
+                : AppColor.lightNonBinaryBG,
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'icon': AppColor.nonBinaryAccent,
             'buttonText': isDark ? AppColor.darkText : AppColor.light,
           };
@@ -231,12 +255,13 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
       'primary': isDark ? AppColor.darkPrimary : AppColor.primary,
       'secondary': isDark ? AppColor.darkSecondary : AppColor.secondary,
       'text': isDark ? AppColor.darkText : AppColor.lightText,
-      'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+      'textSecondary': isDark
+          ? AppColor.darkTextSecondary
+          : AppColor.lightTextSecondary,
       'icon': isDark ? AppColor.darkError : AppColor.lightError,
       'buttonText': isDark ? AppColor.darkText : AppColor.light,
     };
   }
-
 
   void _handleRetry() {
     if (widget.onRetry != null) {
@@ -305,7 +330,11 @@ class ErrorBoundaryBuilder extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorWidget(dynamic error, StackTrace stackTrace, BuildContext context) {
+  Widget _buildErrorWidget(
+    dynamic error,
+    StackTrace stackTrace,
+    BuildContext context,
+  ) {
     final colors = _getErrorColors(context);
 
     return Container(
@@ -325,7 +354,8 @@ class ErrorBoundaryBuilder extends StatelessWidget {
             color: colors['icon'],
           ),
           const SizedBox(height: 12),
-          Text("builder_error".tr(),
+          Text(
+            "builder_error".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -335,10 +365,7 @@ class ErrorBoundaryBuilder extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             error.toString(),
-            style: TextStyle(
-              fontSize: 14,
-              color: colors['textSecondary'],
-            ),
+            style: TextStyle(fontSize: 14, color: colors['textSecondary']),
             textAlign: TextAlign.center,
           ),
         ],
@@ -353,25 +380,37 @@ class ErrorBoundaryBuilder extends StatelessWidget {
       switch (userGender!) {
         case UserGender.male:
           return {
-            'background': isDark ? AppColor.darkMaleBackground.withValues(alpha: 0.1) : AppColor.maleBackground.withValues(alpha: 0.1),
+            'background': isDark
+                ? AppColor.darkMaleBackground.withValues(alpha: 0.1)
+                : AppColor.maleBackground.withValues(alpha: 0.1),
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'icon': AppColor.maleAccent,
             'secondary': AppColor.maleAccent,
           };
         case UserGender.female:
           return {
-            'background': isDark ? AppColor.darkFemaleBackground.withValues(alpha: 0.1) : AppColor.femaleBackground.withValues(alpha: 0.1),
+            'background': isDark
+                ? AppColor.darkFemaleBackground.withValues(alpha: 0.1)
+                : AppColor.femaleBackground.withValues(alpha: 0.1),
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'icon': AppColor.femaleAccent,
             'secondary': AppColor.femaleAccent,
           };
         case UserGender.nonBinary:
           return {
-            'background': isDark ? AppColor.darkNonBinaryBackground.withValues(alpha: 0.1) : AppColor.nonBinaryBackground.withValues(alpha: 0.1),
+            'background': isDark
+                ? AppColor.darkNonBinaryBackground.withValues(alpha: 0.1)
+                : AppColor.nonBinaryBackground.withValues(alpha: 0.1),
             'text': isDark ? AppColor.darkText : AppColor.lightText,
-            'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            'textSecondary': isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
             'icon': AppColor.nonBinaryAccent,
             'secondary': AppColor.nonBinaryAccent,
           };
@@ -381,7 +420,9 @@ class ErrorBoundaryBuilder extends StatelessWidget {
     return {
       'background': isDark ? AppColor.darkCard : AppColor.lightCard,
       'text': isDark ? AppColor.darkText : AppColor.lightText,
-      'textSecondary': isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+      'textSecondary': isDark
+          ? AppColor.darkTextSecondary
+          : AppColor.lightTextSecondary,
       'icon': isDark ? AppColor.darkError : AppColor.lightError,
       'secondary': isDark ? AppColor.darkSecondary : AppColor.secondary,
     };
@@ -391,11 +432,17 @@ class ErrorBoundaryBuilder extends StatelessWidget {
     if (userGender != null) {
       switch (userGender!) {
         case UserGender.male:
-          return isDarkMode ? AppImages.avatar_male_view : AppImages.avatar_male;
+          return isDarkMode
+              ? AppImages.avatar_male_view
+              : AppImages.avatar_male;
         case UserGender.female:
-          return isDarkMode ? AppImages.avatar_female_view : AppImages.avatar_female;
+          return isDarkMode
+              ? AppImages.avatar_female_view
+              : AppImages.avatar_female;
         case UserGender.nonBinary:
-          return isDarkMode ? AppImages.not_allowed_gray : AppImages.not_allowed;
+          return isDarkMode
+              ? AppImages.not_allowed_gray
+              : AppImages.not_allowed;
       }
     }
     return isDarkMode ? AppImages.error_view : AppImages.error;

@@ -23,10 +23,7 @@ class AppRouter {
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     final builder = routes[settings.name];
     if (builder != null) {
-      return MaterialPageRoute(
-        builder: builder,
-        settings: settings,
-      );
+      return MaterialPageRoute(builder: builder, settings: settings);
     }
     return null;
   }

@@ -20,17 +20,22 @@ class ExpertPerformance {
   });
 
   double get earnings => totalRevenue + tips;
-  double get averageEarningPerAppointment => appointmentsCompleted > 0 ? earnings / appointmentsCompleted : 0;
+  double get averageEarningPerAppointment =>
+      appointmentsCompleted > 0 ? earnings / appointmentsCompleted : 0;
 
   factory ExpertPerformance.fromJson(Map<String, dynamic> json) {
     return ExpertPerformance(
       staffId: json['staff_id'] ?? json['staffId'] ?? '',
       date: DateTime.parse(json['date']),
-      appointmentsCompleted: json['appointments_completed'] ?? json['appointmentsCompleted'] ?? 0,
-      totalRevenue: (json['total_revenue'] ?? json['totalRevenue'] ?? 0).toDouble(),
+      appointmentsCompleted:
+          json['appointments_completed'] ?? json['appointmentsCompleted'] ?? 0,
+      totalRevenue: (json['total_revenue'] ?? json['totalRevenue'] ?? 0)
+          .toDouble(),
       tips: (json['tips'] ?? 0).toDouble(),
       rating: (json['rating'] ?? 0).toDouble(),
-      servicesBreakdown: Map<String, int>.from(json['services_breakdown'] ?? json['servicesBreakdown'] ?? {}),
+      servicesBreakdown: Map<String, int>.from(
+        json['services_breakdown'] ?? json['servicesBreakdown'] ?? {},
+      ),
       salonId: json['salon'] as int,
     );
   }
@@ -91,8 +96,12 @@ class StaffAttendance {
       date: DateTime.parse(json['date']),
       scheduledStart: DateTime.parse(json['scheduled_start']),
       scheduledEnd: DateTime.parse(json['scheduled_end']),
-      clockIn: json['clock_in'] != null ? DateTime.parse(json['clock_in']) : null,
-      clockOut: json['clock_out'] != null ? DateTime.parse(json['clock_out']) : null,
+      clockIn: json['clock_in'] != null
+          ? DateTime.parse(json['clock_in'])
+          : null,
+      clockOut: json['clock_out'] != null
+          ? DateTime.parse(json['clock_out'])
+          : null,
       status: json['status'] as String,
       notes: json['notes'] as String?,
       salonId: json['salon'] as int,

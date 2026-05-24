@@ -129,7 +129,10 @@ class RBACProvider extends ChangeNotifier {
   bool hasSubscription(SubscriptionTier required) => _tier.meets(required);
 
   bool get isAdmin => _role == UserRole.admin;
-  bool get isOwner => _role == UserRole.owner || _role == UserRole.ownerExpert || _role == UserRole.owner;
+  bool get isOwner =>
+      _role == UserRole.owner ||
+      _role == UserRole.ownerExpert ||
+      _role == UserRole.owner;
   bool get isManager => _role == UserRole.manager;
   bool get isStaff => _role.isStaff;
   bool get isCustomer => _role == UserRole.customer;

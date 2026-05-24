@@ -9,10 +9,12 @@ class InternAttendanceReportPage extends StatefulWidget {
   const InternAttendanceReportPage({super.key});
 
   @override
-  State<InternAttendanceReportPage> createState() => _InternAttendanceReportPageState();
+  State<InternAttendanceReportPage> createState() =>
+      _InternAttendanceReportPageState();
 }
 
-class _InternAttendanceReportPageState extends State<InternAttendanceReportPage> {
+class _InternAttendanceReportPageState
+    extends State<InternAttendanceReportPage> {
   @override
   void initState() {
     super.initState();
@@ -29,7 +31,10 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Intern Attendance'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Intern Attendance'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButtonStyled(
@@ -42,8 +47,8 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
         child: staffProvider.isLoading && staffProvider.attendanceLogs.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : staffProvider.attendanceLogs.isEmpty
-                ? _buildEmptyState(isDark)
-                : _buildAttendanceList(staffProvider, isDark),
+            ? _buildEmptyState(isDark)
+            : _buildAttendanceList(staffProvider, isDark),
       ),
     );
   }
@@ -53,7 +58,11 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.history_rounded, size: 64, color: AppColors.almostBlack300.withOpacity(0.5)),
+          Icon(
+            Icons.history_rounded,
+            size: 64,
+            color: AppColors.almostBlack300.withOpacity(0.5),
+          ),
           const SizedBox(height: 16),
           Text(
             'No attendance records found'.tr(),
@@ -70,7 +79,7 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
       itemCount: provider.attendanceLogs.length,
       itemBuilder: (context, index) {
         final log = provider.attendanceLogs[index];
-        final duration = log.clockOut != null 
+        final duration = log.clockOut != null
             ? log.clockOut!.difference(log.clockIn)
             : null;
 
@@ -81,7 +90,9 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
             color: isDark ? AppColors.almostBlack700 : AppColors.white,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: isDark ? AppColors.almostBlack100.withOpacity(0.1) : AppColors.almostBlack50,
+              color: isDark
+                  ? AppColors.almostBlack100.withOpacity(0.1)
+                  : AppColors.almostBlack50,
             ),
           ),
           child: Column(
@@ -96,12 +107,18 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
                       children: [
                         Text(
                           log.userName ?? 'Intern',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           DateFormat('EEEE, MMM dd').format(log.clockIn),
-                          style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                          style: const TextStyle(
+                            color: AppColors.almostBlack300,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -115,23 +132,39 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
               ),
               Row(
                 children: [
-                  _buildTimeInfo('In'.tr(), DateFormat.jm().format(log.clockIn), Icons.login_rounded, Colors.green),
+                  _buildTimeInfo(
+                    'In'.tr(),
+                    DateFormat.jm().format(log.clockIn),
+                    Icons.login_rounded,
+                    Colors.green,
+                  ),
                   const SizedBox(width: 32),
                   _buildTimeInfo(
-                    'Out'.tr(), 
-                    log.clockOut != null ? DateFormat.jm().format(log.clockOut!) : '--:--', 
-                    Icons.logout_rounded, 
-                    log.clockOut != null ? Colors.orange : Colors.grey
+                    'Out'.tr(),
+                    log.clockOut != null
+                        ? DateFormat.jm().format(log.clockOut!)
+                        : '--:--',
+                    Icons.logout_rounded,
+                    log.clockOut != null ? Colors.orange : Colors.grey,
                   ),
                   const Spacer(),
                   if (duration != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('Duration'.tr(), style: const TextStyle(color: AppColors.almostBlack300, fontSize: 10)),
+                        Text(
+                          'Duration'.tr(),
+                          style: const TextStyle(
+                            color: AppColors.almostBlack300,
+                            fontSize: 10,
+                          ),
+                        ),
                         Text(
                           '${duration.inHours}h ${duration.inMinutes.remainder(60)}m',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
                         ),
                       ],
                     ),
@@ -141,11 +174,18 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    const Icon(Icons.location_on_outlined, size: 14, color: AppColors.almostBlack300),
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 14,
+                      color: AppColors.almostBlack300,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       log.location!,
-                      style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                      style: const TextStyle(
+                        color: AppColors.almostBlack300,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -184,12 +224,21 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
       ),
       child: Text(
         status.replaceAll('_', ' '),
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
-  Widget _buildTimeInfo(String label, String time, IconData icon, Color iconColor) {
+  Widget _buildTimeInfo(
+    String label,
+    String time,
+    IconData icon,
+    Color iconColor,
+  ) {
     return Row(
       children: [
         Container(
@@ -204,8 +253,17 @@ class _InternAttendanceReportPageState extends State<InternAttendanceReportPage>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(color: AppColors.almostBlack300, fontSize: 10)),
-            Text(time, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.almostBlack300,
+                fontSize: 10,
+              ),
+            ),
+            Text(
+              time,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
           ],
         ),
       ],

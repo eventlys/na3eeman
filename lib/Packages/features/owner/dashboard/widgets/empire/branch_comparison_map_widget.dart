@@ -23,15 +23,19 @@ class BranchComparisonMapWidget extends StatelessWidget {
           children: [
             const Icon(Icons.map_rounded, size: 18, color: Colors.teal),
             const SizedBox(width: 8),
-            Text("branch_comparison".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "branch_comparison".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             if (owner.isAnalyticsLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 14),
@@ -55,8 +59,11 @@ class BranchComparisonMapWidget extends StatelessWidget {
                 if (idx == 0)
                   const Padding(
                     padding: EdgeInsets.only(right: 8),
-                    child: Icon(Icons.emoji_events_rounded,
-                        color: Colors.amber, size: 18),
+                    child: Icon(
+                      Icons.emoji_events_rounded,
+                      color: Colors.amber,
+                      size: 18,
+                    ),
                   )
                 else
                   const SizedBox(width: 26),
@@ -64,36 +71,45 @@ class BranchComparisonMapWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                      Text(
+                        name,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       Row(
                         children: [
                           Expanded(
                             child: LinearProgressIndicator(
                               value: occupancy / 100,
                               backgroundColor: Colors.grey.withOpacity(0.2),
-                              valueColor:
-                                  const AlwaysStoppedAnimation(Colors.teal),
+                              valueColor: const AlwaysStoppedAnimation(
+                                Colors.teal,
+                              ),
                               minHeight: 6,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text('$occupancy%',
-                              style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal)),
+                          Text(
+                            '$occupancy%',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text('JD ${earnings.toStringAsFixed(0)}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.primaryColor)),
+                Text(
+                  'JD ${earnings.toStringAsFixed(0)}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.primaryColor,
+                  ),
+                ),
               ],
             ),
           );
@@ -106,8 +122,7 @@ class BranchComparisonMapWidget extends StatelessWidget {
 class _EmptySectionPlaceholder extends StatelessWidget {
   final IconData icon;
   final String message;
-  const _EmptySectionPlaceholder(
-      {required this.icon, required this.message});
+  const _EmptySectionPlaceholder({required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +133,14 @@ class _EmptySectionPlaceholder extends StatelessWidget {
           Icon(icon, color: Colors.grey.shade400, size: 20),
           const SizedBox(width: 8),
           Expanded(
-              child: Text(message,
-                  style: TextStyle(
-                      color: Theme.of(context).hintColor, fontSize: 12))),
+            child: Text(
+              message,
+              style: TextStyle(
+                color: Theme.of(context).hintColor,
+                fontSize: 12,
+              ),
+            ),
+          ),
         ],
       ),
     );

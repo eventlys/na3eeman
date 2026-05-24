@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-// import 'package:easy_localization/easy_localization.dart';
-
+import 'package:na3eeman/Services/repositories/auth_repository.dart';
+import 'package:na3eeman/Services/api/api_service.dart';
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
 
@@ -128,13 +128,33 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     );
   }
 
-  void _changePassword() {
+  Future<void> _changePassword() async {
     if (_formKey.currentState!.validate()) {
-      // Implement password change logic here
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("password_changed_successfully".tr())),
-      );
-      Navigator.pop(context);
+      try {
+        final authRepo = AuthRepository(ApiService());
+        await authRepo.changePassword(
+          currentPassword: _currentPasswordController.text,
+          newPassword: _newPasswordController.text,
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("password_changed_successfully".tr()),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -146,4 +166,3 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     super.dispose();
   }
 }
-

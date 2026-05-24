@@ -37,4 +37,3 @@ class CliqPaymentPage extends StatelessWidget {
     );
   }
 }
-

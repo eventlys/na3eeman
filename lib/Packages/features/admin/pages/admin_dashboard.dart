@@ -7,6 +7,9 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Providers/features/admin_analytics_provider.dart';
+import '../../../../Providers/features/offers_provider.dart';
+import '../../../../Models/salon/offer_model.dart';
+import '../../../../Models/salon/ad_campaign_model.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
@@ -31,6 +34,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
     sidebarController.init(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AdminAnalyticsProvider>().fetchOverview();
+      context.read<OffersProvider>().loadCampaigns(
+        1,
+      ); // Default salon for admin preview
     });
   }
 
@@ -44,6 +50,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final adminProvider = context.watch<AdminAnalyticsProvider>();
+    final offersProvider = context.watch<OffersProvider>();
     final overview = adminProvider.overview;
     final primary = Theme.of(context).primaryColor;
 
@@ -74,20 +81,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   // ── KPI Row 1 ──────────────────────────────────────────────
                   Row(
                     children: [
-                      Expanded(child: _buildKpiCard(
-                        "total_users".tr(),
-                        overview?['total_users']?.toString() ?? '—',
-                        Icons.people_rounded,
-                        primary,
-                        growth: 'this_week_growth'.tr(args: [overview?['new_users_7d']?.toString() ?? '0']),
-                      )),
+                      Expanded(
+                        child: _buildKpiCard(
+                          "total_users".tr(),
+                          overview?['total_users']?.toString() ?? '—',
+                          Icons.people_rounded,
+                          primary,
+                          growth: 'this_week_growth'.tr(
+                            args: [
+                              overview?['new_users_7d']?.toString() ?? '0',
+                            ],
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: AppSpacing.cardGap),
-                      Expanded(child: _buildKpiCard(
-                        "active_salons".tr(),
-                        overview?['total_salons']?.toString() ?? '—',
-                        Icons.storefront_rounded,
-                        AppColors.pink,
-                      )),
+                      Expanded(
+                        child: _buildKpiCard(
+                          "active_salons".tr(),
+                          overview?['total_salons']?.toString() ?? '—',
+                          Icons.storefront_rounded,
+                          AppColors.pink,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.cardGap),
@@ -95,20 +110,33 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   // ── KPI Row 2 ──────────────────────────────────────────────
                   Row(
                     children: [
-                      Expanded(child: _buildKpiCard(
-                        "appointments".tr(),
-                        overview?['total_appointments']?.toString() ?? '—',
-                        Icons.calendar_month_rounded,
-                        AppColors.success,
-                        growth: 'this_week_growth'.tr(args: [overview?['new_appointments_7d']?.toString() ?? '0']),
-                      )),
+                      Expanded(
+                        child: _buildKpiCard(
+                          "appointments".tr(),
+                          overview?['total_appointments']?.toString() ?? '—',
+                          Icons.calendar_month_rounded,
+                          AppColors.success,
+                          growth: 'this_week_growth'.tr(
+                            args: [
+                              overview?['new_appointments_7d']?.toString() ??
+                                  '0',
+                            ],
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: AppSpacing.cardGap),
-                      Expanded(child: _buildKpiCard(
-                        "revenue".tr(),
-                        'amount_jod_value'.tr(args: [overview?['total_revenue']?.toString() ?? '0']),
-                        Icons.payments_rounded,
-                        AppColors.cream600,
-                      )),
+                      Expanded(
+                        child: _buildKpiCard(
+                          "revenue".tr(),
+                          'amount_jod_value'.tr(
+                            args: [
+                              overview?['total_revenue']?.toString() ?? '0',
+                            ],
+                          ),
+                          Icons.payments_rounded,
+                          AppColors.cream600,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.sectionSpacing),
@@ -120,11 +148,32 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── System Health ──────────────────────────────────────────
-                  _buildSectionHeader("system_health".tr(), "view_api_logs".tr()),
+                  _buildSectionHeader(
+                    "system_health".tr(),
+                    "view_api_logs".tr(),
+                  ),
                   const SizedBox(height: AppSpacing.sectionGap),
-                  _buildHealthTile("api_status".tr(), '99.9% Uptime', AppColors.success, Icons.cloud_done_rounded, isDark),
-                  _buildHealthTile("cache_status".tr(), 'Connected', AppColors.success, Icons.memory_rounded, isDark),
-                  _buildHealthTile("db_status".tr(), 'Active', AppColors.success, Icons.storage_rounded, isDark),
+                  _buildHealthTile(
+                    "api_status".tr(),
+                    '99.9% Uptime',
+                    AppColors.success,
+                    Icons.cloud_done_rounded,
+                    isDark,
+                  ),
+                  _buildHealthTile(
+                    "cache_status".tr(),
+                    'Connected',
+                    AppColors.success,
+                    Icons.memory_rounded,
+                    isDark,
+                  ),
+                  _buildHealthTile(
+                    "db_status".tr(),
+                    'Active',
+                    AppColors.success,
+                    Icons.storage_rounded,
+                    isDark,
+                  ),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── Admin Modules ──────────────────────────────────────────
@@ -136,8 +185,24 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   // ── Insights ───────────────────────────────────────────────
                   _buildSectionHeader("insights".tr(), "analyze_trends".tr()),
                   const SizedBox(height: AppSpacing.sectionGap),
-                  _buildInsightCard("growth_insight".tr(), Icons.trending_up_rounded, AppColors.success, isDark),
-                  _buildInsightCard("top_categories_insight".tr(), Icons.bar_chart_rounded, primary, isDark),
+                  _buildInsightCard(
+                    "growth_insight".tr(),
+                    Icons.trending_up_rounded,
+                    AppColors.success,
+                    isDark,
+                  ),
+                  _buildInsightCard(
+                    "top_categories_insight".tr(),
+                    Icons.bar_chart_rounded,
+                    primary,
+                    isDark,
+                  ),
+                  const SizedBox(height: AppSpacing.sectionSpacing),
+
+                  // ── Promotion & Campaign Monitoring ───────────────────────
+                  _buildSectionHeader("campaign_performance".tr(), null),
+                  const SizedBox(height: AppSpacing.sectionGap),
+                  _buildPerformanceAnalytics(offersProvider),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── Feedback ───────────────────────────────────────────────
@@ -183,17 +248,33 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   // ─── KPI Card ────────────────────────────────────────────────────────────────
 
-  Widget _buildKpiCard(String title, String value, IconData icon, Color color, {String? growth}) {
+  Widget _buildKpiCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color, {
+    String? growth,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : Colors.white,
         borderRadius: AppSpacing.brXl,
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
-        boxShadow: isDark ? null : [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4)),
-        ],
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,12 +292,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
               ),
               if (growth != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.success.withOpacity(0.1),
                     borderRadius: AppSpacing.brSm,
                   ),
-                  child: Text(growth,
+                  child: Text(
+                    growth,
                     style: const TextStyle(
                       color: AppColors.success,
                       fontSize: AppSpacing.fontXs,
@@ -227,9 +312,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(value, style: TextStyle(fontSize: AppSpacing.fontXl, fontWeight: FontWeight.bold, color: color)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: AppSpacing.fontXl,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
           const SizedBox(height: AppSpacing.xs),
-          Text(title,
+          Text(
+            title,
             style: const TextStyle(
               color: AppColors.almostBlack300,
               fontSize: AppSpacing.fontSm,
@@ -245,10 +338,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   Widget _buildMonitoringRow(bool isDark) {
     final metrics = [
-      ('247',  "active_users".tr(),   Icons.person_rounded,            AppColors.blue),
-      ('68%',  "conversion_rate".tr(), Icons.sync_alt_rounded,          AppColors.success),
-      ('3.2%', "churn_rate".tr(),      Icons.trending_down_rounded,     AppColors.error),
-      ('4m32s', "avg_session_time".tr(), Icons.timer_rounded,            Theme.of(context).primaryColor),
+      ('247', "active_users".tr(), Icons.person_rounded, AppColors.blue),
+      (
+        '68%',
+        "conversion_rate".tr(),
+        Icons.sync_alt_rounded,
+        AppColors.success,
+      ),
+      ('3.2%', "churn_rate".tr(), Icons.trending_down_rounded, AppColors.error),
+      (
+        '4m32s',
+        "avg_session_time".tr(),
+        Icons.timer_rounded,
+        Theme.of(context).primaryColor,
+      ),
     ];
 
     return SizedBox(
@@ -265,15 +368,32 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
             decoration: BoxDecoration(
               color: isDark ? AppColors.almostBlack600 : Colors.white,
               borderRadius: AppSpacing.brLg,
-              border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+              border: Border.all(
+                color: isDark
+                    ? AppColors.white.withOpacity(0.05)
+                    : AppColors.almostBlack50,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(icon, color: color, size: AppSpacing.iconMd),
-                Text(value, style: TextStyle(fontSize: AppSpacing.fontLg, fontWeight: FontWeight.bold, color: color)),
-                Text(label, style: const TextStyle(fontSize: AppSpacing.fontXs, color: AppColors.almostBlack300)),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: AppSpacing.fontLg,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: AppSpacing.fontXs,
+                    color: AppColors.almostBlack300,
+                  ),
+                ),
               ],
             ),
           );
@@ -284,22 +404,46 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   // ─── Health Tile ─────────────────────────────────────────────────────────────
 
-  Widget _buildHealthTile(String name, String status, Color color, IconData icon, bool isDark) {
+  Widget _buildHealthTile(
+    String name,
+    String status,
+    Color color,
+    IconData icon,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.listGap),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack600 : Colors.white,
         borderRadius: AppSpacing.brMd,
-        border: Border.all(color: isDark ? AppColors.white.withOpacity(0.05) : AppColors.almostBlack50),
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
       ),
       child: Row(
         children: [
           Icon(icon, color: color, size: AppSpacing.iconMd),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: Text(name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: AppSpacing.fontMd))),
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: AppSpacing.fontMd,
+              ),
+            ),
+          ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: AppSpacing.brSm,
@@ -307,9 +451,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.xs),
-                Text(status, style: TextStyle(color: color, fontSize: AppSpacing.fontSm, fontWeight: FontWeight.bold)),
+                Text(
+                  status,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: AppSpacing.fontSm,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
@@ -325,14 +483,54 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
     final primary = Theme.of(context).primaryColor;
 
     final modules = [
-      ("total_users".tr(),       Icons.manage_accounts_rounded, '/admin/users',            primary),
-      ("revenue".tr(),          Icons.account_balance_rounded, '/admin/finance',           AppColors.success),
-      ("insights".tr(),         Icons.insights_rounded,        '/admin/analytics',         AppColors.blue),
-      ("compliance".tr(),       Icons.verified_user_rounded,   '/admin/compliance',        AppColors.warning),
-      ("service_requests".tr(),  Icons.auto_awesome_rounded,    '/admin/service-requests',  AppColors.pink),
-      ('customer_feedback'.tr(),   Icons.rate_review_rounded,     '/admin/feedback-review',   Colors.teal),
-      ("user_requests".tr(),     Icons.inbox_rounded,           'user-requests',            const Color(0xFF6A1B9A)),
-      ('manage_faqs'.tr(),         Icons.help_outline_rounded,    'manage-faqs',              Colors.orange),
+      (
+        "total_users".tr(),
+        Icons.manage_accounts_rounded,
+        '/admin/users',
+        primary,
+      ),
+      (
+        "revenue".tr(),
+        Icons.account_balance_rounded,
+        '/admin/finance',
+        AppColors.success,
+      ),
+      (
+        "insights".tr(),
+        Icons.insights_rounded,
+        '/admin/analytics',
+        AppColors.blue,
+      ),
+      (
+        "compliance".tr(),
+        Icons.verified_user_rounded,
+        '/admin/compliance',
+        AppColors.warning,
+      ),
+      (
+        "service_requests".tr(),
+        Icons.auto_awesome_rounded,
+        '/admin/service-requests',
+        AppColors.pink,
+      ),
+      (
+        'customer_feedback'.tr(),
+        Icons.rate_review_rounded,
+        '/admin/feedback-review',
+        Colors.teal,
+      ),
+      (
+        "user_requests".tr(),
+        Icons.inbox_rounded,
+        'user-requests',
+        const Color(0xFF6A1B9A),
+      ),
+      (
+        'manage_faqs'.tr(),
+        Icons.help_outline_rounded,
+        'manage-faqs',
+        Colors.orange,
+      ),
     ];
 
     return GridView.builder(
@@ -350,20 +548,37 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         return InkWell(
           onTap: () {
             if (route == 'user-requests') {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminUserRequestsPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AdminUserRequestsPage(),
+                ),
+              );
             } else if (route == 'manage-faqs') {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminFAQManagementPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AdminFAQManagementPage(),
+                ),
+              );
             } else {
               Navigator.pushNamed(context, route);
             }
           },
           borderRadius: AppSpacing.brMd,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             decoration: BoxDecoration(
               color: isDark ? AppColors.almostBlack600 : Colors.white,
               borderRadius: AppSpacing.brMd,
-              border: Border.all(color: isDark ? color.withOpacity(0.2) : color.withOpacity(0.15)),
+              border: Border.all(
+                color: isDark
+                    ? color.withOpacity(0.2)
+                    : color.withOpacity(0.15),
+              ),
             ),
             child: Row(
               children: [
@@ -376,10 +591,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   child: Icon(icon, color: color, size: AppSpacing.iconMd),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: Text(label,
-                  style: const TextStyle(fontSize: AppSpacing.fontMd, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                )),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: AppSpacing.fontMd,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           ),
@@ -390,7 +611,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   // ─── Insight Card ─────────────────────────────────────────────────────────────
 
-  Widget _buildInsightCard(String text, IconData icon, Color color, bool isDark) {
+  Widget _buildInsightCard(
+    String text,
+    IconData icon,
+    Color color,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.listGap),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -404,7 +630,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         children: [
           Icon(icon, color: color, size: AppSpacing.iconMd),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: AppSpacing.fontMd))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: AppSpacing.fontMd),
+            ),
+          ),
         ],
       ),
     );
@@ -423,9 +654,21 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, color: AppColors.error, size: AppSpacing.iconMd),
+          const Icon(
+            Icons.error_outline_rounded,
+            color: AppColors.error,
+            size: AppSpacing.iconMd,
+          ),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: Text(error, style: const TextStyle(color: AppColors.error, fontSize: AppSpacing.fontMd))),
+          Expanded(
+            child: Text(
+              error,
+              style: const TextStyle(
+                color: AppColors.error,
+                fontSize: AppSpacing.fontMd,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -437,11 +680,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontSize: AppSpacing.fontLg, fontWeight: FontWeight.bold)),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: AppSpacing.fontLg,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         if (action != null)
           TextButton(
             onPressed: () {},
-            child: Text(action,
+            child: Text(
+              action,
               style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontSize: AppSpacing.fontMd,
@@ -449,6 +699,134 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
               ),
             ),
           ),
+      ],
+    );
+  }
+
+  // ─── Performance Analytics ──────────────────────────────────────────────────
+
+  Widget _buildPerformanceAnalytics(OffersProvider provider) {
+    final allItems = [...provider.offers, ...provider.adCampaigns];
+    if (provider.isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(AppSpacing.xl),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    if (allItems.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Text(
+            'no_active_campaigns'.tr(),
+            style: const TextStyle(color: AppColors.almostBlack300),
+          ),
+        ),
+      );
+    }
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemCount: allItems.length,
+      itemBuilder: (context, index) {
+        final item = allItems[index];
+        return _buildAnalyticsCard(item);
+      },
+    );
+  }
+
+  Widget _buildAnalyticsCard(dynamic item) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.cardGap),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack600 : Colors.white,
+        borderRadius: AppSpacing.brXl,
+        border: Border.all(
+          color: isDark
+              ? AppColors.white.withOpacity(0.05)
+              : AppColors.almostBlack50,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                item is OfferModel
+                    ? Icons.local_offer_rounded
+                    : Icons.campaign_rounded,
+                color: Theme.of(context).primaryColor,
+                size: AppSpacing.iconSm,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  item is OfferModel ? item.title : item.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: AppSpacing.fontMd,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withOpacity(0.1),
+                  borderRadius: AppSpacing.brSm,
+                ),
+                child: Text(
+                  'active'.tr(),
+                  style: const TextStyle(
+                    color: AppColors.success,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildStat('impressions'.tr(), '1.2k'),
+              _buildStat('clicks'.tr(), '420'),
+              _buildStat('conversions'.tr(), '15'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStat(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: AppSpacing.fontLg,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: AppSpacing.fontXs,
+            color: AppColors.almostBlack300,
+          ),
+        ),
       ],
     );
   }

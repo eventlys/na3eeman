@@ -28,7 +28,9 @@ class OfferModel {
   factory OfferModel.fromMap(Map<String, dynamic> map) {
     return OfferModel(
       id: map['id'] as int? ?? 0,
-      title: map['title'] as String? ?? (map['name'] as String? ?? 'Special Offer'),
+      title:
+          map['title'] as String? ??
+          (map['name'] as String? ?? 'Special Offer'),
       description: map['description'] as String? ?? '',
       price: map['price'] as String? ?? '0.00',
       originalPrice: map['original_price'] as String?,
@@ -36,9 +38,9 @@ class OfferModel {
       salonId: map['salon_id'] as int? ?? (map['salon'] as int? ?? 0),
       salonName: map['salon_name'] as String? ?? 'Salon',
       imageUrl: map['image_url'] as String?,
-      includedServices: map['included_services'] != null 
-        ? List<String>.from(map['included_services'] as List) 
-        : null,
+      includedServices: map['included_services'] != null
+          ? List<String>.from(map['included_services'] as List)
+          : null,
       isActive: map['is_active'] as bool? ?? true,
     );
   }
@@ -57,5 +59,33 @@ class OfferModel {
       'included_services': includedServices,
       'is_active': isActive,
     };
+  }
+
+  OfferModel copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? price,
+    String? originalPrice,
+    String? validityPeriod,
+    int? salonId,
+    String? salonName,
+    String? imageUrl,
+    List<String>? includedServices,
+    bool? isActive,
+  }) {
+    return OfferModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      originalPrice: originalPrice ?? this.originalPrice,
+      validityPeriod: validityPeriod ?? this.validityPeriod,
+      salonId: salonId ?? this.salonId,
+      salonName: salonName ?? this.salonName,
+      imageUrl: imageUrl ?? this.imageUrl,
+      includedServices: includedServices ?? this.includedServices,
+      isActive: isActive ?? this.isActive,
+    );
   }
 }

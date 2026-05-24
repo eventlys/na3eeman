@@ -25,7 +25,9 @@ class BookingGroup {
       createdAt: DateTime.parse(json['created_at'] as String),
       isRecurring: json['is_recurring'] as bool? ?? false,
       appointments: List<AppointmentReference>.from(
-        (json['appointments'] ?? []).map((x) => AppointmentReference.fromJson(x))
+        (json['appointments'] ?? []).map(
+          (x) => AppointmentReference.fromJson(x),
+        ),
       ),
       salonId: json['salon'] as int?,
     );
@@ -46,12 +48,17 @@ class BookingGroup {
   int get totalAppointments => appointments.length;
 
   double get totalAmount {
-    return appointments.fold(0.0, (sum, appointment) => sum + appointment.amount);
+    return appointments.fold(
+      0.0,
+      (sum, appointment) => sum + appointment.amount,
+    );
   }
 
   DateTime? get nextAppointment {
     final now = DateTime.now();
-    final upcoming = appointments.where((a) => a.startTime.isAfter(now)).toList();
+    final upcoming = appointments
+        .where((a) => a.startTime.isAfter(now))
+        .toList();
     if (upcoming.isEmpty) return null;
     upcoming.sort((a, b) => a.startTime.compareTo(b.startTime));
     return upcoming.first.startTime;

@@ -2,7 +2,8 @@ class AppStrings {
   // App Name & Basic Info
   static const String appName = 'Na3eeman';
   static const String appTagline = 'Premium Expert Experience';
-  static const String appDescription = 'Book appointments with the best experts in town';
+  static const String appDescription =
+      'Book appointments with the best experts in town';
 
   // Common Actions
   static const String save = 'Save';
@@ -47,7 +48,8 @@ class AppStrings {
   static const String requiredField = 'This field is required';
   static const String invalidEmail = 'Please enter a valid email address';
   static const String invalidPhone = 'Please enter a valid phone number';
-  static const String passwordTooShort = 'Password must be at least 6 characters';
+  static const String passwordTooShort =
+      'Password must be at least 6 characters';
   static const String passwordsDontMatch = 'Passwords do not match';
   static const String invalidOtp = 'Please enter a valid OTP';
 
@@ -57,7 +59,8 @@ class AppStrings {
   static const String warningTitle = 'Warning';
   static const String infoTitle = 'Information';
 
-  static const String networkError = 'Network error. Please check your connection';
+  static const String networkError =
+      'Network error. Please check your connection';
   static const String serverError = 'Server error. Please try again later';
   static const String unknownError = 'An unknown error occurred';
   static const String timeoutError = 'Request timeout. Please try again';
@@ -68,7 +71,8 @@ class AppStrings {
   static const String registerSuccess = 'Registration successful';
   static const String passwordResetSuccess = 'Password reset successfully';
   static const String profileUpdateSuccess = 'Profile updated successfully';
-  static const String appointmentBookedSuccess = 'Appointment booked successfully';
+  static const String appointmentBookedSuccess =
+      'Appointment booked successfully';
   static const String paymentSuccess = 'Payment successful';
 
   // Navigation & Main Sections
@@ -233,4 +237,19 @@ class AppStrings {
   static const String completed = 'Completed';
   static const String cancelled = 'Cancelled';
   static const String pending = 'Pending';
+
+  static const String salonDetailsUpdatedSuccessfully =
+      'Salon details updated successfully';
+  static const String failedToUpdateSalonErr = 'Failed to update salon err';
+  static const String popularServices = 'Popular services';
+  static const String teamPerformance = 'Team performance';
+  static const String revenueTrend = 'Revenue trend';
+  static const String income = 'Income';
+  static const String newClients = 'New clients';
+  static const String optimizationTip = 'Optimization tip';
+  static const String noTimelineAvailable = 'No timeline available';
+  static const String shiftStart = 'Shift start';
+  static const String shiftEnd = 'Shift end';
+  static const String lunchBreak = 'Lunch break';
+  static const String faqsUserGuides = 'FAQs User Guides';
 }

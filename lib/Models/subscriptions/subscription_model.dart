@@ -137,7 +137,8 @@ class SubscriptionTier {
   });
 
   double get yearlySavings => (monthlyPrice * 12) - yearlyPrice;
-  double get yearlySavingsPercentage => yearlySavings / (monthlyPrice * 12) * 100;
+  double get yearlySavingsPercentage =>
+      yearlySavings / (monthlyPrice * 12) * 100;
 
   factory SubscriptionTier.fromJson(Map<String, dynamic> json) {
     return SubscriptionTier(
@@ -150,8 +151,10 @@ class SubscriptionTier {
       maxBranches: json['max_branches'] as int? ?? 1,
       maxStaff: json['max_staff'] as int? ?? 3,
       includesAnalytics: json['includes_analytics'] as bool? ?? false,
-      includesPremiumSupport: json['includes_premium_support'] as bool? ?? false,
-      includesMarketingTools: json['includes_marketing_tools'] as bool? ?? false,
+      includesPremiumSupport:
+          json['includes_premium_support'] as bool? ?? false,
+      includesMarketingTools:
+          json['includes_marketing_tools'] as bool? ?? false,
     );
   }
 

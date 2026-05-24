@@ -1,0 +1,62 @@
+name: Flutter CI/CD
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: 'stable'
+          cache: true
+      
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Format
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze
+        run: |
+          dart analyze
+          flutter analyze
+
+      - name: Test
+        run: flutter test --coverage
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+          
+      - name: Security Scan (Trivy FS)
+        run: trivy fs --exit-code 1 --severity HIGH,CRITICAL --format table .
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.qualitygate.wait=false
+
+      - name: Build Android AppBundle
+        run: flutter build appbundle --release
+
+      - name: Build Android APK
+        run: flutter build apk --release
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: |
+            build/app/outputs/bundle/release/*.aab
+            build/app/outputs/flutter-apk/*.apk

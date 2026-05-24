@@ -66,7 +66,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark 
+        color: isDark
             ? AppColor.darkCard.withValues(alpha: 0.9)
             : AppColor.lightCard.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(12),
@@ -85,18 +85,16 @@ class _StatCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Image.asset(
-                icon,
-                width: 20,
-                height: 20,
-              ),
+              Image.asset(icon, width: 20, height: 20),
               const SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                  color: isDark
+                      ? AppColor.darkTextSecondary
+                      : AppColor.lightTextSecondary,
                 ),
               ),
             ],
@@ -107,7 +105,7 @@ class _StatCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color:  isDark ? AppColor.darkText : AppColor.lightText,
+              color: isDark ? AppColor.darkText : AppColor.lightText,
             ),
           ),
         ],

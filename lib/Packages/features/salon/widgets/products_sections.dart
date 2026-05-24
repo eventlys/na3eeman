@@ -6,20 +6,19 @@ import '../../../Core/themes/animated_cart_button.dart';
 class ProductSection extends StatelessWidget {
   final Map<String, dynamic> salonData;
 
-  const ProductSection({
-    super.key,
-    required this.salonData,
-  });
+  const ProductSection({super.key, required this.salonData});
 
   @override
   Widget build(BuildContext context) {
     // Use salon-specific services if available, otherwise use default
-    final products = salonData['products'] as List<Map<String, String>>? ?? [
-      {'name': 'Haircut', 'price': '\$25', 'made': 'CK'},
-      {'name': 'Beard Trim', 'price': '\$15', 'made': 'Tommy'},
-      {'name': 'Haircut & Beard', 'price': '\$35', 'made': 'Elegance'},
-      {'name': 'Hair Wash', 'price': '\$10', 'made': 'Home Made'},
-    ];
+    final products =
+        salonData['products'] as List<Map<String, String>>? ??
+        [
+          {'name': 'Haircut', 'price': '\$25', 'made': 'CK'},
+          {'name': 'Beard Trim', 'price': '\$15', 'made': 'Tommy'},
+          {'name': 'Haircut & Beard', 'price': '\$35', 'made': 'Elegance'},
+          {'name': 'Hair Wash', 'price': '\$10', 'made': 'Home Made'},
+        ];
 
     return Container(
       margin: EdgeInsets.all(16),
@@ -32,7 +31,8 @@ class ProductSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("products_prices".tr(),
+          Text(
+            "products_prices".tr(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -40,18 +40,20 @@ class ProductSection extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16),
-          ...products.map((service) => _buildServiceItem(
-            name: service['name'] as String,
-            price: service['price'] as String,
-            made: service['made'] as String,
-          )),
+          ...products.map(
+            (service) => _buildServiceItem(
+              name: service['name'] as String,
+              price: service['price'] as String,
+              made: service['made'] as String,
+            ),
+          ),
         ],
       ),
     );
   }
 
   // main_file.dart
- // Import the animated button
+  // Import the animated button
 
   Widget _buildServiceItem({
     required String name,
@@ -83,10 +85,7 @@ class ProductSection extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(
                   made,
-                  style: TextStyle(
-                    color: Color(0xFFCCCCCC),
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Color(0xFFCCCCCC), fontSize: 14),
                 ),
               ],
             ),
@@ -114,4 +113,3 @@ class ProductSection extends StatelessWidget {
     );
   }
 }
-

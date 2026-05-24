@@ -57,16 +57,22 @@ class Branch {
       manager: json['manager']?.toString(),
       monthlyRevenue: json['monthly_revenue'] != null
           ? (json['monthly_revenue'] is double
-              ? json['monthly_revenue']
-              : double.tryParse(json['monthly_revenue'].toString()) ?? 0.0)
+                ? json['monthly_revenue']
+                : double.tryParse(json['monthly_revenue'].toString()) ?? 0.0)
           : null,
-      totalSales: json['total_sales'] is int ? json['total_sales'] : int.tryParse(json['total_sales']?.toString() ?? '0'),
-      lowStockItems: json['low_stock_items'] is int ? json['low_stock_items'] : int.tryParse(json['low_stock_items']?.toString() ?? '0'),
+      totalSales: json['total_sales'] is int
+          ? json['total_sales']
+          : int.tryParse(json['total_sales']?.toString() ?? '0'),
+      lowStockItems: json['low_stock_items'] is int
+          ? json['low_stock_items']
+          : int.tryParse(json['low_stock_items']?.toString() ?? '0'),
       email: json['email']?.toString(),
       openingDate: json['opening_date'] != null
           ? DateTime.tryParse(json['opening_date'].toString())
           : null,
-      totalExperts: json['total_experts'] is int ? json['total_experts'] : int.tryParse(json['total_experts']?.toString() ?? '0'),
+      totalExperts: json['total_experts'] is int
+          ? json['total_experts']
+          : int.tryParse(json['total_experts']?.toString() ?? '0'),
       salonId: json['salon'] as int? ?? 0,
       openingTime: json['opening_time'] as String?,
       closingTime: json['closing_time'] as String?,

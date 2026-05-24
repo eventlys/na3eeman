@@ -27,7 +27,9 @@ class AdCampaignModel {
       durationDays: map['duration_days'] as int? ?? 0,
       rewardPoints: map['reward_points'] as int? ?? 0,
       isActive: map['is_active'] as bool? ?? true,
-      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
+      createdAt: map['created_at'] != null
+          ? DateTime.parse(map['created_at'])
+          : null,
       salonId: map['salon_id'] as int? ?? (map['salon'] as int? ?? 0),
     );
   }
@@ -42,5 +44,27 @@ class AdCampaignModel {
       'is_active': isActive,
       'salon': salonId,
     };
+  }
+
+  AdCampaignModel copyWith({
+    int? id,
+    String? name,
+    String? details,
+    int? durationDays,
+    int? rewardPoints,
+    bool? isActive,
+    DateTime? createdAt,
+    int? salonId,
+  }) {
+    return AdCampaignModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      details: details ?? this.details,
+      durationDays: durationDays ?? this.durationDays,
+      rewardPoints: rewardPoints ?? this.rewardPoints,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      salonId: salonId ?? this.salonId,
+    );
   }
 }

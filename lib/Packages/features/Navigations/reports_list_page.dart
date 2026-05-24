@@ -32,9 +32,7 @@ class _ReportsPageState extends State<ReportsPage> {
       glassCollapsedHeight: 80,
       child: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: _buildReportTypeSelector(),
-          ),
+          SliverToBoxAdapter(child: _buildReportTypeSelector()),
           _buildReportList(),
         ],
       ),
@@ -99,54 +97,57 @@ class _ReportsPageState extends State<ReportsPage> {
 
   Widget _buildReportList() {
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final reports = [
-            _ReportItem(
-              title: "staff_performance_report".tr(),
-              description: 'Detailed analysis of expert performance',
-              icon: AppImages.file_star,
-              color: AppColor.lightInfo,
-              darkColor: AppColor.darkInfo,
-            ),
-            _ReportItem(
-              title: 'Financial Report',
-              description: 'Revenue, expenses and profit analysis',
-              icon: AppImages.money,
-              color: AppColor.lightSuccess,
-              darkColor: AppColor.darkSuccess,
-            ),
-            _ReportItem(
-              title: 'Appointment Report',
-              description: 'Booking and scheduling overview',
-              icon: AppImages.calender,
-              color: AppColor.lightWarning,
-              darkColor: AppColor.darkWarning,
-            ),
-            _ReportItem(
-              title: 'Inventory Report',
-              description: 'Product usage and stock levels',
-              icon: AppImages.inventory,
-              color: AppColor.lightAccent,
-              darkColor: AppColor.darkAccent,
-            ),
-          ];
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final reports = [
+          _ReportItem(
+            title: "staff_performance_report".tr(),
+            description: 'Detailed analysis of expert performance',
+            icon: AppImages.file_star,
+            color: AppColor.lightInfo,
+            darkColor: AppColor.darkInfo,
+          ),
+          _ReportItem(
+            title: 'Financial Report',
+            description: 'Revenue, expenses and profit analysis',
+            icon: AppImages.money,
+            color: AppColor.lightSuccess,
+            darkColor: AppColor.darkSuccess,
+          ),
+          _ReportItem(
+            title: 'Appointment Report',
+            description: 'Booking and scheduling overview',
+            icon: AppImages.calender,
+            color: AppColor.lightWarning,
+            darkColor: AppColor.darkWarning,
+          ),
+          _ReportItem(
+            title: 'Inventory Report',
+            description: 'Product usage and stock levels',
+            icon: AppImages.inventory,
+            color: AppColor.lightAccent,
+            darkColor: AppColor.darkAccent,
+          ),
+        ];
 
-          final report = reports[index];
-          return _buildReportCard(
-            report.title,
-            report.description,
-            report.icon,
-            report.color,
-            report.darkColor,
-          );
-        },
-        childCount: 4,
-      ),
+        final report = reports[index];
+        return _buildReportCard(
+          report.title,
+          report.description,
+          report.icon,
+          report.color,
+          report.darkColor,
+        );
+      }, childCount: 4),
     );
   }
 
-  Widget _buildReportCard(String title, String description, String icon, Color lightColor, Color darkColor) {
+  Widget _buildReportCard(
+    String title,
+    String description,
+    String icon,
+    Color lightColor,
+    Color darkColor,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = isDark ? darkColor : lightColor;
     final iconColor = isDark ? AppColor.darkText : AppColor.lightText;
@@ -164,12 +165,7 @@ class _ReportsPageState extends State<ReportsPage> {
             color: color.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
-          child: Image.asset(
-            icon,
-            width: 24,
-            height: 24,
-            color: color,
-          ),
+          child: Image.asset(icon, width: 24, height: 24, color: color),
         ),
         title: Text(
           title,
@@ -181,7 +177,9 @@ class _ReportsPageState extends State<ReportsPage> {
         subtitle: Text(
           description,
           style: TextStyle(
-            color: isDark ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+            color: isDark
+                ? AppColor.darkTextSecondary
+                : AppColor.lightTextSecondary,
           ),
         ),
         trailing: IconButton(
@@ -213,7 +211,8 @@ class _ReportsPageState extends State<ReportsPage> {
         time: _selectedTime,
         startDate: _getStartDate(),
         endDate: DateTime.now(),
-        fileName: '${reportName.toLowerCase().replaceAll(' ', '_')}_${DateTime.now().millisecondsSinceEpoch}',
+        fileName:
+            '${reportName.toLowerCase().replaceAll(' ', '_')}_${DateTime.now().millisecondsSinceEpoch}',
         reportType: reportType,
       );
 

@@ -18,11 +18,15 @@ class ServicesSection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
-      children: services.map((service) => _buildServiceItem(
-        context: context,
-        service: service,
-        isDark: isDark,
-      )).toList(),
+      children: services
+          .map(
+            (service) => _buildServiceItem(
+              context: context,
+              service: service,
+              isDark: isDark,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -40,14 +44,16 @@ class ServicesSection extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isSelected 
-          ? Theme.of(context).primaryColor.withOpacity(0.1) 
-          : (isDark ? AppColors.almostBlack600 : AppColors.white),
+        color: isSelected
+            ? Theme.of(context).primaryColor.withOpacity(0.1)
+            : (isDark ? AppColors.almostBlack600 : AppColors.white),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected 
-            ? Theme.of(context).primaryColor 
-            : (isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50),
+          color: isSelected
+              ? Theme.of(context).primaryColor
+              : (isDark
+                    ? AppColors.white.withOpacity(0.1)
+                    : AppColors.almostBlack50),
           width: isSelected ? 2 : 1,
         ),
       ),
@@ -59,27 +65,45 @@ class ServicesSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.2) : Theme.of(context).primaryColor.withOpacity(0.05),
+                  color: isSelected
+                      ? Theme.of(context).primaryColor.withOpacity(0.2)
+                      : Theme.of(context).primaryColor.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.content_cut_rounded, color: Theme.of(context).primaryColor, size: 20),
+                child: Icon(
+                  Icons.content_cut_rounded,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                     name.toString().length > 18 ? '${name.toString().substring(0, 18)}...' : name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    name.toString().length > 18
+                        ? '${name.toString().substring(0, 18)}...'
+                        : name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.access_time_rounded, size: 12, color: AppColors.almostBlack300),
+                      const Icon(
+                        Icons.access_time_rounded,
+                        size: 12,
+                        color: AppColors.almostBlack300,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         duration,
-                        style: const TextStyle(color: AppColors.almostBlack300, fontSize: 12),
+                        style: const TextStyle(
+                          color: AppColors.almostBlack300,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -104,13 +128,17 @@ class ServicesSection extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+                      color: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.transparent,
                       shape: BoxShape.circle,
                       border: Border.all(color: Theme.of(context).primaryColor),
                     ),
                     child: Icon(
                       isSelected ? Icons.check : Icons.add,
-                      color: isSelected ? Colors.white : Theme.of(context).primaryColor,
+                      color: isSelected
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
                       size: 20,
                     ),
                   ),

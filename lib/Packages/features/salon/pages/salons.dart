@@ -34,7 +34,12 @@ class _SalonListPageState extends State<SalonListPage> {
       });
 
       final response = await _apiService.getSalons(page: 1, limit: 20);
-      final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? response['salons'] ?? []);
+      final List<dynamic> data = response is List
+          ? response
+          : (response['results'] ??
+                response['data'] ??
+                response['salons'] ??
+                []);
       final salonsList = data.map((e) => Map<String, dynamic>.from(e)).toList();
 
       if (mounted) {
@@ -57,7 +62,6 @@ class _SalonListPageState extends State<SalonListPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -65,7 +69,10 @@ class _SalonListPageState extends State<SalonListPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("discover_salons".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "discover_salons".tr(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -85,7 +92,10 @@ class _SalonListPageState extends State<SalonListPage> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: "search_by_name_or_location".tr(),
-                prefixIcon: Icon(Icons.search_rounded, color: Theme.of(context).primaryColor),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: Theme.of(context).primaryColor,
+                ),
                 filled: true,
                 fillColor: isDark ? AppColors.almostBlack600 : AppColors.white,
                 border: OutlineInputBorder(
@@ -96,8 +106,13 @@ class _SalonListPageState extends State<SalonListPage> {
               onChanged: (value) {
                 setState(() {
                   _filteredSalons = _salons.where((salon) {
-                    final name = (salon['salonName'] ?? salon['title'] ?? '').toString().toLowerCase();
-                    final location = (salon['salonLocation'] ?? salon['location'] ?? '').toString().toLowerCase();
+                    final name = (salon['salonName'] ?? salon['title'] ?? '')
+                        .toString()
+                        .toLowerCase();
+                    final location =
+                        (salon['salonLocation'] ?? salon['location'] ?? '')
+                            .toString()
+                            .toLowerCase();
                     final query = value.toLowerCase();
                     return name.contains(query) || location.contains(query);
                   }).toList();
@@ -107,9 +122,7 @@ class _SalonListPageState extends State<SalonListPage> {
           ),
 
           // Content
-          Expanded(
-            child: _buildContent(isDark),
-          ),
+          Expanded(child: _buildContent(isDark)),
         ],
       ),
     );
@@ -117,7 +130,9 @@ class _SalonListPageState extends State<SalonListPage> {
 
   Widget _buildContent(bool isDark) {
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor));
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
+      );
     }
 
     if (_error.isNotEmpty) {
@@ -125,7 +140,11 @@ class _SalonListPageState extends State<SalonListPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
+            const Icon(
+              Icons.error_outline_rounded,
+              size: 64,
+              color: AppColors.error,
+            ),
             const SizedBox(height: 16),
             Text(_error, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
@@ -144,9 +163,16 @@ class _SalonListPageState extends State<SalonListPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off_rounded, size: 64, color: AppColors.almostBlack200),
+            Icon(
+              Icons.search_off_rounded,
+              size: 64,
+              color: AppColors.almostBlack200,
+            ),
             const SizedBox(height: 16),
-            Text("no_salons_found_nearby".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              "no_salons_found_nearby".tr(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       );
@@ -164,9 +190,14 @@ class _SalonListPageState extends State<SalonListPage> {
             workingHours: salon['workingHours'] ?? '9:00 AM - 9:00 PM',
             profilePicture: 'assets/images/salon_placeholder.png',
             isClickable: true,
-            salonLocation: salon['salonLocation'] ?? salon['location'] ?? 'Downtown',
+            salonLocation:
+                salon['salonLocation'] ?? salon['location'] ?? 'Downtown',
             salonRating: (salon['salonRating'] as num?)?.toDouble() ?? 4.5,
-            onCardTap: () => Navigator.pushNamed(context, '/salon_details', arguments: salon),
+            onCardTap: () => Navigator.pushNamed(
+              context,
+              '/salon_details',
+              arguments: salon,
+            ),
             onFavoriteChanged: (isFav) {
               // Handle favorite
             },

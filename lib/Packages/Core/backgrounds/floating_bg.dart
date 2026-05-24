@@ -12,7 +12,8 @@ class FloatingBackground extends StatefulWidget {
   final Widget child;
   final String objectType; // 'icons', 'circles', or 'mixed'
   final List<String>? iconPaths; // List of icon paths for auto-generation
-  final List<Color>? colors; // Optional custom colors (uses AppColor by default)
+  final List<Color>?
+  colors; // Optional custom colors (uses AppColor by default)
   final double minSize; // Minimum size for random generation
   final double maxSize; // Maximum size for random generation
   final bool useAppColors; // Whether to use app color system
@@ -99,7 +100,8 @@ class FloatingBackgroundState extends State<FloatingBackground> {
             startPosition: startPosition,
             endPosition: endPosition,
           );
-        } else { // mixed
+        } else {
+          // mixed
           final isIcon = _random.nextBool();
           final size = _getRandomSize();
           final (startPosition, endPosition) = _getRandomPositions();
@@ -199,20 +201,19 @@ class FloatingBackgroundState extends State<FloatingBackground> {
   }
 
   double _getRandomSize() {
-    return widget.minSize + _random.nextDouble() * (widget.maxSize - widget.minSize);
+    return widget.minSize +
+        _random.nextDouble() * (widget.maxSize - widget.minSize);
   }
 
   (Offset, Offset) _getRandomPositions() {
     // Reduced range to keep objects more centered and within bounds
-    final startX = (_random.nextDouble() - 0.5) * 1.5; // Reduced from 2.0 to 1.5
+    final startX =
+        (_random.nextDouble() - 0.5) * 1.5; // Reduced from 2.0 to 1.5
     final startY = (_random.nextDouble() - 0.5) * 1.5;
     final endX = (_random.nextDouble() - 0.5) * 1.5;
     final endY = (_random.nextDouble() - 0.5) * 1.5;
 
-    return (
-      Offset(startX, startY),
-      Offset(endX, endY)
-    );
+    return (Offset(startX, startY), Offset(endX, endY));
   }
 
   String _getRandomIconPath(List<String>? customIconPaths) {
@@ -298,8 +299,10 @@ class FloatingBackgroundState extends State<FloatingBackground> {
           height: double.infinity,
           child: Stack(
             children: _objectConfigs.map((config) {
-              final startX = screenWidth / 2 + config.startPosition.dx * screenWidth / 2;
-              final startY = screenHeight / 2 + config.startPosition.dy * screenHeight / 2;
+              final startX =
+                  screenWidth / 2 + config.startPosition.dx * screenWidth / 2;
+              final startY =
+                  screenHeight / 2 + config.startPosition.dy * screenHeight / 2;
 
               return Positioned(
                 left: startX - config.size / 2,

@@ -219,35 +219,39 @@ void main() {
     });
 
     test('Elite maxStaff is -1 (unlimited)', () {
-      expect(
-          SubscriptionConfig.maxStaffFor(OwnerSubscriptionTier.elite), -1);
+      expect(SubscriptionConfig.maxStaffFor(OwnerSubscriptionTier.elite), -1);
     });
 
     test('forTier returns correct TierConfig', () {
-      final config =
-          SubscriptionConfig.forTier(OwnerSubscriptionTier.empire);
+      final config = SubscriptionConfig.forTier(OwnerSubscriptionTier.empire);
       expect(config.tier, equals(OwnerSubscriptionTier.empire));
       expect(config.isUnlimitedStaff, isTrue);
       expect(config.isUnlimitedBranches, isTrue);
     });
 
     test('upgradeOptions returns tiers above current', () {
-      final upgrades =
-          SubscriptionConfig.upgradeOptions(OwnerSubscriptionTier.studio);
-      expect(upgrades, containsAll([
-        OwnerSubscriptionTier.elite,
-        OwnerSubscriptionTier.empire,
-      ]));
+      final upgrades = SubscriptionConfig.upgradeOptions(
+        OwnerSubscriptionTier.studio,
+      );
+      expect(
+        upgrades,
+        containsAll([
+          OwnerSubscriptionTier.elite,
+          OwnerSubscriptionTier.empire,
+        ]),
+      );
       expect(upgrades, isNot(contains(OwnerSubscriptionTier.artisan)));
       expect(upgrades, isNot(contains(OwnerSubscriptionTier.studio)));
     });
 
     test('dashboardWidgets returns non-empty list for all tiers', () {
       for (final tier in OwnerSubscriptionTier.values) {
-        final widgets =
-            SubscriptionConfig.forTier(tier).dashboardWidgets;
-        expect(widgets, isNotEmpty,
-            reason: 'Tier ${tier.value} should have dashboard widgets');
+        final widgets = SubscriptionConfig.forTier(tier).dashboardWidgets;
+        expect(
+          widgets,
+          isNotEmpty,
+          reason: 'Tier ${tier.value} should have dashboard widgets',
+        );
       }
     });
   });

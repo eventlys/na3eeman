@@ -19,13 +19,7 @@ class SalonScheduleSlot {
   });
 
   DateTime get dateTime {
-    return DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   String get formattedTime {
@@ -38,7 +32,8 @@ class SalonScheduleSlot {
   Map<String, dynamic> toJson() {
     return {
       'date': date.toIso8601String().split('T')[0],
-      'time': '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+      'time':
+          '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
       'service': salonService.toMap(),
       'is_available': isAvailable,
       'expert': expertId,
@@ -50,7 +45,9 @@ class SalonScheduleSlot {
     return SalonScheduleSlot(
       date: DateTime.parse(json['date']),
       time: _parseTime(json['time']),
-      salonService: SalonService.fromMap(Map<String, dynamic>.from(json['service'])),
+      salonService: SalonService.fromMap(
+        Map<String, dynamic>.from(json['service']),
+      ),
       isAvailable: json['is_available'] ?? true,
       expertId: json['expert'] as int?,
       salonId: json['salon'] as int,
@@ -104,7 +101,17 @@ class SalonScheduleData {
       salonId: map['salon_id'] as int? ?? 0,
       openingTime: map['opening_time'] as String? ?? '09:00',
       closingTime: map['closing_time'] as String? ?? '18:00',
-      workingDays: List<String>.from(map['working_days'] ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']),
+      workingDays: List<String>.from(
+        map['working_days'] ??
+            [
+              'Monday',
+              'Tuesday',
+              'Wednesday',
+              'Thursday',
+              'Friday',
+              'Saturday',
+            ],
+      ),
     );
   }
 
@@ -120,11 +127,14 @@ class SalonScheduleData {
   }
 
   List<SalonScheduleSlot> getSlotsForDate(DateTime date) {
-    return availableSlots.where((slot) =>
-      slot.date.year == date.year &&
-      slot.date.month == date.month &&
-      slot.date.day == date.day
-    ).toList();
+    return availableSlots
+        .where(
+          (slot) =>
+              slot.date.year == date.year &&
+              slot.date.month == date.month &&
+              slot.date.day == date.day,
+        )
+        .toList();
   }
 
   List<SalonScheduleSlot> getAvailableSlotsForDate(DateTime date) {

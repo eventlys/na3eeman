@@ -40,9 +40,12 @@ class DailyEarningsWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(tr('today_s_earnings'),
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: theme.hintColor)),
+                Text(
+                  tr('today_s_earnings'),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.hintColor,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   'JD ${total.toStringAsFixed(2)}',
@@ -58,10 +61,11 @@ class DailyEarningsWidget extends StatelessWidget {
               width: 80,
               child: noData
                   ? Center(
-                      child: Text('No sales\ntoday',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 10, color: theme.hintColor)),
+                      child: Text(
+                        'No sales\ntoday',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 10, color: theme.hintColor),
+                      ),
                     )
                   : PieChart(
                       PieChartData(
@@ -89,12 +93,17 @@ class DailyEarningsWidget extends StatelessWidget {
         const SizedBox(height: 14),
         Row(
           children: [
-            _Legend(color: theme.primaryColor, label: "cash".tr(), amount: cash),
+            _Legend(
+              color: theme.primaryColor,
+              label: "cash".tr(),
+              amount: cash,
+            ),
             const SizedBox(width: 24),
             _Legend(
-                color: theme.colorScheme.secondary,
-                label: "card".tr(),
-                amount: card),
+              color: theme.colorScheme.secondary,
+              label: "card".tr(),
+              amount: card,
+            ),
           ],
         ),
       ],
@@ -106,20 +115,26 @@ class _Legend extends StatelessWidget {
   final Color color;
   final String label;
   final double amount;
-  const _Legend(
-      {required this.color, required this.label, required this.amount});
+  const _Legend({
+    required this.color,
+    required this.label,
+    required this.amount,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
         const SizedBox(width: 6),
-        Text('$label: JD ${amount.toStringAsFixed(0)}',
-            style: Theme.of(context).textTheme.bodySmall),
+        Text(
+          '$label: JD ${amount.toStringAsFixed(0)}',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ],
     );
   }

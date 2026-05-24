@@ -152,18 +152,16 @@ extension OwnerModeExtension on OwnerMode {
   bool get isManagerMode => this == OwnerMode.managerMode;
   bool get isPractitionerMode => this == OwnerMode.practitionerMode;
 
-  OwnerMode get toggled =>
-      this == OwnerMode.managerMode
-          ? OwnerMode.practitionerMode
-          : OwnerMode.managerMode;
+  OwnerMode get toggled => this == OwnerMode.managerMode
+      ? OwnerMode.practitionerMode
+      : OwnerMode.managerMode;
 
   String get displayLabel =>
       this == OwnerMode.managerMode ? 'Manager Mode' : 'My Work Mode';
 
-  String get description =>
-      this == OwnerMode.managerMode
-          ? 'Full business view'
-          : 'My appointments only';
+  String get description => this == OwnerMode.managerMode
+      ? 'Full business view'
+      : 'My appointments only';
 }
 
 // ---------------------------------------------------------------------------
@@ -176,7 +174,7 @@ extension OwnerModeExtension on OwnerMode {
 /// Never check tier strings directly in UI code.
 enum FeatureKey {
   // ── Staff ──────────────────────────────────────────────────────────────
-  staffLimit,         // enforces maxStaff per tier
+  staffLimit, // enforces maxStaff per tier
   addStaff,
   removeStaff,
   viewStaffList,
@@ -185,13 +183,11 @@ enum FeatureKey {
   inventoryBasic,
   inventoryRetail,
   inventoryConsumables,
-  inventoryWarehouse,  // Empire only
-
+  inventoryWarehouse, // Empire only
   // ── Reports ────────────────────────────────────────────────────────────
   reportsBasic,
   reportsAdvanced,
-  reportsGlobal,       // Empire only
-
+  reportsGlobal, // Empire only
   // ── Loyalty ────────────────────────────────────────────────────────────
   loyaltySystem,
 
@@ -200,9 +196,8 @@ enum FeatureKey {
   interBranchTransfers,
 
   // ── Resources ──────────────────────────────────────────────────────────
-  resourceBooking,     // rooms, chairs
-  complianceForms,     // medical / health forms (Elite+)
-
+  resourceBooking, // rooms, chairs
+  complianceForms, // medical / health forms (Elite+)
   // ── Commerce / Integrations ────────────────────────────────────────────
   retailSales,
   whatsappIntegration,
@@ -235,11 +230,11 @@ enum FeatureKey {
   adminCreateOwner,
 
   // ── Revenue & AI (NEW) ──────────────────────────────────────────────────
-  paymentManagement,   // Configure deposits, CliQ, etc.
-  aiNoShowRisk,        // Predict no-show probability
-  vouchers,            // Prepaid packages & gift cards
-  marketingAds,        // Marketing Campaigns
-  analyticsElite,      // Elite Analytics
-  ownerControls,       // Owner Controls
-  financialControls,   // Financial Controls
+  paymentManagement, // Configure deposits, CliQ, etc.
+  aiNoShowRisk, // Predict no-show probability
+  vouchers, // Prepaid packages & gift cards
+  marketingAds, // Marketing Campaigns
+  analyticsElite, // Elite Analytics
+  ownerControls, // Owner Controls
+  financialControls, // Financial Controls
 }

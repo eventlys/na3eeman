@@ -26,7 +26,8 @@ class BgCircle extends StatefulWidget {
   BgCircleState createState() => BgCircleState();
 }
 
-class BgCircleState extends State<BgCircle> with SingleTickerProviderStateMixin {
+class BgCircleState extends State<BgCircle>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _positionAnimation;
   late Animation<double> _rotationAnimation;
@@ -43,18 +44,12 @@ class BgCircleState extends State<BgCircle> with SingleTickerProviderStateMixin 
     _positionAnimation = Tween<Offset>(
       begin: widget.startPosition,
       end: widget.endPosition,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _rotationAnimation = Tween<double>(
       begin: 0,
       end: widget.rotationDegree,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -82,13 +77,11 @@ class BgCircleState extends State<BgCircle> with SingleTickerProviderStateMixin 
               child: BackdropFilter(
                 filter: widget.blurLevel > 0
                     ? ImageFilter.blur(
-                  sigmaX: widget.blurLevel,
-                  sigmaY: widget.blurLevel,
-                )
+                        sigmaX: widget.blurLevel,
+                        sigmaY: widget.blurLevel,
+                      )
                     : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                child: Container(
-                  color: Colors.transparent,
-                ),
+                child: Container(color: Colors.transparent),
               ),
             ),
           ),
@@ -97,5 +90,3 @@ class BgCircleState extends State<BgCircle> with SingleTickerProviderStateMixin 
     );
   }
 }
-
-

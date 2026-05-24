@@ -125,7 +125,8 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("file_format_pdf".tr(),
+            Text(
+              "file_format_pdf".tr(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
@@ -139,10 +140,14 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDarkTheme ? AppColor.darkBackground : AppColor.lightBackground,
+                  color: isDarkTheme
+                      ? AppColor.darkBackground
+                      : AppColor.lightBackground,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDarkTheme
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                     width: 0.5,
                   ),
                 ),
@@ -150,7 +155,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                   children: [
                     Icon(
                       Icons.store,
-                      color: isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary,
+                      color: isDarkTheme
+                          ? AppColor.darkPrimary
+                          : AppColor.lightPrimary,
                       size: 16,
                     ),
                     const SizedBox(width: 8),
@@ -159,7 +166,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                         selectedSalon.salonName,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                          color: isDarkTheme
+                              ? AppColor.darkText
+                              : AppColor.lightText,
                           fontSize: 14,
                         ),
                       ),
@@ -180,16 +189,22 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDarkTheme
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDarkTheme
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
               ),
-              dropdownColor: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
+              dropdownColor: isDarkTheme
+                  ? AppColor.darkCard
+                  : AppColor.lightCard,
               style: TextStyle(
                 color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
               ),
@@ -199,18 +214,22 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                   child: Text(
                     _getReportTypeDisplayName(type),
                     style: TextStyle(
-                      color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                      color: isDarkTheme
+                          ? AppColor.darkText
+                          : AppColor.lightText,
                     ),
                   ),
                 );
               }).toList(),
-              onChanged: _isGenerating ? null : (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedReportType = value;
-                  });
-                }
-              },
+              onChanged: _isGenerating
+                  ? null
+                  : (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedReportType = value;
+                        });
+                      }
+                    },
             ),
 
             const SizedBox(height: 16),
@@ -225,16 +244,22 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDarkTheme
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDarkTheme
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
               ),
-              dropdownColor: isDarkTheme ? AppColor.darkCard : AppColor.lightCard,
+              dropdownColor: isDarkTheme
+                  ? AppColor.darkCard
+                  : AppColor.lightCard,
               style: TextStyle(
                 color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
               ),
@@ -244,18 +269,22 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                   child: Text(
                     _getTimeDisplayName(time),
                     style: TextStyle(
-                      color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                      color: isDarkTheme
+                          ? AppColor.darkText
+                          : AppColor.lightText,
                     ),
                   ),
                 );
               }).toList(),
-              onChanged: _isGenerating ? null : (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedTime = value;
-                  });
-                }
-              },
+              onChanged: _isGenerating
+                  ? null
+                  : (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedTime = value;
+                        });
+                      }
+                    },
             ),
 
             const SizedBox(height: 16),
@@ -271,12 +300,16 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                 ),
                 hintText: "enter_file_name".tr(),
                 hintStyle: TextStyle(
-                  color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                  color: isDarkTheme
+                      ? AppColor.darkTextHint
+                      : AppColor.lightTextHint,
                 ),
                 border: const OutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                    color: isDarkTheme
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
                   ),
                 ),
               ),
@@ -292,20 +325,27 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDarkTheme ? AppColor.darkBackground : AppColor.lightBackground,
+                color: isDarkTheme
+                    ? AppColor.darkBackground
+                    : AppColor.lightBackground,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint,
+                  color: isDarkTheme
+                      ? AppColor.darkTextHint
+                      : AppColor.lightTextHint,
                   width: 0.5,
                 ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("report_details".tr(),
+                  Text(
+                    "report_details".tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                      color: isDarkTheme
+                          ? AppColor.darkText
+                          : AppColor.lightText,
                       fontSize: 14,
                     ),
                   ),
@@ -313,7 +353,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                   Text(
                     'Period: ${_getTimeDisplayName(_selectedTime)}',
                     style: TextStyle(
-                      color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                      color: isDarkTheme
+                          ? AppColor.darkTextSecondary
+                          : AppColor.lightTextSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -321,7 +363,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                   Text(
                     'Date Range: ${_formatDate(widget.startDate)} - ${_formatDate(widget.endDate)}',
                     style: TextStyle(
-                      color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                      color: isDarkTheme
+                          ? AppColor.darkTextSecondary
+                          : AppColor.lightTextSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -330,7 +374,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     Text(
                       'Salon: ${selectedSalon.salonName}',
                       style: TextStyle(
-                        color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                        color: isDarkTheme
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -340,7 +386,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     Text(
                       'Branch ID: ${widget.branchId}',
                       style: TextStyle(
-                        color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                        color: isDarkTheme
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -350,7 +398,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     Text(
                       'Staff ID: ${widget.staffId}',
                       style: TextStyle(
-                        color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                        color: isDarkTheme
+                            ? AppColor.darkTextSecondary
+                            : AppColor.lightTextSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -369,14 +419,19 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        isDarkTheme ? AppColor.loadingPrimaryDark : AppColor.loadingPrimaryLight,
+                        isDarkTheme
+                            ? AppColor.loadingPrimaryDark
+                            : AppColor.loadingPrimaryLight,
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text("generating_report".tr(),
+                  Text(
+                    "generating_report".tr(),
                     style: TextStyle(
-                      color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                      color: isDarkTheme
+                          ? AppColor.darkTextSecondary
+                          : AppColor.lightTextSecondary,
                       fontSize: 14,
                     ),
                   ),
@@ -388,15 +443,22 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: _isGenerating ? null : () => Navigator.of(context).pop(false),
-          child: Text("cancel".tr(),
+          onPressed: _isGenerating
+              ? null
+              : () => Navigator.of(context).pop(false),
+          child: Text(
+            "cancel".tr(),
             style: TextStyle(
-              color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+              color: isDarkTheme
+                  ? AppColor.darkTextSecondary
+                  : AppColor.lightTextSecondary,
             ),
           ),
         ),
         ElevatedButton(
-          onPressed: (selectedSalon == null || _isGenerating) ? null : _generateReport,
+          onPressed: (selectedSalon == null || _isGenerating)
+              ? null
+              : _generateReport,
           style: ElevatedButton.styleFrom(
             backgroundColor: (selectedSalon == null || _isGenerating)
                 ? (isDarkTheme ? AppColor.darkTextHint : AppColor.lightTextHint)
@@ -410,7 +472,9 @@ class _ReportDownloadDialogState extends State<ReportDownloadDialog> {
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      isDarkTheme ? AppColor.loadingPrimaryDark : AppColor.loadingPrimaryLight,
+                      isDarkTheme
+                          ? AppColor.loadingPrimaryDark
+                          : AppColor.loadingPrimaryLight,
                     ),
                   ),
                 )

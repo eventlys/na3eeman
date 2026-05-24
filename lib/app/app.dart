@@ -59,7 +59,8 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(
-                              sidebarController.animation.value * 0.3),
+                            sidebarController.animation.value * 0.3,
+                          ),
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -88,12 +89,11 @@ class HomePage extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Center(
-        child: Text("home_page_content".tr(),
+        child: Text(
+          "home_page_content".tr(),
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 }
-
-

@@ -23,7 +23,10 @@ class AccessibilityUtils {
     return baseSize * textScale;
   }
 
-  static EdgeInsets getAdjustedPadding(BuildContext context, EdgeInsets basePadding) {
+  static EdgeInsets getAdjustedPadding(
+    BuildContext context,
+    EdgeInsets basePadding,
+  ) {
     if (isLargeText(context)) {
       return basePadding * 1.2;
     }
@@ -85,11 +88,7 @@ class AccessibleButton extends StatelessWidget {
     return Semantics(
       label: semanticLabel,
       button: true,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: style,
-        child: child,
-      ),
+      child: ElevatedButton(onPressed: onPressed, style: style, child: child),
     );
   }
 }

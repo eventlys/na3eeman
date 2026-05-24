@@ -14,7 +14,7 @@ class AuthService {
   /// NO mock data used here; consumes real backend responses.
   Future<User?> login(String email, String password) async {
     final response = await _apiAuthService.login(email, password);
-    
+
     if (response['user'] != null) {
       final user = User.fromJson(response['user']);
       return user;

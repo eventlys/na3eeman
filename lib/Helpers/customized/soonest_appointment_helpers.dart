@@ -1,11 +1,17 @@
 class SoonestAppointmentHelpers {
-  static bool canDelayAppointment(Map<String, dynamic> appointment, Duration delay) {
-    final DateTime appointmentDateTime = DateTime.parse(appointment['dateTime']);
+  static bool canDelayAppointment(
+    Map<String, dynamic> appointment,
+    Duration delay,
+  ) {
+    final DateTime appointmentDateTime = DateTime.parse(
+      appointment['dateTime'],
+    );
     DateTime newDateTime = appointmentDateTime.add(delay);
     DateTime originalDate = appointmentDateTime;
 
     // Check if the delay would move the appointment to another day
-    bool isSameDay = newDateTime.year == originalDate.year &&
+    bool isSameDay =
+        newDateTime.year == originalDate.year &&
         newDateTime.month == originalDate.month &&
         newDateTime.day == originalDate.day;
 
@@ -13,10 +19,15 @@ class SoonestAppointmentHelpers {
     return isSameDay && delay.inMinutes <= 15;
   }
 
-  static Map<String, dynamic> delayAppointment(Map<String, dynamic> appointment, Duration delay) {
+  static Map<String, dynamic> delayAppointment(
+    Map<String, dynamic> appointment,
+    Duration delay,
+  ) {
     if (canDelayAppointment(appointment, delay)) {
-      final DateTime newDateTime = DateTime.parse(appointment['dateTime']).add(delay);
-      
+      final DateTime newDateTime = DateTime.parse(
+        appointment['dateTime'],
+      ).add(delay);
+
       // Create a copy of the appointment with updated dateTime
       return Map<String, dynamic>.from(appointment)
         ..['dateTime'] = newDateTime.toIso8601String();
@@ -35,7 +46,11 @@ class SoonestAppointmentHelpers {
   static String _formatDate(DateTime dateTime) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final appointmentDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final appointmentDate = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+    );
 
     if (appointmentDate == today) {
       return 'Today';

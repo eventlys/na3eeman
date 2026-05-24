@@ -43,7 +43,9 @@ class _SettingsPageState extends State<SettingsPage> {
       final plans = await _apiService.getSubscriptionPlans();
       if (mounted) {
         setState(() {
-          _plans = (plans as List).map((p) => SubscriptionPlan.fromJson(p)).toList();
+          _plans = (plans as List)
+              .map((p) => SubscriptionPlan.fromJson(p))
+              .toList();
           _isLoadingPlans = false;
         });
       }
@@ -80,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
         physics: const BouncingScrollPhysics(),
         children: [
           const SizedBox(height: 12),
-          
+
           // Account Settings
           _buildSectionHeader('account_settings'.tr()),
           _buildCleanTile(
@@ -93,13 +95,14 @@ class _SettingsPageState extends State<SettingsPage> {
             title: "change_password".tr(),
             onTap: () => _showChangePasswordDialog(),
           ),
-          if (user?.role == UserRole.owner || user?.role == UserRole.receptionist)
+          if (user?.role == UserRole.owner ||
+              user?.role == UserRole.receptionist)
             _buildCleanTile(
               icon: Icons.card_membership_rounded,
               title: 'subscription_management'.tr(),
               onTap: () => _showSubscriptionManagementModal(),
             ),
-          
+
           const SizedBox(height: 16),
 
           // App Preferences
@@ -113,9 +116,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: isArabic ? 'العربية' : 'English',
                 value: isArabic,
                 onChanged: (val) async {
-                  final newLocale = val ? const Locale('ar', 'EG') : const Locale('en', 'US');
+                  final newLocale = val
+                      ? const Locale('ar', 'EG')
+                      : const Locale('en', 'US');
                   await context.setLocale(newLocale);
-                  await localeProvider.setLocale(Locale(newLocale.languageCode));
+                  await localeProvider.setLocale(
+                    Locale(newLocale.languageCode),
+                  );
                 },
               );
             },
@@ -123,9 +130,13 @@ class _SettingsPageState extends State<SettingsPage> {
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
               return _buildSwitchTile(
-                icon: themeProvider.isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                icon: themeProvider.isDark
+                    ? Icons.dark_mode_rounded
+                    : Icons.light_mode_rounded,
                 title: 'dark_mode'.tr(),
-                subtitle: themeProvider.isDark ? 'dark_theme'.tr() : 'light_theme'.tr(),
+                subtitle: themeProvider.isDark
+                    ? 'dark_theme'.tr()
+                    : 'light_theme'.tr(),
                 value: themeProvider.isDark,
                 onChanged: (val) {
                   themeProvider.toggleBrightness();
@@ -145,7 +156,7 @@ class _SettingsPageState extends State<SettingsPage> {
               );
             },
           ),
-          
+
           const SizedBox(height: 16),
 
           // Support & Feedback
@@ -165,7 +176,7 @@ class _SettingsPageState extends State<SettingsPage> {
             title: 'report_a_problem'.tr(),
             onTap: () => _showReportProblemDialog(),
           ),
-          
+
           const SizedBox(height: 16),
 
           // More
@@ -187,12 +198,16 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           const SizedBox(height: 48),
-          
+
           // Logout
           Padding(
             padding: const EdgeInsets.only(bottom: 32),
             child: TextButton.icon(
-              icon: const Icon(Icons.logout_rounded, color: Colors.redAccent, size: 20),
+              icon: const Icon(
+                Icons.logout_rounded,
+                color: Colors.redAccent,
+                size: 20,
+              ),
               label: Text(
                 "logout".tr(),
                 style: const TextStyle(
@@ -209,7 +224,9 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 backgroundColor: Colors.redAccent.withOpacity(0.05),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),
@@ -253,8 +270,17 @@ class _SettingsPageState extends State<SettingsPage> {
         title,
         style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
       ),
-      subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[600])) : null,
-      trailing: const Icon(Icons.chevron_right_rounded, size: 22, color: Colors.grey),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle,
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            )
+          : null,
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        size: 22,
+        color: Colors.grey,
+      ),
       onTap: onTap,
     );
   }
@@ -280,7 +306,10 @@ class _SettingsPageState extends State<SettingsPage> {
         title,
         style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
       ),
-      subtitle: Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+      ),
       trailing: Transform.scale(
         scale: 0.8,
         child: Switch(
@@ -314,25 +343,37 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Column(
           children: [
-            Text('subscription_plans'.tr(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              'subscription_plans'.tr(),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 24),
             Expanded(
-              child: _isLoadingPlans 
-                ? const Center(child: CircularProgressIndicator())
-                : _plans == null || _plans!.isEmpty
-                  ? Center(child: Text('no_plans_available'.tr(), style: TextStyle(color: Colors.grey[600])))
+              child: _isLoadingPlans
+                  ? const Center(child: CircularProgressIndicator())
+                  : _plans == null || _plans!.isEmpty
+                  ? Center(
+                      child: Text(
+                        'no_plans_available'.tr(),
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    )
                   : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: _plans!.map((plan) => _buildSubscriptionCard(
-                        plan.name, 
-                        '\$${plan.price.toStringAsFixed(0)}/mo', 
-                        plan.features,
-                        isRecommended: plan.isPopular,
-                      )).toList(),
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: _plans!
+                            .map(
+                              (plan) => _buildSubscriptionCard(
+                                plan.name,
+                                '\$${plan.price.toStringAsFixed(0)}/mo',
+                                plan.features,
+                                isRecommended: plan.isPopular,
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
-                  ),
             ),
           ],
         ),
@@ -340,18 +381,33 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSubscriptionCard(String title, String price, List<String> features, {bool isRecommended = false}) {
+  Widget _buildSubscriptionCard(
+    String title,
+    String price,
+    List<String> features, {
+    bool isRecommended = false,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: 280,
       margin: const EdgeInsets.only(right: 16, bottom: 20, top: 12),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isRecommended ? Theme.of(context).primaryColor : (isDark ? Colors.grey[900] : Colors.white),
+        color: isRecommended
+            ? Theme.of(context).primaryColor
+            : (isDark ? Colors.grey[900] : Colors.white),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isRecommended ? Colors.transparent : (isDark ? Colors.grey[800]! : Colors.grey[200]!)),
+        border: Border.all(
+          color: isRecommended
+              ? Colors.transparent
+              : (isDark ? Colors.grey[800]! : Colors.grey[200]!),
+        ),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
@@ -361,21 +417,73 @@ class _SettingsPageState extends State<SettingsPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-              child: Text('recommended'.tr(), style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'recommended'.tr(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isRecommended ? Colors.white : (isDark ? Colors.white : Colors.black))),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: isRecommended
+                  ? Colors.white
+                  : (isDark ? Colors.white : Colors.black),
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(price, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: isRecommended ? Colors.white : Theme.of(context).primaryColor)),
+          Text(
+            price,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              color: isRecommended
+                  ? Colors.white
+                  : Theme.of(context).primaryColor,
+            ),
+          ),
           const Divider(height: 32),
           Expanded(
             child: ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: features.map((f) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(children: [Icon(Icons.check_circle, color: isRecommended ? Colors.white : Colors.green, size: 16), const SizedBox(width: 8), Text(f, style: TextStyle(color: isRecommended ? Colors.white : (isDark ? Colors.grey[300] : Colors.grey[700]), fontSize: 13))]),
-              )).toList(),
+              children: features
+                  .map(
+                    (f) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: isRecommended ? Colors.white : Colors.green,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            f,
+                            style: TextStyle(
+                              color: isRecommended
+                                  ? Colors.white
+                                  : (isDark
+                                        ? Colors.grey[300]
+                                        : Colors.grey[700]),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
           SizedBox(
@@ -383,12 +491,22 @@ class _SettingsPageState extends State<SettingsPage> {
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/subscription/upgrade', arguments: {'title': title, 'price': price});
+                Navigator.pushNamed(
+                  context,
+                  '/subscription/upgrade',
+                  arguments: {'title': title, 'price': price},
+                );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: isRecommended ? Colors.white : Theme.of(context).primaryColor, 
-                foregroundColor: isRecommended ? Theme.of(context).primaryColor : Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                backgroundColor: isRecommended
+                    ? Colors.white
+                    : Theme.of(context).primaryColor,
+                foregroundColor: isRecommended
+                    ? Theme.of(context).primaryColor
+                    : Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 0,
               ),
               child: Text('select_plan'.tr()),
@@ -429,20 +547,29 @@ class _SettingsPageState extends State<SettingsPage> {
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: 'enter_details_here'.tr(),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr()),
+          ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('report_submitted_thanks'.tr())));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('report_submitted_thanks'.tr())),
+              );
             },
             style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
             child: Text('submit'.tr()),
           ),

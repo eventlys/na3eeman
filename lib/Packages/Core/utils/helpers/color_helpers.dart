@@ -24,7 +24,10 @@ class ColorHelpers {
     return colors;
   }
 
-  static List<Color> generateMonochromaticColors(Color baseColor, {int count = 5}) {
+  static List<Color> generateMonochromaticColors(
+    Color baseColor, {
+    int count = 5,
+  }) {
     final hsl = HSLColor.fromColor(baseColor);
     final step = 1.0 / (count + 1);
     final colors = <Color>[];

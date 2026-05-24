@@ -28,8 +28,8 @@ class LocalizationHelper {
 
   // Check if a locale is supported
   bool isLocaleSupported(Locale locale) {
-    return supportedLocales.any((supported) =>
-      supported.languageCode == locale.languageCode
+    return supportedLocales.any(
+      (supported) => supported.languageCode == locale.languageCode,
     );
   }
 
@@ -55,7 +55,10 @@ class LocalizationHelper {
       AppLogger.debug('Localization loaded for: $languageCode');
       return true;
     } catch (e) {
-      AppLogger.error('Failed to load localization for ${locale.languageCode}', error: e);
+      AppLogger.error(
+        'Failed to load localization for ${locale.languageCode}',
+        error: e,
+      );
 
       // Fallback to English
       if (locale.languageCode != 'en') {
@@ -236,7 +239,11 @@ class LocalizationHelper {
   }
 
   // Context-aware translation helper
-  String contextAware(String key, String context, {Map<String, String>? params}) {
+  String contextAware(
+    String key,
+    String context, {
+    Map<String, String>? params,
+  }) {
     final contextKey = '${key}_$context';
 
     if (keyExists(contextKey)) {
@@ -248,7 +255,10 @@ class LocalizationHelper {
   }
 
   // Batch translation for multiple keys
-  Map<String, String> translateMultiple(List<String> keys, {Map<String, Map<String, String>>? params}) {
+  Map<String, String> translateMultiple(
+    List<String> keys, {
+    Map<String, Map<String, String>>? params,
+  }) {
     final translations = <String, String>{};
 
     for (final key in keys) {
@@ -291,19 +301,28 @@ extension LocalizationExtension on String {
     return localizationHelper.pluralize(this, count, params: params);
   }
 
-  String trg(BuildContext context, String gender, {Map<String, String>? params}) {
+  String trg(
+    BuildContext context,
+    String gender, {
+    Map<String, String>? params,
+  }) {
     final localizationHelper = LocalizationHelper();
     return localizationHelper.genderAware(this, gender, params: params);
   }
 
-  String trc(BuildContext context, String contextType, {Map<String, String>? params}) {
+  String trc(
+    BuildContext context,
+    String contextType, {
+    Map<String, String>? params,
+  }) {
     final localizationHelper = LocalizationHelper();
     return localizationHelper.contextAware(this, contextType, params: params);
   }
 }
 
 // Localization delegate for MaterialApp
-class AppLocalizationsDelegate extends LocalizationsDelegate<LocalizationHelper> {
+class AppLocalizationsDelegate
+    extends LocalizationsDelegate<LocalizationHelper> {
   const AppLocalizationsDelegate();
 
   @override

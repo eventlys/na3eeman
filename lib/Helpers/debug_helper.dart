@@ -146,10 +146,7 @@ class DebugHelper {
       _debugLog.removeRange(0, 100);
     }
 
-    AppLogger.debug('🔧 $message', extra: {
-      'category': category,
-      'data': data,
-    });
+    AppLogger.debug('🔧 $message', extra: {'category': category, 'data': data});
   }
 
   void logError(String error, {StackTrace? stackTrace, String? context}) {
@@ -175,7 +172,8 @@ class DebugHelper {
     if (!_enableDebugLogging) return;
 
     final timestamp = DateTime.now();
-    final logEntry = '[${timestamp.toIso8601String()}] PERFORMANCE: $operation - ${durationMs}ms';
+    final logEntry =
+        '[${timestamp.toIso8601String()}] PERFORMANCE: $operation - ${durationMs}ms';
 
     _debugLog.add(logEntry);
 
@@ -229,10 +227,7 @@ class DebugHelper {
   Widget debugPaint(Widget child) {
     if (!_showPaintLayers) return child;
 
-    return CustomPaint(
-      painter: _DebugGridPainter(),
-      child: child,
-    );
+    return CustomPaint(painter: _DebugGridPainter(), child: child);
   }
 
   // Performance overlay
@@ -242,9 +237,7 @@ class DebugHelper {
     return Stack(
       children: [
         child,
-        const Positioned.fill(
-          child: PerformanceOverlay(),
-        ),
+        const Positioned.fill(child: PerformanceOverlay()),
       ],
     );
   }
@@ -279,7 +272,9 @@ class DebugHelper {
 
   void togglePerformanceOverlay() {
     _showPerformanceOverlay = !_showPerformanceOverlay;
-    log('Performance overlay ${_showPerformanceOverlay ? 'enabled' : 'disabled'}');
+    log(
+      'Performance overlay ${_showPerformanceOverlay ? 'enabled' : 'disabled'}',
+    );
   }
 
   void toggleSlowAnimations() {
@@ -333,10 +328,10 @@ class DebugHelper {
   // Check if any debug features are active
   bool get hasActiveDebugFeatures {
     return _showDebugBanner ||
-           _enablePerformanceOverlay ||
-           _enableSlowAnimations ||
-           _showSemanticsDebugger ||
-           _showPaintLayers;
+        _enablePerformanceOverlay ||
+        _enableSlowAnimations ||
+        _showSemanticsDebugger ||
+        _showPaintLayers;
   }
 
   // Get active debug features
@@ -434,10 +429,7 @@ class DebugButton extends StatelessWidget {
   }
 
   void _showDebugMenu(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => _DebugMenu(),
-    );
+    showDialog(context: context, builder: (context) => _DebugMenu());
   }
 }
 

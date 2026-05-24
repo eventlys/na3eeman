@@ -31,16 +31,16 @@ class Expert extends StaffMember {
     required this.servicesCount,
     this.lastActive,
   }) : super(
-          role: StaffRole.expert,
-          phone: expertProfile?.contactPhone,
-          specialties: specialties,
-          performanceMetrics: {
-            'rating': rating,
-            'totalAppointments': totalAppointments,
-            'totalEarnings': totalEarnings,
-            'servicesCount': servicesCount,
-          },
-        );
+         role: StaffRole.expert,
+         phone: expertProfile?.contactPhone,
+         specialties: specialties,
+         performanceMetrics: {
+           'rating': rating,
+           'totalAppointments': totalAppointments,
+           'totalEarnings': totalEarnings,
+           'servicesCount': servicesCount,
+         },
+       );
 
   factory Expert.fromUserAndProfile({
     required User user,
@@ -78,9 +78,17 @@ class Expert extends StaffMember {
     return Expert(
       id: json['id']?.toString() ?? '',
       userId: json['expert'] as int? ?? json['expert'] as int? ?? 0,
-      name: json['expert_name'] as String? ?? json['expert_name'] as String? ?? '',
-      email: json['expert_email'] as String? ?? json['expert_email'] as String? ?? '',
-      joinDate: DateTime.parse(json['hired_at'] as String? ?? DateTime.now().toString()),
+      name:
+          json['expert_name'] as String? ??
+          json['expert_name'] as String? ??
+          '',
+      email:
+          json['expert_email'] as String? ??
+          json['expert_email'] as String? ??
+          '',
+      joinDate: DateTime.parse(
+        json['hired_at'] as String? ?? DateTime.now().toString(),
+      ),
       profileImage: json['profile_image'] as String?,
       salonId: json['salon'] as int?,
       isActive: json['is_active'] as bool? ?? true,
@@ -88,8 +96,8 @@ class Expert extends StaffMember {
       expertProfile: (json['expert_profile'] != null)
           ? ExpertProfile.fromJson(json['expert_profile'])
           : (json['expert_profile'] != null)
-              ? ExpertProfile.fromJson(json['expert_profile'])
-              : null,
+          ? ExpertProfile.fromJson(json['expert_profile'])
+          : null,
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       totalAppointments: (json['total_appointments'] as num?)?.toInt() ?? 0,
       totalEarnings: (json['total_earnings'] as num?)?.toDouble() ?? 0.0,
@@ -117,7 +125,10 @@ class Expert extends StaffMember {
   }
 
   double get averageServiceTime {
-    final totalServices = servicesCount.values.fold(0, (sum, count) => sum + count);
+    final totalServices = servicesCount.values.fold(
+      0,
+      (sum, count) => sum + count,
+    );
     return totalServices > 0 ? totalAppointments / totalServices : 0;
   }
 }

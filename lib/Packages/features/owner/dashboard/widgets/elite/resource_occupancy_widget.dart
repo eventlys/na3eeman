@@ -9,7 +9,8 @@ class ResourceOccupancyWidget extends StatefulWidget {
   const ResourceOccupancyWidget({super.key});
 
   @override
-  State<ResourceOccupancyWidget> createState() => _ResourceOccupancyWidgetState();
+  State<ResourceOccupancyWidget> createState() =>
+      _ResourceOccupancyWidgetState();
 }
 
 class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
@@ -29,16 +30,24 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
     final owner = context.read<OwnerProvider>();
     final salonId = owner.activeSalonId;
     if (salonId == null) {
-      if (mounted) setState(() { _isLoading = false; _error = 'No salon selected'; });
+      if (mounted)
+        setState(() {
+          _isLoading = false;
+          _error = 'No salon selected';
+        });
       return;
     }
 
     try {
-      final response = await _apiService.get('/salons/$salonId/resource_occupancy/');
+      final response = await _apiService.get(
+        '/salons/$salonId/resource_occupancy/',
+      );
       final data = response['results'] as List;
       if (mounted) {
         setState(() {
-          _rooms = data.map((json) => _Room(json['name'] ?? 'Unknown', json['pct'] ?? 0)).toList();
+          _rooms = data
+              .map((json) => _Room(json['name'] ?? 'Unknown', json['pct'] ?? 0))
+              .toList();
           _isLoading = false;
         });
       }
@@ -55,7 +64,10 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_error != null) return Center(child: Text(_error!, style: const TextStyle(color: Colors.red)));
+    if (_error != null)
+      return Center(
+        child: Text(_error!, style: const TextStyle(color: Colors.red)),
+      );
 
     final theme = Theme.of(context);
 
@@ -64,12 +76,18 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
       children: [
         Row(
           children: [
-            Icon(Icons.meeting_room_rounded,
-                size: 18, color: theme.primaryColor),
+            Icon(
+              Icons.meeting_room_rounded,
+              size: 18,
+              color: theme.primaryColor,
+            ),
             const SizedBox(width: 8),
-            Text("resource_occupancy".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "resource_occupancy".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 14),
@@ -82,16 +100,18 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
           final color = r.pct >= 80
               ? Colors.red
               : r.pct >= 50
-                  ? Colors.orange
-                  : Colors.green;
+              ? Colors.orange
+              : Colors.green;
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Row(
               children: [
                 SizedBox(
                   width: 70,
-                  child: Text(r.name,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  child: Text(
+                    r.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
                 Expanded(
                   child: LinearProgressIndicator(
@@ -103,11 +123,14 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text('${r.pct}%',
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13)),
+                Text(
+                  '${r.pct}%',
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
               ],
             ),
           );

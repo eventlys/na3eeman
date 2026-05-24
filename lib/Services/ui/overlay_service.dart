@@ -368,19 +368,13 @@ class OverlayService {
   }
 
   // New method for loyalty points overlay
-  static void showLoyaltyPoints({
-    required int points,
-    required String source,
-  }) {
+  static void showLoyaltyPoints({required int points, required String source}) {
     final context = SideNavigationService.navigatorKey.currentContext;
     if (context == null) return;
     _showDialog(
       title: "loyalty_points_earned".tr(),
       icon: 'assets/icons/star.png',
-      content: LoyaltyPointsOverlay(
-        points: points,
-        source: source,
-      ),
+      content: LoyaltyPointsOverlay(points: points, source: source),
     );
   }
 
@@ -420,11 +414,7 @@ class OverlayService {
                 // Header
                 Row(
                   children: [
-                    Image.asset(
-                      icon,
-                      width: 30,
-                      height: 30,
-                    ),
+                    Image.asset(icon, width: 30, height: 30),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -437,7 +427,10 @@ class OverlayService {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.close, color: isDark ? Colors.white70 : Colors.black87),
+                      icon: Icon(
+                        Icons.close,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -449,9 +442,7 @@ class OverlayService {
 
                 // Content
                 isForm
-                    ? Flexible(
-                        child: SingleChildScrollView(child: content),
-                      )
+                    ? Flexible(child: SingleChildScrollView(child: content))
                     : content,
               ],
             ),
@@ -460,7 +451,6 @@ class OverlayService {
       ),
     );
   }
-
 }
 
 // New overlay widgets (you'll need to create these)
@@ -579,10 +569,7 @@ class LoyaltyPointsOverlay extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Earned from: $source',
-            style: const TextStyle(fontSize: 16),
-          ),
+          Text('Earned from: $source', style: const TextStyle(fontSize: 16)),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),

@@ -10,7 +10,10 @@ class LoginUseCase {
   Future<Map<String, dynamic>> execute(String email, String password) async {
     // Validation
     if (email.isEmpty || password.isEmpty) {
-      throw AppError('Email and password are required', type: ErrorType.validation);
+      throw AppError(
+        'Email and password are required',
+        type: ErrorType.validation,
+      );
     }
 
     if (!_isValidEmail(email)) {
@@ -18,14 +21,19 @@ class LoginUseCase {
     }
 
     if (password.length < 6) {
-      throw AppError('Password must be at least 6 characters', type: ErrorType.validation);
+      throw AppError(
+        'Password must be at least 6 characters',
+        type: ErrorType.validation,
+      );
     }
 
     return await _repository.login(email, password);
   }
 
   bool _isValidEmail(String email) {
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
     return emailRegex.hasMatch(email);
   }
 }
@@ -37,7 +45,15 @@ class RegisterUseCase {
 
   Future<Map<String, dynamic>> execute(Map<String, dynamic> userData) async {
     // Validation
-    final requiredFields = ['first_name', 'last_name', 'email', 'password', 'phone_number', 'gender', 'role'];
+    final requiredFields = [
+      'first_name',
+      'last_name',
+      'email',
+      'password',
+      'phone_number',
+      'gender',
+      'role',
+    ];
     for (final field in requiredFields) {
       if (userData[field] == null || userData[field].toString().isEmpty) {
         throw AppError('$field is required', type: ErrorType.validation);
@@ -49,11 +65,17 @@ class RegisterUseCase {
     }
 
     if (userData['password'].length < 6) {
-      throw AppError('Password must be at least 6 characters', type: ErrorType.validation);
+      throw AppError(
+        'Password must be at least 6 characters',
+        type: ErrorType.validation,
+      );
     }
 
     if (!_isValidPhone(userData['phone_number'])) {
-      throw AppError('Please enter a valid phone number', type: ErrorType.validation);
+      throw AppError(
+        'Please enter a valid phone number',
+        type: ErrorType.validation,
+      );
     }
 
     final validRoles = ['customer', 'expert', 'owner', 'admin'];
@@ -65,7 +87,9 @@ class RegisterUseCase {
   }
 
   bool _isValidEmail(String email) {
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
     return emailRegex.hasMatch(email);
   }
 
@@ -93,7 +117,9 @@ class ForgotPasswordUseCase {
   }
 
   bool _isValidEmail(String email) {
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
     return emailRegex.hasMatch(email);
   }
 }
@@ -116,7 +142,10 @@ class ResetPasswordUseCase {
     }
 
     if (newPassword.length < 6) {
-      throw AppError('Password must be at least 6 characters', type: ErrorType.validation);
+      throw AppError(
+        'Password must be at least 6 characters',
+        type: ErrorType.validation,
+      );
     }
 
     return await _repository.resetPassword(
@@ -136,15 +165,24 @@ class ChangePasswordUseCase {
     required String newPassword,
   }) async {
     if (currentPassword.isEmpty || newPassword.isEmpty) {
-      throw AppError('Both current and new password are required', type: ErrorType.validation);
+      throw AppError(
+        'Both current and new password are required',
+        type: ErrorType.validation,
+      );
     }
 
     if (newPassword.length < 6) {
-      throw AppError('New password must be at least 6 characters', type: ErrorType.validation);
+      throw AppError(
+        'New password must be at least 6 characters',
+        type: ErrorType.validation,
+      );
     }
 
     if (currentPassword == newPassword) {
-      throw AppError('New password must be different from current password', type: ErrorType.validation);
+      throw AppError(
+        'New password must be different from current password',
+        type: ErrorType.validation,
+      );
     }
 
     return await _repository.changePassword(

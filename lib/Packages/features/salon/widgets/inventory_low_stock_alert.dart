@@ -11,7 +11,11 @@ class LowStockSimpleAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lowStockItems = items.where((item) {
-      final count = item['count'] ?? item['current_stock'] ?? item['quantity_in_stock'] ?? 0;
+      final count =
+          item['count'] ??
+          item['current_stock'] ??
+          item['quantity_in_stock'] ??
+          0;
       final minStockLevel = item['min_stock_level'] ?? 3;
       return InventoryHelpers.isLowStock(count, minStockLevel);
     }).toList();
@@ -37,7 +41,8 @@ class LowStockSimpleAlert extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("low_stock_alert".tr(),
+                Text(
+                  "low_stock_alert".tr(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.orange[800],
@@ -45,10 +50,7 @@ class LowStockSimpleAlert extends StatelessWidget {
                 ),
                 Text(
                   '${lowStockItems.length} item${lowStockItems.length == 1 ? '' : 's'} need${lowStockItems.length == 1 ? 's' : ''} restocking',
-                  style: TextStyle(
-                    color: Colors.orange[700],
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.orange[700], fontSize: 12),
                 ),
               ],
             ),

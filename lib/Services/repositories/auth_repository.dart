@@ -1,7 +1,9 @@
 import '../api/api_service.dart';
+import '../api/endpoints.dart';
 import '../../Helpers/error_handler.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AuthRepository {
   final ApiService _apiService;
@@ -13,7 +15,7 @@ class AuthRepository {
       AppLogger.debug('Login attempt for: $email');
 
       final response = await _apiService.post(
-        '/auth/login/',
+        Endpoints.login,
         data: {'email': email, 'password': password},
       );
 
@@ -28,7 +30,10 @@ class AuthRepository {
     try {
       AppLogger.debug('Registration attempt for: ${userData['email']}');
 
-      final response = await _apiService.post('/auth/register/', data: userData);
+      final response = await _apiService.post(
+        Endpoints.register,
+        data: userData,
+      );
 
       return response;
     } catch (error) {
@@ -37,7 +42,6 @@ class AuthRepository {
     }
   }
 
-  // Social Authentication Methods
   Future<Map<String, dynamic>> socialLogin({
     required String provider,
     required String socialId,
@@ -47,7 +51,7 @@ class AuthRepository {
       AppLogger.debug('Social login attempt for: $provider - $email');
 
       final response = await _apiService.post(
-        '/auth/social/login',
+        Endpoints.socialLogin,
         data: {'provider': provider, 'social_id': socialId, 'email': email},
       );
 
@@ -67,13 +71,15 @@ class AuthRepository {
       AppLogger.debug('Checking social user existence: $provider - $email');
 
       final response = await _apiService.post(
-        '/auth/social/check',
+        '/auth/check/email/', // There is no social check endpoint in Endpoints.dart yet, but this matches backend pattern
         data: {'provider': provider, 'social_id': socialId, 'email': email},
       );
 
       return response;
     } catch (error) {
-      AppLogger.debug('Check social user exists skipped/mocked: returning false');
+      AppLogger.debug(
+        'Check social user exists skipped/mocked: returning false',
+      );
       return {'exists': false};
     }
   }
@@ -88,7 +94,7 @@ class AuthRepository {
       AppLogger.debug('Linking social account: $provider - $email');
 
       final response = await _apiService.post(
-        '/auth/social/link',
+        Endpoints.socialLink,
         data: {'provider': provider, 'social_id': socialId, 'email': email},
         customHeaders: {'Authorization': 'Bearer $token'},
       );
@@ -108,7 +114,7 @@ class AuthRepository {
       AppLogger.debug('Unlinking social account: $provider');
 
       final response = await _apiService.post(
-        '/auth/social/unlink',
+        Endpoints.socialUnlink,
         data: {'provider': provider},
         customHeaders: {'Authorization': 'Bearer $token'},
       );
@@ -127,7 +133,7 @@ class AuthRepository {
       AppLogger.debug('Getting linked social accounts');
 
       final response = await _apiService.get(
-        '/auth/social/accounts',
+        Endpoints.socialAccounts,
         customHeaders: {'Authorization': 'Bearer $token'},
       );
 
@@ -140,9 +146,11 @@ class AuthRepository {
 
   Future<User> getCurrentUser() async {
     try {
-      final response = await _apiService.get('/auth/me/');
+      final response = await _apiService.get(Endpoints.currentUser);
       // Handling both direct response and wrapped response if any
-      final userData = response is Map && response.containsKey('data') ? response['data'] : response;
+      final userData = response is Map && response.containsKey('data')
+          ? response['data']
+          : response;
       return User.fromJson(userData);
     } catch (error) {
       AppLogger.error('Get current user failed', error: error);
@@ -153,10 +161,12 @@ class AuthRepository {
   Future<User> updateProfile(Map<String, dynamic> profileData) async {
     try {
       final response = await _apiService.patch(
-        '/auth/me/',
+        Endpoints.profile,
         data: profileData,
       );
-      final userData = response is Map && response.containsKey('data') ? response['data'] : response;
+      final userData = response is Map && response.containsKey('data')
+          ? response['data']
+          : response;
       return User.fromJson(userData);
     } catch (error) {
       AppLogger.error('Update profile failed', error: error);
@@ -167,7 +177,7 @@ class AuthRepository {
   Future<void> logout({String? refreshToken}) async {
     try {
       await _apiService.post(
-        '/auth/logout/',
+        Endpoints.logout,
         data: refreshToken != null ? {'refresh': refreshToken} : null,
       );
     } catch (error) {
@@ -181,30 +191,90 @@ class AuthRepository {
       AppLogger.debug('Forgot password request for: $email');
 
       final response = await _apiService.post(
-        '/auth/forgot-password',
+        Endpoints.passwordReset,
         data: {'email': email},
       );
 
-      return response;
+      if (response is Map<String, dynamic>) {
+        return {
+          'success': response['success'] ?? true,
+          'message': response['message'] ?? 'OTP sent successfully'.tr(),
+          ...response,
+        };
+      }
+      return {
+        'success': true,
+        'message': 'OTP sent successfully'.tr(),
+        'data': response,
+      };
     } catch (error) {
       AppLogger.error('Forgot password failed', error: error);
       throw ErrorHandler.handleException(error);
     }
   }
 
+  Future<Map<String, dynamic>> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      AppLogger.debug('Verify password reset OTP for: $email');
+
+      final response = await _apiService.post(
+        Endpoints.passwordResetVerify,
+        data: {'email': email, 'otp': otp},
+      );
+
+      if (response is Map<String, dynamic>) {
+        return {
+          'success': response['success'] ?? true,
+          'message': response['message'] ?? 'OTP verified successfully'.tr(),
+          ...response,
+        };
+      }
+      return {
+        'success': true,
+        'message': 'OTP verified successfully'.tr(),
+        'data': response,
+      };
+    } catch (error) {
+      AppLogger.error('Verify password reset OTP failed', error: error);
+      throw ErrorHandler.handleException(error);
+    }
+  }
+
   Future<Map<String, dynamic>> resetPassword({
-    required String token,
+    String? token,
+    String? email,
+    String? otp,
     required String newPassword,
   }) async {
     try {
       AppLogger.debug('Resetting password');
 
+      final Map<String, dynamic> data = {'new_password': newPassword};
+
+      if (token != null) data['token'] = token;
+      if (email != null) data['email'] = email;
+      if (otp != null) data['otp'] = otp;
+
       final response = await _apiService.post(
-        '/auth/reset-password',
-        data: {'token': token, 'new_password': newPassword},
+        Endpoints.passwordResetConfirm,
+        data: data,
       );
 
-      return response;
+      if (response is Map<String, dynamic>) {
+        return {
+          'success': response['success'] ?? true,
+          'message': response['message'] ?? 'Password reset successful'.tr(),
+          ...response,
+        };
+      }
+      return {
+        'success': true,
+        'message': 'Password reset successful'.tr(),
+        'data': response,
+      };
     } catch (error) {
       AppLogger.error('Reset password failed', error: error);
       throw ErrorHandler.handleException(error);
@@ -219,7 +289,7 @@ class AuthRepository {
       AppLogger.debug('Changing password');
 
       final response = await _apiService.post(
-        '/auth/change-password',
+        Endpoints.passwordChange,
         data: {
           'current_password': currentPassword,
           'new_password': newPassword,
@@ -233,13 +303,12 @@ class AuthRepository {
     }
   }
 
-  // Token verification and refresh
   Future<Map<String, dynamic>> verifyToken(String token) async {
     try {
       AppLogger.debug('Verifying token');
 
       final response = await _apiService.post(
-        '/auth/verify-token',
+        Endpoints.tokenVerify,
         data: {'token': token},
       );
 
@@ -255,7 +324,7 @@ class AuthRepository {
       AppLogger.debug('Refreshing token');
 
       final response = await _apiService.post(
-        '/auth/refresh-token',
+        Endpoints.tokenRefresh,
         data: {'refresh_token': refreshToken},
       );
 
@@ -266,47 +335,12 @@ class AuthRepository {
     }
   }
 
-  Future<Map<String, dynamic>> verifyPasswordResetOtp({
-    required String email,
-    required String otp,
-  }) async {
-    try {
-      AppLogger.debug('Verify password reset OTP for: $email');
-
-      final response = await _apiService.post(
-        '/auth/verify-reset-otp',
-        data: {'email': email, 'otp': otp},
-      );
-
-      return response;
-    } catch (error) {
-      AppLogger.error('Verify password reset OTP failed', error: error);
-      throw ErrorHandler.handleException(error);
-    }
-  }
-
-  Future<Map<String, dynamic>> sendPasswordResetOtp(String email) async {
-    try {
-      AppLogger.debug('Send password reset OTP for: $email');
-
-      final response = await _apiService.post(
-        '/auth/send-reset-otp',
-        data: {'email': email},
-      );
-
-      return response;
-    } catch (error) {
-      AppLogger.error('Send password reset OTP failed', error: error);
-      throw ErrorHandler.handleException(error);
-    }
-  }
-
   Future<Map<String, dynamic>> sendVerificationOtp(String email) async {
     try {
       AppLogger.debug('Send verification OTP for: $email');
 
       final response = await _apiService.post(
-        '/auth/send-verification-otp',
+        Endpoints.sendEmailVerification,
         data: {'email': email},
       );
 
@@ -325,7 +359,7 @@ class AuthRepository {
       AppLogger.debug('Verify email OTP for: $email');
 
       final response = await _apiService.post(
-        '/auth/verify-email-otp',
+        Endpoints.verifyEmail,
         data: {'email': email, 'otp': otp},
       );
 
@@ -335,10 +369,16 @@ class AuthRepository {
       throw ErrorHandler.handleException(error);
     }
   }
-  Future<Map<String, dynamic>> adminCreateStaff(Map<String, dynamic> staffData) async {
+
+  Future<Map<String, dynamic>> adminCreateStaff(
+    Map<String, dynamic> staffData,
+  ) async {
     try {
       AppLogger.debug('Admin creating staff for: ${staffData['email']}');
-      return await _apiService.post('/auth/admin/create-staff/', data: staffData);
+      return await _apiService.post(
+        Endpoints.adminCreateStaff,
+        data: staffData,
+      );
     } catch (error) {
       AppLogger.error('Admin staff creation failed', error: error);
       throw ErrorHandler.handleException(error);
@@ -348,7 +388,9 @@ class AuthRepository {
   Future<List<dynamic>> adminFetchSalons() async {
     try {
       final response = await _apiService.get('/salons/salons/');
-      return response is List ? response : (response['results'] ?? response['data'] ?? []);
+      return response is List
+          ? response
+          : (response['results'] ?? response['data'] ?? []);
     } catch (error) {
       AppLogger.error('Admin fetch salons failed', error: error);
       throw ErrorHandler.handleException(error);

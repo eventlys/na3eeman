@@ -23,13 +23,16 @@ class PointsProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final targetCustomerId = customerId ?? (await UnifiedStorageService().getUserProfile())?.id;
-      
+      final targetCustomerId =
+          customerId ?? (await UnifiedStorageService().getUserProfile())?.id;
+
       // Load rules first if not loaded
       if (_rules == null) {
         final rulesData = await _loyaltyService.getLoyaltyRules();
         if (rulesData.isNotEmpty) {
-          _rules = LoyaltyProgram.fromJson(rulesData.first as Map<String, dynamic>);
+          _rules = LoyaltyProgram.fromJson(
+            rulesData.first as Map<String, dynamic>,
+          );
         }
       }
 
@@ -67,7 +70,8 @@ class PointsProvider with ChangeNotifier {
           balance['points'] as int? ??
           balance['balance'] as int? ??
           _currentBalance;
-      _hasPendingPenalty = balance['has_pending_penalty'] as bool? ?? _hasPendingPenalty;
+      _hasPendingPenalty =
+          balance['has_pending_penalty'] as bool? ?? _hasPendingPenalty;
       notifyListeners();
     } catch (error) {
       debugPrint('Error adding points: $error');
@@ -150,7 +154,10 @@ class PointsProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      final response = await _loyaltyService.redeemPoints(customerId, amountJod);
+      final response = await _loyaltyService.redeemPoints(
+        customerId,
+        amountJod,
+      );
       _currentBalance = response['points'] as int? ?? _currentBalance;
       return true;
     } catch (error) {
@@ -166,21 +173,34 @@ class PointsProvider with ChangeNotifier {
 
   int _getPointsValue(PointsType type) {
     if (_rules == null) return _getFallbackPointsValue(type);
-    
+
     switch (type) {
-      case PointsType.invite: return 100;
-      case PointsType.referral: return 100;
-      case PointsType.gifting: return 100;
-      case PointsType.salonFeedback: return 50;
-      case PointsType.expertFeedback: return 25;
-      case PointsType.rateApp: return 100;
-      case PointsType.arriveOnTime: return 50;
-      case PointsType.booking: return 50;
-      case PointsType.makeAppointment: return 50;
-      case PointsType.delay5Min: return -10;
-      case PointsType.delay10Min: return -20;
-      case PointsType.delay15Min: return -30;
-      default: return 0;
+      case PointsType.invite:
+        return 100;
+      case PointsType.referral:
+        return 100;
+      case PointsType.gifting:
+        return 100;
+      case PointsType.salonFeedback:
+        return 50;
+      case PointsType.expertFeedback:
+        return 25;
+      case PointsType.rateApp:
+        return 100;
+      case PointsType.arriveOnTime:
+        return 50;
+      case PointsType.booking:
+        return 50;
+      case PointsType.makeAppointment:
+        return 50;
+      case PointsType.delay5Min:
+        return -10;
+      case PointsType.delay10Min:
+        return -20;
+      case PointsType.delay15Min:
+        return -30;
+      default:
+        return 0;
     }
   }
 
@@ -190,20 +210,34 @@ class PointsProvider with ChangeNotifier {
 
   String _getSourceString(PointsType type) {
     switch (type) {
-      case PointsType.invite: return 'INVITE';
-      case PointsType.referral: return 'INVITE';
-      case PointsType.salonFeedback: return 'REVIEW_SALON';
-      case PointsType.expertFeedback: return 'EMPLOYEE_REVIEW_GOOD';
-      case PointsType.rateApp: return 'RATING_APP';
-      case PointsType.arriveOnTime: return 'EARLY';
-      case PointsType.booking: return 'APPOINTMENT';
-      case PointsType.makeAppointment: return 'APPOINTMENT';
-      case PointsType.gifting: return 'GIFT';
-      case PointsType.delay5Min: return 'DELAY_REQUEST';
-      case PointsType.delay10Min: return 'DELAY_REQUEST';
-      case PointsType.delay15Min: return 'DELAY_REQUEST';
-      case PointsType.redeem: return 'PAYMENT_REDEEM';
-      default: return 'ADMIN';
+      case PointsType.invite:
+        return 'INVITE';
+      case PointsType.referral:
+        return 'INVITE';
+      case PointsType.salonFeedback:
+        return 'REVIEW_SALON';
+      case PointsType.expertFeedback:
+        return 'EMPLOYEE_REVIEW_GOOD';
+      case PointsType.rateApp:
+        return 'RATING_APP';
+      case PointsType.arriveOnTime:
+        return 'EARLY';
+      case PointsType.booking:
+        return 'APPOINTMENT';
+      case PointsType.makeAppointment:
+        return 'APPOINTMENT';
+      case PointsType.gifting:
+        return 'GIFT';
+      case PointsType.delay5Min:
+        return 'DELAY_REQUEST';
+      case PointsType.delay10Min:
+        return 'DELAY_REQUEST';
+      case PointsType.delay15Min:
+        return 'DELAY_REQUEST';
+      case PointsType.redeem:
+        return 'PAYMENT_REDEEM';
+      default:
+        return 'ADMIN';
     }
   }
 }

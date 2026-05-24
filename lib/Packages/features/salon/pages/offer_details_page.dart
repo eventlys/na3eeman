@@ -30,7 +30,8 @@ class OfferDetailsPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   _buildDescriptionSection(isDark, context),
                   const SizedBox(height: 24),
-                  if (offer.includedServices != null && offer.includedServices!.isNotEmpty)
+                  if (offer.includedServices != null &&
+                      offer.includedServices!.isNotEmpty)
                     _buildIncludedServices(isDark, context),
                   const SizedBox(height: 120), // Padding for bottom button
                 ],
@@ -57,7 +58,8 @@ class OfferDetailsPage extends StatelessWidget {
             ? Image.network(
                 offer.imageUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => _buildPlaceholderBackground(),
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholderBackground(),
               )
             : _buildPlaceholderBackground(),
       ),
@@ -65,20 +67,29 @@ class OfferDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPlaceholderBackground() {
-    return Builder(builder: (context) {
-      return Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+    return Builder(
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColor,
+              ],
+            ),
           ),
-        ),
-        child: const Center(
-          child: Icon(Icons.local_offer_rounded, color: Colors.white, size: 60),
-        ),
-      );
-    });
+          child: const Center(
+            child: Icon(
+              Icons.local_offer_rounded,
+              color: Colors.white,
+              size: 60,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildOfferHeader(BuildContext context, bool isDark) {
@@ -90,7 +101,9 @@ class OfferDetailsPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+            border: Border.all(
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+            ),
           ),
           child: Text(
             offer.salonName,
@@ -104,9 +117,9 @@ class OfferDetailsPage extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           offer.title,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 12),
         Row(
@@ -126,11 +139,12 @@ class OfferDetailsPage extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16,
-                  decoration: TextDecoration.combine([TextDecoration.lineThrough]),
+                  decoration: TextDecoration.combine([
+                    TextDecoration.lineThrough,
+                  ]),
                 ),
               ),
             ],
-
           ],
         ),
       ],
@@ -138,34 +152,40 @@ class OfferDetailsPage extends StatelessWidget {
   }
 
   Widget _buildValiditySection(bool isDark, BuildContext context) {
-    return Builder(builder: (context) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.access_time_filled_rounded, color: Theme.of(context).primaryColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                offer.validityPeriod,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+    return Builder(
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.access_time_filled_rounded,
+                color: Theme.of(context).primaryColor,
               ),
-            ),
-          ],
-        ),
-      );
-    });
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  offer.validityPeriod,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildDescriptionSection(bool isDark, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("about_this_offer".tr(),
+        Text(
+          "about_this_offer".tr(),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const SizedBox(height: 12),
@@ -181,32 +201,41 @@ class OfferDetailsPage extends StatelessWidget {
   }
 
   Widget _buildIncludedServices(bool isDark, BuildContext context) {
-    return Builder(builder: (context) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("included_services".tr(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 12),
-          ...offer.includedServices!.map((service) => Padding(
+    return Builder(
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "included_services".tr(),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            ...offer.includedServices!.map(
+              (service) => Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.check_circle_rounded, color: Theme.of(context).primaryColor, size: 20),
+                    Icon(
+                      Icons.check_circle_rounded,
+                      color: Theme.of(context).primaryColor,
+                      size: 20,
+                    ),
                     const SizedBox(width: 12),
                     Text(service),
                   ],
                 ),
-              )),
-        ],
-      );
-    });
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildBottomActions(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -228,10 +257,15 @@ class OfferDetailsPage extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               elevation: 0,
             ),
-            child: Text("book_this_offer".tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            child: Text(
+              "book_this_offer".tr(),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ),
         ),
       ),
@@ -276,15 +310,20 @@ class _BookingSheetState extends State<_BookingSheet> {
         children: [
           // Drag bar
           Container(
-            width: 40, height: 5,
-            decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
           const SizedBox(height: 24),
-          Text("select_date_time".tr(),
+          Text(
+            "select_date_time".tr(),
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 24),
-          
+
           // Date Selection Button
           InkWell(
             onTap: () async {
@@ -306,11 +345,14 @@ class _BookingSheetState extends State<_BookingSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    selectedDate != null 
-                        ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}' 
+                    selectedDate != null
+                        ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
                         : 'Choose Date',
                   ),
-                  Icon(Icons.calendar_today_rounded, color: Theme.of(context).primaryColor),
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ],
               ),
             ),
@@ -320,39 +362,60 @@ class _BookingSheetState extends State<_BookingSheet> {
           // Time Selection Slots
           Align(
             alignment: Alignment.centerLeft,
-            child: Text("available_slots".tr(), style: TextStyle(fontWeight: FontWeight.w600)),
+            child: Text(
+              "available_slots".tr(),
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
           const SizedBox(height: 12),
           SizedBox(
             height: 48,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: ['10:00 AM', '11:00 AM', '12:00 PM', '02:00 PM', '03:00 PM'].map((time) {
-                final isSelected = selectedTime == time;
-                return GestureDetector(
-                  onTap: () => setState(() => selectedTime = time),
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
-                      border: Border.all(
-                        color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.3),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        time,
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black),
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              children:
+                  [
+                    '10:00 AM',
+                    '11:00 AM',
+                    '12:00 PM',
+                    '02:00 PM',
+                    '03:00 PM',
+                  ].map((time) {
+                    final isSelected = selectedTime == time;
+                    return GestureDetector(
+                      onTap: () => setState(() => selectedTime = time),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Theme.of(context).primaryColor
+                              : Colors.transparent,
+                          border: Border.all(
+                            color: isSelected
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey.withOpacity(0.3),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            time,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : (isDark ? Colors.white : Colors.black),
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
             ),
           ),
           const SizedBox(height: 32),
@@ -366,14 +429,20 @@ class _BookingSheetState extends State<_BookingSheet> {
                   ? () {
                       Navigator.pop(context); // Close sheet
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("booking_request_sent_successfully".tr())),
+                        SnackBar(
+                          content: Text(
+                            "booking_request_sent_successfully".tr(),
+                          ),
+                        ),
                       );
                     }
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               child: Text("confirm_booking".tr()),
             ),

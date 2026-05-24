@@ -37,7 +37,6 @@ class FadedBackground extends StatelessWidget {
   }
 }
 
-
 class ThirdPage extends StatelessWidget {
   const ThirdPage({super.key});
 
@@ -77,4 +76,3 @@ class ThirdPage extends StatelessWidget {
     );
   }
 }
-

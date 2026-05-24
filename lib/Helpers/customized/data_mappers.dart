@@ -46,19 +46,27 @@ class DataMappers {
       firstName: json['first_name']?.toString() ?? '',
       lastName: json['last_name']?.toString() ?? '',
       profilePic: json['profile_pic']?.toString(),
-      userType: UserType.fromString(json['role']?.toString() ?? json['user_type']?.toString() ?? 'CUSTOMER'),
+      userType: UserType.fromString(
+        json['role']?.toString() ?? json['user_type']?.toString() ?? 'CUSTOMER',
+      ),
       gender: GenderExtension.fromString(json['gender']?.toString() ?? 'MALE'),
       location: json['location']?.toString() ?? 'amman, Jordan',
       lat: (json['lat'] as num?)?.toDouble() ?? 31.963158,
       lng: (json['lng'] as num?)?.toDouble() ?? 35.930359,
-      isEmailVerified: (json['is_email_verified'] ?? json['vrfid_email']) as bool? ?? false,
-      isPhoneVerified: (json['is_phone_verified'] ?? json['vrfid_phone']) as bool? ?? false,
+      isEmailVerified:
+          (json['is_email_verified'] ?? json['vrfid_email']) as bool? ?? false,
+      isPhoneVerified:
+          (json['is_phone_verified'] ?? json['vrfid_phone']) as bool? ?? false,
       isDeleted: json['is_deleted'] as bool? ?? false,
       deletedAt: json['deleted_at'] != null
           ? DateTime.tryParse(json['deleted_at']?.toString() ?? '')
           : null,
-      createdAt: DateTime.parse(json['created_at']?.toString() ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updated_at']?.toString() ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['created_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updated_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
       isActive: json['is_active'] as bool? ?? true,
       isStaff: json['is_staff'] as bool? ?? false,
       isSuperuser: json['is_superuser'] as bool? ?? false,
@@ -106,8 +114,12 @@ class DataMappers {
       'recurrence': appointment.recurrence?.value,
       'recurrence_end_date': appointment.recurrenceEndDate?.toIso8601String(),
       'created_at': appointment.createdAt.toIso8601String(),
-      'services': appointment.services.map((service) => service.toJson()).toList(),
-      'payment': appointment.payment != null ? _paymentToJson(appointment.payment!) : null,
+      'services': appointment.services
+          .map((service) => service.toJson())
+          .toList(),
+      'payment': appointment.payment != null
+          ? _paymentToJson(appointment.payment!)
+          : null,
     };
   }
 
@@ -117,25 +129,39 @@ class DataMappers {
       customerId: (json['customer'] as num?)?.toInt() ?? 0,
       salonId: (json['salon'] as num?)?.toInt() ?? 0,
       expertId: (json['expert'] as num?)?.toInt(),
-      startTime: DateTime.parse(json['start_time']?.toString() ?? DateTime.now().toIso8601String()),
-      endTime: DateTime.parse(json['end_time']?.toString() ?? DateTime.now().toIso8601String()),
+      startTime: DateTime.parse(
+        json['start_time']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
+      endTime: DateTime.parse(
+        json['end_time']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
       arrivalTime: json['arrival_time'] != null
           ? DateTime.tryParse(json['arrival_time']?.toString() ?? '')
           : null,
-      status: AppointmentStatusExtension.fromString(json['status']?.toString() ?? 'SCHEDULED'),
+      status: AppointmentStatusExtension.fromString(
+        json['status']?.toString() ?? 'SCHEDULED',
+      ),
       isFree: json['is_free'] as bool? ?? false,
       bookingGroupId: json['booking_group_id']?.toString(),
       requestedStyleId: (json['style'] as num?)?.toInt(),
-      attendeeType: AttendeeTypeExtension.fromString(json['attendee_type']?.toString() ?? 'SELF'),
+      attendeeType: AttendeeTypeExtension.fromString(
+        json['attendee_type']?.toString() ?? 'SELF',
+      ),
       recurrence: json['recurrence'] != null
-          ? RecurrenceTypeExtension.fromString(json['recurrence']?.toString() ?? '')
+          ? RecurrenceTypeExtension.fromString(
+              json['recurrence']?.toString() ?? '',
+            )
           : null,
       recurrenceEndDate: json['recurrence_end_date'] != null
           ? DateTime.tryParse(json['recurrence_end_date']?.toString() ?? '')
           : null,
-      createdAt: DateTime.parse(json['created_at']?.toString() ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['created_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
       services: json['services'] != null
-          ? (json['services'] as List).map((s) => AppointmentServiceModel.fromJson(s)).toList()
+          ? (json['services'] as List)
+                .map((s) => AppointmentServiceModel.fromJson(s))
+                .toList()
           : [],
       payment: json['payment'] != null
           ? _paymentFromJson(json['payment'])

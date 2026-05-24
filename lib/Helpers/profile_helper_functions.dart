@@ -87,9 +87,9 @@ class ProfileHelperFunctions {
         SnackBar(content: Text("profile_updated_successfully".tr())),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to update profile: $e')));
       onError();
     }
   }
@@ -97,9 +97,8 @@ class ProfileHelperFunctions {
   // Prepare the data in the format expected by the service
   static Map<String, dynamic> _prepareUpdateData(
     Map<String, dynamic> profile,
-    AuthProvider authProvider
-  )
-  {
+    AuthProvider authProvider,
+  ) {
     return {
       'first_name': profile['firstName'],
       'last_name': profile['lastName'],
@@ -120,8 +119,7 @@ class ProfileHelperFunctions {
     Map<String, dynamic> profile,
     AuthProvider authProvider,
     BuildContext context,
-  )
-  async {
+  ) async {
     try {
       // Create updated user object (you might need to adjust this based on your User model)
       final updatedUser = authProvider.user!.copyWith(
@@ -138,7 +136,6 @@ class ProfileHelperFunctions {
 
       // Optionally refresh the user data from the server to ensure consistency
       await authProvider.refreshUserData();
-
     } catch (e) {
       // Log the error but don't show to user since the backend update was successful
       print('Error updating provider state: $e');
@@ -149,14 +146,14 @@ class ProfileHelperFunctions {
   static void showDeleteConfirmationDialog({
     required BuildContext context,
     required Function() onConfirm,
-  })
-  {
+  }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("delete_profile".tr()),
-          content: Text("are_you_sure_you_want_to_delete_your_profile_this".tr(),
+          content: Text(
+            "are_you_sure_you_want_to_delete_your_profile_this".tr(),
           ),
           actions: [
             TextButton(
@@ -168,9 +165,7 @@ class ProfileHelperFunctions {
                 Navigator.of(context).pop();
                 onConfirm();
               },
-              child: Text("delete".tr(),
-                style: TextStyle(color: Colors.red),
-              ),
+              child: Text("delete".tr(), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -182,8 +177,7 @@ class ProfileHelperFunctions {
   static Future<void> performDelete({
     required BuildContext context,
     required Function() onSuccess,
-  })
-  async {
+  }) async {
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
@@ -197,17 +191,14 @@ class ProfileHelperFunctions {
 
       onSuccess();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete profile: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to delete profile: $e')));
     }
   }
 
   // Show image picker dialog
-  static void showImagePickerDialog({
-    required BuildContext context,
-  })
-  {
+  static void showImagePickerDialog({required BuildContext context}) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {

@@ -80,7 +80,9 @@ class PaymentIntent {
       id: json['id'] as String,
       amount: (json['amount'] as num).toDouble(),
       currency: json['currency'] as String? ?? 'USD',
-      paymentMethod: PaymentMethodExtension.fromString(json['payment_method'] as String),
+      paymentMethod: PaymentMethodExtension.fromString(
+        json['payment_method'] as String,
+      ),
       status: json['status'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
     );

@@ -15,7 +15,8 @@ class TodayTimelineWidget extends StatelessWidget {
     final appointmentProvider = context.watch<AppointmentProvider>();
 
     // Load appointments if not loaded yet
-    if (appointmentProvider.appointments.isEmpty && !appointmentProvider.isLoading) {
+    if (appointmentProvider.appointments.isEmpty &&
+        !appointmentProvider.isLoading) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         appointmentProvider.loadAppointments();
       });
@@ -26,8 +27,7 @@ class TodayTimelineWidget extends StatelessWidget {
       return appt.startTime.year == now.year &&
           appt.startTime.month == now.month &&
           appt.startTime.day == now.day;
-    }).toList()
-      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+    }).toList()..sort((a, b) => a.startTime.compareTo(b.startTime));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,15 +38,17 @@ class TodayTimelineWidget extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               'Today — ${DateFormat('EEE, MMM d').format(now)}',
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const Spacer(),
             if (appointmentProvider.isLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 14),
@@ -54,8 +56,11 @@ class TodayTimelineWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Center(
-                child: Text("no_appointments_scheduled".tr(),
-                    style: TextStyle(color: theme.hintColor, fontSize: 12))),
+              child: Text(
+                "no_appointments_scheduled".tr(),
+                style: TextStyle(color: theme.hintColor, fontSize: 12),
+              ),
+            ),
           ),
         ...todayAppointments.map((appt) {
           final timeStr = DateFormat('HH:mm').format(appt.startTime);
@@ -64,9 +69,10 @@ class TodayTimelineWidget extends StatelessWidget {
           final client = 'Client #${appt.customerId ?? 0}';
           // Status drives color
           final isCompleted = appt.status.name.toUpperCase() == 'COMPLETED';
-          final isCurrent = appt.status.name.toUpperCase() == 'CHECKED_IN' ||
+          final isCurrent =
+              appt.status.name.toUpperCase() == 'CHECKED_IN' ||
               (now.isAfter(appt.startTime) && now.isBefore(appt.endTime));
-          
+
           return _SlotTile(
             time: timeStr,
             client: client,
@@ -101,8 +107,8 @@ class _SlotTile extends StatelessWidget {
     final Color color = isCurrent
         ? theme.primaryColor
         : isCompleted
-            ? Colors.grey
-            : theme.colorScheme.onSurface;
+        ? Colors.grey
+        : theme.colorScheme.onSurface;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -131,28 +137,36 @@ class _SlotTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Text(client,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600)),
-                Text(service,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: theme.hintColor)),
+                Text(
+                  client,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  service,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.hintColor,
+                  ),
+                ),
               ],
             ),
           ),
           if (isCurrent)
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: theme.primaryColor,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text("now".tr(),
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold)),
+              child: Text(
+                "now".tr(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
         ],
       ),

@@ -108,7 +108,11 @@ class _CustomerHomePageState extends State<CustomerHomePage>
     if (_isLoading) {
       return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
       );
     }
 
@@ -159,7 +163,10 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       children: [
                         const SoonestAppointmentCard(),
                         const SizedBox(height: 24),
-                        _buildCategoriesGrid(isDark, Provider.of<AuthProvider>(context).user?.gender),
+                        _buildCategoriesGrid(
+                          isDark,
+                          Provider.of<AuthProvider>(context).user?.gender,
+                        ),
                         const SizedBox(height: 32),
                         _buildPointsTracker(isDark),
                         const SizedBox(height: 32),
@@ -187,16 +194,24 @@ class _CustomerHomePageState extends State<CustomerHomePage>
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: isDark 
-                ? [AppColors.almostBlack600, AppColors.almostBlack600.withOpacity(0.8)]
-                : [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.85)],
+              colors: isDark
+                  ? [
+                      AppColors.almostBlack600,
+                      AppColors.almostBlack600.withOpacity(0.8),
+                    ]
+                  : [
+                      Theme.of(context).primaryColor,
+                      Theme.of(context).primaryColor.withOpacity(0.85),
+                    ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).primaryColor.withOpacity(isDark ? 0 : 0.2),
+                color: Theme.of(
+                  context,
+                ).primaryColor.withOpacity(isDark ? 0 : 0.2),
                 offset: const Offset(0, 10),
                 blurRadius: 20,
               ),
@@ -212,7 +227,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'LOYALTY BALANCE',
+                        'loyalty_balance_caps'.tr(),
                         style: TextStyle(
                           color: AppColors.white.withOpacity(0.7),
                           fontSize: 10,
@@ -222,7 +237,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '$points Points',
+                        'points_count'.tr(args: [points.toString()]),
                         style: const TextStyle(
                           color: AppColors.white,
                           fontSize: 32,
@@ -237,7 +252,11 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       color: AppColors.white.withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.stars_rounded, color: Colors.amber, size: 32),
+                    child: const Icon(
+                      Icons.stars_rounded,
+                      color: Colors.amber,
+                      size: 32,
+                    ),
                   ),
                 ],
               ),
@@ -246,16 +265,27 @@ class _CustomerHomePageState extends State<CustomerHomePage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Complete more appointments to unlock rewards!',
-                    style: TextStyle(color: Colors.white70, fontSize: 10),
+                  Text(
+                    'complete_more_appointments_to_unlock_rewards'.tr(),
+                    style: const TextStyle(color: Colors.white70, fontSize: 10),
                   ),
                   InkWell(
                     onTap: () => Navigator.pushNamed(context, '/history'),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Text('History', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
-                        Icon(Icons.chevron_right, color: Colors.white, size: 16),
+                        Text(
+                          'history'.tr(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                          size: 16,
+                        ),
                       ],
                     ),
                   ),
@@ -283,11 +313,20 @@ class _CustomerHomePageState extends State<CustomerHomePage>
           itemBuilder: (context, index) {
             return ListTile(
               leading: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-                child: Icon(Icons.notifications_rounded, color: Theme.of(context).primaryColor),
+                backgroundColor: Theme.of(
+                  context,
+                ).primaryColor.withValues(alpha: 0.05),
+                child: Icon(
+                  Icons.notifications_rounded,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
-              title: Text('Notification Title ${index + 1}'),
-              subtitle: Text("this_is_a_notification_message_mockup_details".tr()),
+              title: Text(
+                'notification_title_indexed'.tr(args: [(index + 1).toString()]),
+              ),
+              subtitle: Text(
+                "this_is_a_notification_message_mockup_details".tr(),
+              ),
               trailing: Text("key2_h_ago".tr(), style: TextStyle(fontSize: 12)),
             );
           },
@@ -298,67 +337,24 @@ class _CustomerHomePageState extends State<CustomerHomePage>
 
   Widget _buildCategoriesGrid(bool isDark, Gender? userGender) {
     final isLadies = userGender == Gender.female;
-    
-    final List<Category> curatedCategories = isLadies ? [
-      Category(
-        id: 100, 
-        name: 'Hair & Beauty', 
-        nameEn: 'Hair & Beauty', 
-        icon: 'Grooming, Makeup, Weddings, Pedicure, Manicure', 
-        targetGender: 'female', 
-        image: 'assets/categories/ladies/hair_beauty.jpg'
-      ),
-      Category(
-        id: 101, 
-        name: 'Spa & Sauna', 
-        nameEn: 'Spa & Sauna', 
-        icon: 'none', 
-        targetGender: 'female', 
-        image: 'assets/categories/ladies/spa_sauna.jpg'
-      ),
-      Category(
-        id: 102, 
-        name: 'Skin care', 
-        nameEn: 'Skin care', 
-        icon: 'Facial, Laser & Wax, Eyes & Lips', 
-        targetGender: 'female', 
-        image: 'assets/categories/ladies/skin_care.jpg'
-      ),
-    ] : [
-      Category(
-        id: 201, 
-        name: 'Spa & Sauna', 
-        nameEn: 'Spa & Sauna', 
-        icon: 'none', 
-        targetGender: 'male', 
-        image: 'assets/categories/gents/spa_sauna.jpg'
-      ),
-      Category(
-        id: 202, 
-        name: 'Nail care', 
-        nameEn: 'Nail care', 
-        icon: 'none', 
-        targetGender: 'male', 
-        image: 'assets/categories/gents/nail_care.jpg'
-      ),
-      Category(
-        id: 203, 
-        name: 'Skin care', 
-        nameEn: 'Skin care', 
-        icon: 'none', 
-        targetGender: 'male', 
-        image: 'assets/categories/gents/skin_care.jpg'
-      ),
-    ];
+
+    // Filter categories by gender from the dynamic list
+    final List<Category> curatedCategories = _allCategories.where((cat) {
+      final catGender = cat.targetGender.toLowerCase();
+      if (catGender == 'all') return true;
+      if (isLadies && catGender == 'female') return true;
+      if (!isLadies && catGender == 'male') return true;
+      return false;
+    }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "catigories".tr(),
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         GridView.builder(
@@ -375,26 +371,113 @@ class _CustomerHomePageState extends State<CustomerHomePage>
             final cat = curatedCategories[index];
             return CategoryCard(
               category: cat,
-              onTap: () {
-                final actualCat = _allCategories.firstWhere(
-                  (c) => c.nameEn.toLowerCase() == cat.nameEn.toLowerCase(),
-                  orElse: () => cat,
-                );
-                
-                Navigator.pushNamed(
-                  context, 
-                  '/category_details', 
-                  arguments: {
-                    'category': actualCat,
-                    'giftMode': false,
-                    'giftGender': null,
-                  },
-                );
-              },
+              onTap: () => _handleCategoryTap(cat, isLadies),
             );
           },
         ),
       ],
+    );
+  }
+
+  void _handleCategoryTap(Category cat, bool isLadies) {
+    // If it's a female category and has sub-categories in the 'icon' field
+    // if (isLadies && cat.icon != 'none' && cat.icon.contains(',')) {
+    //   _showSubCategories(cat);
+    // } else {
+    _navigateToCategoryDetails(cat);
+    // }
+  }
+
+  // void _showSubCategories(Category parentCat) {
+  //   final subCats = parentCat.icon.split(',').map((s) => s.trim()).toList();
+
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     isScrollControlled: true,
+  //     builder: (context) => _buildBottomSheetContainer(
+  //       context: context,
+  //       title: parentCat.nameEn,
+  //       child: Column(
+  //         children: [
+  //           SizedBox(
+  //             height: 120,
+  //             child: ListView.builder(
+  //               scrollDirection: Axis.horizontal,
+  //               padding: const EdgeInsets.symmetric(horizontal: 16),
+  //               itemCount: subCats.length,
+  //               itemBuilder: (context, index) {
+  //                 final subName = subCats[index];
+  //                 return Padding(
+  //                   padding: const EdgeInsets.only(right: 12),
+  //                   child: GestureDetector(
+  //                     onTap: () {
+  //                       Navigator.pop(context);
+  //                       // Create a temporary category object for the sub-category
+  //                       final subCat = Category(
+  //                         id: parentCat
+  //                             .id, // Keep parent ID for API calls or use a specific one if available
+  //                         name: subName,
+  //                         nameEn: subName,
+  //                         icon: 'none',
+  //                         targetGender: 'female',
+  //                         image: parentCat.image,
+  //                       );
+  //                       _navigateToCategoryDetails(subCat, subQuery: subName);
+  //                     },
+  //                     child: Column(
+  //                       children: [
+  //                         Container(
+  //                           width: 80,
+  //                           height: 80,
+  //                           decoration: BoxDecoration(
+  //                             color: Theme.of(
+  //                               context,
+  //                             ).primaryColor.withOpacity(0.1),
+  //                             borderRadius: BorderRadius.circular(20),
+  //                             border: Border.all(
+  //                               color: Theme.of(
+  //                                 context,
+  //                               ).primaryColor.withOpacity(0.2),
+  //                             ),
+  //                           ),
+  //                           child: Icon(
+  //                             Icons.auto_awesome_rounded,
+  //                             color: Theme.of(context).primaryColor,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(height: 8),
+  //                         Text(
+  //                           subName,
+  //                           style: const TextStyle(
+  //                             fontSize: 12,
+  //                             fontWeight: FontWeight.bold,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //             ),
+  //           ),
+  //           const SizedBox(height: 32),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  void _navigateToCategoryDetails(Category cat, {String? subQuery}) {
+    Navigator.pushNamed(
+      context,
+      '/category_details',
+      arguments: {
+        'category': cat,
+        'giftMode': false,
+        'giftGender': null,
+        'subQuery': subQuery,
+      },
     );
   }
 
@@ -416,10 +499,18 @@ class _CustomerHomePageState extends State<CustomerHomePage>
           Container(
             width: 40,
             height: 5,
-            decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
           const SizedBox(height: 24),
-          Text(title, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
           child,
         ],

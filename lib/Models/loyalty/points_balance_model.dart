@@ -23,7 +23,9 @@ class LoyaltyBalance {
       freeHaircutProgress: json['free_haircut_progress'] as String? ?? '0/0',
       hasPendingPenalty: json['has_pending_penalty'] as bool? ?? false,
       transactions: json['transactions'] != null
-          ? (json['transactions'] as List).map((t) => PointTransaction.fromJson(t)).toList()
+          ? (json['transactions'] as List)
+                .map((t) => PointTransaction.fromJson(t))
+                .toList()
           : [],
     );
   }
@@ -43,7 +45,8 @@ class LoyaltyBalance {
 class PointTransaction {
   final String id;
   final int points;
-  final String source; // 'INVITE', 'RATING', 'EARLY', 'TIP', 'FREE_CUT', 'ADMIN'
+  final String
+  source; // 'INVITE', 'RATING', 'EARLY', 'TIP', 'FREE_CUT', 'ADMIN'
   final DateTime timestamp;
   final String formattedSource;
   final Map<String, dynamic>? metadata;
@@ -63,7 +66,8 @@ class PointTransaction {
       points: json['points'] as int,
       source: json['source'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
-      formattedSource: json['formatted_source'] as String? ?? json['source'] as String,
+      formattedSource:
+          json['formatted_source'] as String? ?? json['source'] as String,
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
   }

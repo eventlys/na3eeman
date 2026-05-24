@@ -26,8 +26,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  // Initialize environment first (defaults to dev if not specified)
-  await Environment.init(flavor: AppFlavor.dev);
+  // Initialize environment based on --dart-define=FLAVOR=xxx
+  const flavorString = String.fromEnvironment('FLAVOR');
+  final flavor = AppFlavor.values.firstWhere(
+    (e) => e.name == flavorString,
+    orElse: () => AppFlavor.dev,
+  );
+
+  await Environment.init(flavor: flavor);
 
   try {
     await Firebase.initializeApp(
@@ -79,9 +85,11 @@ void main() async {
   // Security Hardening
   final securityResult = await SecurityService().performSecurityScan();
   if (!securityResult.isSecure) {
-    AppLogger.warning('App running in insecure environment: ${securityResult.scanError ?? "Rooted/Modified device"}');
+    AppLogger.warning(
+      'App running in insecure environment: ${securityResult.scanError ?? "Rooted/Modified device"}',
+    );
   }
-  
+
   // Enable screenshot prevention for the whole app as a security baseline
   // Sensitive screens will reinforce this
   await SecurityService().allowScreenshots();
@@ -89,7 +97,7 @@ void main() async {
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
-      path: 'assets/Lang', 
+      path: 'assets/Lang',
       fallbackLocale: const Locale('en', 'US'),
       child: MultiProvider(
         providers: [
@@ -112,25 +120,31 @@ class MyApp extends StatelessWidget {
         builder: (context, themeProvider, localeProvider, _) {
           return ErrorBoundary(
             isDarkMode: themeProvider.isDark,
-            userGender: themeProvider.gender, 
+            userGender: themeProvider.gender,
             onRetry: () {
-              Navigator.of(SideNavigationService.navigatorKey.currentContext!).pushReplacementNamed('/');
+              Navigator.of(
+                SideNavigationService.navigatorKey.currentContext!,
+              ).pushReplacementNamed('/');
             },
             child: MaterialApp(
               title: AppConfig.appName,
               navigatorKey: SideNavigationService.navigatorKey,
-              initialRoute: '/',
+              initialRoute: '/login',
               routes: AppRoutes.routes,
               debugShowCheckedModeBanner: AppConfig.showDebugBanner,
-              
+
               // Localization Configuration
               localizationsDelegates: context.localizationDelegates,
               supportedLocales: context.supportedLocales,
               locale: context.locale,
 
               theme: themeProvider.currentTheme,
-              darkTheme: themeProvider.isDark ? themeProvider.currentTheme : null,
-              themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
+              darkTheme: themeProvider.isDark
+                  ? themeProvider.currentTheme
+                  : null,
+              themeMode: themeProvider.isDark
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
             ),
           );
         },

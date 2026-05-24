@@ -23,7 +23,7 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
   late TextEditingController _phoneCtrl;
   late TextEditingController _locationCtrl;
   late TextEditingController _descCtrl;
-  
+
   TimeOfDay? _openingTime;
   TimeOfDay? _closingTime;
 
@@ -39,18 +39,24 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     _phoneCtrl = TextEditingController(text: salon?.salonPhonNum ?? '');
     _locationCtrl = TextEditingController(text: salon?.location ?? '');
     _descCtrl = TextEditingController(text: salon?.salonDescription ?? '');
-    
+
     if (salon?.openingTime != null) {
       final parts = salon!.openingTime.split(':');
       if (parts.length >= 2) {
-        _openingTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+        _openingTime = TimeOfDay(
+          hour: int.parse(parts[0]),
+          minute: int.parse(parts[1]),
+        );
       }
     }
-    
+
     if (salon?.closingTime != null) {
       final parts = salon!.closingTime.split(':');
       if (parts.length >= 2) {
-        _closingTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+        _closingTime = TimeOfDay(
+          hour: int.parse(parts[0]),
+          minute: int.parse(parts[1]),
+        );
       }
     }
 
@@ -80,7 +86,9 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
   Future<void> _selectTime(BuildContext context, bool isOpening) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: (isOpening ? _openingTime : _closingTime) ?? const TimeOfDay(hour: 9, minute: 0),
+      initialTime:
+          (isOpening ? _openingTime : _closingTime) ??
+          const TimeOfDay(hour: 9, minute: 0),
     );
     if (picked != null) {
       setState(() {
@@ -104,9 +112,13 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      final openingStr = _openingTime != null ? _formatTimeOfDay(_openingTime) : null;
-      final closingStr = _closingTime != null ? _formatTimeOfDay(_closingTime) : null;
-      
+      final openingStr = _openingTime != null
+          ? _formatTimeOfDay(_openingTime)
+          : null;
+      final closingStr = _closingTime != null
+          ? _formatTimeOfDay(_closingTime)
+          : null;
+
       final images = _newSalonImages.map((x) => File(x.path)).toList();
 
       await context.read<SalonProvider>().updateSalonOnBackend(
@@ -119,7 +131,7 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
         closingTime: closingStr,
         images: images.isNotEmpty ? images : null,
       );
-      
+
       context.read<SalonProvider>().updateSalonInMemory(
         name: _nameCtrl.text,
         phone: _phoneCtrl.text,
@@ -129,10 +141,15 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
         openingTime: openingStr,
         closingTime: closingStr,
       );
-      
-      if (mounted) AppSnackBar.success(context, 'Salon details updated successfully!');
+
+      if (mounted)
+        AppSnackBar.success(context, 'salon_details_updated_successfully'.tr());
     } catch (e) {
-      if (mounted) AppSnackBar.error(context, 'Failed to update salon: $e');
+      if (mounted)
+        AppSnackBar.error(
+          context,
+          'failed_to_update_salon_err'.tr(args: [e.toString()]),
+        );
     }
   }
 
@@ -143,7 +160,10 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('salon_management'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'salon_management'.tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -153,54 +173,92 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('visual_identity'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                'visual_identity'.tr(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 16),
               _buildImageSection(isDark),
               const SizedBox(height: 32),
-              
-              Text('working_hours'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
+              Text(
+                'working_hours'.tr(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 8),
-              Text('set_global_hours_or_manage_weekly'.tr(), style: const TextStyle(fontSize: 12, color: AppColors.almostBlack300)),
+              Text(
+                'set_global_hours_or_manage_weekly'.tr(),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.almostBlack300,
+                ),
+              ),
               const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
-                    child: _buildTimeSelector('opening_time'.tr(), _openingTime, () => _selectTime(context, true)),
+                    child: _buildTimeSelector(
+                      'opening_time'.tr(),
+                      _openingTime,
+                      () => _selectTime(context, true),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _buildTimeSelector('closing_time'.tr(), _closingTime, () => _selectTime(context, false)),
+                    child: _buildTimeSelector(
+                      'closing_time'.tr(),
+                      _closingTime,
+                      () => _selectTime(context, false),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: () {
-                  // TODO: Open Weekly Schedule Manager Bottom Sheet
-                  _showWeeklyScheduleManager();
-                },
-                icon: const Icon(Icons.calendar_month_rounded, size: 18),
-                label: Text('manage_weekly_schedule'.tr()),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
               const SizedBox(height: 32),
 
-              Text('basic_information'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                'basic_information'.tr(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 16),
               _buildField('salon_name'.tr(), _nameCtrl, Icons.store_rounded),
               const SizedBox(height: 16),
-              _buildField('salon_slogan'.tr(), _sloganCtrl, Icons.auto_awesome_rounded, hint: 'e.g. The Art of Grooming'),
+              _buildField(
+                'salon_slogan'.tr(),
+                _sloganCtrl,
+                Icons.auto_awesome_rounded,
+                hint: 'the_art_of_grooming'.tr(),
+              ),
               const SizedBox(height: 16),
-              _buildField('phone_number'.tr(), _phoneCtrl, Icons.phone_rounded, keyboardType: TextInputType.phone),
+              _buildField(
+                'salon_phone'.tr(),
+                _phoneCtrl,
+                Icons.phone_rounded,
+                keyboardType: TextInputType.phone,
+              ),
               const SizedBox(height: 16),
-              _buildField('location_address'.tr(), _locationCtrl, Icons.location_on_rounded),
+              _buildField(
+                'salon_location'.tr(),
+                _locationCtrl,
+                Icons.location_on_rounded,
+              ),
               const SizedBox(height: 16),
-              _buildField('description'.tr(), _descCtrl, Icons.description_rounded, maxLines: 4),
+              _buildField(
+                'salon_description'.tr(),
+                _descCtrl,
+                Icons.description_rounded,
+                maxLines: 4,
+              ),
               const SizedBox(height: 40),
-              
+
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -222,7 +280,14 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.almostBlack300)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            color: AppColors.almostBlack300,
+          ),
+        ),
         const SizedBox(height: 8),
         InkWell(
           onTap: onTap,
@@ -230,14 +295,23 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.almostBlack50.withValues(alpha: 0.3),
+              color: isDark
+                  ? AppColors.white.withValues(alpha: 0.05)
+                  : AppColors.almostBlack50.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               children: [
-                Icon(Icons.access_time_rounded, color: Theme.of(context).primaryColor, size: 20),
+                Icon(
+                  Icons.access_time_rounded,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
                 const SizedBox(width: 12),
-                Text(_formatTimeOfDay(time), style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  _formatTimeOfDay(time),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             ),
           ),
@@ -256,16 +330,31 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
               height: 160,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.almostBlack50.withValues(alpha: 0.3),
+                color: isDark
+                    ? AppColors.white.withValues(alpha: 0.05)
+                    : AppColors.almostBlack50.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.grey.withValues(alpha: 0.1), style: BorderStyle.solid),
+                border: Border.all(
+                  color: Colors.grey.withValues(alpha: 0.1),
+                  style: BorderStyle.solid,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add_a_photo_rounded, size: 40, color: Theme.of(context).primaryColor),
+                  Icon(
+                    Icons.add_a_photo_rounded,
+                    size: 40,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   const SizedBox(height: 12),
-                  Text('upload_salon_photos'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.almostBlack300)),
+                  Text(
+                    'upload_salon_photos'.tr(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.almostBlack300,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -291,7 +380,7 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
                     ),
                   );
                 }
-                
+
                 if (index < _existingImages.length) {
                   final img = _existingImages[index];
                   return Container(
@@ -310,14 +399,21 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
                           right: 4,
                           top: 4,
                           child: GestureDetector(
-                            onTap: () {
-                              // TODO: Implement image deletion
-                              AppSnackBar.info(context, 'Image deletion coming soon');
-                            },
+                            // onTap: () {
+                            //   // TODO: Implement image deletion
+                            //   AppSnackBar.info(context, 'Image deletion coming soon');
+                            // },
                             child: Container(
                               padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                              decoration: const BoxDecoration(
+                                color: Colors.black54,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                size: 14,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -350,8 +446,15 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
                           },
                           child: Container(
                             padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-                            child: const Icon(Icons.close, size: 14, color: Colors.white),
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 14,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -365,31 +468,50 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
     );
   }
 
-  void _showWeeklyScheduleManager() {
-    // This would ideally be a separate widget or bottom sheet
-    AppSnackBar.info(context, 'Opening Weekly Schedule Manager...');
-    // Navigation to a dedicated schedule management page or showing a bottom sheet
-    // For now, we'll keep it as a placeholder as requested "Add Opening Hours"
-  }
-
-  Widget _buildField(String label, TextEditingController ctrl, IconData icon, {String? hint, TextInputType keyboardType = TextInputType.text, int maxLines = 1}) {
+  Widget _buildField(
+    String label,
+    TextEditingController ctrl,
+    IconData icon, {
+    String? hint,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.almostBlack300)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            color: AppColors.almostBlack300,
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           controller: ctrl,
           keyboardType: keyboardType,
           maxLines: maxLines,
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+            prefixIcon: Icon(
+              icon,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
             hintText: hint,
             filled: true,
-            fillColor: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.almostBlack50.withValues(alpha: 0.3),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            fillColor: isDark
+                ? AppColors.white.withValues(alpha: 0.05)
+                : AppColors.almostBlack50.withValues(alpha: 0.3),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
           ),
         ),
       ],

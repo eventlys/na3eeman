@@ -12,8 +12,15 @@ class Environment {
   /// Initialize the environment configuration
   static Future<void> init({required AppFlavor flavor}) async {
     _flavor = flavor;
-    
-    await dotenv.load(fileName: ".env");
+
+    // Load specific .env file based on flavor
+    String envFile = ".env";
+    if (flavor == AppFlavor.dev) {
+      envFile = ".env.dev";
+    } else if (flavor == AppFlavor.staging) {
+      envFile = ".env.staging";
+    }
+    await dotenv.load(fileName: envFile);
 
     switch (flavor) {
       case AppFlavor.dev:
@@ -111,14 +118,16 @@ class DevConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey => Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
+  String? get stripePublishableKey =>
+      Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
 
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
   @override
   String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
   @override
-  String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+  String get firebaseMessagingSenderId =>
+      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
   @override
   String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
 
@@ -171,14 +180,16 @@ class StagingConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey => Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
+  String? get stripePublishableKey =>
+      Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
 
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
   @override
   String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
   @override
-  String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+  String get firebaseMessagingSenderId =>
+      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
   @override
   String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
 
@@ -231,14 +242,16 @@ class ProdConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey => Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
+  String? get stripePublishableKey =>
+      Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
 
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
   @override
   String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
   @override
-  String get firebaseMessagingSenderId => Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+  String get firebaseMessagingSenderId =>
+      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
   @override
   String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
 
@@ -251,3 +264,5 @@ class ProdConfig implements EnvironmentConfig {
   @override
   String get supportEmail => Environment.getEnv('SUPPORT_EMAIL');
 }
+
+

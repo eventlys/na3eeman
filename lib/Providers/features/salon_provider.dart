@@ -76,10 +76,13 @@ class SalonProvider extends BaseProvider {
     try {
       final response = await ApiService().get(Endpoints.salons);
       print('Frontend: loadSalons Response: $response');
-      final List<dynamic> results = response['results'] ?? response['data'] ?? [];
-      _salons = results.map<Salon>((json) => Salon.fromJson(json as Map<String, dynamic>)).toList();
+      final List<dynamic> results =
+          response['results'] ?? response['data'] ?? [];
+      _salons = results
+          .map<Salon>((json) => Salon.fromJson(json as Map<String, dynamic>))
+          .toList();
       if (_salons.isNotEmpty && _selectedSalon == null) {
-         _selectedSalon = _salons.first; // Default select
+        _selectedSalon = _salons.first; // Default select
       }
     } catch (e) {
       print('Frontend: loadSalons Error: $e');
@@ -91,10 +94,15 @@ class SalonProvider extends BaseProvider {
       if (_selectedSalon == null) return;
       // Note: Branch endpoint might need to be added to Endpoints.dart if it doesn't exist
       // For now using the existing pattern
-      final response = await ApiService().get('/salons/salons/${_selectedSalon!.id}/branches/');
+      final response = await ApiService().get(
+        '/salons/salons/${_selectedSalon!.id}/branches/',
+      );
       print('Frontend: loadBranches Response: $response');
-      final List<dynamic> results = response['results'] ?? response['data'] ?? [];
-      _branches = results.map<Branch>((json) => Branch.fromJson(json as Map<String, dynamic>)).toList();
+      final List<dynamic> results =
+          response['results'] ?? response['data'] ?? [];
+      _branches = results
+          .map<Branch>((json) => Branch.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       print('Frontend: loadBranches Error: $e');
     }
@@ -103,10 +111,17 @@ class SalonProvider extends BaseProvider {
   Future<void> loadServices() async {
     try {
       if (_selectedSalon == null) return;
-      final response = await ApiService().get('/salons/${_selectedSalon!.id}/services/');
+      final response = await ApiService().get(
+        '/salons/${_selectedSalon!.id}/services/',
+      );
       print('Frontend: loadServices Response: $response');
-      final List<dynamic> results = response['results'] ?? response['data'] ?? response['options'] ?? [];
-      _services = results.map<SalonService>((json) => SalonService.fromMap(json as Map<String, dynamic>)).toList();
+      final List<dynamic> results =
+          response['results'] ?? response['data'] ?? response['options'] ?? [];
+      _services = results
+          .map<SalonService>(
+            (json) => SalonService.fromMap(json as Map<String, dynamic>),
+          )
+          .toList();
     } catch (e) {
       print('Frontend: loadServices Error: $e');
     }
@@ -115,10 +130,17 @@ class SalonProvider extends BaseProvider {
   Future<void> loadInventory() async {
     try {
       if (_selectedSalon == null) return;
-      final response = await ApiService().get(Endpoints.salonInventory(_selectedSalon!.id));
+      final response = await ApiService().get(
+        Endpoints.salonInventory(_selectedSalon!.id),
+      );
       print('Frontend: loadInventory Response: $response');
-      final List<dynamic> results = response['results'] ?? response['data'] ?? [];
-      _inventory = results.map<InventoryItem>((json) => InventoryItem.fromJson(json as Map<String, dynamic>)).toList();
+      final List<dynamic> results =
+          response['results'] ?? response['data'] ?? [];
+      _inventory = results
+          .map<InventoryItem>(
+            (json) => InventoryItem.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
     } catch (e) {
       print('Frontend: loadInventory Error: $e');
     }
@@ -155,11 +177,14 @@ class SalonProvider extends BaseProvider {
           'product_price': price,
           'product_description': description,
           'category': 'Consumables', // Default for demo
-          'stock': stock
+          'stock': stock,
         };
         print('Frontend: Creating Product with data: $data');
         // Actual endpoint logic here or simulation with endpoint setups
-        final response = await ApiService().post('/salons/${_selectedSalon!.id}/inventory/', data: data);
+        final response = await ApiService().post(
+          '/salons/${_selectedSalon!.id}/inventory/',
+          data: data,
+        );
         print('Frontend: createProduct Response: $response');
         await loadInventory(); // Reload to capture new list
       } catch (e) {
@@ -172,7 +197,10 @@ class SalonProvider extends BaseProvider {
     try {
       print('Frontend: Adjusting Stock count for $inventoryId by $increment');
       // Simulated endpoint PUT logic
-      final response = await ApiService().post('/salons/inventory/$inventoryId/adjust_stock/', data: {'increment': increment});
+      final response = await ApiService().post(
+        '/salons/inventory/$inventoryId/adjust_stock/',
+        data: {'increment': increment},
+      );
       print('Frontend: adjustStock Response: $response');
       await loadInventory(); // Reload to capture new quantities
     } catch (e) {
@@ -209,13 +237,13 @@ class SalonProvider extends BaseProvider {
     if (_selectedSalon != null) {
       try {
         final fields = {
-          'salon_name': name,
-          'salon_phone_num': phone,
+          'salonName': name,
+          'salonPhoneNum': phone,
           'location': location,
-          'salon_description': description,
-          if (slogan != null) 'salon_slogan': slogan,
-          if (openingTime != null) 'opening_time': openingTime,
-          if (closingTime != null) 'closing_time': closingTime,
+          'salonDescription': description,
+          if (slogan != null) 'slogan': slogan,
+          if (openingTime != null) 'openingTime': openingTime,
+          if (closingTime != null) 'closingTime': closingTime,
         };
         print('Frontend: Updating Salon on Backend with fields: $fields');
         final response = await ApiService().updateSalonWithImages(
@@ -260,7 +288,7 @@ class SalonProvider extends BaseProvider {
         ownerId: _selectedSalon!.ownerId,
         avgRating: _selectedSalon!.avgRating,
       );
-      
+
       final index = _salons.indexWhere((s) => s.id == _selectedSalon!.id);
       if (index != -1) {
         _salons[index] = _selectedSalon!;

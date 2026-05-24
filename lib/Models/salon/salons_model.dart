@@ -44,7 +44,8 @@ class Salon {
       id: json['id'] as int,
       salonName: json['salonName'] ?? json['salon_name'] ?? '',
       salonPhonNum: json['salonPhoneNum'] ?? json['salon_phone_num'] ?? '',
-      salonDescription: json['salonDescription'] ?? json['salon_description'] ?? '',
+      salonDescription:
+          json['salonDescription'] ?? json['salon_description'] ?? '',
       slogan: json['slogan'] ?? json['salon_slogan'],
       location: json['location'] ?? '',
       lat: (json['lat'] as num?)?.toDouble() ?? 0.0,
@@ -56,12 +57,15 @@ class Salon {
       confirmedPhone: json['confirmed_phone'] as bool? ?? false,
       ownerId: json['owner_id'] ?? json['owner'] ?? 0,
       salonLogo: json['salon_logo'] as String?,
-      avgRating: (json['salonRating'] ?? json['salon_rating'] as num?)?.toDouble(),
+      avgRating: (json['salonRating'] ?? json['salon_rating'] as num?)
+          ?.toDouble(),
       reviews: json['reviews'] != null
           ? (json['reviews'] as List).map((r) => Review.fromJson(r)).toList()
           : null,
       galleryImages: json['gallery_images'] != null
-          ? (json['gallery_images'] as List).map((i) => SalonGalleryImage.fromJson(i)).toList()
+          ? (json['gallery_images'] as List)
+                .map((i) => SalonGalleryImage.fromJson(i))
+                .toList()
           : null,
     );
   }
@@ -130,7 +134,9 @@ class Review {
       appointmentId: json['appointment'] as int?,
       rating: json['rating'] as int? ?? 0,
       comment: json['comment'] as String? ?? '',
-      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['created_at'] ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 }

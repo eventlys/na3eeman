@@ -51,13 +51,9 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -75,9 +71,9 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("could_not_launch_maps".tr())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("could_not_launch_maps".tr())));
       }
     }
   }
@@ -112,7 +108,9 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
             color: isDark ? AppColors.almostBlack600 : AppColors.white,
             borderRadius: BorderRadius.circular(20), // 2xl rounded
             border: Border.all(
-              color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack100,
+              color: isDark
+                  ? AppColors.white.withOpacity(0.1)
+                  : AppColors.almostBlack100,
               width: 1,
             ),
             boxShadow: [
@@ -139,8 +137,14 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
                       return Container(
                         width: 90,
                         height: 90,
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-                        child: Icon(Icons.store_rounded, color: Theme.of(context).primaryColor, size: 32),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.05),
+                        child: Icon(
+                          Icons.store_rounded,
+                          color: Theme.of(context).primaryColor,
+                          size: 32,
+                        ),
                       );
                     },
                   ),
@@ -164,7 +168,11 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        Icon(Icons.access_time, size: 14, color: Theme.of(context).primaryColor),
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           widget.workingHours,
@@ -180,19 +188,28 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
                         GestureDetector(
                           onTap: widget.isClickable ? _launchMaps : null,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                              color: Theme.of(
+                                context,
+                              ).primaryColor.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.location_on, size: 14, color: Theme.of(context).primaryColor),
+                                Icon(
+                                  Icons.location_on,
+                                  size: 14,
+                                  color: Theme.of(context).primaryColor,
+                                ),
                                 const SizedBox(width: 2),
                                 Text(
-                                  widget.salonLocation.length > 15 
-                                    ? '${widget.salonLocation.substring(0, 12)}...' 
-                                    : widget.salonLocation,
+                                  widget.salonLocation.length > 15
+                                      ? '${widget.salonLocation.substring(0, 12)}...'
+                                      : widget.salonLocation,
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontSize: 11,
@@ -206,10 +223,16 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
                         // Rating
                         Row(
                           children: [
-                            const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                            const Icon(
+                              Icons.star_rounded,
+                              color: Colors.amber,
+                              size: 18,
+                            ),
                             Text(
                               widget.salonRating.toStringAsFixed(1),
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -228,12 +251,16 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _isFavorite ? AppColors.pink50 : AppColors.almostBlack50,
+                      color: _isFavorite
+                          ? AppColors.pink50
+                          : AppColors.almostBlack50,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       _isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: _isFavorite ? AppColors.pink : AppColors.almostBlack300,
+                      color: _isFavorite
+                          ? AppColors.pink
+                          : AppColors.almostBlack300,
                       size: 22,
                     ),
                   ),

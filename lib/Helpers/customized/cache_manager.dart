@@ -12,7 +12,11 @@ class CacheManager {
     return item.data as T;
   }
 
-  static void set(String key, dynamic data, {Duration duration = const Duration(minutes: 5)}) {
+  static void set(
+    String key,
+    dynamic data, {
+    Duration duration = const Duration(minutes: 5),
+  }) {
     _cache[key] = CacheItem(data, duration);
   }
 
@@ -34,7 +38,7 @@ class CacheItem {
   final DateTime expiryTime;
 
   CacheItem(this.data, Duration duration)
-      : expiryTime = DateTime.now().add(duration);
+    : expiryTime = DateTime.now().add(duration);
 
   bool get isExpired => DateTime.now().isAfter(expiryTime);
 }

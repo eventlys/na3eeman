@@ -75,7 +75,10 @@ class _TaskTodoBottomSheetState extends State<TaskTodoBottomSheet> {
           const SizedBox(height: 8),
           Text(
             '${internProvider.tasks.where((t) => t.isCompleted).length}/${internProvider.tasks.length} tasks completed',
-            style: const TextStyle(color: AppColors.almostBlack300, fontSize: 14),
+            style: const TextStyle(
+              color: AppColors.almostBlack300,
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 24),
           Row(
@@ -86,7 +89,9 @@ class _TaskTodoBottomSheetState extends State<TaskTodoBottomSheet> {
                   decoration: InputDecoration(
                     hintText: 'Add a new task...',
                     filled: true,
-                    fillColor: isDark ? AppColors.almostBlack700 : AppColors.almostBlack50,
+                    fillColor: isDark
+                        ? AppColors.almostBlack700
+                        : AppColors.almostBlack50,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
@@ -96,10 +101,7 @@ class _TaskTodoBottomSheetState extends State<TaskTodoBottomSheet> {
                 ),
               ),
               const SizedBox(width: 12),
-              IconButtonStyled(
-                icon: Icons.add_rounded,
-                onPressed: _addTask,
-              ),
+              IconButtonStyled(icon: Icons.add_rounded, onPressed: _addTask),
             ],
           ),
           const SizedBox(height: 24),
@@ -111,9 +113,16 @@ class _TaskTodoBottomSheetState extends State<TaskTodoBottomSheet> {
                 padding: const EdgeInsets.symmetric(vertical: 40),
                 child: Column(
                   children: [
-                    Icon(Icons.task_alt_rounded, size: 64, color: AppColors.almostBlack100),
+                    Icon(
+                      Icons.task_alt_rounded,
+                      size: 64,
+                      color: AppColors.almostBlack100,
+                    ),
                     const SizedBox(height: 16),
-                    const Text('No tasks for today', style: TextStyle(color: AppColors.almostBlack300)),
+                    const Text(
+                      'No tasks for today',
+                      style: TextStyle(color: AppColors.almostBlack300),
+                    ),
                   ],
                 ),
               ),
@@ -133,25 +142,39 @@ class _TaskTodoBottomSheetState extends State<TaskTodoBottomSheet> {
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.only(right: 20),
                       color: Colors.redAccent.withOpacity(0.1),
-                      child: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
+                      child: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: Colors.redAccent,
+                      ),
                     ),
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: Checkbox(
                         value: task.isCompleted,
-                        onChanged: (_) => internProvider.toggleTaskCompletion(task),
+                        onChanged: (_) =>
+                            internProvider.toggleTaskCompletion(task),
                         activeColor: Theme.of(context).primaryColor,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                       title: Text(
                         task.title,
                         style: TextStyle(
-                          decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-                          color: task.isCompleted ? AppColors.almostBlack300 : null,
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
+                          color: task.isCompleted
+                              ? AppColors.almostBlack300
+                              : null,
                         ),
                       ),
                       trailing: IconButton(
-                        icon: const Icon(Icons.delete_outline_rounded, size: 20, color: AppColors.almostBlack100),
+                        icon: const Icon(
+                          Icons.delete_outline_rounded,
+                          size: 20,
+                          color: AppColors.almostBlack100,
+                        ),
                         onPressed: () => internProvider.deleteTask(task.id),
                       ),
                     ),

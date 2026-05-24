@@ -30,9 +30,9 @@ class AdsHorizontalList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
             'Special Highlights',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 16),
@@ -48,11 +48,15 @@ class AdsHorizontalList extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
-                    context, 
-                    '/salon_details', 
+                    context,
+                    '/salon_details',
                     arguments: {
-                      'salonData': {'id': ad['salon_id'], 'salonName': ad['salon_name']},
-                      'highlightedServiceIds': ad['highlight_services']?.toString().split(',') ?? [],
+                      'salonData': {
+                        'id': ad['salon_id'],
+                        'salonName': ad['salon_name'],
+                      },
+                      'highlightedServiceIds':
+                          ad['highlight_services']?.toString().split(',') ?? [],
                     },
                   );
                 },
@@ -70,7 +74,9 @@ class AdsHorizontalList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.3),
                         offset: const Offset(0, 4),
                         blurRadius: 15,
                       ),
@@ -106,7 +112,10 @@ class AdsHorizontalList extends StatelessWidget {
                             ),
                             const SizedBox(height: 12),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: AppColors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
@@ -114,7 +123,11 @@ class AdsHorizontalList extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.stars_rounded, color: Colors.amber, size: 14),
+                                  const Icon(
+                                    Icons.stars_rounded,
+                                    color: Colors.amber,
+                                    size: 14,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     '${ad['reward_points'] ?? 0} Points reward',
@@ -148,6 +161,9 @@ class AdsHorizontalList extends StatelessWidget {
   }
 
   Widget _buildShimmer() {
-    return const SizedBox(height: 160, child: Center(child: CircularProgressIndicator()));
+    return const SizedBox(
+      height: 160,
+      child: Center(child: CircularProgressIndicator()),
+    );
   }
 }

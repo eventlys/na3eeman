@@ -60,8 +60,18 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
 
   String _getMonthName(int month) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return months[month - 1];
   }
@@ -78,11 +88,14 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
       builder: (context, constraints) {
         final containerWidth = constraints.maxWidth;
         final calendarWidth = containerWidth * 0.95; // 95% of container width
-        final dayCellSize = (calendarWidth - 32) / 7; // Subtract padding and divide by 7 days
+        final dayCellSize =
+            (calendarWidth - 32) / 7; // Subtract padding and divide by 7 days
 
         return Container(
           decoration: BoxDecoration(
-            color: AppColor.lightCard.withValues(alpha: 0.4), // Updated to use AppColor
+            color: AppColor.lightCard.withValues(
+              alpha: 0.4,
+            ), // Updated to use AppColor
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: AppColor.light, // Updated to use AppColor
@@ -94,11 +107,14 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("select_date".tr(),
+                Text(
+                  "select_date".tr(),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: widget.headerColor ?? AppColor.lightText, // Updated to use AppColor
+                    color:
+                        widget.headerColor ??
+                        AppColor.lightText, // Updated to use AppColor
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -108,9 +124,15 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                   margin: const EdgeInsets.only(top: 12),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: widget.backgroundColor ?? AppColor.secondary.withValues(alpha: 0.2), // Updated to use AppColor
+                    color:
+                        widget.backgroundColor ??
+                        AppColor.secondary.withValues(
+                          alpha: 0.2,
+                        ), // Updated to use AppColor
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColor.light), // Updated to use AppColor
+                    border: Border.all(
+                      color: AppColor.light,
+                    ), // Updated to use AppColor
                   ),
                   child: Column(
                     children: [
@@ -121,7 +143,9 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                           IconButton(
                             icon: Icon(
                               Icons.chevron_left,
-                              color: widget.headerColor ?? AppColor.secondary, // Updated to use AppColor
+                              color:
+                                  widget.headerColor ??
+                                  AppColor.secondary, // Updated to use AppColor
                             ),
                             onPressed: _navigateToPreviousMonth,
                           ),
@@ -130,13 +154,17 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: widget.headerColor ?? AppColor.secondary, // Updated to use AppColor
+                              color:
+                                  widget.headerColor ??
+                                  AppColor.secondary, // Updated to use AppColor
                             ),
                           ),
                           IconButton(
                             icon: Icon(
                               Icons.chevron_right,
-                              color: widget.headerColor ?? AppColor.secondary, // Updated to use AppColor
+                              color:
+                                  widget.headerColor ??
+                                  AppColor.secondary, // Updated to use AppColor
                             ),
                             onPressed: _navigateToNextMonth,
                           ),
@@ -147,17 +175,22 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                       // Weekday headers
                       Row(
                         children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                            .map((day) => Expanded(
-                                  child: Text(
-                                    day,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: widget.textColor ?? AppColor.lightTextSecondary, // Updated to use AppColor
-                                      fontSize: 12,
-                                    ),
+                            .map(
+                              (day) => Expanded(
+                                child: Text(
+                                  day,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        widget.textColor ??
+                                        AppColor
+                                            .lightTextSecondary, // Updated to use AppColor
+                                    fontSize: 12,
                                   ),
-                                ))
+                                ),
+                              ),
+                            )
                             .toList(),
                       ),
                       const SizedBox(height: 8),
@@ -175,15 +208,24 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                         itemCount: totalDays,
                         itemBuilder: (context, index) {
                           final dayOffset = index - daysFromPreviousMonth;
-                          final currentDate = DateTime(firstDay.year, firstDay.month, 1 + dayOffset);
+                          final currentDate = DateTime(
+                            firstDay.year,
+                            firstDay.month,
+                            1 + dayOffset,
+                          );
 
-                          final bool isCurrentMonth = currentDate.month == firstDay.month;
-                          final bool isAvailable = isCurrentMonth && ScheduleHelper.isDateAvailable(currentDate);
-                          final bool isSelected = widget.selectedDate != null &&
+                          final bool isCurrentMonth =
+                              currentDate.month == firstDay.month;
+                          final bool isAvailable =
+                              isCurrentMonth &&
+                              ScheduleHelper.isDateAvailable(currentDate);
+                          final bool isSelected =
+                              widget.selectedDate != null &&
                               currentDate.year == widget.selectedDate!.year &&
                               currentDate.month == widget.selectedDate!.month &&
                               currentDate.day == widget.selectedDate!.day;
-                          final bool isToday = currentDate.year == now.year &&
+                          final bool isToday =
+                              currentDate.year == now.year &&
                               currentDate.month == now.month &&
                               currentDate.day == now.day;
 
@@ -191,18 +233,31 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                             width: dayCellSize,
                             height: dayCellSize,
                             child: GestureDetector(
-                              onTap: isAvailable ? () => _selectDate(currentDate) : null,
+                              onTap: isAvailable
+                                  ? () => _selectDate(currentDate)
+                                  : null,
                               child: Container(
                                 margin: const EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? (widget.selectedColor ?? AppColor.secondary) // Updated to use AppColor
+                                      ? (widget.selectedColor ??
+                                            AppColor
+                                                .secondary) // Updated to use AppColor
                                       : isToday
-                                          ? (widget.availableColor ?? AppColor.secondary.withValues(alpha: 0.15)) // Updated to use AppColor
-                                          : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(dayCellSize / 2),
+                                      ? (widget.availableColor ??
+                                            AppColor.secondary.withValues(
+                                              alpha: 0.15,
+                                            )) // Updated to use AppColor
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(
+                                    dayCellSize / 2,
+                                  ),
                                   border: isToday
-                                      ? Border.all(color: widget.availableColor ?? AppColor.secondary) // Updated to use AppColor
+                                      ? Border.all(
+                                          color:
+                                              widget.availableColor ??
+                                              AppColor.secondary,
+                                        ) // Updated to use AppColor
                                       : null,
                                 ),
                                 child: Center(
@@ -210,13 +265,22 @@ class _ScheduleDatePickerState extends State<ScheduleDatePicker> {
                                     currentDate.day.toString(),
                                     style: TextStyle(
                                       color: !isCurrentMonth
-                                          ? (widget.unavailableColor ?? AppColor.lightTextHint) // Updated to use AppColor
+                                          ? (widget.unavailableColor ??
+                                                AppColor
+                                                    .lightTextHint) // Updated to use AppColor
                                           : !isAvailable
-                                              ? (widget.unavailableColor ?? AppColor.secondary) // Updated to use AppColor
-                                              : isSelected
-                                                  ? AppColor.light // Updated to use AppColor
-                                                  : (widget.textColor ?? AppColor.lightText), // Updated to use AppColor
-                                      fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
+                                          ? (widget.unavailableColor ??
+                                                AppColor
+                                                    .secondary) // Updated to use AppColor
+                                          : isSelected
+                                          ? AppColor
+                                                .light // Updated to use AppColor
+                                          : (widget.textColor ??
+                                                AppColor
+                                                    .lightText), // Updated to use AppColor
+                                      fontWeight: isSelected || isToday
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                       fontSize: dayCellSize * 0.3,
                                     ),
                                   ),
@@ -275,7 +339,9 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColor.lightCard.withValues(alpha: 0.3), // Updated to use AppColor
+        color: AppColor.lightCard.withValues(
+          alpha: 0.3,
+        ), // Updated to use AppColor
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColor.light, // Updated to use AppColor
@@ -287,11 +353,14 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("available_times".tr(),
+            Text(
+              "available_times".tr(),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: widget.headerColor ?? AppColor.lightText, // Updated to use AppColor
+                color:
+                    widget.headerColor ??
+                    AppColor.lightText, // Updated to use AppColor
               ),
             ),
             const SizedBox(height: 16),
@@ -299,38 +368,55 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
             if (widget.selectedDate == null) ...[
               // Show message when no date is selected
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColor.lightCard.withValues(alpha: 0.3), // Updated to use AppColor
+                  color: AppColor.lightCard.withValues(
+                    alpha: 0.3,
+                  ), // Updated to use AppColor
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColor.light), // Updated to use AppColor
+                  border: Border.all(
+                    color: AppColor.light,
+                  ), // Updated to use AppColor
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.access_time,
-                      color: widget.headerColor ?? AppColor.secondary, // Updated to use AppColor
+                      color:
+                          widget.headerColor ??
+                          AppColor.secondary, // Updated to use AppColor
                       size: 20,
                     ),
                     const SizedBox(width: 12),
-                    Text("select_a_date_first_to_see_available_times".tr(),
+                    Text(
+                      "select_a_date_first_to_see_available_times".tr(),
                       style: TextStyle(
-                        color: widget.textColor ?? AppColor.lightText, // Updated to use AppColor
+                        color:
+                            widget.textColor ??
+                            AppColor.lightText, // Updated to use AppColor
                         fontSize: 16,
                       ),
                     ),
                   ],
                 ),
               ),
-            ]
-            else ...[
+            ] else ...[
               // Show available time slots in a dynamic grid
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: widget.backgroundColor ?? AppColor.secondary.withValues(alpha: 0.2), // Updated to use AppColor
+                  color:
+                      widget.backgroundColor ??
+                      AppColor.secondary.withValues(
+                        alpha: 0.2,
+                      ), // Updated to use AppColor
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColor.light), // Updated to use AppColor
+                  border: Border.all(
+                    color: AppColor.light,
+                  ), // Updated to use AppColor
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -342,7 +428,8 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
                       runSpacing: 10,
                       alignment: WrapAlignment.start,
                       children: availableTimes.map((time) {
-                        final isSelected = widget.selectedTime != null &&
+                        final isSelected =
+                            widget.selectedTime != null &&
                             widget.selectedTime!.hour == time.hour &&
                             widget.selectedTime!.minute == time.minute;
 
@@ -354,13 +441,21 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
                               height: 40,
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? (widget.selectedTimeColor ?? AppColor.light.withValues(alpha: 0.25)) // Updated to use AppColor
-                                    : (widget.timeSlotColor ?? AppColor.secondary.withValues(alpha: 0.15)), // Updated to use AppColor
+                                    ? (widget.selectedTimeColor ??
+                                          AppColor.light.withValues(
+                                            alpha: 0.25,
+                                          )) // Updated to use AppColor
+                                    : (widget.timeSlotColor ??
+                                          AppColor.secondary.withValues(
+                                            alpha: 0.15,
+                                          )), // Updated to use AppColor
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: isSelected
-                                      ? AppColor.light // Updated to use AppColor
-                                      : AppColor.secondary, // Updated to use AppColor
+                                      ? AppColor
+                                            .light // Updated to use AppColor
+                                      : AppColor
+                                            .secondary, // Updated to use AppColor
                                   width: 1,
                                 ),
                               ),
@@ -368,8 +463,13 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
                                 child: Text(
                                   time.format(context),
                                   style: TextStyle(
-                                    color: isSelected ? AppColor.secondary : AppColor.light, // Updated to use AppColor
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                    color: isSelected
+                                        ? AppColor.secondary
+                                        : AppColor
+                                              .light, // Updated to use AppColor
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                                   ),
                                 ),
                               ),
@@ -380,7 +480,7 @@ class _ScheduleTimePickerState extends State<ScheduleTimePicker> {
                     );
                   },
                 ),
-              )
+              ),
             ],
           ],
         ),

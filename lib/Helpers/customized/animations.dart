@@ -4,11 +4,7 @@ class DelayedWidget extends StatefulWidget {
   final Widget child;
   final Duration delay;
 
-  const DelayedWidget({
-    super.key,
-    required this.child,
-    required this.delay,
-  });
+  const DelayedWidget({super.key, required this.child, required this.delay});
 
   @override
   State<DelayedWidget> createState() => _DelayedWidgetState();
@@ -27,10 +23,7 @@ class _DelayedWidgetState extends State<DelayedWidget>
       vsync: this,
     );
 
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
 
     Future.delayed(widget.delay, () {
       if (mounted) {

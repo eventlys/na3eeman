@@ -3,7 +3,8 @@
 class AppConstants {
   static const String appName = 'My App';
   static const String appStoreLink = 'https://apps.apple.com/app/idYOUR_APP_ID';
-  static const String playStoreLink = 'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
+  static const String playStoreLink =
+      'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
 
   // Staff Management Constants
   static const List<String> expertSpecialties = [
@@ -14,7 +15,7 @@ class AppConstants {
     'Styling',
     'Fade',
     'Kids Cut',
-    'Senior Cut'
+    'Senior Cut',
   ];
 
   static const Map<String, double> servicePrices = {
@@ -25,4 +26,3 @@ class AppConstants {
     'Styling': 35.00,
   };
 }
-

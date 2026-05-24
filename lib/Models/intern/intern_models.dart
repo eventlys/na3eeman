@@ -22,7 +22,9 @@ class InternTask {
       description: json['description'],
       isCompleted: json['is_completed'] ?? false,
       createdAt: DateTime.parse(json['created_at']),
-      completedAt: json['completed_at'] != null ? DateTime.parse(json['completed_at']) : null,
+      completedAt: json['completed_at'] != null
+          ? DateTime.parse(json['completed_at'])
+          : null,
     );
   }
 
@@ -92,7 +94,9 @@ class InternAttendanceLog {
       userId: json['user'],
       userName: json['user_name'],
       clockIn: DateTime.parse(json['clock_in']),
-      clockOut: json['clock_out'] != null ? DateTime.parse(json['clock_out']) : null,
+      clockOut: json['clock_out'] != null
+          ? DateTime.parse(json['clock_out'])
+          : null,
       status: json['status'],
       location: json['location'],
     );

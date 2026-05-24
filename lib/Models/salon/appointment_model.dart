@@ -28,11 +28,21 @@ class SalonAppointment {
       id: json['id'].toString(),
       customerId: json['customer_id'] ?? json['customerId'] ?? 0,
       salonId: json['salon_id'] ?? json['salonId'] ?? 0,
-      expertId: json['expert'] ?? json['expert_id'] ?? json['expert_id'] ?? json['expertId'],
+      expertId:
+          json['expert'] ??
+          json['expert_id'] ??
+          json['expert_id'] ??
+          json['expertId'],
       startTime: DateTime.parse(json['start_time'] ?? json['startTime']),
       endTime: DateTime.parse(json['end_time'] ?? json['endTime']),
-      status: AppointmentStatusExtension.fromString(json['status'] ?? 'PENDING'),
-      createdAt: DateTime.parse(json['created_at'] ?? json['createdAt'] ?? DateTime.now().toIso8601String()),
+      status: AppointmentStatusExtension.fromString(
+        json['status'] ?? 'PENDING',
+      ),
+      createdAt: DateTime.parse(
+        json['created_at'] ??
+            json['createdAt'] ??
+            DateTime.now().toIso8601String(),
+      ),
       services: List<String>.from(json['services'] ?? []),
     );
   }

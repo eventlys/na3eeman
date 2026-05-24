@@ -96,7 +96,9 @@ class ServiceCalculator {
   }
 
   // Calculate total duration in minutes
-  static int calculateTotalDurationMinutes(List<Map<String, dynamic>> services) {
+  static int calculateTotalDurationMinutes(
+    List<Map<String, dynamic>> services,
+  ) {
     try {
       int totalMinutes = 0;
 

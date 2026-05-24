@@ -17,17 +17,21 @@ class ApiService {
   String get baseUrl => AppConfig.baseUrl;
   final UnifiedStorageService _storage = UnifiedStorageService();
 
-  Future<Map<String, String>> _getHeaders(String path, [Map<String, String>? customHeaders]) async {
+  Future<Map<String, String>> _getHeaders(
+    String path, [
+    Map<String, String>? customHeaders,
+  ]) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
 
     // Skip Authorization header for public endpoints to avoid issues with stale tokens
-    final bool isPublicEndpoint = path.contains(Endpoints.login) || 
-                                 path.contains(Endpoints.register) ||
-                                 path.contains('/auth/password/reset/') ||
-                                 path.contains('/auth/social/login');
+    final bool isPublicEndpoint =
+        path.contains(Endpoints.login) ||
+        path.contains(Endpoints.register) ||
+        path.contains('/auth/password/reset/') ||
+        path.contains('/auth/social/login');
 
     if (!isPublicEndpoint) {
       final token = await _storage.getAuthToken();
@@ -43,17 +47,28 @@ class ApiService {
     return headers;
   }
 
-  Future<dynamic> get(String path, {Map<String, dynamic>? queryParams, Map<String, String>? customHeaders}) async {
+  Future<dynamic> get(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? customHeaders,
+  }) async {
     final headers = await _getHeaders(path, customHeaders);
-    
+
     // Convert queryParams dynamic values to strings
     Map<String, String>? stringParams;
     if (queryParams != null) {
-      stringParams = queryParams.map((key, value) => MapEntry(key, value.toString()));
+      stringParams = {};
+      queryParams.forEach((key, value) {
+        if (value != null) {
+          stringParams![key] = value.toString();
+        }
+      });
     }
-    
-    final uri = Uri.parse('$baseUrl$path').replace(queryParameters: stringParams);
-    
+
+    final uri = Uri.parse(
+      '$baseUrl$path',
+    ).replace(queryParameters: stringParams);
+
     try {
       final response = await http.get(uri, headers: headers);
       return _handleResponse(response);
@@ -62,15 +77,19 @@ class ApiService {
     }
   }
 
-  Future<dynamic> post(String path, {dynamic data, Map<String, String>? customHeaders}) async {
+  Future<dynamic> post(
+    String path, {
+    dynamic data,
+    Map<String, String>? customHeaders,
+  }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
-    
+
     try {
       final response = await http.post(
-        uri, 
-        headers: headers, 
-        body: data != null ? jsonEncode(data) : null
+        uri,
+        headers: headers,
+        body: data != null ? jsonEncode(data) : null,
       );
       return _handleResponse(response);
     } catch (e) {
@@ -78,15 +97,19 @@ class ApiService {
     }
   }
 
-  Future<dynamic> put(String path, {dynamic data, Map<String, String>? customHeaders}) async {
+  Future<dynamic> put(
+    String path, {
+    dynamic data,
+    Map<String, String>? customHeaders,
+  }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
-    
+
     try {
       final response = await http.put(
-        uri, 
-        headers: headers, 
-        body: data != null ? jsonEncode(data) : null
+        uri,
+        headers: headers,
+        body: data != null ? jsonEncode(data) : null,
       );
       return _handleResponse(response);
     } catch (e) {
@@ -94,15 +117,19 @@ class ApiService {
     }
   }
 
-  Future<dynamic> patch(String path, {dynamic data, Map<String, String>? customHeaders}) async {
+  Future<dynamic> patch(
+    String path, {
+    dynamic data,
+    Map<String, String>? customHeaders,
+  }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
-    
+
     try {
       final response = await http.patch(
-        uri, 
-        headers: headers, 
-        body: data != null ? jsonEncode(data) : null
+        uri,
+        headers: headers,
+        body: data != null ? jsonEncode(data) : null,
       );
       return _handleResponse(response);
     } catch (e) {
@@ -110,10 +137,13 @@ class ApiService {
     }
   }
 
-  Future<dynamic> delete(String path, {Map<String, String>? customHeaders}) async {
+  Future<dynamic> delete(
+    String path, {
+    Map<String, String>? customHeaders,
+  }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
-    
+
     try {
       final response = await http.delete(uri, headers: headers);
       return _handleResponse(response);
@@ -122,21 +152,73 @@ class ApiService {
     }
   }
 
+  Future<String?> downloadFile(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? customHeaders,
+  }) async {
+    final headers = await _getHeaders(path, customHeaders);
+    Map<String, String>? stringParams;
+    if (queryParams != null) {
+      stringParams = {};
+      queryParams.forEach((key, value) {
+        if (value != null) {
+          stringParams![key] = value.toString();
+        }
+      });
+    }
+
+    final uri = Uri.parse('$baseUrl$path').replace(queryParameters: stringParams);
+    
+    try {
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        String filename = 'export_data';
+        final contentDisposition = response.headers['content-disposition'];
+        if (contentDisposition != null) {
+          final RegExp filenameRegex = RegExp(r'filename="([^"]+)"');
+          final match = filenameRegex.firstMatch(contentDisposition);
+          if (match != null) {
+            filename = match.group(1)!;
+          }
+        } else {
+            final ext = queryParams?['format'] == 'csv' ? 'csv' : 'json';
+            filename = 'export.$ext';
+        }
+
+        final directory = Directory.systemTemp;
+        final file = File('${directory.path}/$filename');
+        await file.writeAsBytes(response.bodyBytes);
+        return file.path;
+      } else {
+        throw Exception('Failed to download: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   dynamic _handleResponse(http.Response response) {
     final body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-    
+
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return body;
     } else {
-      throw Exception(body?['detail'] ?? body?['message'] ?? 'API Error ${response.statusCode}');
+      throw Exception(
+        body?['detail'] ??
+            body?['message'] ??
+            'API Error ${response.statusCode}',
+      );
     }
   }
 
   // Specialized methods
-  
+
   Future<List<Map<String, dynamic>>> getSubscriptionPlans() async {
     final response = await get(Endpoints.subscriptionPlans);
-    return List<Map<String, dynamic>>.from(response is List ? response : (response['results'] ?? []));
+    return List<Map<String, dynamic>>.from(
+      response is List ? response : (response['results'] ?? []),
+    );
   }
 
   Future<Map<String, dynamic>> refreshToken(String refreshToken) async {
@@ -148,12 +230,18 @@ class ApiService {
     return SalonPaymentConfig.fromJson(response);
   }
 
-  Future<dynamic> updateSalonPaymentConfig(int salonId, Map<String, dynamic> data) async {
+  Future<dynamic> updateSalonPaymentConfig(
+    int salonId,
+    Map<String, dynamic> data,
+  ) async {
     return await patch(Endpoints.salonPaymentConfig(salonId), data: data);
   }
 
   Future<LoyaltyBalance> getLoyaltyBalance(int customerId) async {
-    final response = await get(Endpoints.loyaltyBalance, queryParams: {'customer_id': customerId});
+    final response = await get(
+      Endpoints.loyaltyBalance,
+      queryParams: {'customer_id': customerId},
+    );
     return LoyaltyBalance.fromJson(response);
   }
 
@@ -163,39 +251,53 @@ class ApiService {
     required String source,
     Map<String, dynamic>? metadata,
   }) async {
-    return await post(Endpoints.loyaltyAwardPoints, data: {
-      'customer_id': customerId,
-      'points': points,
-      'source': source,
-      'metadata': metadata,
-    });
+    return await post(
+      Endpoints.loyaltyAwardPoints,
+      data: {
+        'customer_id': customerId,
+        'points': points,
+        'source': source,
+        'metadata': metadata,
+      },
+    );
   }
 
   Future<dynamic> redeemPoints(int customerId, double amountJod) async {
-    return await post(Endpoints.loyaltyRedeemPoints, data: {
-      'customer_id': customerId,
-      'amount': amountJod,
-    });
+    return await post(
+      Endpoints.loyaltyRedeemPoints,
+      data: {'customer_id': customerId, 'amount': amountJod},
+    );
   }
 
   // Gift Cards
   Future<List<GiftCard>> getGiftCards() async {
     final response = await get(Endpoints.giftCardList);
-    final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final List<dynamic> data = response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
     return data.map((e) => GiftCard.fromJson(e)).toList();
   }
 
-  Future<dynamic> purchaseGiftCard(int giftCardId, {String? receiverPhone, String? message}) async {
-    return await post(Endpoints.giftCardPurchase, data: {
-      'gift_card_id': giftCardId,
-      'receiver_phone': receiverPhone,
-      'message': message,
-    });
+  Future<dynamic> purchaseGiftCard(
+    int giftCardId, {
+    String? receiverPhone,
+    String? message,
+  }) async {
+    return await post(
+      Endpoints.giftCardPurchase,
+      data: {
+        'gift_card_id': giftCardId,
+        'receiver_phone': receiverPhone,
+        'message': message,
+      },
+    );
   }
 
   Future<List<UserGiftCard>> getUserGiftCards() async {
     final response = await get(Endpoints.userGiftCards);
-    final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final List<dynamic> data = response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
     return data.map((e) => UserGiftCard.fromJson(e)).toList();
   }
 
@@ -205,9 +307,7 @@ class ApiService {
 
   // Feedback
   Future<dynamic> submitFeedback(String content) async {
-    return await post(Endpoints.feedback, data: {
-      'content': content,
-    });
+    return await post(Endpoints.feedback, data: {'content': content});
   }
 
   // Admin User Management
@@ -215,13 +315,16 @@ class ApiService {
     final Map<String, dynamic> params = {};
     if (role != null) params['role'] = role;
     if (query != null && query.isNotEmpty) params['search'] = query;
-    
+
     final response = await get(Endpoints.adminUsers, queryParams: params);
     return response is List ? response : (response['results'] ?? []);
   }
 
   Future<dynamic> updateUserStatus(int userId, String status) async {
-    return await patch(Endpoints.adminUserDetail(userId), data: {'status': status});
+    return await patch(
+      Endpoints.adminUserDetail(userId),
+      data: {'status': status},
+    );
   }
 
   Future<List<dynamic>> fetchServiceRequests({
@@ -234,38 +337,51 @@ class ApiService {
     if (roleFilter != null && roleFilter != 'all') params['role'] = roleFilter;
     if (subFilter != null && subFilter != 'all') params['plan'] = subFilter;
 
-    final response = await get(Endpoints.adminUserRequests, queryParams: params);
+    final response = await get(
+      Endpoints.adminUserRequests,
+      queryParams: params,
+    );
     return response is List ? response : (response['results'] ?? []);
   }
 
   Future<List<HelpFeedback>> getFeedback() async {
     final response = await get(Endpoints.feedback);
-    final List<dynamic> data = response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final List<dynamic> data = response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
     return data.map((e) => HelpFeedback.fromJson(e)).toList();
   }
 
   Future<dynamic> reviewFeedback(int feedbackId, String status) async {
-    return await post(Endpoints.adminFeedbackReview, data: {
-      'feedback_id': feedbackId,
-      'status': status,
-      'is_valuable': status.toUpperCase() == 'APPROVED' || status.toUpperCase() == 'VALUABLE',
-    });
+    return await post(
+      Endpoints.adminFeedbackReview,
+      data: {
+        'feedback_id': feedbackId,
+        'status': status,
+        'is_valuable':
+            status.toUpperCase() == 'APPROVED' ||
+            status.toUpperCase() == 'VALUABLE',
+      },
+    );
   }
 
-
-
-  Future<dynamic> uploadPaymentProof({required dynamic appointmentId, required File proof}) async {
-    final id = appointmentId is int ? appointmentId : int.tryParse(appointmentId.toString()) ?? 0;
+  Future<dynamic> uploadPaymentProof({
+    required dynamic appointmentId,
+    required File proof,
+  }) async {
+    final id = appointmentId is int
+        ? appointmentId
+        : int.tryParse(appointmentId.toString()) ?? 0;
     final uri = Uri.parse('$baseUrl/salons/appointments/$id/upload_proof/');
     final request = http.MultipartRequest('POST', uri);
-    
+
     final token = await _storage.getAuthToken();
     if (token != null) {
       request.headers['Authorization'] = 'Bearer $token';
     }
-    
+
     request.files.add(await http.MultipartFile.fromPath('proof', proof.path));
-    
+
     final response = await request.send();
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception('Failed to upload proof: ${response.statusCode}');
@@ -280,20 +396,51 @@ class ApiService {
   }) async {
     final uri = Uri.parse('$baseUrl/salons/salons/$salonId/');
     final request = http.MultipartRequest('PATCH', uri);
-    
+
     final token = await _storage.getAuthToken();
     if (token != null) {
       request.headers['Authorization'] = 'Bearer $token';
     }
-    
+
     request.fields.addAll(fields);
-    
+
     if (images != null && images.isNotEmpty) {
       for (var image in images) {
-        request.files.add(await http.MultipartFile.fromPath('images', image.path));
+        request.files.add(
+          await http.MultipartFile.fromPath('images', image.path),
+        );
       }
     }
-    
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> submitFeedbackOpinion({
+    required String message,
+    required String role,
+    List<File>? attachments,
+  }) async {
+    final uri = Uri.parse('$baseUrl/loyalty/opinions/');
+    final request = http.MultipartRequest('POST', uri);
+
+    final token = await _storage.getAuthToken();
+    if (token != null) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+
+    request.fields['message'] = message;
+    request.fields['role'] = role;
+
+    if (attachments != null && attachments.isNotEmpty) {
+      for (var file in attachments) {
+        request.files.add(
+          await http.MultipartFile.fromPath('attachments', file.path),
+        );
+      }
+    }
+
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return _handleResponse(response);
@@ -301,7 +448,9 @@ class ApiService {
 
   Future<List<dynamic>> getSalonExperts(int salonId) async {
     final response = await get(Endpoints.salonExperts(salonId));
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<Map<String, dynamic>> fetchTodayWorkingHours(int salonId) async {
@@ -309,34 +458,53 @@ class ApiService {
   }
 
   Future<List<dynamic>> fetchPendingConfirmations(int salonId) async {
-    final response = await get(Endpoints.appointments, queryParams: {
-      'salon': salonId,
-      'status': 'PENDING',
-    });
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final response = await get(
+      Endpoints.appointments,
+      queryParams: {'salon': salonId, 'status': 'PENDING'},
+    );
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> confirmCashPayment(dynamic appointmentId) async {
-    final id = appointmentId is int ? appointmentId : int.tryParse(appointmentId.toString()) ?? 0;
+    final id = appointmentId is int
+        ? appointmentId
+        : int.tryParse(appointmentId.toString()) ?? 0;
     return await post(Endpoints.appointmentConfirmCashPayment(id));
   }
 
-  Future<dynamic> confirmPayment(dynamic appointmentId, {String? voucherCode}) async {
-    final id = appointmentId is int ? appointmentId : int.tryParse(appointmentId.toString()) ?? 0;
-    return await post(Endpoints.appointmentConfirmCashPayment(id), data: {
-      'voucher_code': voucherCode,
-    });
+  Future<dynamic> confirmPayment(
+    dynamic appointmentId, {
+    String? voucherCode,
+  }) async {
+    final id = appointmentId is int
+        ? appointmentId
+        : int.tryParse(appointmentId.toString()) ?? 0;
+    return await post(
+      Endpoints.appointmentConfirmCashPayment(id),
+      data: {'voucher_code': voucherCode},
+    );
   }
 
-  Future<Map<String, dynamic>> getAppointments({int? customerId, String? status, int? pageSize}) async {
-    return await get(Endpoints.appointments, queryParams: {
-      'customer': customerId,
-      'status': status,
-      'page_size': pageSize,
-    });
+  Future<Map<String, dynamic>> getAppointments({
+    int? customerId,
+    String? status,
+    int? pageSize,
+  }) async {
+    return await get(
+      Endpoints.appointments,
+      queryParams: {
+        'customer': customerId,
+        'status': status,
+        'page_size': pageSize,
+      },
+    );
   }
 
-  Future<Map<String, dynamic>> bookAppointment(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> bookAppointment(
+    Map<String, dynamic> data,
+  ) async {
     return await post(Endpoints.appointmentBook, data: data);
   }
 
@@ -346,17 +514,29 @@ class ApiService {
 
   Future<List<dynamic>> getCategories() async {
     final response = await get(Endpoints.categories);
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<List<dynamic>> getAdsByCategory(int categoryId) async {
-    final response = await get(Endpoints.salonAdCampaigns(0), queryParams: {'category': categoryId});
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final response = await get(
+      Endpoints.salonAdCampaigns(0),
+      queryParams: {'category': categoryId},
+    );
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<List<dynamic>> getOffersByCategory(int categoryId) async {
-    final response = await get(Endpoints.allOffers, queryParams: {'category': categoryId});
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final response = await get(
+      Endpoints.allOffers,
+      queryParams: {'category': categoryId},
+    );
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<Map<String, dynamic>> getNearbySalonsByCategory({
@@ -378,30 +558,49 @@ class ApiService {
   }
 
   Future<dynamic> getSalons({
-    int? categoryId, 
-    int? page, 
-    int? limit, 
+    int? categoryId,
+    int? page,
+    int? limit,
     String? search,
     double? minRating,
     String? location,
     bool? openNow,
     Map<String, dynamic>? filters,
   }) async {
-    return await get(Endpoints.salons, queryParams: {
-      'category': categoryId,
-      'page': page,
-      'limit': limit,
-      'search': search,
-      'min_rating': minRating,
-      'location': location,
-      'open_now': openNow,
-      if (filters != null) ...filters,
-    });
+    return await get(
+      Endpoints.salons,
+      queryParams: {
+        'category': categoryId,
+        'page': page,
+        'limit': limit,
+        'search': search,
+        'min_rating': minRating,
+        'location': location,
+        'open_now': openNow,
+        if (filters != null) ...filters,
+      },
+    );
   }
 
   Future<List<dynamic>> getSalonVouchers(int salonId) async {
-    final response = await get(Endpoints.vouchers, queryParams: {'salon': salonId});
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final response = await get(
+      Endpoints.vouchers,
+      queryParams: {'salon': salonId},
+    );
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
+  }
+
+  Future<dynamic> createVoucher(Map<String, dynamic> data) async {
+    return await post(Endpoints.vouchers, data: data);
+  }
+
+  Future<dynamic> updateVoucher(
+    int voucherId,
+    Map<String, dynamic> data,
+  ) async {
+    return await patch('${Endpoints.vouchers}$voucherId/', data: data);
   }
 
   Future<dynamic> addToFavorites(dynamic salonId) async {
@@ -415,8 +614,13 @@ class ApiService {
   }
 
   Future<List<dynamic>> getUserFavorites() async {
-    final response = await get('/salons/salons/', queryParams: {'favorites': true});
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    final response = await get(
+      '/salons/salons/',
+      queryParams: {'favorites': true},
+    );
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> getInternActivity() async {
@@ -425,7 +629,9 @@ class ApiService {
 
   Future<List<dynamic>> getNotifications() async {
     final response = await get(Endpoints.notifications);
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> markNotificationRead(int id) async {
@@ -450,7 +656,9 @@ class ApiService {
 
   Future<List<dynamic>> getSalonOffers(int salonId) async {
     final response = await get(Endpoints.salonOffers(salonId));
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> createOffer(int salonId, Map<String, dynamic> data) async {
@@ -463,10 +671,15 @@ class ApiService {
 
   Future<List<dynamic>> getSalonAdCampaigns(int salonId) async {
     final response = await get(Endpoints.salonAdCampaigns(salonId));
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
-  Future<dynamic> createAdCampaign(int salonId, Map<String, dynamic> data) async {
+  Future<dynamic> createAdCampaign(
+    int salonId,
+    Map<String, dynamic> data,
+  ) async {
     return await post(Endpoints.salonAdCampaigns(salonId), data: data);
   }
 
@@ -474,35 +687,85 @@ class ApiService {
     return await delete('/salons/salons/$salonId/campaigns/$campaignId/');
   }
 
-  Future<dynamic> updateOffer(int salonId, int offerId, Map<String, dynamic> data) async {
+  Future<dynamic> updateOffer(
+    int salonId,
+    int offerId,
+    Map<String, dynamic> data,
+  ) async {
     return await patch('/salons/salons/$salonId/offers/$offerId/', data: data);
   }
 
-  Future<dynamic> updateAdCampaign(int salonId, int campaignId, Map<String, dynamic> data) async {
-    return await patch('/salons/salons/$salonId/campaigns/$campaignId/', data: data);
+  Future<dynamic> updateAdCampaign(
+    int salonId,
+    int campaignId,
+    Map<String, dynamic> data,
+  ) async {
+    return await patch(
+      '/salons/salons/$salonId/campaigns/$campaignId/',
+      data: data,
+    );
+  }
+
+  Future<List<dynamic>> getSalonPackages(int salonId) async {
+    final response = await get(Endpoints.salonPackages(salonId));
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
+  }
+
+  Future<dynamic> createPackage(int salonId, Map<String, dynamic> data) async {
+    return await post(Endpoints.salonPackages(salonId), data: data);
+  }
+
+  Future<dynamic> deletePackage(int salonId, int packageId) async {
+    return await delete('/salons/salons/$salonId/packages/$packageId/');
+  }
+
+  Future<dynamic> updatePackage(
+    int salonId,
+    int packageId,
+    Map<String, dynamic> data,
+  ) async {
+    return await patch(
+      '/salons/salons/$salonId/packages/$packageId/',
+      data: data,
+    );
   }
 
   Future<List<dynamic>> getSalonServices(int salonId) async {
     final response = await get(Endpoints.salonServices(salonId));
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
+  }
+
+  Future<List<dynamic>> getSalonProducts(int salonId) async {
+    final response = await get(Endpoints.salonProducts(salonId));
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> submitServiceRequest(Map<String, dynamic> data) async {
     return await post('/salons/service-requests/', data: data);
   }
 
-  Future<dynamic> reportCustomer(String appointmentId, {required String reason}) async {
-    return await post('/salons/appointments/$appointmentId/report/', data: {
-      'reason': reason,
-      'deduct_points': true,
-      'late_penalty': true,
-    });
+  Future<dynamic> reportCustomer(
+    String appointmentId, {
+    required String reason,
+  }) async {
+    return await post(
+      '/salons/appointments/$appointmentId/report/',
+      data: {'reason': reason, 'deduct_points': true, 'late_penalty': true},
+    );
   }
 
   // FAQs
   Future<List<dynamic>> getFAQs() async {
     final response = await get(Endpoints.faqs);
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> createFAQ(Map<String, dynamic> data) async {
@@ -520,7 +783,9 @@ class ApiService {
   // Loyalty
   Future<List<dynamic>> getLoyaltyRules() async {
     final response = await get(Endpoints.loyaltyRules);
-    return response is List ? response : (response['results'] ?? response['data'] ?? []);
+    return response is List
+        ? response
+        : (response['results'] ?? response['data'] ?? []);
   }
 
   Future<dynamic> createRecurringBooking(Map<String, dynamic> data) async {
@@ -528,21 +793,33 @@ class ApiService {
   }
 
   Future<List<dynamic>> getWorkingHours({int? salonId, int? expertId}) async {
-    final response = await get(Endpoints.workingHours, queryParams: {
-      'salon_id': salonId,
-      'expert_id': expertId,
-    });
+    final response = await get(
+      Endpoints.workingHours,
+      queryParams: {
+        if (salonId != null) 'salon_id': salonId,
+        if (expertId != null) 'expert_id': expertId,
+      },
+    );
     return response is List ? response : (response['results'] ?? []);
   }
-  
+
   Future<List<dynamic>> getPTORequests({int? salonId}) async {
-    final response = await get(Endpoints.pto, queryParams: {
-      if (salonId != null) 'salon_id': salonId,
-    });
+    final response = await get(
+      Endpoints.pto,
+      queryParams: {if (salonId != null) 'salon_id': salonId},
+    );
     return response is List ? response : (response['results'] ?? []);
   }
 
   Future<dynamic> submitPTORequest(Map<String, dynamic> data) async {
     return await post(Endpoints.pto, data: data);
+  }
+
+  Future<dynamic> getStaffAvailability() async {
+    return await get('/salons/staff-availability/current/');
+  }
+
+  Future<dynamic> updateStaffAvailability(Map<String, dynamic> data) async {
+    return await patch('/salons/staff-availability/current/', data: data);
   }
 }

@@ -6,7 +6,10 @@ enum UserGender { male, female, nonBinary }
 
 class SharedThemeHelpers {
   // Gender-specific theme configuration
-  static GenderThemeConfig _getGenderThemeConfig(UserGender gender, bool isDark) {
+  static GenderThemeConfig _getGenderThemeConfig(
+    UserGender gender,
+    bool isDark,
+  ) {
     if (isDark) {
       return _getDarkGenderConfig(gender);
     } else {
@@ -115,7 +118,8 @@ class SharedThemeHelpers {
         secondary: Colors.black,
         surface: Colors.white,
       ),
-      cardColor: Colors.white, dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+      cardColor: Colors.white,
+      dialogTheme: DialogThemeData(backgroundColor: Colors.white),
     );
   }
 
@@ -129,12 +133,16 @@ class SharedThemeHelpers {
         secondary: Colors.white,
         surface: Colors.black,
       ),
-      cardColor: Colors.black, dialogTheme: DialogThemeData(backgroundColor: Colors.black),
+      cardColor: Colors.black,
+      dialogTheme: DialogThemeData(backgroundColor: Colors.black),
     );
   }
 
   // Public method to get gender theme configuration
-  static GenderThemeConfig getGenderThemeConfig(UserGender gender, bool isDark) {
+  static GenderThemeConfig getGenderThemeConfig(
+    UserGender gender,
+    bool isDark,
+  ) {
     return _getGenderThemeConfig(gender, isDark);
   }
 }
@@ -158,7 +166,8 @@ class GenderThemeConfig {
   });
 }
 
-class GradientBackgroundColors extends ThemeExtension<GradientBackgroundColors> {
+class GradientBackgroundColors
+    extends ThemeExtension<GradientBackgroundColors> {
   final Color startColor;
   final Color endColor;
 
@@ -216,4 +225,3 @@ class GradientHelper {
           );
   }
 }
-

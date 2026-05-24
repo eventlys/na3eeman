@@ -10,10 +10,13 @@ class StringHelpers {
 
   static String capitalizeWords(String text) {
     if (text.isEmpty) return text;
-    return text.split(' ').map((word) {
-      if (word.isEmpty) return word;
-      return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
-    }).join(' ');
+    return text
+        .split(' ')
+        .map((word) {
+          if (word.isEmpty) return word;
+          return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+        })
+        .join(' ');
   }
 
   static String maskEmail(String email) {
@@ -22,7 +25,8 @@ class StringHelpers {
     final username = parts[0];
     final domain = parts[1];
     if (username.length <= 2) return email;
-    final maskedUsername = '${username[0]}${'*' * (username.length - 2)}${username[username.length - 1]}';
+    final maskedUsername =
+        '${username[0]}${'*' * (username.length - 2)}${username[username.length - 1]}';
     return '$maskedUsername@$domain';
   }
 
@@ -44,7 +48,11 @@ class StringHelpers {
     return plural ?? '${singular}s';
   }
 
-  static String formatList(List<String> items, {String separator = ', ', String lastSeparator = ' and '}) {
+  static String formatList(
+    List<String> items, {
+    String separator = ', ',
+    String lastSeparator = ' and ',
+  }) {
     if (items.isEmpty) return '';
     if (items.length == 1) return items.first;
     if (items.length == 2) return '${items.first}$lastSeparator${items.last}';
@@ -53,10 +61,14 @@ class StringHelpers {
   }
 
   static String generateId({int length = 8, String prefix = ''}) {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random();
     final id = String.fromCharCodes(
-      Iterable.generate(length, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
+      Iterable.generate(
+        length,
+        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+      ),
     );
     return prefix.isEmpty ? id : '$prefix$id';
   }

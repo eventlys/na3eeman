@@ -39,7 +39,7 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
     super.initState();
     _sidebarController = SidebarController();
     _sidebarController.init(this);
-    
+
     // Load analytics data for Studio+ tiers
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final owner = context.read<OwnerProvider>();
@@ -78,10 +78,14 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
                   // ── Subscription banner ────────────────────────────────
                   if (!owner.isSubscriptionActive)
                     _SubscriptionBanner(
-                        expired: true, daysLeft: owner.daysRemaining),
+                      expired: true,
+                      daysLeft: owner.daysRemaining,
+                    ),
                   if (owner.isRenewalWarning && owner.isSubscriptionActive)
                     _SubscriptionBanner(
-                        expired: false, daysLeft: owner.daysRemaining),
+                      expired: false,
+                      daysLeft: owner.daysRemaining,
+                    ),
 
                   // ── Tier header ────────────────────────────────────────
                   _TierHeader(owner: owner),
@@ -94,21 +98,22 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
                       child: IgnorePointer(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _buildUniversalDashboardWidgets(context, owner),
+                          children: _buildUniversalDashboardWidgets(
+                            context,
+                            owner,
+                          ),
                         ),
                       ),
                     )
                   else
                     ..._buildUniversalDashboardWidgets(context, owner),
 
-
-
                   const SizedBox(height: 48),
                 ],
               ),
             ),
           ),
-          // bottomNavigationBar: owner.isSubscriptionActive 
+          // bottomNavigationBar: owner.isSubscriptionActive
           //     ? _buildQuickActionsBottomBar(context, owner)
           //     : null,
         ),
@@ -193,9 +198,10 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
   //   );
   // }
 
-
   List<Widget> _buildUniversalDashboardWidgets(
-      BuildContext context, OwnerProvider owner) {
+    BuildContext context,
+    OwnerProvider owner,
+  ) {
     return [
       const Padding(
         padding: EdgeInsets.only(bottom: 24),
@@ -230,17 +236,18 @@ class _TierHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("welcome_back".tr(),
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(color: theme.hintColor),
+              Text(
+                "welcome_back".tr(),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.hintColor,
+                ),
               ),
               const SizedBox(height: 4),
               Row(
                 children: [
                   _TierBadge(tier: tier),
                   const SizedBox(width: 8),
-                  if (owner.isTrial)
-                    const _TrialBadge(),
+                  if (owner.isTrial) const _TrialBadge(),
                 ],
               ),
             ],
@@ -259,9 +266,12 @@ class _TierHeader extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text("on_your_plan".tr(),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: theme.hintColor)),
+              Text(
+                "on_your_plan".tr(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.hintColor,
+                ),
+              ),
             ],
           ),
       ],
@@ -304,9 +314,10 @@ class _TierBadge extends StatelessWidget {
           Text(
             tier.displayName,
             style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: FontWeight.bold),
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -319,18 +330,20 @@ class _TrialBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.orange.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text("trial".tr(),
-            style: TextStyle(
-                color: Colors.orange,
-                fontSize: 11,
-                fontWeight: FontWeight.bold)),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      color: Colors.orange.withOpacity(0.12),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      "trial".tr(),
+      style: TextStyle(
+        color: Colors.orange,
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  );
 }
 
 class _SubscriptionBanner extends StatelessWidget {
@@ -342,10 +355,10 @@ class _SubscriptionBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = expired ? AppColors.error : AppColors.warning;
-    final icon = expired ? Icons.error_outline_rounded : Icons.warning_amber_rounded;
-    final message = expired
-        ? 'Subscription Expired'
-        : 'Renewal Warning';
+    final icon = expired
+        ? Icons.error_outline_rounded
+        : Icons.warning_amber_rounded;
+    final message = expired ? 'Subscription Expired' : 'Renewal Warning';
     final subMessage = expired
         ? 'Renew to regain full access to your business tools.'
         : 'Your plan expires in $daysLeft days. Renew now to avoid interruption.';

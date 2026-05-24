@@ -72,14 +72,15 @@ class SecurityService {
       final isDeviceSupported = await _auth.isDeviceSupported();
       final availableBiometrics = await _auth.getAvailableBiometrics();
 
-      return canCheck &&
-             isDeviceSupported &&
-             availableBiometrics.isNotEmpty;
+      return canCheck && isDeviceSupported && availableBiometrics.isNotEmpty;
     } on PlatformException catch (e) {
       AppLogger.error('Failed to check enrolled biometrics', error: e);
       return false;
     } catch (e) {
-      AppLogger.error('Unexpected error checking enrolled biometrics', error: e);
+      AppLogger.error(
+        'Unexpected error checking enrolled biometrics',
+        error: e,
+      );
       return false;
     }
   }
@@ -100,7 +101,10 @@ class SecurityService {
 
       return success ? BiometricResult.success : BiometricResult.failed;
     } on PlatformException catch (e) {
-      AppLogger.error('Biometric authentication with fallback failed', error: e);
+      AppLogger.error(
+        'Biometric authentication with fallback failed',
+        error: e,
+      );
       return BiometricResult.error;
     } catch (e) {
       AppLogger.error('Unexpected error in biometric authentication', error: e);
@@ -126,7 +130,8 @@ class SecurityService {
       AppLogger.debug('Starting comprehensive security scan');
 
       // Check current debug mode
-      final bool isDebug = const bool.fromEnvironment('dart.vm.product') == false;
+      final bool isDebug =
+          const bool.fromEnvironment('dart.vm.product') == false;
 
       final results = await Future.wait([
         SafeDevice.isJailBroken,
@@ -148,7 +153,9 @@ class SecurityService {
 
       final isSecure = !isJailBroken && (isRealDevice || isDebug);
 
-      AppLogger.debug('Security scan completed: ${isSecure ? 'Secure' : 'Issues found'}');
+      AppLogger.debug(
+        'Security scan completed: ${isSecure ? 'Secure' : 'Issues found'}',
+      );
 
       return SecurityScanResult(
         isSecure: isSecure,
@@ -159,17 +166,16 @@ class SecurityService {
       );
     } catch (e) {
       AppLogger.error('Security scan failed: $e');
-      return SecurityScanResult(
-        isSecure: false,
-        scanError: e.toString(),
-      );
+      return SecurityScanResult(isSecure: false, scanError: e.toString());
     }
   }
 
   Future<void> preventScreenshots() async {
     if (Platform.isAndroid) {
       try {
-        await FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+        await FlutterWindowManagerPlus.addFlags(
+          FlutterWindowManagerPlus.FLAG_SECURE,
+        );
         AppLogger.debug('Screenshot prevention enabled (Android)');
       } catch (e) {
         AppLogger.error('Failed to prevent screenshots: $e');
@@ -181,7 +187,9 @@ class SecurityService {
   Future<void> allowScreenshots() async {
     if (Platform.isAndroid) {
       try {
-        await FlutterWindowManagerPlus.clearFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+        await FlutterWindowManagerPlus.clearFlags(
+          FlutterWindowManagerPlus.FLAG_SECURE,
+        );
         AppLogger.debug('Screenshot prevention disabled (Android)');
       } catch (e) {
         AppLogger.error('Failed to allow screenshots: $e');
@@ -205,15 +213,21 @@ class SecurityService {
     final recommendations = <String>[];
 
     if (result.rootedDevice) {
-      recommendations.add('Device appears to be rooted/jailbroken. This app may not function properly for security reasons.');
+      recommendations.add(
+        'Device appears to be rooted/jailbroken. This app may not function properly for security reasons.',
+      );
     }
 
     if (result.isEmulator && const bool.fromEnvironment('dart.vm.product')) {
-      recommendations.add('App is running on an emulator in production mode. This is restricted.');
+      recommendations.add(
+        'App is running on an emulator in production mode. This is restricted.',
+      );
     }
 
     if (result.devModeEnabled) {
-      recommendations.add('Developer mode is enabled. Consider disabling it for better security.');
+      recommendations.add(
+        'Developer mode is enabled. Consider disabling it for better security.',
+      );
     }
 
     return recommendations;
@@ -223,8 +237,9 @@ class SecurityService {
   Future<bool> isEnvironmentSecure() async {
     try {
       final scanResult = await performSecurityScan();
-      final bool isDebug = const bool.fromEnvironment('dart.vm.product') == false;
-      
+      final bool isDebug =
+          const bool.fromEnvironment('dart.vm.product') == false;
+
       return scanResult.isSecure && (isDebug || !scanResult.rootedDevice);
     } catch (e) {
       AppLogger.error('Environment security check failed: $e');
@@ -235,13 +250,20 @@ class SecurityService {
   // Secure Network Methods for low-level requests
   final HttpClient _httpClient = HttpClient();
 
-  Future<HttpClientResponse> secureGet(String url, {Map<String, String>? headers}) async {
+  Future<HttpClientResponse> secureGet(
+    String url, {
+    Map<String, String>? headers,
+  }) async {
     final request = await _httpClient.getUrl(Uri.parse(url));
     headers?.forEach((key, value) => request.headers.add(key, value));
     return await request.close();
   }
 
-  Future<HttpClientResponse> securePost(String url, {Map<String, String>? headers, String? body}) async {
+  Future<HttpClientResponse> securePost(
+    String url, {
+    Map<String, String>? headers,
+    String? body,
+  }) async {
     final request = await _httpClient.postUrl(Uri.parse(url));
     headers?.forEach((key, value) => request.headers.add(key, value));
     if (body != null) {
@@ -251,12 +273,7 @@ class SecurityService {
   }
 }
 
-enum BiometricResult {
-  success,
-  failed,
-  unavailable,
-  error,
-}
+enum BiometricResult { success, failed, unavailable, error }
 
 class SecurityScanResult {
   final bool isSecure;

@@ -14,7 +14,8 @@ import '../../Models/salon/salons_model.dart';
 import 'api/api_service.dart';
 
 class UnifiedStorageService {
-  static final UnifiedStorageService _instance = UnifiedStorageService._internal();
+  static final UnifiedStorageService _instance =
+      UnifiedStorageService._internal();
 
   factory UnifiedStorageService() => _instance;
 
@@ -80,7 +81,9 @@ class UnifiedStorageService {
   // ============ MEMORY CACHE ============
   void setMemoryCache(String key, dynamic value, {Duration? duration}) {
     _memoryCache[key] = value;
-    _cacheTimestamps[key] = DateTime.now().add(duration ?? _defaultCacheDuration);
+    _cacheTimestamps[key] = DateTime.now().add(
+      duration ?? _defaultCacheDuration,
+    );
     AppLogger.debug('Memory cache set: $key');
   }
 
@@ -124,7 +127,9 @@ class UnifiedStorageService {
     }
 
     if (expiredKeys.isNotEmpty) {
-      AppLogger.debug('Cleaned ${expiredKeys.length} expired memory cache entries');
+      AppLogger.debug(
+        'Cleaned ${expiredKeys.length} expired memory cache entries',
+      );
     }
   }
 
@@ -192,11 +197,16 @@ class UnifiedStorageService {
 
   Box _getHiveBox(String boxName) {
     switch (boxName) {
-      case _salonsBoxName: return _hiveSalonsBox;
-      case _appointmentsBoxName: return _hiveAppointmentsBox;
-      case _userDataBoxName: return _hiveUserDataBox;
-      case _offlineActionsBoxName: return _hiveOfflineActionsBox;
-      default: throw ArgumentError('Unknown box name: $boxName');
+      case _salonsBoxName:
+        return _hiveSalonsBox;
+      case _appointmentsBoxName:
+        return _hiveAppointmentsBox;
+      case _userDataBoxName:
+        return _hiveUserDataBox;
+      case _offlineActionsBoxName:
+        return _hiveOfflineActionsBox;
+      default:
+        throw ArgumentError('Unknown box name: $boxName');
     }
   }
 
@@ -231,7 +241,7 @@ class UnifiedStorageService {
     return null;
   }
 
-   Future<void> saveUserData(Map<String, dynamic> userData) async {
+  Future<void> saveUserData(Map<String, dynamic> userData) async {
     final userJson = json.encode(userData);
     await setPreference('user_data', userJson);
     setMemoryCache('user_data', userData);
@@ -272,7 +282,9 @@ class UnifiedStorageService {
     // Try Hive storage
     final hiveData = getHive(_salonsBoxName, 'cached_salons', defaultValue: []);
     if (hiveData.isNotEmpty) {
-      final salons = (hiveData as List).map((item) => Salon.fromJson(item)).toList();
+      final salons = (hiveData as List)
+          .map((item) => Salon.fromJson(item))
+          .toList();
       // Populate memory cache
       setMemoryCache('salons_list', hiveData);
       return salons;
@@ -282,12 +294,19 @@ class UnifiedStorageService {
   }
 
   // Appointments
-  Future<void> setAppointments(List<SalonAppointment> appointments, {bool persist = true}) {
+  Future<void> setAppointments(
+    List<SalonAppointment> appointments, {
+    bool persist = true,
+  }) {
     final appointmentsJson = appointments.map((a) => a.toJson()).toList();
     setMemoryCache('user_appointments', appointmentsJson);
 
     if (persist) {
-      return setHive(_appointmentsBoxName, 'user_appointments', appointmentsJson);
+      return setHive(
+        _appointmentsBoxName,
+        'user_appointments',
+        appointmentsJson,
+      );
     }
     return Future.value();
   }
@@ -296,13 +315,21 @@ class UnifiedStorageService {
     // Try memory cache first
     final memoryData = getMemoryCache('user_appointments');
     if (memoryData != null) {
-      return (memoryData as List).map((item) => SalonAppointment.fromJson(item)).toList();
+      return (memoryData as List)
+          .map((item) => SalonAppointment.fromJson(item))
+          .toList();
     }
 
     // Try Hive storage
-    final hiveData = getHive(_appointmentsBoxName, 'user_appointments', defaultValue: []);
+    final hiveData = getHive(
+      _appointmentsBoxName,
+      'user_appointments',
+      defaultValue: [],
+    );
     if (hiveData.isNotEmpty) {
-      final appointments = (hiveData as List).map((item) => SalonAppointment.fromJson(item)).toList();
+      final appointments = (hiveData as List)
+          .map((item) => SalonAppointment.fromJson(item))
+          .toList();
       // Populate memory cache
       setMemoryCache('user_appointments', hiveData);
       return appointments;
@@ -312,7 +339,10 @@ class UnifiedStorageService {
   }
 
   // Loyalty Balance
-  Future<void> setLoyaltyBalance(LoyaltyBalance balance, {bool persist = true}) {
+  Future<void> setLoyaltyBalance(
+    LoyaltyBalance balance, {
+    bool persist = true,
+  }) {
     final balanceJson = balance.toJson();
     setMemoryCache('loyalty_balance', balanceJson);
 
@@ -365,7 +395,11 @@ class UnifiedStorageService {
 
   // ============ OFFLINE SYNC ============
   Future<void> queueOfflineAction(String action, dynamic data) async {
-    final queue = getHive(_offlineActionsBoxName, 'action_queue', defaultValue: []);
+    final queue = getHive(
+      _offlineActionsBoxName,
+      'action_queue',
+      defaultValue: [],
+    );
     final actionData = {
       'action': action,
       'data': data,
@@ -388,7 +422,11 @@ class UnifiedStorageService {
       return;
     }
 
-    final queuedActions = getHive(_offlineActionsBoxName, 'action_queue', defaultValue: []);
+    final queuedActions = getHive(
+      _offlineActionsBoxName,
+      'action_queue',
+      defaultValue: [],
+    );
     if (queuedActions.isEmpty) return;
 
     AppLogger.info('Syncing ${queuedActions.length} offline actions');
@@ -427,7 +465,11 @@ class UnifiedStorageService {
   }
 
   Future<void> _incrementActionAttempt(String actionId) async {
-    final queue = getHive(_offlineActionsBoxName, 'action_queue', defaultValue: []);
+    final queue = getHive(
+      _offlineActionsBoxName,
+      'action_queue',
+      defaultValue: [],
+    );
     final updatedQueue = queue.map((action) {
       final actionData = Map<String, dynamic>.from(action);
       if (actionData['id'] == actionId) {
@@ -441,7 +483,11 @@ class UnifiedStorageService {
   }
 
   Future<void> _removeSuccessfulActions(List<String> actionIds) async {
-    final queue = getHive(_offlineActionsBoxName, 'action_queue', defaultValue: []);
+    final queue = getHive(
+      _offlineActionsBoxName,
+      'action_queue',
+      defaultValue: [],
+    );
     final updatedQueue = queue.where((action) {
       final actionData = Map<String, dynamic>.from(action);
       return !actionIds.contains(actionData['id']);
@@ -473,9 +519,17 @@ class UnifiedStorageService {
   Future<Map<String, dynamic>> getStorageStats() async {
     return {
       'memory_cache_entries': _memoryCache.length,
-      'salons_count': (getHive(_salonsBoxName, 'cached_salons', defaultValue: []) as List).length,
-      'appointments_count': (getHive(_appointmentsBoxName, 'user_appointments', defaultValue: []) as List).length,
-      'queued_actions_count': (getHive(_offlineActionsBoxName, 'action_queue', defaultValue: []) as List).length,
+      'salons_count':
+          (getHive(_salonsBoxName, 'cached_salons', defaultValue: []) as List)
+              .length,
+      'appointments_count':
+          (getHive(_appointmentsBoxName, 'user_appointments', defaultValue: [])
+                  as List)
+              .length,
+      'queued_actions_count':
+          (getHive(_offlineActionsBoxName, 'action_queue', defaultValue: [])
+                  as List)
+              .length,
       'authenticated': await isAuthenticated(),
     };
   }

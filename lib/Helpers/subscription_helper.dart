@@ -11,17 +11,20 @@ class SubscriptionHelper {
       final plans = await _subscriptionService.getAvailablePlans();
 
       // Convert SubscriptionPlan to SalonSubscription
-      return plans.map((plan) => SalonSubscription(
-        id: plan.id,
-        name: plan.name,
-        description: plan.description,
-        price: plan.price,
-        duration: plan.duration,
-        features: plan.features,
-        isPopular: plan.isPopular,
-        salonId: null, // This can be set based on your business logic
-      )).toList();
-
+      return plans
+          .map(
+            (plan) => SalonSubscription(
+              id: plan.id,
+              name: plan.name,
+              description: plan.description,
+              price: plan.price,
+              duration: plan.duration,
+              features: plan.features,
+              isPopular: plan.isPopular,
+              salonId: null, // This can be set based on your business logic
+            ),
+          )
+          .toList();
     } catch (e) {
       print('Error fetching subscriptions from service: $e');
       rethrow;
@@ -101,7 +104,9 @@ class SubscriptionHelper {
   // Check if subscription is about to expire (within 7 days)
   static bool isSubscriptionExpiringSoon(Subscription subscription) {
     if (subscription.endDate == null) return false;
-    final daysRemaining = subscription.endDate!.difference(DateTime.now()).inDays;
+    final daysRemaining = subscription.endDate!
+        .difference(DateTime.now())
+        .inDays;
     return daysRemaining <= 7 && daysRemaining > 0;
   }
 
@@ -127,7 +132,9 @@ class SubscriptionHelper {
   }
 
   // Get subscriptions by duration type
-  static Future<List<SalonSubscription>> getSubscriptionsByDuration(String duration) async {
+  static Future<List<SalonSubscription>> getSubscriptionsByDuration(
+    String duration,
+  ) async {
     final allSubscriptions = await getSubscriptions();
     return allSubscriptions
         .where((sub) => sub.duration.toUpperCase() == duration.toUpperCase())
@@ -138,9 +145,7 @@ class SubscriptionHelper {
   static Future<SalonSubscription?> getSubscriptionById(String id) async {
     final allSubscriptions = await getSubscriptions();
     try {
-      return allSubscriptions.firstWhere(
-        (sub) => sub.id == id,
-      );
+      return allSubscriptions.firstWhere((sub) => sub.id == id);
     } catch (e) {
       return null;
     }

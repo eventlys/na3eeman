@@ -34,8 +34,14 @@ class ProfitHelper {
         return dataDate.year == current.year && dataDate.month == current.month;
       }).toList();
 
-      final monthlyRevenue = monthData.fold(0.0, (sum, data) => sum + (data['revenue'] as num).toDouble());
-      final monthlyExpenses = monthData.fold(0.0, (sum, data) => sum + (data['expenses'] as num).toDouble());
+      final monthlyRevenue = monthData.fold(
+        0.0,
+        (sum, data) => sum + (data['revenue'] as num).toDouble(),
+      );
+      final monthlyExpenses = monthData.fold(
+        0.0,
+        (sum, data) => sum + (data['expenses'] as num).toDouble(),
+      );
       final monthlyProfit = calculateProfit(monthlyRevenue, monthlyExpenses);
 
       monthlyData.add({
@@ -67,8 +73,14 @@ class ProfitHelper {
         return dataDate.year == current.year;
       }).toList();
 
-      final yearlyRevenue = yearData.fold(0.0, (sum, data) => sum + (data['revenue'] as num).toDouble());
-      final yearlyExpenses = yearData.fold(0.0, (sum, data) => sum + (data['expenses'] as num).toDouble());
+      final yearlyRevenue = yearData.fold(
+        0.0,
+        (sum, data) => sum + (data['revenue'] as num).toDouble(),
+      );
+      final yearlyExpenses = yearData.fold(
+        0.0,
+        (sum, data) => sum + (data['expenses'] as num).toDouble(),
+      );
       final yearlyProfit = calculateProfit(yearlyRevenue, yearlyExpenses);
 
       yearlyData.add({

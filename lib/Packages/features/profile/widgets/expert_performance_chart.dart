@@ -5,25 +5,22 @@ import '../../../Core/constants/app_color.dart';
 class ExpertPerformanceChart extends StatelessWidget {
   final List<ExpertPerformanceData> performanceData;
 
-  const ExpertPerformanceChart({
-    super.key, 
-    required this.performanceData
-  });
+  const ExpertPerformanceChart({super.key, required this.performanceData});
 
   @override
   Widget build(BuildContext context) {
     // Find max appointments for scaling
-    final maxAppointments = performanceData.isNotEmpty 
-        ? performanceData.map((data) => data.totalAppointments).reduce((a, b) => a > b ? a : b)
+    final maxAppointments = performanceData.isNotEmpty
+        ? performanceData
+              .map((data) => data.totalAppointments)
+              .reduce((a, b) => a > b ? a : b)
         : 1;
 
     return Card(
       margin: const EdgeInsets.all(16),
       color: AppColor.lightCard,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -61,8 +58,11 @@ class ExpertPerformanceChart extends StatelessWidget {
 
   Widget _buildExpertBar(ExpertPerformanceData data, int maxAppointments) {
     // Calculate bar height with minimum height for visibility
-    final barHeight = (data.totalAppointments / maxAppointments * 150).clamp(20.0, 150.0);
-    
+    final barHeight = (data.totalAppointments / maxAppointments * 150).clamp(
+      20.0,
+      150.0,
+    );
+
     return Container(
       width: 80,
       margin: const EdgeInsets.only(right: 16),
@@ -79,7 +79,7 @@ class ExpertPerformanceChart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          
+
           // Bar chart
           Container(
             height: barHeight,
@@ -108,7 +108,10 @@ class ExpertPerformanceChart extends StatelessWidget {
                 const SizedBox(height: 4),
                 // Rating badge on top of bar
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColor.light,
                     borderRadius: BorderRadius.circular(4),
@@ -133,7 +136,7 @@ class ExpertPerformanceChart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          
+
           // Expert name
           Text(
             _getShortName(data.expertName),
@@ -146,14 +149,11 @@ class ExpertPerformanceChart extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
-          
+
           // Earnings
           Text(
             '\$${data.totalEarnings.toStringAsFixed(0)}',
-            style: TextStyle(
-              fontSize: 10,
-              color: AppColor.lightTextSecondary,
-            ),
+            style: TextStyle(fontSize: 10, color: AppColor.lightTextSecondary),
           ),
         ],
       ),
@@ -173,10 +173,7 @@ class ExpertPerformanceChart extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'No performance data available',
-            style: TextStyle(
-              color: AppColor.lightTextSecondary,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: AppColor.lightTextSecondary, fontSize: 14),
           ),
         ],
       ),
@@ -217,10 +214,7 @@ class ExpertPerformanceChart extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           text,
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColor.lightTextSecondary,
-          ),
+          style: TextStyle(fontSize: 12, color: AppColor.lightTextSecondary),
         ),
       ],
     );

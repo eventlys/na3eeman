@@ -7,10 +7,6 @@ class SectionDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      color: AppColor.primary,
-    );
+    return Divider(height: 1, thickness: 1, color: AppColor.primary);
   }
 }

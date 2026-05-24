@@ -163,14 +163,9 @@ class AppointmentsPageState extends State<AppointmentsPage> {
 
   Widget _buildContent(List<dynamic> appointments, String userGender) {
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return AppointmentAccordion(
-            appointment: appointments[index],
-          );
-        },
-        childCount: appointments.length,
-      ),
+      delegate: SliverChildBuilderDelegate((context, index) {
+        return AppointmentAccordion(appointment: appointments[index]);
+      }, childCount: appointments.length),
     );
   }
 
@@ -180,7 +175,9 @@ class AppointmentsPageState extends State<AppointmentsPage> {
         color: _getBackgroundColor(context, userGender),
         child: Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(_getLoadingColor(context)),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              _getLoadingColor(context),
+            ),
           ),
         ),
       ),
@@ -204,10 +201,7 @@ class AppointmentsPageState extends State<AppointmentsPage> {
               const SizedBox(height: 16),
               Text(
                 'Error loading appointments',
-                style: TextStyle(
-                  color: _getTextColor(context),
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: _getTextColor(context), fontSize: 16),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -254,7 +248,11 @@ class AppointmentsPageState extends State<AppointmentsPage> {
     );
   }
 
-  List<Widget> _buildSliverContent(AppointmentProvider provider, BuildContext context, String userGender) {
+  List<Widget> _buildSliverContent(
+    AppointmentProvider provider,
+    BuildContext context,
+    String userGender,
+  ) {
     if (provider.isLoading) {
       return [_buildLoading(context, userGender)];
     }

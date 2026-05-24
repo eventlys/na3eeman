@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Models/loyalty/gift_card_model.dart';
 import 'package:na3eeman/Services/enums/gender.dart';
@@ -20,7 +21,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
   GiftCard? _selectedGiftCard;
   final _receiverPhoneCtrl = TextEditingController();
   final _messageCtrl = TextEditingController();
-  
+
   List<GiftCard> _availableCards = [];
   List<UserGiftCard> _myVouchers = [];
   bool _isLoading = true;
@@ -45,17 +46,17 @@ class _GiftCardPageState extends State<GiftCardPage> {
       final api = ApiService();
       final cards = await api.getGiftCards();
       final myCards = await api.getUserGiftCards();
-      
+
       setState(() {
         _availableCards = cards;
         _myVouchers = myCards;
-        
+
         if (_availableCards.isNotEmpty) {
           _selectedGiftCard = _availableCards.first;
         }
       });
     } catch (e) {
-      AppSnackBar.error(context, 'Failed to load gift cards');
+      AppSnackBar.error(context, 'failed_load_gift_cards'.tr());
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -63,9 +64,9 @@ class _GiftCardPageState extends State<GiftCardPage> {
 
   Future<void> _purchaseGiftCard() async {
     if (_selectedGiftCard == null) return;
-    
+
     if (_receiverPhoneCtrl.text.isEmpty) {
-      AppSnackBar.error(context, 'Please enter recipient phone number');
+      AppSnackBar.error(context, 'enter_recipient_phone'.tr());
       return;
     }
 
@@ -83,23 +84,28 @@ class _GiftCardPageState extends State<GiftCardPage> {
       final purchasedCard = UserGiftCard.fromJson(res);
 
       if (mounted) {
-        AppSnackBar.success(context, 'Gift card purchased successfully!');
-        
+        AppSnackBar.success(context, 'gift_card_purchased_success'.tr());
+
         // Launch WhatsApp
         final code = GiftCardUtils.formatCardCode(purchasedCard.code);
         final value = purchasedCard.balance.toStringAsFixed(2);
         final expiry = GiftCardUtils.formatDate(purchasedCard.expiresAt);
-        
-        final message = "Hi! I sent you a Na3eeman Gift Card! ✨\n\n"
-            "Voucher Code: $code\n"
-            "Service Value: $value JOD\n"
-            "Expires on: $expiry\n"
-            "${_messageCtrl.text.isNotEmpty ? '\nMessage: ${_messageCtrl.text}\n' : ''}\n"
-            "Redeem it at any Na3eeman salon. Enjoy! 💇‍♂️💇‍♀️";
-        
-        final whatsappUrl = "https://wa.me/${_receiverPhoneCtrl.text.replaceAll(' ', '').replaceAll('+', '')}?text=${Uri.encodeComponent(message)}";
+
+        final message =
+            "${'whatsapp_msg_intro'.tr()}"
+            "${'whatsapp_msg_code'.tr(args: [code])}"
+            "${'whatsapp_msg_value'.tr(args: [value])}"
+            "${'whatsapp_msg_expiry'.tr(args: [expiry])}"
+            "${_messageCtrl.text.isNotEmpty ? 'whatsapp_msg_message'.tr(args: [_messageCtrl.text]) : ''}"
+            "${'whatsapp_msg_redeem'.tr()}";
+
+        final whatsappUrl =
+            "https://wa.me/${_receiverPhoneCtrl.text.replaceAll(' ', '').replaceAll('+', '')}?text=${Uri.encodeComponent(message)}";
         if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-          await launchUrl(Uri.parse(whatsappUrl), mode: LaunchMode.externalApplication);
+          await launchUrl(
+            Uri.parse(whatsappUrl),
+            mode: LaunchMode.externalApplication,
+          );
         }
 
         _receiverPhoneCtrl.clear();
@@ -107,7 +113,8 @@ class _GiftCardPageState extends State<GiftCardPage> {
         _loadData();
       }
     } catch (e) {
-      if (mounted) AppSnackBar.error(context, 'Purchase failed: $e');
+      if (mounted)
+        AppSnackBar.error(context, 'purchase_failed'.tr(args: [e.toString()]));
     } finally {
       if (mounted) setState(() => _isBuying = false);
     }
@@ -115,8 +122,10 @@ class _GiftCardPageState extends State<GiftCardPage> {
 
   Future<String?> _showPaymentSelection() {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final primaryColor = authProvider.userGender == Gender.female ? AppColors.pink : AppColors.blue;
-        
+    final primaryColor = authProvider.userGender == Gender.female
+        ? AppColors.pink
+        : AppColors.blue;
+
     return showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -130,18 +139,36 @@ class _GiftCardPageState extends State<GiftCardPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Select Payment Method',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              'select_payment_method'.tr(),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text('The value will be sent to the application account.', style: TextStyle(color: Colors.grey, fontSize: 13)),
+            Text(
+              'payment_desc'.tr(),
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
+            ),
             const SizedBox(height: 24),
-            _buildPaymentOption('Visa / Mastercard', Icons.credit_card_rounded, 'visa', primaryColor),
+            _buildPaymentOption(
+              'visa_mastercard'.tr(),
+              Icons.credit_card_rounded,
+              'visa',
+              primaryColor,
+            ),
             const SizedBox(height: 12),
-            _buildPaymentOption('Apple Pay', Icons.apple_rounded, 'apple_pay', primaryColor),
+            _buildPaymentOption(
+              'apple_pay'.tr(),
+              Icons.apple_rounded,
+              'apple_pay',
+              primaryColor,
+            ),
             const SizedBox(height: 12),
-            _buildPaymentOption('Google Pay', Icons.payment_rounded, 'google_pay', primaryColor),
+            _buildPaymentOption(
+              'google_pay'.tr(),
+              Icons.payment_rounded,
+              'google_pay',
+              primaryColor,
+            ),
             const SizedBox(height: 20),
           ],
         ),
@@ -149,7 +176,12 @@ class _GiftCardPageState extends State<GiftCardPage> {
     );
   }
 
-  Widget _buildPaymentOption(String title, IconData icon, String value, Color color) {
+  Widget _buildPaymentOption(
+    String title,
+    IconData icon,
+    String value,
+    Color color,
+  ) {
     return InkWell(
       onTap: () => Navigator.pop(context, value),
       borderRadius: BorderRadius.circular(16),
@@ -165,7 +197,11 @@ class _GiftCardPageState extends State<GiftCardPage> {
             const SizedBox(width: 16),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: Colors.grey,
+            ),
           ],
         ),
       ),
@@ -177,21 +213,23 @@ class _GiftCardPageState extends State<GiftCardPage> {
     final theme = Theme.of(context);
     final authProvider = Provider.of<AuthProvider>(context);
     final isLadies = authProvider.userGender == Gender.female;
-    
+
     final primaryColor = isLadies ? AppColors.pink : AppColors.blue;
-    final secondaryColor = isLadies ? AppColors.pinkBastil : AppColors.blueBastil;
+    final secondaryColor = isLadies
+        ? AppColors.pinkBastil
+        : AppColors.blueBastil;
     final shadowColor = primaryColor.withOpacity(0.4);
 
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Gift Cards')),
+        appBar: AppBar(title: Text('gift_cards_title'.tr())),
         body: Center(child: CircularProgressIndicator(color: primaryColor)),
       );
     }
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(title: const Text('Gift Cards & Vouchers')),
+      appBar: AppBar(title: Text('gift_cards_vouchers'.tr())),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -199,10 +237,18 @@ class _GiftCardPageState extends State<GiftCardPage> {
           children: [
             _buildHeroBanner(primaryColor, secondaryColor, shadowColor),
             const SizedBox(height: 28),
-            Text('Select Amount', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'select_amount'.tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 14),
             if (_availableCards.isEmpty)
-              const Text('No gift cards currently available.', style: TextStyle(color: Colors.grey))
+              Text(
+                'no_cards_available'.tr(),
+                style: const TextStyle(color: Colors.grey),
+              )
             else
               Wrap(
                 spacing: 10,
@@ -213,7 +259,10 @@ class _GiftCardPageState extends State<GiftCardPage> {
                     onTap: () => setState(() => _selectedGiftCard = card),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 14,
+                      ),
                       decoration: BoxDecoration(
                         gradient: isSelected
                             ? LinearGradient(
@@ -223,7 +272,9 @@ class _GiftCardPageState extends State<GiftCardPage> {
                         color: isSelected ? null : theme.cardColor,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: isSelected ? Colors.transparent : theme.dividerColor,
+                          color: isSelected
+                              ? Colors.transparent
+                              : theme.dividerColor,
                         ),
                         boxShadow: isSelected
                             ? [
@@ -248,15 +299,22 @@ class _GiftCardPageState extends State<GiftCardPage> {
                 }).toList(),
               ),
             const SizedBox(height: 24),
-            Text('Recipient Details', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'recipient_details'.tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 14),
             TextField(
               controller: _receiverPhoneCtrl,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                labelText: 'Recipient Phone Number',
+                labelText: 'recipient_phone'.tr(),
                 prefixIcon: const Icon(Icons.phone_iphone_rounded),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 hintText: '+962 7X XXX XXXX',
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -270,10 +328,12 @@ class _GiftCardPageState extends State<GiftCardPage> {
               controller: _messageCtrl,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: 'Personal Message (optional)',
+                labelText: 'personal_message'.tr(),
                 prefixIcon: const Icon(Icons.message_rounded),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                hintText: 'Happy birthday! Enjoy your salon experience 🎉',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                hintText: 'hint_gift_txt'.tr(),
                 alignLabelWithHint: true,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -294,10 +354,16 @@ class _GiftCardPageState extends State<GiftCardPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Purchase Price', style: TextStyle(fontWeight: FontWeight.w500)),
+                      Text(
+                        'purchase_price'.tr(),
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
                       Text(
                         '${_selectedGiftCard?.price.toInt() ?? 0} JOD',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
@@ -308,7 +374,10 @@ class _GiftCardPageState extends State<GiftCardPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Service Value (Price - 15%)', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text(
+                        'service_value'.tr(),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       Text(
                         '${GiftCardUtils.calculateValue(_selectedGiftCard?.price ?? 0).toStringAsFixed(2)} JOD',
                         style: TextStyle(
@@ -327,25 +396,45 @@ class _GiftCardPageState extends State<GiftCardPage> {
               width: double.infinity,
               height: 56,
               child: FilledButton.icon(
-                onPressed: (_isBuying || _selectedGiftCard == null) ? null : _purchaseGiftCard,
+                onPressed: (_isBuying || _selectedGiftCard == null)
+                    ? null
+                    : _purchaseGiftCard,
                 icon: _isBuying
-                    ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
                     : const Icon(Icons.card_giftcard_rounded),
-                label: Text(_isBuying ? 'Sending...' : 'Send Gift Card'),
+                label: Text(
+                  _isBuying ? 'sending_status'.tr() : 'send_gift_card'.tr(),
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: primaryColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 32),
-            Text('My Vouchers', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'my_vouchers'.tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 14),
             _myVouchers.isEmpty
                 ? Center(
                     child: Text(
-                      'No vouchers yet',
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                      'no_vouchers_yet'.tr(),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.hintColor,
+                      ),
                     ),
                   )
                 : ListView.separated(
@@ -353,7 +442,10 @@ class _GiftCardPageState extends State<GiftCardPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _myVouchers.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) => _VoucherTile(userGiftCard: _myVouchers[i], accentColor: primaryColor),
+                    itemBuilder: (_, i) => _VoucherTile(
+                      userGiftCard: _myVouchers[i],
+                      accentColor: primaryColor,
+                    ),
                   ),
             const SizedBox(height: 40),
           ],
@@ -373,31 +465,27 @@ class _GiftCardPageState extends State<GiftCardPage> {
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(
-            color: shadow,
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
+          BoxShadow(color: shadow, blurRadius: 20, offset: const Offset(0, 10)),
         ],
       ),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Give the gift of grooming',
-                  style: TextStyle(
+                  'give_grooming_gift'.tr(),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
-                  'Send a digital gift card to anyone. Redeemable at any Na3eeman salon.',
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  'give_grooming_desc'.tr(),
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -409,7 +497,11 @@ class _GiftCardPageState extends State<GiftCardPage> {
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(Icons.card_giftcard_rounded, size: 40, color: Colors.white),
+            child: const Icon(
+              Icons.card_giftcard_rounded,
+              size: 40,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -452,17 +544,31 @@ class _VoucherTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(code, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 2)),
                 Text(
-                  !isActive ? 'Redeemed/Expired' : 'Active',
-                  style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+                  code,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+                Text(
+                  !isActive ? 'redeemed_expired'.tr() : 'active'.tr(),
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
           ),
           Text(
             '${amount.toStringAsFixed(0)} JOD',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: color),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: color,
+            ),
           ),
         ],
       ),

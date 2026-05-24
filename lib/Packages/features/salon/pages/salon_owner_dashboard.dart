@@ -1,6 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-// import '../../../../Providers/main_providers.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/appointment_provider.dart';
+import '../../../../Providers/features/profit_provider.dart';
+import '../../../../Providers/features/inventory_provider.dart';
+import '../../../../Providers/features/offers_provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
@@ -17,7 +21,8 @@ class SalonOwnerDashboard extends StatefulWidget {
   State<SalonOwnerDashboard> createState() => _SalonOwnerDashboardState();
 }
 
-class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTickerProviderStateMixin {
+class _SalonOwnerDashboardState extends State<SalonOwnerDashboard>
+    with SingleTickerProviderStateMixin {
   late SidebarController sidebarController;
 
   @override
@@ -25,7 +30,9 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
     super.initState();
     sidebarController = SidebarController();
     sidebarController.init(this);
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 
   @override
@@ -39,7 +46,13 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
   }
 
   void _loadData() {
-    // Refresh logic
+    context.read<ProfitProvider>().loadProfitData(
+      startDate: DateTime.now().subtract(const Duration(days: 30)),
+      endDate: DateTime.now(),
+    );
+    context.read<AppointmentProvider>().loadAppointments();
+    context.read<InventoryProvider>().loadLowStockItems();
+    context.read<OffersProvider>().loadOffers();
   }
 
   @override
@@ -50,81 +63,119 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
       children: [
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text("owner_dashboard".tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButtonStyled(
-          icon: Icons.menu_rounded,
-          onPressed: _toggleSidebar,
-        ),
-        actions: [
-          IconButtonStyled(
-            icon: Icons.notifications_none_rounded,
-            onPressed: () => NotificationsBottomSheet.show(context),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async => _loadData(),
-        color: Theme.of(context).primaryColor,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Summary Cards Row
-              Row(
-                children: [
-                  Expanded(child: _buildStatCard('Revenue', '\$1,250', Icons.payments_rounded, AppColors.success)),
-                  const SizedBox(width: 16),
-                  Expanded(child: _buildStatCard('Bookings', '48', Icons.calendar_today_rounded, Theme.of(context).primaryColor)),
-                ],
+          appBar: AppBar(
+            title: Text(
+              "owner_dashboard".tr(),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButtonStyled(
+              icon: Icons.menu_rounded,
+              onPressed: _toggleSidebar,
+            ),
+            actions: [
+              IconButtonStyled(
+                icon: Icons.notifications_none_rounded,
+                onPressed: () => NotificationsBottomSheet.show(context),
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(child: _buildStatCard('Low Stock', '3 Items', Icons.inventory_2_rounded, AppColors.error)),
-                  const SizedBox(width: 16),
-                  Expanded(child: _buildStatCard('Growth', '+12%', Icons.trending_up_rounded, AppColors.pink)),
-                ],
-              ),
-
-              const SizedBox(height: 32),
-
-              // Profit Graph Section
-              _buildSectionHeader('Revenue Overview', () {}),
-              const SizedBox(height: 16),
-              const ProfitGraph(
-                startDate: null,
-                endDate: null,
-                branchId: null,
-              ),
-
-              const SizedBox(height: 32),
-
-              // Inventory Alerts
-              _buildSectionHeader('Stock Alerts', () {}),
-              const SizedBox(height: 16),
-              const InventoryAlertCard(),
-
-              const SizedBox(height: 32),
-
-              // Active Offers
-              _buildSectionHeader('Promotions', () {}),
-              const SizedBox(height: 16),
-              const OffersCard(),
-
-              const SizedBox(height: 48),
             ],
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButtonStyled(
-        icon: Icons.add_rounded,
-        label: "new_action".tr(),
-        onPressed: () {},
-      ),
+          body: RefreshIndicator(
+            onRefresh: () async => _loadData(),
+            color: Theme.of(context).primaryColor,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Summary Cards Row
+                  Consumer3<
+                    ProfitProvider,
+                    AppointmentProvider,
+                    InventoryProvider
+                  >(
+                    builder: (context, profit, appointments, inventory, child) {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildPremiumStatCard(
+                                  'income'.tr(),
+                                  '${profit.totalRevenue.toStringAsFixed(0)} JOD',
+                                  Icons.payments_rounded,
+                                  AppColors.success,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _buildPremiumStatCard(
+                                  'appointments'.tr(),
+                                  '${appointments.appointments.length}',
+                                  Icons.calendar_today_rounded,
+                                  Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildPremiumStatCard(
+                                  'low_stock'.tr(args: ['']),
+                                  '${inventory.lowStockCount}',
+                                  Icons.inventory_2_rounded,
+                                  AppColors.error,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _buildPremiumStatCard(
+                                  'performance'.tr(),
+                                  '+12%',
+                                  Icons.trending_up_rounded,
+                                  AppColors.pink,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Profit Graph Section
+                  _buildSectionHeader('profit_reports'.tr(), () {}),
+                  const SizedBox(height: 16),
+                  const ProfitGraph(
+                    startDate: null,
+                    endDate: null,
+                    branchId: null,
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Inventory Alerts
+                  _buildSectionHeader('inventory_stock'.tr(), () {}),
+                  const SizedBox(height: 16),
+                  const InventoryAlertCard(),
+
+                  const SizedBox(height: 32),
+
+                  // Active Offers
+                  _buildSectionHeader('offers'.tr(), () {}),
+                  const SizedBox(height: 16),
+                  const OffersCard(),
+
+                  const SizedBox(height: 48),
+                ],
+              ),
+            ),
+          ),
         ),
         Sidebar(controller: sidebarController),
       ],
@@ -139,15 +190,23 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
           title,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        TextButton(
-          onPressed: onSeeAll,
-          child: Text("view_all".tr(), style: TextStyle(color: Theme.of(context).primaryColor)),
-        ),
+        // TextButton(
+        //   onPressed: onSeeAll,
+        //   child: Text(
+        //     "view_all".tr(),
+        //     style: TextStyle(color: Theme.of(context).primaryColor),
+        //   ),
+        // ),
       ],
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildPremiumStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
@@ -155,11 +214,13 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.white.withOpacity(0.1) : AppColors.almostBlack50,
+          color: isDark
+              ? AppColors.white.withValues(alpha: 0.1)
+              : AppColors.almostBlack50,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -171,7 +232,7 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -184,7 +245,11 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard> with SingleTi
           const SizedBox(height: 4),
           Text(
             title,
-            style: const TextStyle(color: AppColors.almostBlack300, fontSize: 13, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              color: AppColors.almostBlack300,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

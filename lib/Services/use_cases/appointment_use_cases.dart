@@ -13,10 +13,10 @@ class AppointmentUseCases {
     String? status,
     int? salonId,
     int? customerId,
-  })
-  async {
+  }) async {
     if (page < 1) throw AppError('Page must be greater than 0');
-    if (limit < 1 || limit > 100) throw AppError('Limit must be between 1 and 100');
+    if (limit < 1 || limit > 100)
+      throw AppError('Limit must be between 1 and 100');
 
     return await _appointmentService.getAppointments(
       page: page,
@@ -39,8 +39,7 @@ class AppointmentUseCases {
     String? recurrence,
     DateTime? recurrenceEndDate,
     bool isGroup = false,
-  })
-  async {
+  }) async {
     if (customerId <= 0) throw AppError('Invalid customer ID');
     if (salonId <= 0) throw AppError('Invalid salon ID');
     if (startTime.isBefore(DateTime.now())) {
@@ -84,7 +83,8 @@ class AppointmentUseCases {
   Future<void> cancelAppointment(String appointmentId, String reason) async {
     if (appointmentId.isEmpty) throw AppError('Appointment ID is required');
     if (reason.isEmpty) throw AppError('Cancellation reason is required');
-    if (reason.length < 10) throw AppError('Reason must be at least 10 characters');
+    if (reason.length < 10)
+      throw AppError('Reason must be at least 10 characters');
 
     await _appointmentService.cancelAppointment(appointmentId, reason);
   }
@@ -93,8 +93,7 @@ class AppointmentUseCases {
     String appointmentId,
     DateTime newStartTime,
     DateTime newEndTime,
-  )
-  async {
+  ) async {
     if (appointmentId.isEmpty) throw AppError('Appointment ID is required');
     if (newStartTime.isBefore(DateTime.now())) {
       throw AppError('New appointment time must be in the future');
@@ -110,18 +109,29 @@ class AppointmentUseCases {
     );
   }
 
-  Future<void> confirmCashPayment(int appointmentId, int confirmedByUserId, double amount) async {
+  Future<void> confirmCashPayment(
+    int appointmentId,
+    int confirmedByUserId,
+    double amount,
+  ) async {
     if (appointmentId <= 0) throw AppError('Invalid appointment ID');
     if (confirmedByUserId <= 0) throw AppError('Invalid user ID');
     if (amount <= 0) throw AppError('Amount must be greater than 0.0');
 
-    await _appointmentService.confirmCashPayment(appointmentId, confirmedByUserId, amount);
+    await _appointmentService.confirmCashPayment(
+      appointmentId,
+      confirmedByUserId,
+      amount,
+    );
   }
 
   Future<dynamic> createFreeAppointment(int customerId, {int? salonId}) async {
     if (customerId <= 0) throw AppError('Invalid customer ID');
     if (salonId != null && salonId <= 0) throw AppError('Invalid salon ID');
 
-    return await _appointmentService.createFreeAppointment(customerId, salonId: salonId);
+    return await _appointmentService.createFreeAppointment(
+      customerId,
+      salonId: salonId,
+    );
   }
 }

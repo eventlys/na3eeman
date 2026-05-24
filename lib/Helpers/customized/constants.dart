@@ -4,4 +4,3 @@ class AppConstants {
   static const double homePageScale = 0.9;
   static const double homePageTranslate = 200;
 }
-

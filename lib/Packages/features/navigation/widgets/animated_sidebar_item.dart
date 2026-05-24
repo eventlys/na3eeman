@@ -27,14 +27,8 @@ class AnimatedSidebarItem extends StatelessWidget {
       animation: animation,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(
-            -100 + (animation.value * 100),
-            0,
-          ),
-          child: Opacity(
-            opacity: animation.value,
-            child: child,
-          ),
+          offset: Offset(-100 + (animation.value * 100), 0),
+          child: Opacity(opacity: animation.value, child: child),
         );
       },
       child: DelayedWidget(
@@ -51,4 +45,3 @@ class AnimatedSidebarItem extends StatelessWidget {
     );
   }
 }
-

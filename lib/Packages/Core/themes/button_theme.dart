@@ -33,8 +33,10 @@ class PrimaryButton extends StatefulWidget {
     this.isLoading = false,
     this.width,
     this.height = 52,
-  }) : assert(onPressed != null || onPressedAsync != null,
-          'Either onPressed or onPressedAsync must be provided');
+  }) : assert(
+         onPressed != null || onPressedAsync != null,
+         'Either onPressed or onPressedAsync must be provided',
+       );
 
   @override
   State<PrimaryButton> createState() => _PrimaryButtonState();
@@ -53,9 +55,10 @@ class _PrimaryButtonState extends State<PrimaryButton>
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.97,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -123,10 +126,8 @@ class _PrimaryButtonState extends State<PrimaryButton>
       },
       child: AnimatedBuilder(
         animation: _scaleAnimation,
-        builder: (context, child) => Transform.scale(
-          scale: _scaleAnimation.value,
-          child: child,
-        ),
+        builder: (context, child) =>
+            Transform.scale(scale: _scaleAnimation.value, child: child),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 120),
           width: widget.width,

@@ -43,7 +43,10 @@ class ResponsiveUtils {
     required BuildContext context,
     EdgeInsets mobile = const EdgeInsets.all(16),
     EdgeInsets tablet = const EdgeInsets.all(24),
-    EdgeInsets desktop = const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+    EdgeInsets desktop = const EdgeInsets.symmetric(
+      horizontal: 32,
+      vertical: 24,
+    ),
   }) {
     if (isMobile(context)) return mobile;
     if (isTablet(context)) return tablet;

@@ -12,7 +12,7 @@ class ExpertHomeHelper {
   // Filter appointments by status
   static List<dynamic> filterAppointmentsByStatus(
     List<dynamic> appointments,
-    String status
+    String status,
   ) {
     return appointments.where((appt) => appt.status?.name == status).toList();
   }

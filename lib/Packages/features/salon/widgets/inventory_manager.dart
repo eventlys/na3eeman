@@ -47,9 +47,12 @@ class InventoryManagerState extends State<InventoryManager> {
 
   Future<void> _loadItems({String? category}) async {
     if (!mounted) return;
-    final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+    final inventoryProvider = Provider.of<InventoryProvider>(
+      context,
+      listen: false,
+    );
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
+
     int? salonId = widget.currentUser['salon'] as int?;
     salonId ??= authProvider.user?.salonId;
 
@@ -64,12 +67,25 @@ class InventoryManagerState extends State<InventoryManager> {
     );
   }
 
-  Future<void> _increaseItemCount(Map<String, dynamic> item, BuildContext context) async {
-    final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
-    final inventoryService = Provider.of<InventoryService>(context, listen: false);
+  Future<void> _increaseItemCount(
+    Map<String, dynamic> item,
+    BuildContext context,
+  ) async {
+    final inventoryProvider = Provider.of<InventoryProvider>(
+      context,
+      listen: false,
+    );
+    final inventoryService = Provider.of<InventoryService>(
+      context,
+      listen: false,
+    );
 
     try {
-      final currentCount = item['quantityInStock'] ?? item['quantity_in_stock'] ?? item['current_stock'] ?? 0;
+      final currentCount =
+          item['quantityInStock'] ??
+          item['quantity_in_stock'] ??
+          item['current_stock'] ??
+          0;
       final itemId = item['id']?.toString() ?? item['_id']?.toString();
       final itemName = item['product_name'] ?? item['name'] ?? 'Item';
 
@@ -119,17 +135,25 @@ class InventoryManagerState extends State<InventoryManager> {
     );
 
     if (result != null) {
-      final inventoryService = Provider.of<InventoryService>(context, listen: false);
-      final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+      final inventoryService = Provider.of<InventoryService>(
+        context,
+        listen: false,
+      );
+      final inventoryProvider = Provider.of<InventoryProvider>(
+        context,
+        listen: false,
+      );
 
       try {
-        final salonId = result['salonId'] ?? (widget.currentUser['salon'] as int?);
+        final salonId =
+            result['salonId'] ?? (widget.currentUser['salon'] as int?);
         if (salonId == null) {
           throw Exception('Salon ID is missing. Cannot add inventory item.');
         }
-        
+
         await inventoryService.addInventoryItem(
-          productId: result['productId'] ?? 0,
+          productId: result['productId'] == 0 ? null : result['productId'],
+          productName: result['name'],
           salonId: salonId,
           initialQuantity: result['count'] ?? 1,
           notes: result['description'],
@@ -159,11 +183,15 @@ class InventoryManagerState extends State<InventoryManager> {
     }
   }
 
-  Future<void> _deleteItem(Map<String, dynamic> item, BuildContext context) async {
+  Future<void> _deleteItem(
+    Map<String, dynamic> item,
+    BuildContext context,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("delete_item".tr(),
+        title: Text(
+          "delete_item".tr(),
           style: TextStyle(color: AppColor.lightText),
         ),
         backgroundColor: AppColor.lightCard,
@@ -174,14 +202,16 @@ class InventoryManagerState extends State<InventoryManager> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text("cancel".tr(),
+            child: Text(
+              "cancel".tr(),
               style: TextStyle(color: AppColor.lightTextSecondary),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text("delete".tr(),
-              style: TextStyle(color: AppColor.lightError)
+            child: Text(
+              "delete".tr(),
+              style: TextStyle(color: AppColor.lightError),
             ),
           ),
         ],
@@ -189,7 +219,10 @@ class InventoryManagerState extends State<InventoryManager> {
     );
 
     if (confirmed == true) {
-      final inventoryProvider = Provider.of<InventoryProvider>(context, listen: false);
+      final inventoryProvider = Provider.of<InventoryProvider>(
+        context,
+        listen: false,
+      );
 
       try {
         final itemId = item['id']?.toString() ?? item['_id']?.toString();
@@ -210,7 +243,9 @@ class InventoryManagerState extends State<InventoryManager> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete ${item['name']}: ${e.toString()}'),
+              content: Text(
+                'Failed to delete ${item['name']}: ${e.toString()}',
+              ),
               backgroundColor: AppColor.lightError,
             ),
           );
@@ -222,18 +257,18 @@ class InventoryManagerState extends State<InventoryManager> {
   @override
   Widget build(BuildContext context) {
     final currentUser = widget.currentUser;
-    final isCustomer = currentUser['role'] == 'customer' || currentUser['isCustomer'] == true;
+    final isCustomer =
+        currentUser['role'] == 'customer' || currentUser['isCustomer'] == true;
 
     final authProvider = Provider.of<AuthProvider>(context);
-    final salonId = authProvider.user?.salonId ?? widget.currentUser['salon'] as int?;
+    final salonId =
+        authProvider.user?.salonId ?? widget.currentUser['salon'] as int?;
 
     if (isCustomer) {
       return Center(
-        child: Text("inventory_management_is_only_available_for_owners".tr(),
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColor.lightTextSecondary
-          ),
+        child: Text(
+          "inventory_management_is_only_available_for_owners".tr(),
+          style: TextStyle(fontSize: 16, color: AppColor.lightTextSecondary),
         ),
       );
     }
@@ -245,7 +280,11 @@ class InventoryManagerState extends State<InventoryManager> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.store_mall_directory_outlined, size: 64, color: AppColor.lightTextSecondary.withOpacity(0.5)),
+              Icon(
+                Icons.store_mall_directory_outlined,
+                size: 64,
+                color: AppColor.lightTextSecondary.withOpacity(0.5),
+              ),
               const SizedBox(height: 16),
               Text(
                 'No Salon Assigned',
@@ -290,14 +329,16 @@ class InventoryManagerState extends State<InventoryManager> {
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(color: AppColor.borderLight)
+                          bottom: BorderSide(color: AppColor.borderLight),
                         ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("inventory_management".tr(),
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          Text(
+                            "inventory_management".tr(),
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppColor.lightText,
                                 ),
@@ -321,7 +362,9 @@ class InventoryManagerState extends State<InventoryManager> {
                         height: 200,
                         child: Center(
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColor.loadingPrimaryLight),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColor.loadingPrimaryLight,
+                            ),
                           ),
                         ),
                       )
@@ -339,18 +382,21 @@ class InventoryManagerState extends State<InventoryManager> {
                                 color: AppColor.lightError,
                               ),
                               const SizedBox(height: 16),
-                              Text("failed_to_load_inventory".tr(),
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: AppColor.lightText,
-                                ),
+                              Text(
+                                "failed_to_load_inventory".tr(),
+                                style: Theme.of(context).textTheme.headlineSmall
+                                    ?.copyWith(color: AppColor.lightText),
                               ),
                               const SizedBox(height: 8),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
                                 child: Text(
                                   inventoryProvider.error!,
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
                                         color: AppColor.lightTextSecondary,
                                       ),
                                 ),
@@ -361,7 +407,8 @@ class InventoryManagerState extends State<InventoryManager> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColor.lightPrimary,
                                 ),
-                                child: Text("retry".tr(),
+                                child: Text(
+                                  "retry".tr(),
                                   style: TextStyle(color: AppColor.light),
                                 ),
                               ),
@@ -383,7 +430,8 @@ class InventoryManagerState extends State<InventoryManager> {
                               final item = inventoryItems[index];
                               return InventoryListItem(
                                 item: item,
-                                onIncreaseCount: () => _increaseItemCount(item, context),
+                                onIncreaseCount: () =>
+                                    _increaseItemCount(item, context),
                                 onDelete: () => _deleteItem(item, context),
                               );
                             },
@@ -403,10 +451,11 @@ class InventoryManagerState extends State<InventoryManager> {
                                   color: AppColor.lightTextSecondary,
                                 ),
                                 const SizedBox(height: 16),
-                                Text("no_items_in_inventory".tr(),
+                                Text(
+                                  "no_items_in_inventory".tr(),
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: AppColor.lightTextSecondary
+                                    color: AppColor.lightTextSecondary,
                                   ),
                                 ),
                               ],
@@ -426,7 +475,10 @@ class InventoryManagerState extends State<InventoryManager> {
                 height: 56,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColor.gradientStartLight, AppColor.gradientSecondaryLight],
+                    colors: [
+                      AppColor.gradientStartLight,
+                      AppColor.gradientSecondaryLight,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomCenter,
                   ),

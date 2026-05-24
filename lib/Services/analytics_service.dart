@@ -16,24 +16,21 @@ class AnalyticsService {
   }
 
   Future<void> logLogin({String? method, int? userId}) async {
-    await _logEvent('login', parameters: {
-      'method': method,
-      'user_id': userId,
-    });
+    await _logEvent('login', parameters: {'method': method, 'user_id': userId});
   }
 
   Future<void> logSignUp({String? method, int? userId}) async {
-    await _logEvent('sign_up', parameters: {
-      'method': method,
-      'user_id': userId,
-    });
+    await _logEvent(
+      'sign_up',
+      parameters: {'method': method, 'user_id': userId},
+    );
   }
 
   Future<void> logSearch({required String searchTerm, int? resultCount}) async {
-    await _logEvent('search', parameters: {
-      'search_term': searchTerm,
-      'result_count': resultCount,
-    });
+    await _logEvent(
+      'search',
+      parameters: {'search_term': searchTerm, 'result_count': resultCount},
+    );
   }
 
   Future<void> logViewItem({
@@ -41,11 +38,14 @@ class AnalyticsService {
     required String itemName,
     String? itemCategory,
   }) async {
-    await _logEvent('view_item', parameters: {
-      'item_id': itemId,
-      'item_name': itemName,
-      'item_category': itemCategory ?? 'salon',
-    });
+    await _logEvent(
+      'view_item',
+      parameters: {
+        'item_id': itemId,
+        'item_name': itemName,
+        'item_category': itemCategory ?? 'salon',
+      },
+    );
   }
 
   Future<void> logAddToCart({
@@ -55,14 +55,17 @@ class AnalyticsService {
     int? quantity,
     String? itemType, // 'OPTION', 'PACKAGE', 'PRODUCT'
   }) async {
-    await _logEvent('add_to_cart', parameters: {
-      'item_id': itemId,
-      'item_name': itemName,
-      'price': price,
-      'quantity': quantity ?? 1,
-      'item_type': itemType,
-      'currency': 'USD',
-    });
+    await _logEvent(
+      'add_to_cart',
+      parameters: {
+        'item_id': itemId,
+        'item_name': itemName,
+        'price': price,
+        'quantity': quantity ?? 1,
+        'item_type': itemType,
+        'currency': 'USD',
+      },
+    );
   }
 
   Future<void> logBeginCheckout({
@@ -70,12 +73,15 @@ class AnalyticsService {
     int? itemCount,
     List<int>? itemIds,
   }) async {
-    await _logEvent('begin_checkout', parameters: {
-      'value': value,
-      'currency': 'USD',
-      'item_count': itemCount,
-      'item_ids': itemIds,
-    });
+    await _logEvent(
+      'begin_checkout',
+      parameters: {
+        'value': value,
+        'currency': 'USD',
+        'item_count': itemCount,
+        'item_ids': itemIds,
+      },
+    );
   }
 
   Future<void> logPurchase({
@@ -84,13 +90,16 @@ class AnalyticsService {
     List<int>? itemIds,
     String? paymentMethod,
   }) async {
-    await _logEvent('purchase', parameters: {
-      'transaction_id': transactionId,
-      'value': value,
-      'currency': 'USD',
-      'item_ids': itemIds,
-      'payment_method': paymentMethod,
-    });
+    await _logEvent(
+      'purchase',
+      parameters: {
+        'transaction_id': transactionId,
+        'value': value,
+        'currency': 'USD',
+        'item_ids': itemIds,
+        'payment_method': paymentMethod,
+      },
+    );
   }
 
   Future<void> logAppointmentBooked({
@@ -99,22 +108,25 @@ class AnalyticsService {
     required double amount,
     String? bookingGroupId,
   }) async {
-    await _logEvent('appointment_booked', parameters: {
-      'appointment_id': appointmentId,
-      'salon_id': salonId,
-      'amount': amount,
-      'booking_group_id': bookingGroupId,
-    });
+    await _logEvent(
+      'appointment_booked',
+      parameters: {
+        'appointment_id': appointmentId,
+        'salon_id': salonId,
+        'amount': amount,
+        'booking_group_id': bookingGroupId,
+      },
+    );
   }
 
   Future<void> logFreeHaircutRedeemed({
     required int customerId,
     required int appointmentId,
   }) async {
-    await _logEvent('free_haircut_redeemed', parameters: {
-      'customer_id': customerId,
-      'appointment_id': appointmentId,
-    });
+    await _logEvent(
+      'free_haircut_redeemed',
+      parameters: {'customer_id': customerId, 'appointment_id': appointmentId},
+    );
   }
 
   Future<void> logLoyaltyPointsEarned({
@@ -122,11 +134,14 @@ class AnalyticsService {
     required int points,
     required String source,
   }) async {
-    await _logEvent('loyalty_points_earned', parameters: {
-      'customer_id': customerId,
-      'points': points,
-      'source': source,
-    });
+    await _logEvent(
+      'loyalty_points_earned',
+      parameters: {
+        'customer_id': customerId,
+        'points': points,
+        'source': source,
+      },
+    );
   }
 
   Future<void> logCustomEvent({
@@ -142,15 +157,21 @@ class AnalyticsService {
     String? email,
     String? name,
   }) async {
-    await _logEvent('user_identify', parameters: {
-      'user_id': userId,
-      'user_role': userRole,
-      'email': email,
-      'name': name,
-    });
+    await _logEvent(
+      'user_identify',
+      parameters: {
+        'user_id': userId,
+        'user_role': userRole,
+        'email': email,
+        'name': name,
+      },
+    );
   }
 
-  Future<void> _logEvent(String name, {Map<String, Object?>? parameters}) async {
+  Future<void> _logEvent(
+    String name, {
+    Map<String, Object?>? parameters,
+  }) async {
     try {
       final eventData = {
         'event_name': name,
@@ -172,33 +193,46 @@ class AnalyticsService {
   }
 
   // Screen view tracking
-  Future<void> logScreenView(String screenName, {Map<String, Object?>? parameters}) async {
-    await _logEvent('screen_view', parameters: {
-      'screen_name': screenName,
-      ...?parameters,
-    });
+  Future<void> logScreenView(
+    String screenName, {
+    Map<String, Object?>? parameters,
+  }) async {
+    await _logEvent(
+      'screen_view',
+      parameters: {'screen_name': screenName, ...?parameters},
+    );
   }
 
   // Error tracking
-  Future<void> logError(String error, StackTrace stackTrace, {String? context}) async {
-    await _logEvent('error_occurred', parameters: {
-      'error': error,
-      'stack_trace': stackTrace.toString(),
-      'context': context,
-    });
+  Future<void> logError(
+    String error,
+    StackTrace stackTrace, {
+    String? context,
+  }) async {
+    await _logEvent(
+      'error_occurred',
+      parameters: {
+        'error': error,
+        'stack_trace': stackTrace.toString(),
+        'context': context,
+      },
+    );
   }
 
   // Performance tracking
-  Future<void> logPerformance(String action, int durationMs, {Map<String, Object?>? parameters}) async {
-    await _logEvent('performance', parameters: {
-      'action': action,
-      'duration_ms': durationMs,
-      ...?parameters,
-    });
+  Future<void> logPerformance(
+    String action,
+    int durationMs, {
+    Map<String, Object?>? parameters,
+  }) async {
+    await _logEvent(
+      'performance',
+      parameters: {'action': action, 'duration_ms': durationMs, ...?parameters},
+    );
   }
 
   // ============ ADMIN ANALYTICS FETCHING ============
-  
+
   Future<Map<String, dynamic>> getAdminOverview() async {
     return await _apiService.get(Endpoints.adminAnalyticsOverview);
   }
@@ -226,8 +260,8 @@ class AnalyticsService {
       queryParams: params,
     );
     if (result is List) return result;
-    if (result is Map && result.containsKey('results')) return result['results'];
+    if (result is Map && result.containsKey('results'))
+      return result['results'];
     return [];
   }
 }
-

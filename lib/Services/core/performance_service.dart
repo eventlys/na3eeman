@@ -2,11 +2,10 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-// import 'package:device_info_plus/device_info_plus.dart';
-// import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../Helpers/logger.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppServicesManager {
   static final AppServicesManager _instance = AppServicesManager._internal();
@@ -61,7 +60,8 @@ class AppServicesManager {
 }
 
 class CrashReportingService {
-  static final CrashReportingService _instance = CrashReportingService._internal();
+  static final CrashReportingService _instance =
+      CrashReportingService._internal();
 
   factory CrashReportingService() => _instance;
 
@@ -73,16 +73,14 @@ class CrashReportingService {
     if (_isInitialized) return;
 
     try {
-      await SentryFlutter.init(
-        (options) {
-          options.dsn = 'YOUR_SENTRY_DSN_HERE';
-          options.tracesSampleRate = 1.0;
-          options.enableAppLifecycleBreadcrumbs = true;
-          options.attachStacktrace = true;
-          options.sendDefaultPii = true;
-          options.enableNativeCrashHandling = true;
-        },
-      );
+      await SentryFlutter.init((options) {
+        options.dsn = 'YOUR_SENTRY_DSN_HERE';
+        options.tracesSampleRate = 1.0;
+        options.enableAppLifecycleBreadcrumbs = true;
+        options.attachStacktrace = true;
+        options.sendDefaultPii = true;
+        options.enableNativeCrashHandling = true;
+      });
 
       _setupErrorHandlers();
       _isInitialized = true;
@@ -95,10 +93,7 @@ class CrashReportingService {
   void _setupErrorHandlers() {
     FlutterError.onError = (details) {
       AppLogger.error('Flutter error caught', error: details.exception);
-      Sentry.captureException(
-        details.exception,
-        stackTrace: details.stack,
-      );
+      Sentry.captureException(details.exception, stackTrace: details.stack);
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
@@ -108,14 +103,15 @@ class CrashReportingService {
     };
   }
 
-  Future<void> reportError(dynamic error, StackTrace stackTrace, {String? context}) async {
+  Future<void> reportError(
+    dynamic error,
+    StackTrace stackTrace, {
+    String? context,
+  }) async {
     try {
       AppLogger.error('Reporting error: $error', error: error);
 
-      await Sentry.captureException(
-        error,
-        stackTrace: stackTrace,
-      );
+      await Sentry.captureException(error, stackTrace: stackTrace);
 
       if (context != null) {
         addBreadcrumb('Error Context: $context');
@@ -125,7 +121,10 @@ class CrashReportingService {
     }
   }
 
-  Future<void> logMessage(String message, {SentryLevel level = SentryLevel.info}) async {
+  Future<void> logMessage(
+    String message, {
+    SentryLevel level = SentryLevel.info,
+  }) async {
     try {
       await Sentry.captureMessage(message, level: level);
       AppLogger.debug('Sentry message: $message');
@@ -143,15 +142,14 @@ class CrashReportingService {
   }) {
     try {
       Sentry.configureScope((scope) {
-        scope.setUser(SentryUser(
-          id: id,
-          email: email,
-          username: username,
-          data: {
-            'role': role,
-            ...?additionalData,
-          },
-        ));
+        scope.setUser(
+          SentryUser(
+            id: id,
+            email: email,
+            username: username,
+            data: {'role': role, ...?additionalData},
+          ),
+        );
       });
 
       AppLogger.debug('User context set for crash reporting: $id');
@@ -162,12 +160,14 @@ class CrashReportingService {
 
   void addBreadcrumb(String message, {Map<String, dynamic>? data}) {
     try {
-      Sentry.addBreadcrumb(Breadcrumb(
-        message: message,
-        data: data,
-        level: SentryLevel.info,
-        timestamp: DateTime.now(),
-      ));
+      Sentry.addBreadcrumb(
+        Breadcrumb(
+          message: message,
+          data: data,
+          level: SentryLevel.info,
+          timestamp: DateTime.now(),
+        ),
+      );
 
       AppLogger.debug('Breadcrumb added: $message');
     } catch (e) {
@@ -176,14 +176,19 @@ class CrashReportingService {
   }
 
   // Tracking methods
-  void trackFeatureUsage(String featureName, {Map<String, dynamic>? properties}) {
-    addBreadcrumb(
-      'Feature Used: $featureName',
-      data: properties,
-    );
+  void trackFeatureUsage(
+    String featureName, {
+    Map<String, dynamic>? properties,
+  }) {
+    addBreadcrumb('Feature Used: $featureName', data: properties);
   }
 
-  void trackApiCall(String endpoint, String method, int statusCode, int durationMs) {
+  void trackApiCall(
+    String endpoint,
+    String method,
+    int statusCode,
+    int durationMs,
+  ) {
     addBreadcrumb(
       'API Call: $method $endpoint',
       data: {
@@ -194,7 +199,11 @@ class CrashReportingService {
     );
   }
 
-  void trackAppointmentAction(String action, String appointmentId, {Map<String, dynamic>? additionalData}) {
+  void trackAppointmentAction(
+    String action,
+    String appointmentId, {
+    Map<String, dynamic>? additionalData,
+  }) {
     addBreadcrumb(
       'Appointment $action',
       data: {
@@ -205,7 +214,12 @@ class CrashReportingService {
     );
   }
 
-  void trackPaymentAction(String action, String paymentId, double amount, {String? method}) {
+  void trackPaymentAction(
+    String action,
+    String paymentId,
+    double amount, {
+    String? method,
+  }) {
     addBreadcrumb(
       'Payment $action',
       data: {
@@ -243,7 +257,8 @@ class NotificationService {
 
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
     try {
@@ -252,10 +267,10 @@ class NotificationService {
 
       const DarwinInitializationSettings iosSettings =
           DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-      );
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+          );
 
       const InitializationSettings settings = InitializationSettings(
         android: androidSettings,
@@ -279,13 +294,14 @@ class NotificationService {
     String? payload,
   }) async {
     try {
-      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-        'main_channel',
-        'Main Notifications',
-        channelDescription: 'Main notification channel',
-        importance: Importance.max,
-        priority: Priority.high,
-      );
+      const AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+            'main_channel',
+            'Main Notifications',
+            channelDescription: 'Main notification channel',
+            importance: Importance.max,
+            priority: Priority.high,
+          );
 
       const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
       const NotificationDetails platformDetails = NotificationDetails(
@@ -314,21 +330,26 @@ class NotificationService {
     String? payload,
   }) async {
     try {
-      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-        'scheduled_channel',
-        'Scheduled Notifications',
-        channelDescription: 'Notifications that are scheduled for a specific time',
-        importance: Importance.max,
-        priority: Priority.high,
-      );
+      final AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+            'scheduled_channel',
+            'Scheduled Notifications'.tr(),
+            channelDescription:
+                'Notifications that are scheduled for a specific time'.tr(),
+            importance: Importance.max,
+            priority: Priority.high,
+          );
 
       const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
-      const NotificationDetails platformDetails = NotificationDetails(
+      final NotificationDetails platformDetails = NotificationDetails(
         android: androidDetails,
         iOS: iosDetails,
       );
 
-      final tz.TZDateTime scheduledTZDate = tz.TZDateTime.from(scheduledDate, tz.local);
+      final tz.TZDateTime scheduledTZDate = tz.TZDateTime.from(
+        scheduledDate,
+        tz.local,
+      );
 
       await _notifications.zonedSchedule(
         id: id,
@@ -349,12 +370,10 @@ class NotificationService {
   Future<bool> requestPermissions() async {
     try {
       final bool? iosResult = await _notifications
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
 
       return iosResult ?? true;
     } catch (e) {
@@ -410,11 +429,10 @@ class PerformanceMonitor {
         print('⏱️ ${label ?? key}: ${elapsed}ms');
       }
 
-      AppLogger.debug('Performance: ${label ?? key} - ${elapsed}ms', extra: {
-        'duration_ms': elapsed,
-        'key': key,
-        'label': label,
-      });
+      AppLogger.debug(
+        'Performance: ${label ?? key} - ${elapsed}ms',
+        extra: {'duration_ms': elapsed, 'key': key, 'label': label},
+      );
 
       if (elapsed > 1000) {
         _logSlowOperation(key, elapsed, label);
@@ -438,15 +456,22 @@ class PerformanceMonitor {
   }
 
   void _logSlowOperation(String key, int duration, String? label) {
-    AppLogger.debug('Slow operation detected', extra: {
-      'key': key,
-      'label': label,
-      'duration_ms': duration,
-      'threshold_ms': 1000,
-    });
+    AppLogger.debug(
+      'Slow operation detected',
+      extra: {
+        'key': key,
+        'label': label,
+        'duration_ms': duration,
+        'threshold_ms': 1000,
+      },
+    );
   }
 
-  Future<T> measureFuture<T>(String key, Future<T> Function() future, {String? label}) async {
+  Future<T> measureFuture<T>(
+    String key,
+    Future<T> Function() future, {
+    String? label,
+  }) async {
     startTimer(key);
     try {
       final result = await future();
@@ -471,15 +496,22 @@ class PerformanceMonitor {
   }
 
   // Specialized measurement methods
-  Future<T> measureApiCall<T>(String endpoint, String method, Future<T> Function() apiCall) async {
+  Future<T> measureApiCall<T>(
+    String endpoint,
+    String method,
+    Future<T> Function() apiCall,
+  ) async {
     return measureFuture(
-      'api_${method.toLowerCase()}_${endpoint.replaceAll('/', '_')}',
+      'api_${method.toLowerCase()}_${endpoint.replaceAll('/login', '_')}',
       apiCall,
       label: '$method $endpoint',
     );
   }
 
-  Future<T> measureDatabaseOperation<T>(String operation, Future<T> Function() dbOperation) async {
+  Future<T> measureDatabaseOperation<T>(
+    String operation,
+    Future<T> Function() dbOperation,
+  ) async {
     return measureFuture(
       'db_${operation.toLowerCase()}',
       dbOperation,
@@ -555,7 +587,8 @@ class PerformanceMonitor {
 }
 
 class PerformanceOptimizer {
-  static final PerformanceOptimizer _instance = PerformanceOptimizer._internal();
+  static final PerformanceOptimizer _instance =
+      PerformanceOptimizer._internal();
 
   factory PerformanceOptimizer() => _instance;
 
@@ -572,7 +605,11 @@ class PerformanceOptimizer {
   static const int _preloadThreshold = 5;
   static const int _maxImageCacheSize = 100;
 
-  static Map<String, dynamic> getImageOptimization(String imageUrl, {int? width, int? height}) {
+  static Map<String, dynamic> getImageOptimization(
+    String imageUrl, {
+    int? width,
+    int? height,
+  }) {
     return {
       'cacheWidth': width ?? imageOptimizationSettings['cacheWidth'],
       'cacheHeight': height ?? imageOptimizationSettings['cacheHeight'],
@@ -637,17 +674,24 @@ class PerformanceOptimizer {
 
     final buildTime = metrics['build_time_ms'] as int? ?? 0;
     if (buildTime > 16) {
-      recommendations.add('Optimize widget rebuilds - current build time: ${buildTime}ms');
+      recommendations.add(
+        'Optimize widget rebuilds - current build time: ${buildTime}ms',
+      );
     }
 
     final memoryUsage = metrics['memory_usage_mb'] as int? ?? 0;
-    if (memoryUsage > 500) { // _warningMemoryThreshold
-      recommendations.add('High memory usage detected: ${memoryUsage}MB - consider optimizing images and caching');
+    if (memoryUsage > 500) {
+      // _warningMemoryThreshold
+      recommendations.add(
+        'High memory usage detected: ${memoryUsage}MB - consider optimizing images and caching',
+      );
     }
 
     final apiResponseTime = metrics['api_response_time_ms'] as int? ?? 0;
     if (apiResponseTime > 1000) {
-      recommendations.add('Slow API responses: ${apiResponseTime}ms - consider implementing caching');
+      recommendations.add(
+        'Slow API responses: ${apiResponseTime}ms - consider implementing caching',
+      );
     }
 
     return recommendations;
@@ -657,7 +701,10 @@ class PerformanceOptimizer {
     return getPerformanceRecommendations(metrics).isNotEmpty;
   }
 
-  Future<void> precacheImages(BuildContext context, List<String> imageUrls) async {
+  Future<void> precacheImages(
+    BuildContext context,
+    List<String> imageUrls,
+  ) async {
     try {
       for (final url in imageUrls.take(_maxImageCacheSize)) {
         try {
@@ -735,7 +782,8 @@ class LazyLoadBuilder extends StatelessWidget {
         itemCount: itemCount + (isLoading ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == itemCount) {
-            return placeholder ?? const Center(child: CircularProgressIndicator());
+            return placeholder ??
+                const Center(child: CircularProgressIndicator());
           }
 
           if (index >= itemCount - visibleThreshold) {
@@ -802,7 +850,7 @@ class OptimizedImage extends StatelessWidget {
                 child: CircularProgressIndicator(
                   value: loadingProgress.expectedTotalBytes != null
                       ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
+                            loadingProgress.expectedTotalBytes!
                       : null,
                 ),
               ),

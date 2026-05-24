@@ -26,23 +26,29 @@ class CommissionCalculatorWidget extends StatelessWidget {
           children: [
             Icon(Icons.calculate_rounded, size: 18, color: theme.primaryColor),
             const SizedBox(width: 8),
-            Text("commission_calculator".tr(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "commission_calculator".tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             if (owner.isAnalyticsLoading)
               const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
           ],
         ),
         const SizedBox(height: 14),
         if (leaderboard.isEmpty && !owner.isAnalyticsLoading)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text('No staff data available.',
-                style: TextStyle(color: theme.hintColor, fontSize: 12)),
+            child: Text(
+              'No staff data available.',
+              style: TextStyle(color: theme.hintColor, fontSize: 12),
+            ),
           ),
         if (leaderboard.isNotEmpty)
           Table(
@@ -55,17 +61,22 @@ class CommissionCalculatorWidget extends StatelessWidget {
             children: [
               TableRow(
                 decoration: BoxDecoration(
-                    border:
-                        Border(bottom: BorderSide(color: theme.dividerColor))),
+                  border: Border(bottom: BorderSide(color: theme.dividerColor)),
+                ),
                 children: ['Staff', 'Revenue', 'Rate', 'Commission']
-                    .map((h) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(h,
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  color: theme.hintColor,
-                                  fontWeight: FontWeight.w600)),
-                        ))
+                    .map(
+                      (h) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          h,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.hintColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
               ...leaderboard.take(5).map((s) {
@@ -78,9 +89,11 @@ class CommissionCalculatorWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(name,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                          overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        name,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -92,10 +105,13 @@ class CommissionCalculatorWidget extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text('JD ${comm.toStringAsFixed(0)}',
-                          style: TextStyle(
-                              color: theme.primaryColor,
-                              fontWeight: FontWeight.bold)),
+                      child: Text(
+                        'JD ${comm.toStringAsFixed(0)}',
+                        style: TextStyle(
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 );

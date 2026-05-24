@@ -1,4 +1,3 @@
-
 class ValidationHelper {
   // Email validation
   static bool isValidEmail(String email) {
@@ -10,9 +9,7 @@ class ValidationHelper {
 
   // Phone number validation
   static bool isValidPhoneNumber(String phone) {
-    final phoneRegex = RegExp(
-      r'^\+?[0-9]{10,15}$',
-    );
+    final phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
     return phoneRegex.hasMatch(phone.replaceAll(RegExp(r'[\s\-()]'), ''));
   }
 
@@ -74,7 +71,7 @@ class ValidationHelper {
   // Date validation
   static bool isValidDate(DateTime date) {
     return date.isBefore(DateTime(2100, 1, 1)) &&
-           date.isAfter(DateTime(1900, 1, 1));
+        date.isAfter(DateTime(1900, 1, 1));
   }
 
   static bool isFutureDate(DateTime date) {
@@ -109,7 +106,7 @@ class ValidationHelper {
   // Appointment time validation
   static bool isValidAppointmentTime(DateTime startTime, DateTime endTime) {
     return endTime.isAfter(startTime) &&
-           startTime.isAfter(DateTime.now().subtract(const Duration(hours: 1)));
+        startTime.isAfter(DateTime.now().subtract(const Duration(hours: 1)));
   }
 
   // Business validation
@@ -146,7 +143,9 @@ class ValidationHelper {
   // File validation
   static bool isValidImageFile(String fileName) {
     final allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-    final extension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
+    final extension = fileName.toLowerCase().substring(
+      fileName.lastIndexOf('.'),
+    );
     return allowedExtensions.contains(extension);
   }
 
@@ -177,7 +176,8 @@ class ValidationHelper {
     final errors = <String, String>{};
 
     if (!isValidName(firstName)) {
-      errors['firstName'] = 'Please enter a valid first name (min 2 characters)';
+      errors['firstName'] =
+          'Please enter a valid first name (min 2 characters)';
     }
 
     if (!isValidName(lastName)) {
@@ -241,11 +241,7 @@ class ValidationHelper {
   }
 }
 
-enum PasswordStrength {
-  weak,
-  medium,
-  strong,
-}
+enum PasswordStrength { weak, medium, strong }
 
 extension PasswordStrengthExtension on PasswordStrength {
   String get description {

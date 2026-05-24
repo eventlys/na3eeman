@@ -34,11 +34,7 @@ class CustomNeumorphicIcon extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Icon(
-          icon,
-          size: size,
-          color: iconColor,
-        ),
+        child: Icon(icon, size: size, color: iconColor),
       ),
     );
   }
@@ -125,10 +121,7 @@ class NeomorphicSphere extends StatefulWidget {
   NeomorphicSphereState createState() => NeomorphicSphereState();
 }
 
-enum NeomorphicSphereAnimationType {
-  scale,
-  slideUp,
-}
+enum NeomorphicSphereAnimationType { scale, slideUp }
 
 class NeomorphicSphereState extends State<NeomorphicSphere>
     with SingleTickerProviderStateMixin {
@@ -172,29 +165,21 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   }
 
   void _setupAnimations() {
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 1.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 1.0), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -272,16 +257,10 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
           case NeomorphicSphereAnimationType.slideUp:
             return Transform.translate(
               offset: _slideAnimation.value,
-              child: Opacity(
-                opacity: _opacityAnimation.value,
-                child: child,
-              ),
+              child: Opacity(opacity: _opacityAnimation.value, child: child),
             );
           case NeomorphicSphereAnimationType.scale:
-            return Transform.scale(
-              scale: _scaleAnimation.value,
-              child: child,
-            );
+            return Transform.scale(scale: _scaleAnimation.value, child: child);
         }
       },
       child: Container(
@@ -306,8 +285,9 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   @override
   Widget build(BuildContext context) {
     final isActive = widget.isActive;
-    final currentIconPath =
-        isActive ? widget.activeIconPath : widget.inactiveIconPath;
+    final currentIconPath = isActive
+        ? widget.activeIconPath
+        : widget.inactiveIconPath;
     final currentIconSize = isActive ? widget.iconSize + 10 : widget.iconSize;
 
     return GestureDetector(

@@ -18,16 +18,10 @@ class PointsTrackerWidget extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Color(0x99FFFFFF),
-                Color(0x4DFFFFFF),
-              ],
+              colors: [Color(0x99FFFFFF), Color(0x4DFFFFFF)],
             ),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Color(0x80ffffff),
-              width: 1,
-            ),
+            border: Border.all(color: Color(0x80ffffff), width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,18 +49,15 @@ class PointsTrackerWidget extends StatelessWidget {
             Text(
               'Rewards Points',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF000000),
-                    fontSize: 20,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF000000),
+                fontSize: 20,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               'Earn points and get rewards!',
-              style: TextStyle(
-                color: Color(0x80000000),
-                fontSize: 12,
-              ),
+              style: TextStyle(color: Color(0x80000000), fontSize: 12),
             ),
           ],
         ),
@@ -82,11 +73,7 @@ class PointsTrackerWidget extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.workspace_premium,
-                color: Colors.white,
-                size: 18,
-              ),
+              Icon(Icons.workspace_premium, color: Colors.white, size: 18),
               const SizedBox(width: 6),
               Text(
                 '${pointsProvider.currentBalance} pts',
@@ -103,15 +90,19 @@ class PointsTrackerWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, PointsProvider pointsProvider) {
+  Widget _buildQuickActions(
+    BuildContext context,
+    PointsProvider pointsProvider,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("quick_actions".tr(),
+        Text(
+          "quick_actions".tr(),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
-              ),
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade800,
+          ),
         ),
         const SizedBox(height: 12),
         Wrap(
@@ -158,7 +149,10 @@ class PointsTrackerWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
+            colors: [
+              color.withValues(alpha: 0.1),
+              color.withValues(alpha: 0.05),
+            ],
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: color.withValues(alpha: 0.3)),
@@ -196,10 +190,7 @@ class PointsTrackerWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [1, 2, 3, 4, 5].map((rating) {
                 return IconButton(
-                  icon: Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
+                  icon: Icon(Icons.star, color: Colors.amber),
                   onPressed: () async {
                     try {
                       // You'll need to get the customer ID from somewhere
@@ -210,7 +201,10 @@ class PointsTrackerWidget extends StatelessWidget {
                         rating: rating,
                       );
                       Navigator.pop(context);
-                      _showSuccessMessage(context, 'Thanks for your rating! Points added.');
+                      _showSuccessMessage(
+                        context,
+                        'Thanks for your rating! Points added.',
+                      );
                     } catch (e) {
                       Navigator.pop(context);
                       _showErrorMessage(context, 'Failed to submit rating');
@@ -231,9 +225,12 @@ class PointsTrackerWidget extends StatelessWidget {
     );
   }
 
-  void _showAppFeedbackDialog(BuildContext context, PointsProvider pointsProvider) {
+  void _showAppFeedbackDialog(
+    BuildContext context,
+    PointsProvider pointsProvider,
+  ) {
     final TextEditingController feedbackController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -270,7 +267,10 @@ class PointsTrackerWidget extends StatelessWidget {
                     feedback: feedbackController.text.trim(),
                   );
                   Navigator.pop(context);
-                  _showSuccessMessage(context, 'Thanks for your feedback! Points added.');
+                  _showSuccessMessage(
+                    context,
+                    'Thanks for your feedback! Points added.',
+                  );
                 } catch (e) {
                   Navigator.pop(context);
                   _showErrorMessage(context, 'Failed to submit feedback');
@@ -286,7 +286,7 @@ class PointsTrackerWidget extends StatelessWidget {
 
   void _inviteFriend(BuildContext context, PointsProvider pointsProvider) {
     final TextEditingController friendNameController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -318,8 +318,8 @@ class PointsTrackerWidget extends StatelessWidget {
                 final customerId = 1; // Replace with actual customer ID
                 await pointsProvider.inviteFriend(
                   customerId: customerId,
-                  friendName: friendNameController.text.trim().isNotEmpty 
-                      ? friendNameController.text.trim() 
+                  friendName: friendNameController.text.trim().isNotEmpty
+                      ? friendNameController.text.trim()
                       : null,
                 );
                 Navigator.pop(context);

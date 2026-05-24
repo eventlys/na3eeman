@@ -15,7 +15,9 @@ class AppColors {
   static const Color blue700 = Color(0xFF0E366F);
   static const Color blue800 = Color(0xFF09244D);
   static const Color blue900 = Color(0xFF051226);
-  static const Color blueBastil = Color(0xFF2B66BA); // ~10% lighter version of 0xFF144EA0
+  static const Color blueBastil = Color(
+    0xFF2B66BA,
+  ); // ~10% lighter version of 0xFF144EA0
 
   // Secondary Pink
   static const Color pink = Color(0xFFD097AE);
@@ -29,7 +31,9 @@ class AppColors {
   static const Color pink700 = Color(0xFF8E6777);
   static const Color pink800 = Color(0xFF5E4550);
   static const Color pink900 = Color(0xFF2F2228);
-  static const Color pinkBastil = Color(0xFFD9A9BD); // ~10% lighter version of 0xFFD097AE
+  static const Color pinkBastil = Color(
+    0xFFD9A9BD,
+  ); // ~10% lighter version of 0xFFD097AE
 
   // Cream (Background / Light Mode Surface)
   static const Color cream = Color(0xFFfbfaf5);
@@ -54,7 +58,9 @@ class AppColors {
   static const Color almostBlack500 = Color(0xFF1B1C1F);
   static const Color almostBlack600 = Color(0xFF18191C);
   static const Color almostBlack700 = Color(0xFF121315);
-  static const Color almostBlack800 = Color(0xFF0C1315); // Adjusted slightly for variety
+  static const Color almostBlack800 = Color(
+    0xFF0C1315,
+  ); // Adjusted slightly for variety
   static const Color almostBlack900 = Color(0xFF060607);
 
   // Opal (Accent)

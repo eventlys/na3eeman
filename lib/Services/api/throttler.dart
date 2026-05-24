@@ -67,7 +67,7 @@ class ApiThrottler {
     }
 
     // Check upload endpoints
-    if ((endpoint.contains('/upload') || endpoint.contains('/files')) && 
+    if ((endpoint.contains('/upload') || endpoint.contains('/files')) &&
         !_uploadLimiter.canMakeRequest('upload')) {
       return false;
     }
@@ -78,11 +78,15 @@ class ApiThrottler {
   Duration getWaitTime(String endpoint) {
     final generalWait = _generalLimiter.getTimeUntilNextRequest('general');
     final endpointLimiter = _endpointLimiters[endpoint];
-    final endpointWait = endpointLimiter?.getTimeUntilNextRequest(endpoint) ?? Duration.zero;
-    final authWait = endpoint.startsWith('/auth') ? 
-        _authLimiter.getTimeUntilNextRequest('auth') : Duration.zero;
-    final uploadWait = (endpoint.contains('/upload') || endpoint.contains('/files')) ? 
-        _uploadLimiter.getTimeUntilNextRequest('upload') : Duration.zero;
+    final endpointWait =
+        endpointLimiter?.getTimeUntilNextRequest(endpoint) ?? Duration.zero;
+    final authWait = endpoint.startsWith('/auth')
+        ? _authLimiter.getTimeUntilNextRequest('auth')
+        : Duration.zero;
+    final uploadWait =
+        (endpoint.contains('/upload') || endpoint.contains('/files'))
+        ? _uploadLimiter.getTimeUntilNextRequest('upload')
+        : Duration.zero;
 
     final waits = [generalWait, endpointWait, authWait, uploadWait];
     waits.sort((a, b) => b.compareTo(a)); // Sort descending
@@ -92,7 +96,7 @@ class ApiThrottler {
 
   void recordRequest(String endpoint) {
     _generalLimiter.canMakeRequest('general'); // This records the request
-    
+
     final endpointLimiter = _endpointLimiters[endpoint];
     if (endpointLimiter != null) {
       endpointLimiter.canMakeRequest(endpoint);

@@ -8,6 +8,7 @@ import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:share_plus/share_plus.dart' as share_plus;
 
 /// Data Export / Import page.
 ///
@@ -37,7 +38,15 @@ class _DataManagementPageState extends State<DataManagementPage>
   bool _isImporting = false;
   Map<String, dynamic>? _importResult;
 
-  final _datasets = ['all', 'appointments', 'customers', 'staff', 'inventory', 'payments', 'reviews'];
+  final _datasets = [
+    'all',
+    'appointments',
+    'customers',
+    'staff',
+    'inventory',
+    'payments',
+    'reviews',
+  ];
   final _formats = ['json', 'csv', 'pdf'];
 
   @override
@@ -55,7 +64,8 @@ class _DataManagementPageState extends State<DataManagementPage>
   bool get _canAccess {
     final auth = context.read<AuthProvider>();
     final role = auth.userType;
-    return role != null && (role.isOwnerEquivalent || role == UserRole.receptionist);
+    return role != null &&
+        (role.isOwnerEquivalent || role == UserRole.receptionist);
   }
 
   Future<void> _doExport() async {
@@ -68,7 +78,9 @@ class _DataManagementPageState extends State<DataManagementPage>
       if (_selectedFormat == 'pdf') {
         // Simulate PDF generation call or use BusinessService if available
         await Future.delayed(const Duration(seconds: 2));
-        _showSuccessSnackBar('PDF Report for $_selectedDataset generated and downloaded!');
+        _showSuccessSnackBar(
+          'PDF Report for $_selectedDataset generated and downloaded!',
+        );
       } else {
         final apiService = ApiService();
         final params = <String, dynamic>{
@@ -76,15 +88,24 @@ class _DataManagementPageState extends State<DataManagementPage>
           'format': _selectedFormat,
         };
         if (_dateRange != null) {
-          params['date_from'] = _dateRange!.start.toIso8601String().split('T')[0];
+          params['date_from'] = _dateRange!.start.toIso8601String().split(
+            'T',
+          )[0];
           params['date_to'] = _dateRange!.end.toIso8601String().split('T')[0];
         }
 
-        final result = await apiService.get('/data/export/', queryParams: params);
-        if (result != null) {
-          _showSuccessSnackBar('Export ready! ${(result as Map).length} records returned.');
+        final filePath = await apiService.downloadFile(
+          '/data/export/',
+          queryParams: params,
+        );
+        
+        if (filePath != null) {
+          _showSuccessSnackBar('Export ready!');
+          await share_plus.Share.shareXFiles([share_plus.XFile(filePath)], text: 'Exported Data');
         } else {
-          setState(() => _exportError = 'Export returned no data from backend.');
+          setState(
+            () => _exportError = 'Export returned no data from backend.',
+          );
         }
       }
     } catch (e) {
@@ -129,16 +150,26 @@ class _DataManagementPageState extends State<DataManagementPage>
       );
 
       if (result != null) {
-        setState(() => _importResult = Map<String, dynamic>.from(result as Map));
+        setState(
+          () => _importResult = Map<String, dynamic>.from(result as Map),
+        );
       } else {
-        setState(() => _importResult = {'imported': 0, 'skipped': 0, 'errors': ['No response from server']});
+        setState(
+          () => _importResult = {
+            'imported': 0,
+            'skipped': 0,
+            'errors': ['No response from server'],
+          },
+        );
       }
     } catch (e) {
-      setState(() => _importResult = {
-        'imported': 0,
-        'skipped': 0,
-        'errors': [e.toString()],
-      });
+      setState(
+        () => _importResult = {
+          'imported': 0,
+          'skipped': 0,
+          'errors': [e.toString()],
+        },
+      );
     } finally {
       setState(() => _isImporting = false);
     }
@@ -262,8 +293,16 @@ class _ExportTab extends StatelessWidget {
             child: DropdownButtonFormField<String>(
               initialValue: selectedDataset,
               onChanged: onDatasetChanged,
-              decoration: InputDecoration(border: const OutlineInputBorder(), labelText: 'dataset'.tr()),
-              items: datasets.map((d) => DropdownMenuItem(value: d, child: Text(d.capitalize()))).toList(),
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: 'dataset'.tr(),
+              ),
+              items: datasets
+                  .map(
+                    (d) =>
+                        DropdownMenuItem(value: d, child: Text(d.capitalize())),
+                  )
+                  .toList(),
             ),
           ),
           const SizedBox(height: 20),
@@ -302,7 +341,10 @@ class _ExportTab extends StatelessWidget {
                 onDateRangeChanged(picked);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: theme.dividerColor),
                   borderRadius: BorderRadius.circular(8),
@@ -335,7 +377,12 @@ class _ExportTab extends StatelessWidget {
                 children: [
                   const Icon(Icons.error_outline, color: Colors.red, size: 18),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(exportError!, style: const TextStyle(color: Colors.red))),
+                  Expanded(
+                    child: Text(
+                      exportError!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -347,23 +394,38 @@ class _ExportTab extends StatelessWidget {
             child: FilledButton.icon(
               onPressed: isExporting ? null : onExport,
               icon: isExporting
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
                   : const Icon(Icons.upload_rounded),
-              label: Text(isExporting ? 'exporting_with_dots'.tr() : 'export_data'.tr()),
+              label: Text(
+                isExporting ? 'exporting_with_dots'.tr() : 'export_data'.tr(),
+              ),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
             ),
           ),
           const SizedBox(height: 16),
-          Text('Files will be downloaded to your device.', style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor)),
+          Text(
+            'Files will be downloaded to your device.',
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+          ),
         ],
       ),
     );
   }
 
-  String _fmt(DateTime d) => '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  String _fmt(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -421,7 +483,9 @@ class _ImportTab extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(
-                      hasFile ? Icons.check_circle_rounded : Icons.upload_file_rounded,
+                      hasFile
+                          ? Icons.check_circle_rounded
+                          : Icons.upload_file_rounded,
                       size: 40,
                       color: hasFile ? AppColors.primary : theme.hintColor,
                     ),
@@ -430,12 +494,18 @@ class _ImportTab extends StatelessWidget {
                       hasFile ? selectedFileName! : 'tap_to_select_json'.tr(),
                       style: TextStyle(
                         color: hasFile ? AppColors.primary : theme.hintColor,
-                        fontWeight: hasFile ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: hasFile
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     if (!hasFile)
-                      Text('only_json_supported'.tr(), style: const TextStyle(fontSize: 11), textAlign: TextAlign.center),
+                      Text(
+                        'only_json_supported'.tr(),
+                        style: const TextStyle(fontSize: 11),
+                        textAlign: TextAlign.center,
+                      ),
                   ],
                 ),
               ),
@@ -478,12 +548,23 @@ class _ImportTab extends StatelessWidget {
             child: FilledButton.icon(
               onPressed: (hasFile && !isImporting) ? onImport : null,
               icon: isImporting
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
                   : const Icon(Icons.download_rounded),
-              label: Text(isImporting ? 'importing_with_dots'.tr() : 'import_data'.tr()),
+              label: Text(
+                isImporting ? 'importing_with_dots'.tr() : 'import_data'.tr(),
+              ),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
             ),
           ),
@@ -498,7 +579,11 @@ class _ImportTab extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 18),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  color: Colors.amber,
+                  size: 18,
+                ),
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -539,22 +624,45 @@ class _ImportResultCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('import_result'.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(
+            'import_result'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
-              _StatChip(label: 'imported'.tr(), value: imported, color: Colors.green),
+              _StatChip(
+                label: 'imported'.tr(),
+                value: imported,
+                color: Colors.green,
+              ),
               const SizedBox(width: 12),
-              _StatChip(label: 'skipped'.tr(), value: skipped, color: Colors.orange),
+              _StatChip(
+                label: 'skipped'.tr(),
+                value: skipped,
+                color: Colors.orange,
+              ),
               const SizedBox(width: 12),
-              _StatChip(label: 'errors'.tr(), value: errors.length, color: Colors.red),
+              _StatChip(
+                label: 'errors'.tr(),
+                value: errors.length,
+                color: Colors.red,
+              ),
             ],
           ),
           if (errors.isNotEmpty) ...[
             const SizedBox(height: 12),
-            const Text('Errors:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+            const Text(
+              'Errors:',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+            ),
             const SizedBox(height: 4),
-            ...errors.map((e) => Text('• $e', style: const TextStyle(fontSize: 12, color: Colors.red))),
+            ...errors.map(
+              (e) => Text(
+                '• $e',
+                style: const TextStyle(fontSize: 12, color: Colors.red),
+              ),
+            ),
           ],
         ],
       ),
@@ -566,7 +674,11 @@ class _StatChip extends StatelessWidget {
   final String label;
   final int value;
   final Color color;
-  const _StatChip({required this.label, required this.value, required this.color});
+  const _StatChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -579,7 +691,14 @@ class _StatChip extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('$value', style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: 18)),
+          Text(
+            '$value',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: color,
+              fontSize: 18,
+            ),
+          ),
           Text(label, style: TextStyle(fontSize: 11, color: color)),
         ],
       ),
@@ -635,7 +754,12 @@ class _SectionCard extends StatelessWidget {
                 child: Icon(icon, color: iconColor, size: 18),
               ),
               const SizedBox(width: 10),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -647,5 +771,6 @@ class _SectionCard extends StatelessWidget {
 }
 
 extension on String {
-  String capitalize() => isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
+  String capitalize() =>
+      isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
 }

@@ -43,10 +43,7 @@ class RefreshableList extends StatelessWidget {
           } else {
             body = Text("refresh_completed".tr());
           }
-          return SizedBox(
-            height: 60,
-            child: Center(child: body),
-          );
+          return SizedBox(height: 60, child: Center(child: body));
         },
       ),
       footer: CustomFooter(
@@ -63,10 +60,7 @@ class RefreshableList extends StatelessWidget {
           } else {
             body = Text("no_more_data".tr());
           }
-          return SizedBox(
-            height: 60,
-            child: Center(child: body),
-          );
+          return SizedBox(height: 60, child: Center(child: body));
         },
       ),
       child: child,
@@ -86,9 +80,6 @@ class RefreshIndicatorWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: child,
-    );
+    return RefreshIndicator(onRefresh: onRefresh, child: child);
   }
 }

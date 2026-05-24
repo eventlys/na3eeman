@@ -14,7 +14,8 @@ class PerServiceSelectionPage extends StatefulWidget {
   });
 
   @override
-  State<PerServiceSelectionPage> createState() => _PerServiceSelectionPageState();
+  State<PerServiceSelectionPage> createState() =>
+      _PerServiceSelectionPageState();
 }
 
 class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
@@ -49,69 +50,87 @@ class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("select_for_service".tr(args: [widget.service['name'] ?? 'Service'])),
+        title: Text(
+          "select_for_service".tr(args: [widget.service['name'] ?? 'Service']),
+        ),
         centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _experts.isEmpty
-              ? const Center(child: Text('No professionals available for this service.'))
-              : ListView.separated(
-                  padding: const EdgeInsets.all(24),
-                  itemCount: _experts.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final expert = _experts[index];
-                    final name = expert['first_name'] ?? 'Professional';
-                    final rating = (expert['rating'] ?? 5.0).toDouble();
+          ? const Center(
+              child: Text('No professionals available for this service.'),
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.all(24),
+              itemCount: _experts.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final expert = _experts[index];
+                final name = expert['first_name'] ?? 'Professional';
+                final rating = (expert['rating'] ?? 5.0).toDouble();
 
-                    return InkWell(
-                      onTap: () => Navigator.pop(context, expert),
+                return InkWell(
+                  onTap: () => Navigator.pop(context, expert),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.almostBlack600 : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.almostBlack600 : Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                      border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: AppColors.almostBlack50,
+                          child: Icon(
+                            Icons.person,
+                            size: 30,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: AppColors.almostBlack50,
-                              child: Icon(Icons.person, size: 30, color: Theme.of(context).primaryColor),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
                                 children: [
-                                  Text(
-                                    name,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    color: Colors.amber,
+                                    size: 18,
                                   ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        rating.toStringAsFixed(1),
-                                        style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    rating.toStringAsFixed(1),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            const Icon(Icons.chevron_right, color: Colors.grey),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                        const Icon(Icons.chevron_right, color: Colors.grey),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

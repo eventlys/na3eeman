@@ -34,7 +34,9 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
     _lastNameController = TextEditingController(text: user?.lastName);
     _phoneController = TextEditingController(text: user?.phone);
     _bioController = TextEditingController(text: expert?.bio ?? '');
-    _specializationController = TextEditingController(text: user?.specialization);
+    _specializationController = TextEditingController(
+      text: user?.specialization,
+    );
   }
 
   @override
@@ -49,11 +51,11 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
 
   Future<void> _saveChanges() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isLoading = true);
     try {
       final auth = context.read<AuthProvider>();
-      
+
       await auth.updateProfile(
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
@@ -61,7 +63,7 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
         specialization: _specializationController.text.trim(),
         bio: _bioController.text.trim(),
       );
-      
+
       if (mounted) {
         setState(() {
           _isEditing = false;
@@ -74,9 +76,9 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -84,11 +86,14 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("profile".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "profile".tr(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -111,8 +116,14 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 60,
-                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                      child: Icon(Icons.person, size: 60, color: Theme.of(context).primaryColor),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).primaryColor.withOpacity(0.1),
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                     if (_isEditing)
                       Positioned(
@@ -121,7 +132,11 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
                         child: CircleAvatar(
                           radius: 18,
                           backgroundColor: Theme.of(context).primaryColor,
-                          child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ),
                   ],
@@ -130,21 +145,37 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
               const SizedBox(height: 16),
               Text(
                 user?.fullName ?? '',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 user?.role.toString().split('.').last.toUpperCase() ?? '',
-                style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              
+
               const SizedBox(height: 40),
-              
+
               // Non-editable fields (Point 1 requirement: "not all of it")
-              _buildInfoTile('Username', user?.username ?? '', Icons.alternate_email, isEditable: false),
-              _buildInfoTile('Email', user?.email ?? '', Icons.email_outlined, isEditable: false),
-              
+              _buildInfoTile(
+                'Username',
+                user?.username ?? '',
+                Icons.alternate_email,
+                isEditable: false,
+              ),
+              _buildInfoTile(
+                'Email',
+                user?.email ?? '',
+                Icons.email_outlined,
+                isEditable: false,
+              ),
+
               const SizedBox(height: 16),
-              
+
               // Editable fields
               AppTextField(
                 controller: _firstNameController,
@@ -181,9 +212,9 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
                 enabled: _isEditing,
                 maxLines: 3,
               ),
-              
+
               const SizedBox(height: 48),
-              
+
               if (_isEditing) ...[
                 PrimaryButton(
                   text: 'Save Changes',
@@ -193,7 +224,10 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () => setState(() => _isEditing = false),
-                  child: Text("cancel".tr(), style: const TextStyle(color: AppColors.almostBlack400)),
+                  child: Text(
+                    "cancel".tr(),
+                    style: const TextStyle(color: AppColors.almostBlack400),
+                  ),
                 ),
               ],
             ],
@@ -203,7 +237,12 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
     );
   }
 
-  Widget _buildInfoTile(String label, String value, IconData icon, {bool isEditable = true}) {
+  Widget _buildInfoTile(
+    String label,
+    String value,
+    IconData icon, {
+    bool isEditable = true,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Container(
@@ -220,13 +259,29 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontSize: 12, color: AppColors.almostBlack300)),
-                Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.almostBlack300,
+                  ),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
             const Spacer(),
             if (!isEditable)
-              Icon(Icons.lock_outline, size: 16, color: AppColors.almostBlack200),
+              Icon(
+                Icons.lock_outline,
+                size: 16,
+                color: AppColors.almostBlack200,
+              ),
           ],
         ),
       ),

@@ -31,9 +31,9 @@ class OffersHorizontalList extends StatelessWidget {
             children: [
               Text(
                 'Exclusive Offers',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 'See More',
@@ -59,10 +59,13 @@ class OffersHorizontalList extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
-                    context, 
-                    '/book_appointment', 
+                    context,
+                    '/book_appointment',
                     arguments: {
-                      'salonData': {'id': offer['salon_id'], 'salonName': offer['salonName'] ?? 'Expert Salon'},
+                      'salonData': {
+                        'id': offer['salon_id'],
+                        'salonName': offer['salonName'] ?? 'Expert Salon',
+                      },
                       'selectedOffer': offer,
                     },
                   );
@@ -92,8 +95,14 @@ class OffersHorizontalList extends StatelessWidget {
                         child: Container(
                           width: 80,
                           height: 80,
-                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                          child: Icon(Icons.local_offer_rounded, color: Theme.of(context).primaryColor, size: 32),
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.1),
+                          child: Icon(
+                            Icons.local_offer_rounded,
+                            color: Theme.of(context).primaryColor,
+                            size: 32,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -156,6 +165,9 @@ class OffersHorizontalList extends StatelessWidget {
   }
 
   Widget _buildShimmer() {
-    return const SizedBox(height: 120, child: Center(child: CircularProgressIndicator()));
+    return const SizedBox(
+      height: 120,
+      child: Center(child: CircularProgressIndicator()),
+    );
   }
 }

@@ -39,9 +39,11 @@ class ExpertCard extends StatelessWidget {
             contentPadding: const EdgeInsets.all(16),
             leading: CircleAvatar(
               radius: 25,
-              backgroundColor: (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary)
-                  .withValues(alpha: 0.1),
-              child: expert.profileImage != null && expert.profileImage!.isNotEmpty
+              backgroundColor:
+                  (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary)
+                      .withValues(alpha: 0.1),
+              child:
+                  expert.profileImage != null && expert.profileImage!.isNotEmpty
                   ? ClipOval(
                       child: Image.network(
                         expert.profileImage!,
@@ -68,15 +70,19 @@ class ExpertCard extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.star,
-                      color: isDarkTheme ? AppColor.darkWarning : AppColor.lightWarning,
-                      size: 16
+                      color: isDarkTheme
+                          ? AppColor.darkWarning
+                          : AppColor.lightWarning,
+                      size: 16,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       expert.rating.toStringAsFixed(1),
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                        color: isDarkTheme
+                            ? AppColor.darkText
+                            : AppColor.lightText,
                       ),
                     ),
                   ],
@@ -86,7 +92,9 @@ class ExpertCard extends StatelessWidget {
                   '${expert.totalAppointments} appointments',
                   style: TextStyle(
                     fontSize: 12,
-                    color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                    color: isDarkTheme
+                        ? AppColor.darkTextSecondary
+                        : AppColor.lightTextSecondary,
                   ),
                 ),
                 if (expert.specialties.isNotEmpty) ...[
@@ -95,7 +103,9 @@ class ExpertCard extends StatelessWidget {
                     expert.specialties.take(2).join(', '),
                     style: TextStyle(
                       fontSize: 11,
-                      color: isDarkTheme ? AppColor.darkTextSecondary : AppColor.lightTextSecondary,
+                      color: isDarkTheme
+                          ? AppColor.darkTextSecondary
+                          : AppColor.lightTextSecondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -129,12 +139,17 @@ class ExpertCard extends StatelessWidget {
                         isDarkTheme ? AppImages.pencil_view : AppImages.pencil,
                         width: 18,
                         height: 18,
-                        color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                        color: isDarkTheme
+                            ? AppColor.darkText
+                            : AppColor.lightText,
                       ),
                       const SizedBox(width: 8),
-                      Text("edit".tr(),
+                      Text(
+                        "edit".tr(),
                         style: TextStyle(
-                          color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
+                          color: isDarkTheme
+                              ? AppColor.darkText
+                              : AppColor.lightText,
                         ),
                       ),
                     ],
@@ -148,12 +163,17 @@ class ExpertCard extends StatelessWidget {
                         isDarkTheme ? AppImages.trash_view : AppImages.trash,
                         width: 18,
                         height: 18,
-                        color: isDarkTheme ? AppColor.darkError : AppColor.lightError,
+                        color: isDarkTheme
+                            ? AppColor.darkError
+                            : AppColor.lightError,
                       ),
                       const SizedBox(width: 8),
-                      Text("delete".tr(),
+                      Text(
+                        "delete".tr(),
                         style: TextStyle(
-                          color: isDarkTheme ? AppColor.darkError : AppColor.lightError,
+                          color: isDarkTheme
+                              ? AppColor.darkError
+                              : AppColor.lightError,
                         ),
                       ),
                     ],

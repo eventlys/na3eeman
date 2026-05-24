@@ -28,22 +28,29 @@ class NavigationConfig {
     }
   }
 
-  static String getProfileAvatar(AppStateProvider appStateProvider, bool isActive) {
+  static String getProfileAvatar(
+    AppStateProvider appStateProvider,
+    bool isActive,
+  ) {
     // Get gender from provider to determine avatar
     final gender = appStateProvider.userGender;
-    
+
     if (isActive) {
-      return gender == Gender.female 
+      return gender == Gender.female
           ? 'assets/icons/avatar_female_view.png'
           : 'assets/icons/avatar_male_view.png';
     } else {
-      return gender == Gender.female 
+      return gender == Gender.female
           ? 'assets/icons/avatar_female.png'
           : 'assets/icons/avatar_male.png';
     }
   }
 
-  static List<NavItem> getNavItems(AppStateProvider appStateProvider, String currentRoute, BuildContext context) {
+  static List<NavItem> getNavItems(
+    AppStateProvider appStateProvider,
+    String currentRoute,
+    BuildContext context,
+  ) {
     final allItems = [
       NavItem(
         id: 'home',
@@ -82,7 +89,10 @@ class NavigationConfig {
       ),
       NavItem(
         id: 'profile',
-        activeIconPath: getProfileAvatar(appStateProvider, currentRoute == '/profile'),
+        activeIconPath: getProfileAvatar(
+          appStateProvider,
+          currentRoute == '/profile',
+        ),
         inactiveIconPath: getProfileAvatar(appStateProvider, false),
         route: '/profile',
         label: "profile".tr(),
@@ -103,7 +113,11 @@ class NavigationConfig {
     }).toList();
   }
 
-  static bool isItemActive(NavItem item, String currentRoute, AppStateProvider appStateProvider) {
+  static bool isItemActive(
+    NavItem item,
+    String currentRoute,
+    AppStateProvider appStateProvider,
+  ) {
     if (item.id == 'home') {
       final homeRoute = getHomeRoute(appStateProvider);
       return currentRoute == homeRoute || currentRoute == '/';

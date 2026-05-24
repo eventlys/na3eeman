@@ -23,8 +23,8 @@ class NeumorphicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final bgColor = backgroundColor ??
-        (isDark ? AppColor.darkCard : AppColor.white);
+    final bgColor =
+        backgroundColor ?? (isDark ? AppColor.darkCard : AppColor.white);
 
     Widget card = Container(
       margin: margin,
@@ -37,7 +37,9 @@ class NeumorphicCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: (isDark ? Colors.black : Colors.black).withOpacity(isDark ? 0.2 : 0.06),
+            color: (isDark ? Colors.black : Colors.black).withOpacity(
+              isDark ? 0.2 : 0.06,
+            ),
             offset: const Offset(0, 2),
             blurRadius: 12,
             spreadRadius: 0,
@@ -50,10 +52,7 @@ class NeumorphicCard extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            child: Padding(
-              padding: padding,
-              child: child,
-            ),
+            child: Padding(padding: padding, child: child),
           ),
         ),
       ),
