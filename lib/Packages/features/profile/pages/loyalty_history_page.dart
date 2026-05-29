@@ -122,7 +122,7 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
           BoxShadow(
             color:
                 (hasPenalty ? const Color(0xFFFF5252) : const Color(0xFF6C63FF))
-                    .withOpacity(0.35),
+                    .withValues(alpha:0.35),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -163,7 +163,7 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha:0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
@@ -181,7 +181,7 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Text(
@@ -271,7 +271,7 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha:0.15),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -336,7 +336,7 @@ class _TxTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, size: 20, color: color),

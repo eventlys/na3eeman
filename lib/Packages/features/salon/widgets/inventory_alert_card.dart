@@ -21,7 +21,7 @@ class InventoryAlertCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.1)
+              ? AppColors.white.withValues(alpha:0.1)
               : AppColors.almostBlack50,
         ),
       ),
@@ -50,7 +50,7 @@ class InventoryAlertCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.1),
+                  color: AppColors.error.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(

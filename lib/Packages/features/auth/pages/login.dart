@@ -216,7 +216,7 @@ class _LoginPageState extends State<LoginPage>
                     ? [AppColors.almostBlack700, AppColors.almostBlack800]
                     : [
                         AppColors.white,
-                        AppColors.creamyBackground.withOpacity(0.5),
+                        AppColors.creamyBackground.withValues(alpha:0.5),
                       ],
               ),
             ),

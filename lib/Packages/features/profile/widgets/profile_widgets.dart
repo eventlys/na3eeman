@@ -212,7 +212,7 @@ class ProfileWidgets {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isDark
-                  ? AppColors.white.withOpacity(0.1)
+                  ? AppColors.white.withValues(alpha:0.1)
                   : AppColors.almostBlack50,
             ),
           ),

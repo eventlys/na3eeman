@@ -126,7 +126,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isDark
-                    ? AppColors.white.withOpacity(0.1)
+                    ? AppColors.white.withValues(alpha:0.1)
                     : AppColors.almostBlack50,
               ),
             ),
@@ -135,7 +135,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
                 CircleAvatar(
                   backgroundColor: Theme.of(
                     context,
-                  ).primaryColor.withOpacity(0.1),
+                  ).primaryColor.withValues(alpha:0.1),
                   child: Text(
                     staff['name'][0],
                     style: TextStyle(
@@ -198,7 +198,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: isDark
-                  ? AppColors.white.withOpacity(0.1)
+                  ? AppColors.white.withValues(alpha:0.1)
                   : AppColors.almostBlack50,
             ),
           ),
@@ -209,7 +209,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
                 children: [
                   CircleAvatar(
                     radius: 22,
-                    backgroundColor: statusColor.withOpacity(0.1),
+                    backgroundColor: statusColor.withValues(alpha:0.1),
                     child: Text(
                       (s['name'] as String)[0],
                       style: TextStyle(
@@ -328,7 +328,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
               Container(
                 width: 2,
                 height: 30,
-                color: indicatorColor.withOpacity(0.2),
+                color: indicatorColor.withValues(alpha:0.2),
               ),
           ],
         ),
@@ -396,7 +396,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
                 radius: 40,
                 backgroundColor: Theme.of(
                   context,
-                ).primaryColor.withOpacity(0.1),
+                ).primaryColor.withValues(alpha:0.1),
                 child: Icon(
                   Icons.person,
                   size: 40,
@@ -474,7 +474,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
+            color: Theme.of(context).primaryColor.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, color: Theme.of(context).primaryColor, size: 18),

@@ -98,7 +98,7 @@ class WeeklyProgressChart extends StatelessWidget {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             toY: 10,
-            color: AppColors.almostBlack100.withOpacity(0.1),
+            color: AppColors.almostBlack100.withValues(alpha:0.1),
           ),
         ),
       ],

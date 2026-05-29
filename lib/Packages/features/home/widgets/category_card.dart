@@ -74,13 +74,13 @@ class CategoryCard extends StatelessWidget {
             image: AssetImage(localAsset),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.2),
+              Colors.black.withValues(alpha:0.2),
               BlendMode.darken,
             ),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+              color: Colors.black.withValues(alpha:isDark ? 0.3 : 0.1),
               offset: const Offset(0, 8),
               blurRadius: 16,
             ),
@@ -98,7 +98,7 @@ class CategoryCard extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.5),
+                        Colors.black.withValues(alpha:0.5),
                       ],
                     ),
                   ),
@@ -108,7 +108,7 @@ class CategoryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'category_${category.nameEn.toLowerCase().replaceAll(' & ', '_').replaceAll(' ', '_')}'.tr().toUpperCase(),
+                        'category_${category.nameEn.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}'.tr().toUpperCase(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -120,11 +120,11 @@ class CategoryCard extends StatelessWidget {
                         Text(
                           category.icon.split(',').map((s) {
                             final name = s.trim();
-                            final key = 'service_${name.toLowerCase().replaceAll(' + ', '_').replaceAll(' +', '_').replaceAll('+ ', '_').replaceAll(' ', '_').replaceAll('-', '_').replaceAll('&', '_').replaceAll('\'', '').replaceAll('(', '').replaceAll(')', '').replaceAll('/', '_')}';
+                            final key = 'service_${name.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
                             return key.tr();
                           }).join(', '),
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha:0.7),
                             fontSize: 10,
                           ),
                           maxLines: 1,

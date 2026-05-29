@@ -178,7 +178,7 @@ class _DisputeQueue extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: priorityColor.withOpacity(0.12),
+                            color: priorityColor.withValues(alpha:0.12),
                             borderRadius: BorderRadius.circular(AppRadius.pill),
                           ),
                           child: Text(

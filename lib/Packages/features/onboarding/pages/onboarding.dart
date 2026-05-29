@@ -174,7 +174,7 @@ class _WelcomePage extends StatelessWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.1),
+              color: primary.withValues(alpha:0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.cut_rounded, size: 60, color: primary),
@@ -295,8 +295,8 @@ class _GenderCard extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: isSelected
-                ? accent.withOpacity(0.1)
-                : bgTint.withOpacity(0.5),
+                ? accent.withValues(alpha:0.1)
+                : bgTint.withValues(alpha:0.5),
             borderRadius: BorderRadius.circular(AppRadius.xl),
             border: Border.all(
               color: isSelected ? accent : Colors.transparent,
@@ -393,7 +393,7 @@ class _RoleTile extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: isSelected
-              ? primary.withOpacity(0.08)
+              ? primary.withValues(alpha:0.08)
               : (isDark ? AppColor.ninjaCard : AppColor.lightSurface),
           borderRadius: BorderRadius.circular(AppRadius.xl),
           border: Border.all(

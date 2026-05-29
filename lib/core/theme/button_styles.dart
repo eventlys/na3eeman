@@ -10,7 +10,7 @@ class AppButtonStyles {
       backgroundColor: primary,
       foregroundColor: AppColors.white,
       elevation: 4,
-      shadowColor: primary.withOpacity(0.3),
+      shadowColor: primary.withValues(alpha:0.3),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
@@ -27,7 +27,7 @@ class AppButtonStyles {
       backgroundColor: secondary,
       foregroundColor: AppColors.white,
       elevation: 4,
-      shadowColor: secondary.withOpacity(0.3),
+      shadowColor: secondary.withValues(alpha:0.3),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
@@ -75,7 +75,7 @@ class AppButtonStyles {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: primary.withOpacity(0.3),
+          color: primary.withValues(alpha:0.3),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),
@@ -99,7 +99,7 @@ class AppButtonStyles {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: secondary.withOpacity(0.3),
+          color: secondary.withValues(alpha:0.3),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),

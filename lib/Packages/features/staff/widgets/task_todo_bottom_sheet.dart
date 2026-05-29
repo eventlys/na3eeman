@@ -141,7 +141,7 @@ class _TaskTodoBottomSheetState extends State<TaskTodoBottomSheet> {
                     background: Container(
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.only(right: 20),
-                      color: Colors.redAccent.withOpacity(0.1),
+                      color: Colors.redAccent.withValues(alpha:0.1),
                       child: const Icon(
                         Icons.delete_outline_rounded,
                         color: Colors.redAccent,

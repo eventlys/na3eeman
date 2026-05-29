@@ -25,12 +25,12 @@ class SalonInfoSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.1)
+              ? AppColors.white.withValues(alpha:0.1)
               : AppColors.almostBlack50,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withValues(alpha:isDark ? 0.2 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -54,7 +54,7 @@ class SalonInfoSection extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).primaryColor.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -160,7 +160,7 @@ class SalonInfoSection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: iconColor.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: iconColor, size: 22),

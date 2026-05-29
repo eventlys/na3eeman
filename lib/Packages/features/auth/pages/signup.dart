@@ -186,7 +186,7 @@ class _SignupPageState extends State<SignupPage>
                     ? [AppColors.almostBlack700, AppColors.almostBlack800]
                     : [
                         AppColors.white,
-                        AppColors.creamyBackground.withOpacity(0.5),
+                        AppColors.creamyBackground.withValues(alpha:0.5),
                       ],
               ),
             ),
@@ -324,7 +324,7 @@ class _SignupPageState extends State<SignupPage>
                                   child: ChoiceChip(
                                     label: const Text('Male'),
                                     selected: _selectedGender == 'male',
-                                    selectedColor: Colors.blue.withOpacity(0.2),
+                                    selectedColor: Colors.blue.withValues(alpha:0.2),
                                     checkmarkColor: Colors.blue,
                                     labelStyle: TextStyle(
                                       color: _selectedGender == 'male'
@@ -344,7 +344,7 @@ class _SignupPageState extends State<SignupPage>
                                   child: ChoiceChip(
                                     label: const Text('Female'),
                                     selected: _selectedGender == 'female',
-                                    selectedColor: Colors.pink.withOpacity(0.2),
+                                    selectedColor: Colors.pink.withValues(alpha:0.2),
                                     checkmarkColor: Colors.pink,
                                     labelStyle: TextStyle(
                                       color: _selectedGender == 'female'

@@ -57,9 +57,9 @@ class InterBranchTransfersWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.08),
+            color: Colors.blue.withValues(alpha:0.08),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.blue.withOpacity(0.2)),
+            border: Border.all(color: Colors.blue.withValues(alpha:0.2)),
           ),
           child: Row(
             children: [
@@ -143,7 +143,7 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha:0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

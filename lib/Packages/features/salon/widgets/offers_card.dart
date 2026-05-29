@@ -21,7 +21,7 @@ class OffersCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.1)
+              ? AppColors.white.withValues(alpha:0.1)
               : AppColors.almostBlack50,
         ),
       ),
@@ -65,9 +65,9 @@ class OffersCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.pink.withOpacity(0.05),
+        color: AppColors.pink.withValues(alpha:0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.pink.withOpacity(0.1)),
+        border: Border.all(color: AppColors.pink.withValues(alpha:0.1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

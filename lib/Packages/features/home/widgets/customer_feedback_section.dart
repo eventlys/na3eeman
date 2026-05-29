@@ -19,7 +19,7 @@ class CustomerFeedbackSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            color: Colors.black.withValues(alpha:isDark ? 0.3 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -33,7 +33,7 @@ class CustomerFeedbackSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
+                  color: Colors.amber.withValues(alpha:0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -71,10 +71,10 @@ class CustomerFeedbackSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.05),
+              color: Theme.of(context).primaryColor.withValues(alpha:0.05),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha:0.1),
               ),
             ),
             child: Row(

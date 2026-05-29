@@ -111,7 +111,7 @@ class AppBottomNavBar extends StatelessWidget {
         color: isDark ? AppColor.ninjaCard : AppColor.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: AppColor.dark.withOpacity(isDark ? 0.3 : 0.06),
+            color: AppColor.dark.withValues(alpha:isDark ? 0.3 : 0.06),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
@@ -170,7 +170,7 @@ class _NavItem extends StatelessWidget {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? primary.withOpacity(0.1) : Colors.transparent,
+          color: isSelected ? primary.withValues(alpha:0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.xl),
         ),
         child: Column(

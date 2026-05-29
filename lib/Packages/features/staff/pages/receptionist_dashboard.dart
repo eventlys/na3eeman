@@ -1535,12 +1535,12 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
           borderRadius: BorderRadius.circular(32),
           border: Border.all(
             color: isDark
-                ? AppColors.white.withOpacity(0.05)
+                ? AppColors.white.withValues(alpha:0.05)
                 : AppColors.almostBlack50,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -1555,7 +1555,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.pink.withOpacity(0.1),
+                      color: AppColors.pink.withValues(alpha:0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Icon(
@@ -1598,8 +1598,8 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
               decoration: BoxDecoration(
                 color: isDark
-                    ? Colors.black.withOpacity(0.2)
-                    : Colors.grey[100]!.withOpacity(0.5),
+                    ? Colors.black.withValues(alpha:0.2)
+                    : Colors.grey[100]!.withValues(alpha:0.5),
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(32),
                 ),
@@ -1754,7 +1754,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 20),
@@ -1788,7 +1788,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
           decoration: BoxDecoration(
             color: isDark
                 ? AppColors.almostBlack500
-                : AppColors.almostBlack50.withOpacity(0.3),
+                : AppColors.almostBlack50.withValues(alpha:0.3),
             borderRadius: BorderRadius.circular(16),
           ),
           child: content,

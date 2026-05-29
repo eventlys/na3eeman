@@ -88,7 +88,7 @@ class _LockedContent extends StatelessWidget {
         children: [
           ColorFiltered(
             colorFilter: ColorFilter.mode(
-              Colors.grey.withOpacity(0.6),
+              Colors.grey.withValues(alpha:0.6),
               BlendMode.saturation,
             ),
             child: Opacity(opacity: 0.4, child: child),
@@ -158,7 +158,7 @@ class _LockOverlay extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: tierColor.withOpacity(0.15),
+              color: tierColor.withValues(alpha:0.15),
               shape: BoxShape.circle,
               border: Border.all(color: tierColor, width: 1.5),
             ),

@@ -142,7 +142,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
             boxShadow: widget.variant == ButtonVariant.filled && !_isPressed
                 ? [
                     BoxShadow(
-                      color: widget.buttonColor.withOpacity(0.3),
+                      color: widget.buttonColor.withValues(alpha:0.3),
                       offset: const Offset(0, 4),
                       blurRadius: 12,
                     ),

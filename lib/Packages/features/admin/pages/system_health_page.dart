@@ -77,9 +77,9 @@ class AdminSystemHealthPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha:0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha:0.2)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,7 +153,7 @@ class AdminSystemHealthPage extends StatelessWidget {
             child: LinearProgressIndicator(
               value: percent,
               minHeight: 6,
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              backgroundColor: Theme.of(context).primaryColor.withValues(alpha:0.1),
               color: percent > 0.8
                   ? AppColors.error
                   : Theme.of(context).primaryColor,

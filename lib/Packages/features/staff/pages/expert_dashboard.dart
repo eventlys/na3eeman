@@ -86,14 +86,14 @@ class _ExpertDashboardState extends State<ExpertDashboard>
   //     padding: const EdgeInsets.all(20),
   //     decoration: BoxDecoration(
   //       gradient: LinearGradient(
-  //         colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.8)],
+  //         colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withValues(alpha:0.8)],
   //         begin: Alignment.topLeft,
   //         end: Alignment.bottomRight,
   //       ),
   //       borderRadius: BorderRadius.circular(20),
   //       boxShadow: [
   //         BoxShadow(
-  //           color: Theme.of(context).primaryColor.withOpacity(0.3),
+  //           color: Theme.of(context).primaryColor.withValues(alpha:0.3),
   //           blurRadius: 10,
   //           offset: const Offset(0, 5),
   //         ),
@@ -164,7 +164,7 @@ class _ExpertDashboardState extends State<ExpertDashboard>
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha:0.2),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: Colors.white, size: 16),

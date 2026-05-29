@@ -109,13 +109,13 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
             borderRadius: BorderRadius.circular(20), // 2xl rounded
             border: Border.all(
               color: isDark
-                  ? AppColors.white.withOpacity(0.1)
+                  ? AppColors.white.withValues(alpha:0.1)
                   : AppColors.almostBlack100,
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                color: Colors.black.withValues(alpha:isDark ? 0.2 : 0.05),
                 offset: const Offset(0, 4),
                 blurRadius: 12,
               ),

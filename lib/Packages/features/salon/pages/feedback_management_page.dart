@@ -132,7 +132,7 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
               decoration: BoxDecoration(
                 color: isSelected
                     ? Theme.of(context).primaryColor
-                    : Theme.of(context).primaryColor.withOpacity(0.05),
+                    : Theme.of(context).primaryColor.withValues(alpha:0.05),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -163,7 +163,7 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.1)
+              ? AppColors.white.withValues(alpha:0.1)
               : AppColors.almostBlack50,
         ),
       ),

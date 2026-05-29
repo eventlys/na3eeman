@@ -337,7 +337,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   }
 
   Widget _buildSalonsHeader() {
-    final key = 'category_${widget.category.nameEn.toLowerCase().replaceAll(' & ', '_').replaceAll(' ', '_')}';
+    final key = 'category_${widget.category.nameEn.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
@@ -457,7 +457,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
             itemBuilder: (context, index) {
               final sub = subCats[index];
               final isSelected = _searchQuery == sub.toLowerCase();
-              final key = 'service_${sub.toLowerCase().replaceAll(' + ', '_').replaceAll(' +', '_').replaceAll('+ ', '_').replaceAll(' ', '_').replaceAll('-', '_').replaceAll('&', '_').replaceAll('\'', '').replaceAll('(', '').replaceAll(')', '').replaceAll('/', '_')}';
+              final key = 'service_${sub.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
               return Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: FilterChip(

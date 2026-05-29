@@ -119,7 +119,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.05)
+              ? AppColors.white.withValues(alpha:0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -138,7 +138,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
               dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(
                 show: true,
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha:0.1),
               ),
             ),
           ],
@@ -167,7 +167,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.05)
+              ? AppColors.white.withValues(alpha:0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -231,7 +231,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDark
-                  ? AppColors.white.withOpacity(0.05)
+                  ? AppColors.white.withValues(alpha:0.05)
                   : AppColors.almostBlack50,
             ),
           ),
@@ -240,7 +240,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
               CircleAvatar(
                 backgroundColor: Theme.of(
                   context,
-                ).primaryColor.withOpacity(0.1),
+                ).primaryColor.withValues(alpha:0.1),
                 child: Text(
                   salon['salon_name'][0],
                   style: TextStyle(
@@ -290,7 +290,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.05)
+              ? AppColors.white.withValues(alpha:0.05)
               : AppColors.almostBlack50,
         ),
       ),

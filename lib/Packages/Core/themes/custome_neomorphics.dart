@@ -27,7 +27,7 @@ class CustomNeumorphicIcon extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.15 : 0.06),
+            color: Colors.black.withValues(alpha:isDark ? 0.15 : 0.06),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -72,7 +72,7 @@ class CustomNeumorphicContainer extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.15 : 0.05),
+            color: Colors.black.withValues(alpha:isDark ? 0.15 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -144,8 +144,8 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
     if (widget.shadowColor != null) return widget.shadowColor!;
     final brightness = _getBrightness(context);
     return brightness == Brightness.dark
-        ? Colors.black.withOpacity(0.3)
-        : AppColor.primaryOrange.withOpacity(0.25);
+        ? Colors.black.withValues(alpha:0.3)
+        : AppColor.primaryOrange.withValues(alpha:0.25);
   }
 
   @override

@@ -369,9 +369,9 @@ class _ExportTab extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: Colors.red.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.withOpacity(0.3)),
+                border: Border.all(color: Colors.red.withValues(alpha:0.3)),
               ),
               child: Row(
                 children: [
@@ -478,7 +478,7 @@ class _ImportTab extends StatelessWidget {
                     style: BorderStyle.solid,
                   ),
                   borderRadius: BorderRadius.circular(8),
-                  color: hasFile ? AppColors.primary.withOpacity(0.05) : null,
+                  color: hasFile ? AppColors.primary.withValues(alpha:0.05) : null,
                 ),
                 child: Column(
                   children: [
@@ -572,9 +572,9 @@ class _ImportTab extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.amber.withOpacity(0.1),
+              color: Colors.amber.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.amber.withOpacity(0.3)),
+              border: Border.all(color: Colors.amber.withValues(alpha:0.3)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -685,9 +685,9 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha:0.3)),
       ),
       child: Column(
         children: [
@@ -734,7 +734,7 @@ class _SectionCard extends StatelessWidget {
         border: Border.all(color: theme.dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha:0.03),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -748,7 +748,7 @@ class _SectionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.12),
+                  color: iconColor.withValues(alpha:0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: iconColor, size: 18),

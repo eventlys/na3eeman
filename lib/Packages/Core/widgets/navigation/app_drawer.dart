@@ -246,14 +246,14 @@ class _DrawerHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [primary, primary.withOpacity(0.7)],
+          colors: [primary, primary.withValues(alpha:0.7)],
         ),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: Colors.white.withOpacity(0.2),
+            backgroundColor: Colors.white.withValues(alpha:0.2),
             backgroundImage: avatarPath != null
                 ? AssetImage(avatarPath!)
                 : null,
@@ -282,7 +282,7 @@ class _DrawerHeader extends StatelessWidget {
                   Text(
                     userEmail!,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha:0.8),
                       fontSize: 12,
                     ),
                   ),
@@ -293,7 +293,7 @@ class _DrawerHeader extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha:0.2),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                   child: Text(
@@ -329,7 +329,7 @@ class _DrawerSection extends StatelessWidget {
           child: Text(
             title.toUpperCase(),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha:0.7),
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
@@ -384,7 +384,7 @@ class _DrawerItem extends StatelessWidget {
           ),
         ),
         selected: _isSelected,
-        selectedTileColor: primary.withOpacity(0.1),
+        selectedTileColor: primary.withValues(alpha:0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),
@@ -413,14 +413,14 @@ class _DrawerFooter extends StatelessWidget {
         leading: Icon(
           Icons.logout_rounded,
           size: 22,
-          color: AppColor.error.withOpacity(0.8),
+          color: AppColor.error.withValues(alpha:0.8),
         ),
         title: Text(
           "log_out".tr(),
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColor.error.withOpacity(0.9),
+            color: AppColor.error.withValues(alpha:0.9),
           ),
         ),
         shape: RoundedRectangleBorder(

@@ -357,14 +357,14 @@ class _SummaryCard extends StatelessWidget {
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       gradient: LinearGradient(
-        colors: [AppColors.primary, AppColors.primary.withOpacity(0.7)],
+        colors: [AppColors.primary, AppColors.primary.withValues(alpha:0.7)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       borderRadius: BorderRadius.circular(20),
       boxShadow: [
         BoxShadow(
-          color: AppColors.primary.withOpacity(0.3),
+          color: AppColors.primary.withValues(alpha:0.3),
           blurRadius: 16,
           offset: const Offset(0, 8),
         ),
@@ -434,7 +434,7 @@ class _ExpenseCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
+              color: color.withValues(alpha:0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 22),

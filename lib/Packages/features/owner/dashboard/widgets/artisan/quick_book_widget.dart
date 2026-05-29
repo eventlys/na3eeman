@@ -16,14 +16,14 @@ class QuickBookWidget extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.75)],
+            colors: [theme.primaryColor, theme.primaryColor.withValues(alpha:0.75)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: theme.primaryColor.withOpacity(0.3),
+              color: theme.primaryColor.withValues(alpha:0.3),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),
@@ -51,7 +51,7 @@ class QuickBookWidget extends StatelessWidget {
                 Text(
                   "add_a_new_appointment".tr(),
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha:0.8),
                     fontSize: 13,
                   ),
                 ),

@@ -66,7 +66,7 @@ class AdsHorizontalList extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor.withOpacity(0.8),
+                        Theme.of(context).primaryColor.withValues(alpha:0.8),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -104,7 +104,7 @@ class AdsHorizontalList extends StatelessWidget {
                             Text(
                               ad['details'] ?? 'Special details and rewards',
                               style: TextStyle(
-                                color: AppColors.white.withOpacity(0.9),
+                                color: AppColors.white.withValues(alpha:0.9),
                                 fontSize: 13,
                               ),
                               maxLines: 2,
@@ -117,7 +117,7 @@ class AdsHorizontalList extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.white.withOpacity(0.2),
+                                color: AppColors.white.withValues(alpha:0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
@@ -147,7 +147,7 @@ class AdsHorizontalList extends StatelessWidget {
                       Icon(
                         Icons.campaign_rounded,
                         size: 64,
-                        color: AppColors.white.withOpacity(0.4),
+                        color: AppColors.white.withValues(alpha:0.4),
                       ),
                     ],
                   ),

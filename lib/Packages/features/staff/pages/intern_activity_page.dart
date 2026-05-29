@@ -185,7 +185,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.1)
+              ? AppColors.white.withValues(alpha:0.1)
               : AppColors.almostBlack50,
         ),
       ),
@@ -194,7 +194,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha:0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 20),
@@ -245,7 +245,7 @@ class _InternActivityPageState extends State<InternActivityPage> {
                     (status == 'Completed' || status == 'COMPLETED'
                             ? AppColors.success
                             : AppColors.almostBlack50)
-                        .withOpacity(0.1),
+                        .withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(

@@ -39,12 +39,12 @@ class SubscriptionUpgradePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: isDark
-                      ? AppColors.white.withOpacity(0.1)
+                      ? AppColors.white.withValues(alpha:0.1)
                       : AppColors.almostBlack50,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withValues(alpha:0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 10),
                   ),
@@ -121,10 +121,10 @@ class SubscriptionUpgradePage extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.05),
+                color: Theme.of(context).primaryColor.withValues(alpha:0.05),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).primaryColor.withValues(alpha:0.1),
                 ),
               ),
               child: Column(
@@ -164,9 +164,9 @@ class SubscriptionUpgradePage extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.05),
+                  color: Colors.amber.withValues(alpha:0.05),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.amber.withOpacity(0.2)),
+                  border: Border.all(color: Colors.amber.withValues(alpha:0.2)),
                 ),
                 child: Row(
                   children: [

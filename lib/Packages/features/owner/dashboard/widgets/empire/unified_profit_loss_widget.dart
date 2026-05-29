@@ -92,7 +92,7 @@ class UnifiedProfitLossWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.orange.withOpacity(0.08),
+            color: Colors.orange.withValues(alpha:0.08),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Text(
@@ -115,7 +115,7 @@ class UnifiedProfitLossWidget extends StatelessWidget {
                         dotData: const FlDotData(show: false),
                         belowBarData: BarAreaData(
                           show: true,
-                          color: theme.primaryColor.withOpacity(0.1),
+                          color: theme.primaryColor.withValues(alpha:0.1),
                         ),
                       ),
                     ],

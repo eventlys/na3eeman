@@ -76,12 +76,12 @@ class OffersHorizontalList extends StatelessWidget {
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
-                      color: Theme.of(context).primaryColor.withOpacity(0.2),
+                      color: Theme.of(context).primaryColor.withValues(alpha:0.2),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha:0.05),
                         offset: const Offset(0, 4),
                         blurRadius: 10,
                       ),

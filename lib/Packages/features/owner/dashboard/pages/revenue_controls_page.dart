@@ -265,7 +265,7 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.1)
+              ? AppColors.white.withValues(alpha:0.1)
               : AppColors.almostBlack50,
         ),
       ),

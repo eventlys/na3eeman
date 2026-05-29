@@ -134,7 +134,7 @@ class CampaignManagement {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: AppColors.almostBlack300.withOpacity(0.5),
+                        color: AppColors.almostBlack300.withValues(alpha:0.5),
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -492,9 +492,9 @@ class CampaignManagement {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha:0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withValues(alpha:0.2)),
         ),
         child: Row(
           children: [

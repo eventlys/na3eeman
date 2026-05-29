@@ -80,7 +80,7 @@ class BranchComparisonMapWidget extends StatelessWidget {
                           Expanded(
                             child: LinearProgressIndicator(
                               value: occupancy / 100,
-                              backgroundColor: Colors.grey.withOpacity(0.2),
+                              backgroundColor: Colors.grey.withValues(alpha:0.2),
                               valueColor: const AlwaysStoppedAnimation(
                                 Colors.teal,
                               ),

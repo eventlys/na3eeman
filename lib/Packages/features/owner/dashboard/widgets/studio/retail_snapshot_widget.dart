@@ -86,7 +86,7 @@ class RetailSnapshotWidget extends StatelessWidget {
                   barRods: [
                     BarChartRodData(
                       toY: val == 0 ? 5 : val, // Min height for visibility
-                      color: theme.primaryColor.withOpacity(val == 0 ? 0.3 : 1),
+                      color: theme.primaryColor.withValues(alpha:val == 0 ? 0.3 : 1),
                       width: 14,
                       borderRadius: BorderRadius.circular(4),
                     ),

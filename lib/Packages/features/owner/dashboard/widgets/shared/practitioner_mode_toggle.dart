@@ -29,13 +29,13 @@ class PractitionerModeToggle extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isManager
-              ? theme.primaryColor.withOpacity(0.12)
-              : theme.colorScheme.secondary.withOpacity(0.12),
+              ? theme.primaryColor.withValues(alpha:0.12)
+              : theme.colorScheme.secondary.withValues(alpha:0.12),
           borderRadius: BorderRadius.circular(50),
           border: Border.all(
             color: isManager
-                ? theme.primaryColor.withOpacity(0.4)
-                : theme.colorScheme.secondary.withOpacity(0.4),
+                ? theme.primaryColor.withValues(alpha:0.4)
+                : theme.colorScheme.secondary.withValues(alpha:0.4),
           ),
         ),
         child: Row(
@@ -63,8 +63,8 @@ class PractitionerModeToggle extends StatelessWidget {
               Icons.swap_horiz_rounded,
               size: 16,
               color: isManager
-                  ? theme.primaryColor.withOpacity(0.6)
-                  : theme.colorScheme.secondary.withOpacity(0.6),
+                  ? theme.primaryColor.withValues(alpha:0.6)
+                  : theme.colorScheme.secondary.withValues(alpha:0.6),
             ),
           ],
         ),

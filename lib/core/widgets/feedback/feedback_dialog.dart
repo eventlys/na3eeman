@@ -100,7 +100,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha:0.2),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -128,7 +128,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                   style: IconButton.styleFrom(
                     backgroundColor: isDark
                         ? Colors.white10
-                        : Colors.black.withOpacity(0.05),
+                        : Colors.black.withValues(alpha:0.05),
                   ),
                 ),
               ],
@@ -190,7 +190,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                 ),
                 filled: true,
                 fillColor: isDark
-                    ? Colors.white.withOpacity(0.03)
+                    ? Colors.white.withValues(alpha:0.03)
                     : Colors.grey[50],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),

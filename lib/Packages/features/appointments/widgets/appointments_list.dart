@@ -48,8 +48,8 @@ class AppointmentsList extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
               color: isDarkMode
-                  ? AppColor.darkTextHint.withOpacity(0.2)
-                  : AppColor.lightTextHint.withOpacity(0.2),
+                  ? AppColor.darkTextHint.withValues(alpha:0.2)
+                  : AppColor.lightTextHint.withValues(alpha:0.2),
             ),
             boxShadow: [
               BoxShadow(
@@ -65,8 +65,8 @@ class AppointmentsList extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: isDarkMode
-                  ? AppColor.darkInfo.withOpacity(0.2)
-                  : AppColor.lightInfo.withOpacity(0.2),
+                  ? AppColor.darkInfo.withValues(alpha:0.2)
+                  : AppColor.lightInfo.withValues(alpha:0.2),
               child: Icon(
                 Icons.person,
                 color: isDarkMode ? AppColor.darkInfo : AppColor.lightInfo,

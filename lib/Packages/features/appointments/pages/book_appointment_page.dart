@@ -478,7 +478,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
+                      color: Colors.blue.withValues(alpha:0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -540,12 +540,12 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: _paymentProof == null
-                              ? Colors.red.withOpacity(0.5)
-                              : Colors.grey.withOpacity(0.3),
+                              ? Colors.red.withValues(alpha:0.5)
+                              : Colors.grey.withValues(alpha:0.3),
                         ),
                         borderRadius: BorderRadius.circular(12),
                         color: _paymentProof == null
-                            ? Colors.red.withOpacity(0.02)
+                            ? Colors.red.withValues(alpha:0.02)
                             : Colors.transparent,
                       ),
                       child: Row(
@@ -635,10 +635,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: selected ? color : Colors.grey.withOpacity(0.2),
+              color: selected ? color : Colors.grey.withValues(alpha:0.2),
               width: selected ? 2 : 1,
             ),
-            color: selected ? color.withOpacity(0.05) : Colors.transparent,
+            color: selected ? color.withValues(alpha:0.05) : Colors.transparent,
           ),
           child: Row(
             children: [
@@ -965,9 +965,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       margin: const EdgeInsets.only(bottom: 24),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
+                        color: Colors.red.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                        border: Border.all(color: Colors.red.withValues(alpha:0.3)),
                       ),
                       child: Row(
                         children: [
@@ -1033,13 +1033,13 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: _isGift
-                        ? Colors.pink.withOpacity(0.05)
+                        ? Colors.pink.withValues(alpha:0.05)
                         : (isDark
                               ? AppColors.almostBlack600
-                              : Colors.grey.withOpacity(0.05)),
+                              : Colors.grey.withValues(alpha:0.05)),
                     borderRadius: BorderRadius.circular(16),
                     border: _isGift
-                        ? Border.all(color: Colors.pink.withOpacity(0.3))
+                        ? Border.all(color: Colors.pink.withValues(alpha:0.3))
                         : null,
                   ),
                   child: Column(
@@ -1163,7 +1163,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   decoration: BoxDecoration(
                     color: isDark
                         ? AppColors.almostBlack600
-                        : Theme.of(context).primaryColor.withOpacity(0.05),
+                        : Theme.of(context).primaryColor.withValues(alpha:0.05),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -1295,7 +1295,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           border: Border.all(
             color: isSelected
                 ? Theme.of(context).primaryColor
-                : Colors.grey.withOpacity(0.3),
+                : Colors.grey.withValues(alpha:0.3),
             width: 2,
           ),
         ),
@@ -1328,7 +1328,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha:0.05),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -1367,7 +1367,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             decoration: BoxDecoration(
               color: isDark ? AppColors.almostBlack600 : Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+              border: Border.all(color: Colors.grey.withValues(alpha:0.2)),
             ),
             child: Row(
               children: [
@@ -1395,7 +1395,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(
                       context,
-                    ).primaryColor.withOpacity(0.1),
+                    ).primaryColor.withValues(alpha:0.1),
                     foregroundColor: Theme.of(context).primaryColor,
                     elevation: 0,
                   ),
@@ -1467,7 +1467,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     border: Border.all(
                       color: isSelected
                           ? Theme.of(context).primaryColor
-                          : Colors.grey.withOpacity(0.3),
+                          : Colors.grey.withValues(alpha:0.3),
                     ),
                   ),
                   child: Column(
@@ -1581,7 +1581,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     border: Border.all(
                       color: isSelected
                           ? Theme.of(context).primaryColor
-                          : Colors.grey.withOpacity(0.2),
+                          : Colors.grey.withValues(alpha:0.2),
                     ),
                   ),
                   child: Column(
@@ -1663,7 +1663,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               border: Border.all(
                 color: isSelected
                     ? Theme.of(context).primaryColor
-                    : Colors.grey.withOpacity(0.2),
+                    : Colors.grey.withValues(alpha:0.2),
               ),
             ),
             child: Center(

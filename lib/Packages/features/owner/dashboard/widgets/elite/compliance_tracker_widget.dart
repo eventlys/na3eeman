@@ -111,7 +111,7 @@ class ComplianceTrackerWidget extends StatelessWidget {
                 const SizedBox(height: 4),
                 LinearProgressIndicator(
                   value: pct,
-                  backgroundColor: Colors.grey.withOpacity(0.2),
+                  backgroundColor: Colors.grey.withValues(alpha:0.2),
                   valueColor: AlwaysStoppedAnimation(
                     done ? Colors.green : Colors.orange,
                   ),

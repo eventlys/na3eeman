@@ -76,10 +76,10 @@ class AdminUserAnalyticsPage extends StatelessWidget {
       height: 200,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha:0.05),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          color: Theme.of(context).primaryColor.withValues(alpha:0.1),
         ),
       ),
       child: Center(
@@ -115,7 +115,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -156,7 +156,7 @@ class AdminUserAnalyticsPage extends StatelessWidget {
           const SizedBox(height: 8),
           LinearProgressIndicator(
             value: percent,
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            backgroundColor: Theme.of(context).primaryColor.withValues(alpha:0.1),
             color: color,
             minHeight: 8,
             borderRadius: BorderRadius.circular(4),

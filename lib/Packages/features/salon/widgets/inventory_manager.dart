@@ -283,7 +283,7 @@ class InventoryManagerState extends State<InventoryManager> {
               Icon(
                 Icons.store_mall_directory_outlined,
                 size: 64,
-                color: AppColor.lightTextSecondary.withOpacity(0.5),
+                color: AppColor.lightTextSecondary.withValues(alpha:0.5),
               ),
               const SizedBox(height: 16),
               Text(

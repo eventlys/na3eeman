@@ -195,7 +195,7 @@ class _MyTimesPageState extends State<MyTimesPage>
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isDark
-                            ? AppColors.white.withOpacity(0.05)
+                            ? AppColors.white.withValues(alpha:0.05)
                             : AppColors.almostBlack50,
                       ),
                     ),
@@ -415,7 +415,7 @@ class _MyTimesPageState extends State<MyTimesPage>
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: isDark
-                            ? AppColors.white.withOpacity(0.05)
+                            ? AppColors.white.withValues(alpha:0.05)
                             : AppColors.almostBlack50,
                       ),
                     ),
@@ -448,7 +448,7 @@ class _MyTimesPageState extends State<MyTimesPage>
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.1),
+                            color: statusColor.withValues(alpha:0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
@@ -496,7 +496,7 @@ class _MyTimesPageState extends State<MyTimesPage>
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withOpacity(0.05)
+              ? AppColors.white.withValues(alpha:0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -505,7 +505,7 @@ class _MyTimesPageState extends State<MyTimesPage>
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
+            color: Theme.of(context).primaryColor.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(icon, color: Theme.of(context).primaryColor),

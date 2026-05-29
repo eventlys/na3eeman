@@ -154,7 +154,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withValues(alpha:0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -190,7 +190,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withValues(alpha:0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -389,7 +389,7 @@ class _HistoryPageState extends State<HistoryPage> {
               const SizedBox(height: 16),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                tileColor: Theme.of(context).primaryColor.withOpacity(0.05),
+                tileColor: Theme.of(context).primaryColor.withValues(alpha:0.05),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -484,7 +484,7 @@ class _HistoryPageState extends State<HistoryPage> {
         Icon(
           Icons.history_rounded,
           size: 80,
-          color: Colors.grey.withOpacity(0.3),
+          color: Colors.grey.withValues(alpha:0.3),
         ),
         const SizedBox(height: 24),
         Text(
@@ -553,7 +553,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(0.1),
+                  color: primaryColor.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

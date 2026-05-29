@@ -14,6 +14,7 @@ import '../../appointments/widgets/soonest_appointment_card.dart';
 import '../widgets/category_card.dart';
 import '../widgets/customer_feedback_section.dart';
 import '../../../../Models/salon/category_model.dart';
+import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 
 class CustomerHomePage extends StatefulWidget {
   const CustomerHomePage({super.key});
@@ -143,7 +144,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                   const SizedBox(width: 8),
                   IconButtonStyled(
                     icon: Icons.notifications_none_rounded,
-                    onPressed: () => _showNotifications(context),
+                    onPressed: () => NotificationsBottomSheet.show(context),
                   ),
                 ],
               ),
@@ -197,11 +198,11 @@ class _CustomerHomePageState extends State<CustomerHomePage>
               colors: isDark
                   ? [
                       AppColors.almostBlack600,
-                      AppColors.almostBlack600.withOpacity(0.8),
+                      AppColors.almostBlack600.withValues(alpha:0.8),
                     ]
                   : [
                       Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withOpacity(0.85),
+                      Theme.of(context).primaryColor.withValues(alpha:0.85),
                     ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -211,7 +212,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
               BoxShadow(
                 color: Theme.of(
                   context,
-                ).primaryColor.withOpacity(isDark ? 0 : 0.2),
+                ).primaryColor.withValues(alpha:isDark ? 0 : 0.2),
                 offset: const Offset(0, 10),
                 blurRadius: 20,
               ),
@@ -229,7 +230,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       Text(
                         'loyalty_balance_caps'.tr(),
                         style: TextStyle(
-                          color: AppColors.white.withOpacity(0.7),
+                          color: AppColors.white.withValues(alpha:0.7),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.2,
@@ -249,7 +250,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.white.withOpacity(0.2),
+                      color: AppColors.white.withValues(alpha:0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -298,42 +299,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
     );
   }
 
-  void _showNotifications(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildBottomSheetContainer(
-        context: context,
-        title: "notifications".tr(),
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 3,
-          itemBuilder: (context, index) {
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(
-                  context,
-                ).primaryColor.withValues(alpha: 0.05),
-                child: Icon(
-                  Icons.notifications_rounded,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              title: Text(
-                'notification_title_indexed'.tr(args: [(index + 1).toString()]),
-              ),
-              subtitle: Text(
-                "this_is_a_notification_message_mockup_details".tr(),
-              ),
-              trailing: Text("key2_h_ago".tr(), style: TextStyle(fontSize: 12)),
-            );
-          },
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildCategoriesGrid(bool isDark, Gender? userGender) {
     final isLadies = userGender == Gender.female;
@@ -433,12 +399,12 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   //                           decoration: BoxDecoration(
   //                             color: Theme.of(
   //                               context,
-  //                             ).primaryColor.withOpacity(0.1),
+  //                             ).primaryColor.withValues(alpha:0.1),
   //                             borderRadius: BorderRadius.circular(20),
   //                             border: Border.all(
   //                               color: Theme.of(
   //                                 context,
-  //                               ).primaryColor.withOpacity(0.2),
+  //                               ).primaryColor.withValues(alpha:0.2),
   //                             ),
   //                           ),
   //                           child: Icon(

@@ -84,7 +84,7 @@ class _AppointmentSearchPageState extends State<AppointmentSearchPage> {
           filled: true,
           fillColor: isDark
               ? AppColors.almostBlack600
-              : AppColors.almostBlack50.withOpacity(0.3),
+              : AppColors.almostBlack50.withValues(alpha:0.3),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
@@ -241,7 +241,7 @@ class _AppointmentSearchPageState extends State<AppointmentSearchPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

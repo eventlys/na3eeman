@@ -162,7 +162,7 @@ class _ReportsPageState extends State<ReportsPage> {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: Image.asset(icon, width: 24, height: 24, color: color),
@@ -186,7 +186,7 @@ class _ReportsPageState extends State<ReportsPage> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColor.primary.withOpacity(0.1),
+              color: AppColor.primary.withValues(alpha:0.1),
               shape: BoxShape.circle,
             ),
             child: Image.asset(

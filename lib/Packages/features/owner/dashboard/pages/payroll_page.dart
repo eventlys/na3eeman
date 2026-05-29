@@ -233,12 +233,12 @@ class _PayrollCard extends StatelessWidget {
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isPaid ? Colors.green.withOpacity(0.4) : theme.dividerColor,
+          color: isPaid ? Colors.green.withValues(alpha:0.4) : theme.dividerColor,
           width: isPaid ? 1.5 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha:0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -250,7 +250,7 @@ class _PayrollCard extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: AppColors.primary.withOpacity(0.12),
+                backgroundColor: AppColors.primary.withValues(alpha:0.12),
                 child: Text(
                   name.isNotEmpty ? name[0].toUpperCase() : '?',
                   style: TextStyle(
@@ -286,8 +286,8 @@ class _PayrollCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isPaid
-                      ? Colors.green.withOpacity(0.12)
-                      : Colors.orange.withOpacity(0.12),
+                      ? Colors.green.withValues(alpha:0.12)
+                      : Colors.orange.withValues(alpha:0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

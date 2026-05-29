@@ -59,7 +59,7 @@ class UpgradePromptCard extends StatelessWidget {
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.primaryColor.withOpacity(0.3),
+          color: theme.primaryColor.withValues(alpha:0.3),
           width: 1.5,
         ),
       ),
@@ -69,7 +69,7 @@ class UpgradePromptCard extends StatelessWidget {
           Icon(
             Icons.lock_outline_rounded,
             size: 36,
-            color: theme.primaryColor.withOpacity(0.6),
+            color: theme.primaryColor.withValues(alpha:0.6),
           ),
           const SizedBox(height: 12),
           Text(

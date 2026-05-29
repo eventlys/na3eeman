@@ -167,7 +167,7 @@ class _ExpertSchedulePageState extends State<ExpertSchedulePage> {
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isDark
-                              ? AppColors.white.withOpacity(0.05)
+                              ? AppColors.white.withValues(alpha:0.05)
                               : AppColors.almostBlack50,
                         ),
                       ),

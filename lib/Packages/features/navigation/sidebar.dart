@@ -10,6 +10,7 @@ import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
 // import '../../../core/widgets/rules/rules_guide_sheet.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Sidebar extends StatelessWidget {
   final SidebarController controller;
@@ -101,21 +102,43 @@ class Sidebar extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'na3eeman'.tr(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Theme.of(context).primaryColor,
-                        letterSpacing: 2,
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final isDark = Theme.of(context).brightness == Brightness.dark;
+                        final locale = Localizations.localeOf(context).languageCode;
+                        final isArabic = locale == 'ar';
+
+                        String logoPath;
+                        if (isArabic) {
+                          logoPath = isDark
+                              ? 'assets/images/logo_ar_dark.png'
+                              : 'assets/images/logo_ar_light.png';
+                        } else {
+                          logoPath = isDark
+                              ? 'assets/images/logo_en_dark.png'
+                              : 'assets/images/logo_en_light.png';
+                        }
+
+                        return Image.asset(
+                          logoPath,
+                          width: 120,
+                          fit: BoxFit.contain,
+                        );
+                      },
                     ),
-                    const Text(
-                      'Version 2.0.0',
-                      style: TextStyle(
-                        color: AppColors.almostBlack300,
-                        fontSize: 10,
-                      ),
+                    const SizedBox(height: 8),
+                    FutureBuilder<PackageInfo>(
+                      future: PackageInfo.fromPlatform(),
+                      builder: (context, snapshot) {
+                        final version = snapshot.hasData ? snapshot.data!.version : '2.0.0';
+                        return Text(
+                          'Version $version',
+                          style: const TextStyle(
+                            color: AppColors.almostBlack300,
+                            fontSize: 10,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
