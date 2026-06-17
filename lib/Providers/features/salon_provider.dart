@@ -9,6 +9,7 @@ import '../../Models/salon/salon_service_model.dart';
 import '../../Models/inventory/inventory_item.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/endpoints.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class SalonProvider extends BaseProvider {
   List<Salon> _salons = [];
@@ -75,7 +76,7 @@ class SalonProvider extends BaseProvider {
   Future<void> loadSalons() async {
     try {
       final response = await ApiService().get(Endpoints.salons);
-      print('Frontend: loadSalons Response: $response');
+      AppLogger.info('loadSalons Response: $response');
       final List<dynamic> results =
           response['results'] ?? response['data'] ?? [];
       _salons = results
@@ -85,7 +86,7 @@ class SalonProvider extends BaseProvider {
         _selectedSalon = _salons.first; // Default select
       }
     } catch (e) {
-      print('Frontend: loadSalons Error: $e');
+      AppLogger.info('loadSalons Error: $e');
     }
   }
 
@@ -97,14 +98,14 @@ class SalonProvider extends BaseProvider {
       final response = await ApiService().get(
         '/salons/salons/${_selectedSalon!.id}/branches/',
       );
-      print('Frontend: loadBranches Response: $response');
+      AppLogger.info('loadBranches Response: $response');
       final List<dynamic> results =
           response['results'] ?? response['data'] ?? [];
       _branches = results
           .map<Branch>((json) => Branch.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print('Frontend: loadBranches Error: $e');
+      AppLogger.info('loadBranches Error: $e');
     }
   }
 
@@ -114,7 +115,7 @@ class SalonProvider extends BaseProvider {
       final response = await ApiService().get(
         '/salons/${_selectedSalon!.id}/services/',
       );
-      print('Frontend: loadServices Response: $response');
+      AppLogger.info('loadServices Response: $response');
       final List<dynamic> results =
           response['results'] ?? response['data'] ?? response['options'] ?? [];
       _services = results
@@ -123,7 +124,7 @@ class SalonProvider extends BaseProvider {
           )
           .toList();
     } catch (e) {
-      print('Frontend: loadServices Error: $e');
+      AppLogger.info('loadServices Error: $e');
     }
   }
 
@@ -133,7 +134,7 @@ class SalonProvider extends BaseProvider {
       final response = await ApiService().get(
         Endpoints.salonInventory(_selectedSalon!.id),
       );
-      print('Frontend: loadInventory Response: $response');
+      AppLogger.info('loadInventory Response: $response');
       final List<dynamic> results =
           response['results'] ?? response['data'] ?? [];
       _inventory = results
@@ -142,7 +143,7 @@ class SalonProvider extends BaseProvider {
           )
           .toList();
     } catch (e) {
-      print('Frontend: loadInventory Error: $e');
+      AppLogger.info('loadInventory Error: $e');
     }
   }
 
@@ -179,32 +180,32 @@ class SalonProvider extends BaseProvider {
           'category': 'Consumables', // Default for demo
           'stock': stock,
         };
-        print('Frontend: Creating Product with data: $data');
+        AppLogger.info('Creating Product with data: $data');
         // Actual endpoint logic here or simulation with endpoint setups
         final response = await ApiService().post(
           '/salons/${_selectedSalon!.id}/inventory/',
           data: data,
         );
-        print('Frontend: createProduct Response: $response');
+        AppLogger.info('createProduct Response: $response');
         await loadInventory(); // Reload to capture new list
       } catch (e) {
-        print('Frontend: createProduct Error: $e');
+        AppLogger.info('createProduct Error: $e');
       }
     }
   }
 
   Future<void> adjustStockOnBackend(String inventoryId, int increment) async {
     try {
-      print('Frontend: Adjusting Stock count for $inventoryId by $increment');
+      AppLogger.info('Adjusting Stock count for $inventoryId by $increment');
       // Simulated endpoint PUT logic
       final response = await ApiService().post(
         '/salons/inventory/$inventoryId/adjust_stock/',
         data: {'increment': increment},
       );
-      print('Frontend: adjustStock Response: $response');
+      AppLogger.info('adjustStock Response: $response');
       await loadInventory(); // Reload to capture new quantities
     } catch (e) {
-      print('Frontend: adjustStock Error: $e');
+      AppLogger.info('adjustStock Error: $e');
       // For demo, apply locally if API isn't ready
       final index = _inventory.indexWhere((item) => item.id == inventoryId);
       if (index != -1) {
@@ -241,21 +242,21 @@ class SalonProvider extends BaseProvider {
           'salonPhoneNum': phone,
           'location': location,
           'salonDescription': description,
-          if (slogan != null) 'slogan': slogan,
-          if (openingTime != null) 'openingTime': openingTime,
-          if (closingTime != null) 'closingTime': closingTime,
+          'slogan': ?slogan,
+          'openingTime': ?openingTime,
+          'closingTime': ?closingTime,
         };
-        print('Frontend: Updating Salon on Backend with fields: $fields');
+        AppLogger.info('Updating Salon on Backend with fields: $fields');
         final response = await ApiService().updateSalonWithImages(
           salonId: _selectedSalon!.id,
           fields: fields,
           images: images,
         );
-        print('Frontend: updateSalonOnBackend Response: $response');
+        AppLogger.info('updateSalonOnBackend Response: $response');
         _selectedSalon = Salon.fromJson(response);
         notifyListeners();
       } catch (e) {
-        print('Frontend: updateSalonOnBackend Error: $e');
+        AppLogger.info('updateSalonOnBackend Error: $e');
         rethrow;
       }
     }

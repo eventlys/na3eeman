@@ -16,8 +16,9 @@ class GetSalonsUseCase {
     bool? openNow,
   }) async {
     if (page < 1) throw AppError('Page must be greater than 0');
-    if (limit < 1 || limit > 100)
+    if (limit < 1 || limit > 100) {
       throw AppError('Limit must be between 1 and 100');
+    }
 
     if (minRating != null && (minRating < 0 || minRating > 5)) {
       throw AppError('Rating must be between 0 and 5');
@@ -41,8 +42,9 @@ class SearchSalonsUseCase {
 
   Future<List<dynamic>> execute(String query) async {
     if (query.isEmpty) throw AppError('Search query cannot be empty');
-    if (query.length < 2)
+    if (query.length < 2) {
       throw AppError('Search query must be at least 2 characters');
+    }
 
     return await _repository.searchSalons(query);
   }
@@ -87,11 +89,13 @@ class SubmitReviewUseCase {
   }) async {
     if (salonId <= 0) throw AppError('Invalid salon ID');
     if (customerId <= 0) throw AppError('Invalid customer ID');
-    if (rating < 1 || rating > 5)
+    if (rating < 1 || rating > 5) {
       throw AppError('Rating must be between 1 and 5');
+    }
     if (comment.isEmpty) throw AppError('Comment cannot be empty');
-    if (comment.length < 10)
+    if (comment.length < 10) {
       throw AppError('Comment must be at least 10 characters');
+    }
 
     return await _repository.submitReview(
       salonId: salonId,
@@ -112,8 +116,9 @@ class GetNearbySalonsUseCase {
   Future<List<dynamic>> execute(double lat, double lng, double radiusKm) async {
     if (lat < -90 || lat > 90) throw AppError('Invalid latitude');
     if (lng < -180 || lng > 180) throw AppError('Invalid longitude');
-    if (radiusKm <= 0 || radiusKm > 100)
+    if (radiusKm <= 0 || radiusKm > 100) {
       throw AppError('Radius must be between 0 and 100 km');
+    }
 
     return await _repository.getNearbySalons(lat, lng, radiusKm);
   }

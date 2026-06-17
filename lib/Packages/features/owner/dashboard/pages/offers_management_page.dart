@@ -207,8 +207,9 @@ class _OffersManagementPageState extends State<OffersManagementPage>
                           'original_price': double.tryParse(originalCtrl.text),
                         },
                       );
-                      if (mounted)
+                      if (mounted) {
                         AppSnackBar.success(context, 'Offer created!');
+                      }
                       _loadOffers();
                     } catch (e) {
                       if (mounted) AppSnackBar.error(context, 'Error: $e');
@@ -282,8 +283,9 @@ class _OffersManagementPageState extends State<OffersManagementPage>
   }
 
   Widget _buildPackagesList(ThemeData theme) {
-    if (_loadingPackages)
+    if (_loadingPackages) {
       return const Center(child: CircularProgressIndicator());
+    }
     if (_packages.isEmpty) {
       return _buildEmpty(
         theme,

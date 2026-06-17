@@ -212,18 +212,18 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
           ),
           const SizedBox(height: 8),
           Text(
-            'price'.tr() + ': $price',
+            '${'price'.tr()}: $price',
             style: const TextStyle(color: AppColors.almostBlack300),
           ),
           Text(
-            'frequency'.tr() + ': $frequency',
+            '${'frequency'.tr()}: $frequency',
             style: const TextStyle(
               color: AppColors.almostBlack300,
               fontSize: 13,
             ),
           ),
           Text(
-            'assigned'.tr() + ': $assignedTo',
+            '${'assigned'.tr()}: $assignedTo',
             style: const TextStyle(
               color: AppColors.almostBlack300,
               fontSize: 13,
@@ -284,7 +284,7 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'add_new'.tr() + ' $type' + 'item'.tr(),
+                  '${'add_new'.tr()} $type${'item'.tr()}',
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -373,7 +373,7 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('error'.tr() + ': ${e.toString()}'),
+                          content: Text('${'error'.tr()}: ${e.toString()}'),
                           backgroundColor: AppColors.error,
                         ),
                       );

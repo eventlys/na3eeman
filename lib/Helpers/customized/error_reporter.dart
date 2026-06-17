@@ -1,3 +1,5 @@
+import '../../Helpers/logger.dart';
+
 import 'package:flutter/foundation.dart';
 
 class ErrorReporter {
@@ -19,8 +21,8 @@ class ErrorReporter {
 
   void reportZoneError(Object error, StackTrace stackTrace) {
     if (kDebugMode) {
-      print('Zone Error: $error');
-      print('Stack Trace: $stackTrace');
+      AppLogger.error('Zone Error: $error');
+      AppLogger.info('Stack Trace: $stackTrace');
     } else {
       _reportToService(
         FlutterErrorDetails(

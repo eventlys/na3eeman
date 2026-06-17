@@ -15,8 +15,9 @@ class AppointmentUseCases {
     int? customerId,
   }) async {
     if (page < 1) throw AppError('Page must be greater than 0');
-    if (limit < 1 || limit > 100)
+    if (limit < 1 || limit > 100) {
       throw AppError('Limit must be between 1 and 100');
+    }
 
     return await _appointmentService.getAppointments(
       page: page,
@@ -83,8 +84,9 @@ class AppointmentUseCases {
   Future<void> cancelAppointment(String appointmentId, String reason) async {
     if (appointmentId.isEmpty) throw AppError('Appointment ID is required');
     if (reason.isEmpty) throw AppError('Cancellation reason is required');
-    if (reason.length < 10)
+    if (reason.length < 10) {
       throw AppError('Reason must be at least 10 characters');
+    }
 
     await _appointmentService.cancelAppointment(appointmentId, reason);
   }

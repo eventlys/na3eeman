@@ -93,16 +93,13 @@ dependencies:
 
   package_info_plus: any
   shared_preferences: any
+  flutter_markdown: ^0.7.4
 
 dev_dependencies:
-  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-#  flutter_driver_extension_extensions: ^0.0.4
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+  flutter_lints: ^6.0.0
 
-# The following section is specific to Flutter packages.
 flutter:
   generate: true
 
@@ -119,6 +116,7 @@ flutter:
     - assets/Lang/
     - assets/categories/male/
     - assets/categories/female/
+    - assets/data/
     - .env
     - .env.dev
 

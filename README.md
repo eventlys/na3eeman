@@ -1365,6 +1365,3 @@ class HomeScreen extends StatelessWidget {
 ```dart
 
 ```
-
-
-

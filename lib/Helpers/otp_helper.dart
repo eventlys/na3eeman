@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class OtpHelper {
-  final Logger _logger = Logger();
 
   /// Validates OTP format
   bool validateOtpFormat(String otp, {int requiredLength = 6}) {
     if (otp.length != requiredLength) {
-      _logger.w('OTP length invalid: ${otp.length}, expected: $requiredLength');
+      AppLogger.warning('OTP length invalid: ${otp.length}, expected: $requiredLength');
       return false;
     }
 
     if (!RegExp(r'^\d+$').hasMatch(otp)) {
-      _logger.w('OTP contains non-digit characters');
+      AppLogger.warning('OTP contains non-digit characters');
       return false;
     }
 

@@ -33,6 +33,7 @@ import 'analytics_service.dart';
 import 'core/app_management_service.dart';
 import 'storage_service.dart';
 import 'utils/filters_service.dart'; // Consolidated utilities
+import 'package:na3eeman/Helpers/logger.dart';
 
 final GetIt locator = GetIt.instance;
 
@@ -98,7 +99,7 @@ class ServiceLocator {
     await locator.get<AppManagementService>().initialize();
     await locator.get<LanguageService>().init();
 
-    print('✅ All services initialized successfully');
+    AppLogger.info('All services initialized successfully');
   }
 
   static T get<T extends Object>() => locator.get<T>();

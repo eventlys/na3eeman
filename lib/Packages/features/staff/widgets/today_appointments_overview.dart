@@ -6,6 +6,7 @@ import '../../../../../Services/api/api_service.dart';
 import '../../../../../Services/api/endpoints.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 // import '../../../../../Providers/main_providers.dart';
 
 class TodayAppointmentsOverview extends StatefulWidget {
@@ -88,7 +89,7 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
         widget.onCountLoaded!(_todayAppointments.length);
       }
     } catch (e) {
-      print('error_loading_grid'.tr(args: [e.toString()]));
+      AppLogger.error('error loading today appointments grid', error: e);
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);

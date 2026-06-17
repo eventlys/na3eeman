@@ -138,8 +138,9 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
         );
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         AppSnackBar.error(context, 'invalid_voucher_code_error'.tr());
+      }
     }
   }
 
@@ -628,12 +629,13 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
     return FutureBuilder<List<dynamic>>(
       future: ApiService().getSalonExperts(authProvider.user!.salonId!),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting)
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
+        }
         if (snapshot.hasError) return Text('Error: ${snapshot.error}');
         final experts = snapshot.data ?? [];
         return DropdownButtonFormField<int>(
-          value: _selectedExpertId,
+          initialValue: _selectedExpertId,
           decoration: InputDecoration(
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
             hintText: 'select_expert'.tr(),
@@ -897,8 +899,9 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
         _selectedDateTime = null;
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         AppSnackBar.error(context, 'booking_failed'.tr(args: [e.toString()]));
+      }
     } finally {
       if (mounted) setState(() => _isProcessing = false);
     }

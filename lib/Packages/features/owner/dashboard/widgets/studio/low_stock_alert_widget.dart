@@ -29,11 +29,12 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
     final owner = context.read<OwnerProvider>();
     final salonId = owner.activeSalonId;
     if (salonId == null) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _isLoading = false;
           _error = 'No salon selected';
         });
+      }
       return;
     }
 
@@ -171,10 +172,11 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_error != null)
+    if (_error != null) {
       return Center(
         child: Text(_error!, style: const TextStyle(color: Colors.red)),
       );
+    }
 
     final theme = Theme.of(context);
 

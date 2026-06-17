@@ -21,6 +21,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'Services/notification/fcm_service.dart';
 import 'Helpers/notification_helper.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'Providers/features/points_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

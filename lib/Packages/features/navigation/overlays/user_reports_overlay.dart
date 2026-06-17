@@ -7,6 +7,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../Services/api/api_service.dart';
 import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
 class UserReportsOverlay extends StatefulWidget {
@@ -77,7 +78,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
       }
       return [];
     } catch (e) {
-      print('Error fetching reports: $e');
+      AppLogger.error('Error fetching reports: $e');
       return [];
     }
   }

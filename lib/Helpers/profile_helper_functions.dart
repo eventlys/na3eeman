@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/main_providers.dart';
 import '../Services/core/user_service.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHelperFunctions {
@@ -138,7 +139,7 @@ class ProfileHelperFunctions {
       await authProvider.refreshUserData();
     } catch (e) {
       // Log the error but don't show to user since the backend update was successful
-      print('Error updating provider state: $e');
+      AppLogger.error('Error updating provider state: $e');
     }
   }
 

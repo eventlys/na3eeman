@@ -248,15 +248,17 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             'notes': notesCtrl.text,
                           },
                         );
-                        if (mounted)
+                        if (mounted) {
                           AppSnackBar.success(context, 'expense_recorded'.tr());
+                        }
                         _load();
                       } catch (e) {
-                        if (mounted)
+                        if (mounted) {
                           AppSnackBar.error(
                             context,
                             'error_msg_formatted'.tr(args: [e.toString()]),
                           );
+                        }
                       }
                     },
                     icon: const Icon(Icons.save_rounded),

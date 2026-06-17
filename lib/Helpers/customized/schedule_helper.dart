@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../Models/salon/salon_schedule_model.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 // import '../Models/salon_service_model.dart';
 
 class ScheduleHelper {
@@ -44,7 +45,7 @@ class ScheduleHelper {
   static Future<void> bookSchedule(SalonScheduleSlot scheduleSlot) async {
     // Implement actual booking logic here
     await Future.delayed(Duration(seconds: 1)); // Simulate API call
-    print('Schedule booked: ${scheduleSlot.dateTime}');
+    AppLogger.info('Schedule booked: ${scheduleSlot.dateTime}');
   }
 
   static Future<List<SalonScheduleSlot>> getUserSchedules() async {

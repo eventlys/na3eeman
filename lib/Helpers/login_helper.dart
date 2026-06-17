@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import '../Packages/Core/constants/app_color.dart';
 import '../Packages/Core/constants/app_images.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class LoginHelper {
-  final Logger _logger = Logger();
 
   static Future<bool> login(
     BuildContext context,
@@ -185,7 +184,7 @@ class LoginHelper {
         'userName': name,
       };
     } catch (e) {
-      _logger.e('Error processing login response: $e');
+      AppLogger.error('Error processing login response: $e');
       return {
         'success': false,
         'message': 'Error processing login response',
@@ -200,7 +199,7 @@ class LoginHelper {
 
   /// Handle login errors with theme-aware messaging
   String handleLoginError(dynamic error) {
-    _logger.e('Login error: $error');
+    AppLogger.error('Login error: $error');
 
     if (error is String) {
       // Check for common error messages and provide user-friendly responses

@@ -1,8 +1,7 @@
 import 'dart:math';
-import 'package:logger/logger.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class SocialRegistrationHelper {
-  final Logger _logger = Logger();
 
   // Social provider types
   static const String googleProvider = 'google';
@@ -17,7 +16,7 @@ class SocialRegistrationHelper {
     String? selectedGender,
   }) async {
     try {
-      _logger.d('Processing social registration for $provider');
+      AppLogger.debug('Processing social registration for $provider');
 
       // Extract common data from social providers
       final Map<String, dynamic> userData = {
@@ -40,10 +39,10 @@ class SocialRegistrationHelper {
         throw Exception(validationResult['message']);
       }
 
-      _logger.i('Social registration data processed successfully');
+      AppLogger.info('Social registration data processed successfully');
       return userData;
     } catch (e) {
-      _logger.e('Error processing social registration: $e');
+      AppLogger.error('Error processing social registration: $e');
       rethrow;
     }
   }

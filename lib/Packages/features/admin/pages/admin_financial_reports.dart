@@ -75,11 +75,12 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
 
   Widget _buildRevenueChart(List<dynamic> data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    if (data.isEmpty)
+    if (data.isEmpty) {
       return const SizedBox(
         height: 200,
         child: Center(child: Text('No financial data')),
       );
+    }
 
     final spots = data.asMap().entries.map((e) {
       return FlSpot(e.key.toDouble(), (e.value['revenue'] ?? 0).toDouble());

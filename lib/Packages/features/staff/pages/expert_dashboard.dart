@@ -11,7 +11,6 @@ import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../widgets/today_appointments_overview.dart';
 import '../widgets/time_clock_widget.dart';
-import '../widgets/tools_inventory_overview.dart';
 
 class ExpertDashboard extends StatefulWidget {
   const ExpertDashboard({super.key});
@@ -233,8 +232,7 @@ class _ExpertDashboardState extends State<ExpertDashboard>
                 children: [
                   // Welcome Header
                   Text(
-                    'hello_user_name'.tr(args: [user?.firstName ?? "Member"]) +
-                        " 👋",
+                    "${'hello_user_name'.tr(args: [user?.firstName ?? "Member"])} 👋",
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

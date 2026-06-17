@@ -6,9 +6,9 @@ import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_roles.dart';
-import '../../../Core/utils/helpers/themes_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../Models/appointments/salon_appointments_model.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class AppointmentAccordion extends StatefulWidget {
   final Map<String, dynamic> appointment;
@@ -841,7 +841,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
 
   void _callExpert(String phoneNumber) {
     // You would typically use url_launcher here
-    print('Calling: $phoneNumber');
+    AppLogger.info('Calling: $phoneNumber');
     // Example: launchUrl(Uri.parse('tel:$phoneNumber'));
   }
 }

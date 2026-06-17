@@ -6,6 +6,7 @@ import '../../Models/auth/user_model.dart';
 import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Services/enums/appointment_status.dart';
 import '../../Services/api/api_service.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class AppointmentProvider extends BaseProvider {
   final List<SalonAppointment> _appointments = [];
@@ -86,7 +87,7 @@ class AppointmentProvider extends BaseProvider {
         try {
           _appointments.add(SalonAppointment.fromJson(item));
         } catch (e) {
-          print('Error parsing appointment item JSON: $e');
+          AppLogger.error('Error parsing appointment item JSON: $e');
         }
       }
       notifyListeners();
@@ -131,7 +132,7 @@ class AppointmentProvider extends BaseProvider {
       }
       notifyListeners();
     } catch (e) {
-      print('Error loading soonest appointment: $e');
+      AppLogger.error('Error loading soonest appointment: $e');
     }
   }
 

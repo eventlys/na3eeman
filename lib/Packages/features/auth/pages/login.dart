@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,7 +7,6 @@ import 'package:na3eeman/Services/security_service.dart';
 import 'package:na3eeman/Providers/main_providers.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 
-import '../../../Core/constants/app_constants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,7 +21,7 @@ class _LoginPageState extends State<LoginPage>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-  String _selectedGender = 'male';
+  final String _selectedGender = 'male';
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;

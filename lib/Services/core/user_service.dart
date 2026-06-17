@@ -2,6 +2,7 @@ import '../api/api_interceptor_service.dart';
 import '../api/api_service.dart';
 import '../storage_service.dart';
 import '../../Helpers/config.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class UserService {
   final ApiInterceptorService _apiInterceptor;
@@ -106,7 +107,7 @@ class UserService {
       await _updateLocalProfile(profileData);
     } catch (e) {
       // Log the error and rethrow for the helper to handle
-      print('UserService update error: $e');
+      AppLogger.error('UserService update error: $e');
       rethrow;
     }
   }
@@ -130,7 +131,7 @@ class UserService {
       }
     } catch (e) {
       // Non-critical error - log but don't fail the entire operation
-      print('Error updating local profile: $e');
+      AppLogger.error('Error updating local profile: $e');
     }
   }
 

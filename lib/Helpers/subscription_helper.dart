@@ -1,6 +1,7 @@
 import '../Models/subscriptions/subscription.dart';
 // import '../Models/subscriptions/subscription_model.dart';
 import '../Services/business_service.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class SubscriptionHelper {
   static final BusinessService _subscriptionService = BusinessService();
@@ -26,7 +27,7 @@ class SubscriptionHelper {
           )
           .toList();
     } catch (e) {
-      print('Error fetching subscriptions from service: $e');
+      AppLogger.error('Error fetching subscriptions from service: $e');
       rethrow;
     }
   }
@@ -36,7 +37,7 @@ class SubscriptionHelper {
     try {
       return await _subscriptionService.getAvailablePlans();
     } catch (e) {
-      print('Error fetching subscription tiers: $e');
+      AppLogger.error('Error fetching subscription tiers: $e');
       return [];
     }
   }
@@ -46,7 +47,7 @@ class SubscriptionHelper {
     try {
       return await _subscriptionService.getSubscriptionDetails();
     } catch (e) {
-      print('Error fetching current subscription: $e');
+      AppLogger.error('Error fetching current subscription: $e');
       return null;
     }
   }

@@ -6,6 +6,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 // import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/profile_widgets.dart';
+import 'legal_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -230,6 +231,27 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ],
+                    const SizedBox(height: 24),
+                    ListTile(
+                      leading: Icon(Icons.gavel_rounded, color: primaryColor),
+                      title: Text(
+                        isDark ? 'Legal & Terms' : 'الشروط والأحكام',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LegalDocsPage(),
+                          ),
+                        );
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Services/core/user_service.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHelperFunctions {
@@ -59,7 +60,7 @@ class ProfileHelperFunctions {
   }) async {
     try {
       // Implement your actual API call here
-      print('Saving profile to API: $profile');
+      AppLogger.info('Saving profile to API: $profile');
 
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
@@ -67,9 +68,9 @@ class ProfileHelperFunctions {
       // Replace with your actual API call:
       // await ApiService.updateProfile(profile);
 
-      print('Profile saved successfully');
+      AppLogger.info('Profile saved successfully');
     } catch (e) {
-      print('Error saving profile: $e');
+      AppLogger.error('Error saving profile: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
@@ -109,7 +110,7 @@ class ProfileHelperFunctions {
   }) async {
     try {
       // Implement your delete API call here
-      print('Deleting profile...');
+      AppLogger.info('Deleting profile...');
 
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
@@ -123,7 +124,7 @@ class ProfileHelperFunctions {
 
       onSuccess();
     } catch (e) {
-      print('Error deleting profile: $e');
+      AppLogger.error('Error deleting profile: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to delete profile: $e')));

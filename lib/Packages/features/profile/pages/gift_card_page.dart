@@ -113,8 +113,9 @@ class _GiftCardPageState extends State<GiftCardPage> {
         _loadData();
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         AppSnackBar.error(context, 'purchase_failed'.tr(args: [e.toString()]));
+      }
     } finally {
       if (mounted) setState(() => _isBuying = false);
     }

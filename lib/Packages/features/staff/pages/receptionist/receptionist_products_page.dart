@@ -161,8 +161,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'price'.tr() +
-                        ': \$${(item.productPrice ?? 0.0).toStringAsFixed(2)}',
+                    '${'price'.tr()}: \$${(item.productPrice ?? 0.0).toStringAsFixed(2)}',
                     style: const TextStyle(
                       color: AppColors.almostBlack300,
                       fontSize: 13,
@@ -206,13 +205,13 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'incrementing_stock'.tr() + ' ${item.productName}',
+                          '${'incrementing_stock'.tr()} ${item.productName}',
                         ),
                       ),
                     );
                   },
                   child: Text(
-                    '+ ' + 'add_stock'.tr(),
+                    '+ ${'add_stock'.tr()}',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
@@ -353,7 +352,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                 );
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('creating'.tr() + ' $name...')),
+                  SnackBar(content: Text('${'creating'.tr()} $name...')),
                 );
               }
             },

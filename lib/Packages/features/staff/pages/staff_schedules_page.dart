@@ -123,9 +123,9 @@ class _StaffSchedulesPageState extends State<StaffSchedulesPage>
                   ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
             Color statusColor = AppColors.success;
-            if (staff.status == 'BUSY')
+            if (staff.status == 'BUSY') {
               statusColor = AppColors.error;
-            else if (staff.status == 'BREAK')
+            } else if (staff.status == 'BREAK')
               statusColor = AppColors.warning;
 
             final isDark = Theme.of(context).brightness == Brightness.dark;

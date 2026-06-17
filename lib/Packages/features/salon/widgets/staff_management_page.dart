@@ -5,6 +5,7 @@ import 'package:na3eeman/Providers/features/salon_provider.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../Services/api/api_service.dart';
 import '../../../../../Services/api/endpoints.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class StaffManagementPage extends StatefulWidget {
   const StaffManagementPage({super.key});
@@ -65,7 +66,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
         }).toList();
       });
     } catch (e) {
-      print('Error loading staff: $e');
+      AppLogger.error('Error loading staff: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -106,8 +107,9 @@ class _StaffManagementPageState extends State<StaffManagementPage>
 
   Widget _buildStaffListTab() {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_staffList.isEmpty)
+    if (_staffList.isEmpty) {
       return Center(child: Text('no_staff_members_found'.tr()));
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -180,8 +182,9 @@ class _StaffManagementPageState extends State<StaffManagementPage>
 
   Widget _buildScheduleListTab() {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_staffList.isEmpty)
+    if (_staffList.isEmpty) {
       return Center(child: Text('no_staff_schedules_found'.tr()));
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(20),

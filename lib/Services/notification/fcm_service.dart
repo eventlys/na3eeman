@@ -1,4 +1,5 @@
 // import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../Helpers/logger.dart';
 import '../../Helpers/notification_helper.dart';
@@ -14,6 +15,12 @@ class FCMService {
 
   Future<void> initialize() async {
     if (_initialized) return;
+
+    if (Firebase.apps.isEmpty) {
+      AppLogger.warning('FCMService skipped: Firebase is not initialized');
+      _hasFirebase = false;
+      return;
+    }
 
     try {
       _fcm = FirebaseMessaging.instance;

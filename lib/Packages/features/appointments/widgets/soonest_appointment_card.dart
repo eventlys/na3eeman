@@ -274,8 +274,9 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return const SizedBox.shrink();
-    if (_hasError || _soonestAppointment == null)
+    if (_hasError || _soonestAppointment == null) {
       return const SizedBox.shrink();
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

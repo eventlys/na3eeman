@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/enums/app_enums.dart';
 import '../../profile/widgets/rating_with_points_widget.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class ReviewsSection extends StatefulWidget {
   final Map<String, dynamic> salonData;
@@ -164,7 +165,7 @@ class ReviewsSectionState extends State<ReviewsSection> {
                         salonData: widget.salonData,
                         initialRating: _userRating,
                         onRatingChanged: (newRating) {
-                          print('Rating changed to: $newRating');
+                          AppLogger.info('Rating changed to: $newRating');
                         },
                       ),
                     ),

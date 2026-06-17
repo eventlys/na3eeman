@@ -425,10 +425,6 @@ class PerformanceMonitor {
 
       _storePerformanceData(key, elapsed);
 
-      if (kDebugMode) {
-        print('⏱️ ${label ?? key}: ${elapsed}ms');
-      }
-
       AppLogger.debug(
         'Performance: ${label ?? key} - ${elapsed}ms',
         extra: {'duration_ms': elapsed, 'key': key, 'label': label},

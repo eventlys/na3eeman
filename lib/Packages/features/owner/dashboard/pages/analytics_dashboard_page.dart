@@ -53,8 +53,9 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
 
       if (mounted) {
         setState(() {
-          if (results[0] is Map)
+          if (results[0] is Map) {
             _summary = Map<String, dynamic>.from(results[0] as Map);
+          }
           if (results[1] is List) {
             _staffKpis = List<Map<String, dynamic>>.from(
               (results[1] as List).map(
@@ -210,7 +211,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                 ),
               ),
               Text(
-                '$_period',
+                _period,
                 style: TextStyle(
                   color: theme.primaryColor,
                   fontWeight: FontWeight.bold,
@@ -663,8 +664,7 @@ class _StaffKpiTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'booking_suffix_compact'.tr(args: [appts.toString()]) +
-                      ' · ${revenue.toStringAsFixed(0)} JOD',
+                  '${'booking_suffix_compact'.tr(args: [appts.toString()])} · ${revenue.toStringAsFixed(0)} JOD',
                   style: const TextStyle(
                     color: AppColors.almostBlack300,
                     fontSize: 11,

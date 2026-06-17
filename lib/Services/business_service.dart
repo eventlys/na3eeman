@@ -470,8 +470,9 @@ class BusinessService {
         'limit': limit.toString(),
       };
 
-      if (organizerId != null)
+      if (organizerId != null) {
         queryParams['organizer'] = organizerId.toString();
+      }
 
       final response = await _apiService.get(
         '/booking-groups',
@@ -613,8 +614,9 @@ class BusinessService {
       };
 
       if (userId != null) queryParams['user'] = userId.toString();
-      if (appointmentId != null)
+      if (appointmentId != null) {
         queryParams['appointment'] = appointmentId.toString();
+      }
 
       final response = await _apiService.get(
         '/payments/history',
@@ -927,8 +929,9 @@ class BusinessService {
 
       if (branchId != null) queryParams['branch_id'] = branchId;
       if (salonId != null) queryParams['salon'] = salonId.toString();
-      if (includePerformance != null)
+      if (includePerformance != null) {
         queryParams['include_performance'] = includePerformance.toString();
+      }
 
       final response = await _apiService.get(
         '/experts',
@@ -1512,11 +1515,10 @@ class InventoryService {
 
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
 
-      print('--- getLowStockItems ---');
-      print('salonId: $salonId');
-      print('Items count: ${data.length}');
-      if (data.isNotEmpty) print('First item: ${data.first}');
-      print('--------------------------');
+      AppLogger.info('--- getLowStockItems ---');
+      AppLogger.info('salonId: $salonId');
+      AppLogger.info('Items count: ${data.length}');
+      if (data.isNotEmpty) AppLogger.info('First item: ${data.first}');
 
       return data;
     } catch (e) {
@@ -1541,8 +1543,9 @@ class InventoryService {
         'limit': limit.toString(),
       };
 
-      if (lowStockOnly != null)
+      if (lowStockOnly != null) {
         queryParams['low_stock_only'] = lowStockOnly.toString();
+      }
       if (category != null) queryParams['category'] = category;
 
       final String endpoint = '/salons/salons/$salonId/inventory/';
@@ -1554,11 +1557,10 @@ class InventoryService {
 
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
 
-      print('--- getInventoryItems ---');
-      print('salonId: $salonId, lowStock: $lowStockOnly, category: $category');
-      print('Items count: ${data.length}');
-      if (data.isNotEmpty) print('First item: ${data.first}');
-      print('--------------------------');
+      AppLogger.info('--- getInventoryItems ---');
+      AppLogger.info('salonId: $salonId, lowStock: $lowStockOnly, category: $category');
+      AppLogger.info('Items count: ${data.length}');
+      if (data.isNotEmpty) AppLogger.info('First item: ${data.first}');
 
       return data;
     } catch (e) {
@@ -1578,7 +1580,7 @@ class InventoryService {
         '/salons/salons/$salonId/inventory/$itemId/',
         data: {
           'quantity_in_stock': newQuantity,
-          if (reason != null) 'notes': reason,
+          'notes': ?reason,
         },
       );
       return response['data'];
@@ -1601,12 +1603,12 @@ class InventoryService {
       final response = await _apiService.post(
         '/salons/salons/$salonId/inventory/',
         data: {
-          if (productId != null) 'product': productId,
-          if (productName != null) 'product_name': productName,
-          if (productPrice != null) 'product_price': productPrice,
-          if (category != null) 'category': category,
+          'product': ?productId,
+          'product_name': ?productName,
+          'product_price': ?productPrice,
+          'category': ?category,
           'quantity_in_stock': initialQuantity,
-          if (notes != null) 'notes': notes,
+          'notes': ?notes,
         },
       );
       return response['data'];

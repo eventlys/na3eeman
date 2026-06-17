@@ -1,4 +1,5 @@
 import '../Services/business_service.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class InventoryHelpers {
   final InventoryService _inventoryService;
@@ -48,7 +49,7 @@ class InventoryHelpers {
       );
       return lowStockItems.isNotEmpty;
     } catch (e) {
-      print('Error checking low stock alert: $e');
+      AppLogger.error('Error checking low stock alert: $e');
       return false;
     }
   }
@@ -68,7 +69,7 @@ class InventoryHelpers {
           .join(', ');
       return 'Low stock alert: $itemNames';
     } catch (e) {
-      print('Error formatting low stock alert: $e');
+      AppLogger.error('Error formatting low stock alert: $e');
       return '';
     }
   }
@@ -77,7 +78,7 @@ class InventoryHelpers {
     try {
       return await _inventoryService.getInventoryAlerts(salonId: salonId);
     } catch (e) {
-      print('Error getting inventory alerts summary: $e');
+      AppLogger.error('Error getting inventory alerts summary: $e');
       return {
         'low_stock_count': 0,
         'out_of_stock_count': 0,
@@ -93,7 +94,7 @@ class InventoryHelpers {
       );
       return _inventoryService.getCriticalStockItemsFromList(allItems);
     } catch (e) {
-      print('Error getting critical stock items: $e');
+      AppLogger.error('Error getting critical stock items: $e');
       return [];
     }
   }
@@ -105,7 +106,7 @@ class InventoryHelpers {
       );
       return lowStockItems.length;
     } catch (e) {
-      print('Error getting low stock count: $e');
+      AppLogger.error('Error getting low stock count: $e');
       return 0;
     }
   }
@@ -120,7 +121,7 @@ class InventoryHelpers {
         return stock == 0;
       }).length;
     } catch (e) {
-      print('Error getting out of stock count: $e');
+      AppLogger.error('Error getting out of stock count: $e');
       return 0;
     }
   }
@@ -167,7 +168,7 @@ class InventoryHelpers {
           }).toList();
       }
     } catch (e) {
-      print('Error getting items by stock level: $e');
+      AppLogger.error('Error getting items by stock level: $e');
       return [];
     }
   }

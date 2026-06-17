@@ -5,9 +5,9 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart'; // Added
 import 'receptionist/receptionist_inventory_page.dart'; // Added
-import 'receptionist/receptionist_products_page.dart'; // Added
-import 'receptionist/receptionist_feedback_page.dart'; // Added
-import 'receptionist/receptionist_salon_profile_page.dart'; // Added
+// Added
+// Added
+// Added
 import '../../salon/pages/salon_owner_dashboard.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
@@ -19,7 +19,6 @@ import '../../../../Providers/features/offers_provider.dart';
 import '../../../../Providers/features/auth_provider.dart';
 import '../../../../Services/enums/appointment_status.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
-import 'package:intl/intl.dart';
 
 class ReceptionistDashboard extends StatefulWidget {
   const ReceptionistDashboard({super.key});
@@ -935,12 +934,13 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                 Navigator.pop(context);
                 try {
                   await appointmentProvider.confirmPayment(appointmentId);
-                  if (context.mounted)
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('payment_confirmed_msg'.tr())),
                     );
+                  }
                 } catch (e) {
-                  if (context.mounted)
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -948,6 +948,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                         ),
                       ),
                     );
+                  }
                 }
               },
             ),
@@ -959,12 +960,13 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
               AppColors.blue,
               () {
                 Navigator.pop(context);
-                if (context.mounted)
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('notification_reminder_sent_msg'.tr()),
                     ),
                   );
+                }
               },
             ),
             const SizedBox(height: 12),
@@ -1030,14 +1032,16 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                   appointmentId,
                   reason,
                 );
-                if (context.mounted)
+                if (context.mounted) {
                   AppSnackBar.success(
                     context,
                     'Customer reported successfully',
                   );
+                }
               } catch (e) {
-                if (context.mounted)
+                if (context.mounted) {
                   AppSnackBar.error(context, 'Failed to report: $e');
+                }
               }
             },
             child: const Text('Report', style: TextStyle(color: Colors.red)),

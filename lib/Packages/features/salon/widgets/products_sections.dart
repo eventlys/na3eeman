@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Core/themes/animated_cart_button.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class ProductSection extends StatelessWidget {
   final Map<String, dynamic> salonData;
@@ -103,7 +104,7 @@ class ProductSection extends StatelessWidget {
           CustomAnimatedIcon(
             icon: Icons.add_shopping_cart,
             onTap: () {
-              print('Added $name to cart');
+              AppLogger.info('Added $name to cart');
             },
             backgroundColor: Color(0x804CAF50),
             size: 20,

@@ -75,12 +75,14 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
               DateTime.tryParse((res as Map)['clock_in']?.toString() ?? '') ??
               DateTime.now();
         });
-        if (mounted)
+        if (mounted) {
           AppSnackBar.success(context, 'clocked_in_successfully'.tr());
+        }
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         AppSnackBar.error(context, 'clock_in_failed'.tr(args: [e.toString()]));
+      }
     } finally {
       setState(() => _isProcessing = false);
     }
@@ -107,8 +109,9 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
         }
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         AppSnackBar.error(context, 'clock_out_failed'.tr(args: [e.toString()]));
+      }
     } finally {
       setState(() => _isProcessing = false);
     }

@@ -555,8 +555,9 @@ class _MyTimesPageState extends State<MyTimesPage>
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
-                      if (picked != null)
+                      if (picked != null) {
                         setDialogState(() => startDate = picked);
+                      }
                     },
                   ),
                 if (scenario == 2)
@@ -594,8 +595,9 @@ class _MyTimesPageState extends State<MyTimesPage>
                         context: context,
                         initialTime: TimeOfDay.now(),
                       );
-                      if (picked != null)
+                      if (picked != null) {
                         setDialogState(() => startTime = picked);
+                      }
                     },
                   ),
                   ListTile(
@@ -610,8 +612,9 @@ class _MyTimesPageState extends State<MyTimesPage>
                         context: context,
                         initialTime: TimeOfDay.now(),
                       );
-                      if (picked != null)
+                      if (picked != null) {
                         setDialogState(() => endTime = picked);
+                      }
                     },
                   ),
                 ],

@@ -1,19 +1,21 @@
-import 'package:logger/logger.dart' as logger;
+import 'package:logger/logger.dart' as logger_pkg;
 
 import 'config.dart';
 
+final logger = logger_pkg.Logger(
+  printer: logger_pkg.PrettyPrinter(
+    methodCount: 0,
+    errorMethodCount: 8,
+    lineLength: 120,
+    colors: true,
+    printEmojis: true,
+    dateTimeFormat: logger_pkg.DateTimeFormat.onlyTimeAndSinceStart,
+  ),
+  level: AppConfig.isDebug ? logger_pkg.Level.debug : logger_pkg.Level.warning,
+);
+
 class AppLogger {
-  static final logger.Logger _logger = logger.Logger(
-    printer: logger.PrettyPrinter(
-      methodCount: 0,
-      errorMethodCount: 8,
-      lineLength: 120,
-      colors: true,
-      printEmojis: true,
-      dateTimeFormat: logger.DateTimeFormat.onlyTimeAndSinceStart,
-    ),
-    level: AppConfig.isDebug ? logger.Level.debug : logger.Level.warning,
-  );
+  static final logger_pkg.Logger _logger = logger;
 
   static void debug(
     String message, {
@@ -106,7 +108,7 @@ class AppLogger {
   }
 
   static void performance(String action, int durationMs, {String? category}) {
-    final level = durationMs > 1000 ? logger.Level.warning : logger.Level.info;
+    final level = durationMs > 1000 ? logger_pkg.Level.warning : logger_pkg.Level.info;
     final emoji = durationMs > 1000 ? '🐌' : '⚡';
     final message = '$emoji Performance: $action - ${durationMs}ms';
 

@@ -142,14 +142,16 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
         closingTime: closingStr,
       );
 
-      if (mounted)
+      if (mounted) {
         AppSnackBar.success(context, 'salon_details_updated_successfully'.tr());
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         AppSnackBar.error(
           context,
           'failed_to_update_salon_err'.tr(args: [e.toString()]),
         );
+      }
     }
   }
 

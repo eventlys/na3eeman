@@ -89,29 +89,33 @@ class _HistoryPageState extends State<HistoryPage> {
     if (appointment is Map) {
       final dateTime = appointment['dateTime'] ?? appointment['startTime'];
       if (dateTime is DateTime) return dateTime;
-      if (dateTime is String)
+      if (dateTime is String) {
         return DateTime.tryParse(dateTime) ?? DateTime.now();
+      }
     }
     return DateTime.now();
   }
 
   String _getSalonName(dynamic appointment) {
-    if (appointment is Map)
+    if (appointment is Map) {
       return appointment['salonName'] ?? 'na3eeman_salon'.tr();
+    }
     return 'na3eeman_salon'.tr();
   }
 
   String _getExpertName(dynamic appointment) {
-    if (appointment is Map)
+    if (appointment is Map) {
       return appointment['expertName'] ?? 'any_specialist'.tr();
+    }
     return 'any_specialist'.tr();
   }
 
   String _getCost(dynamic appointment) {
-    if (appointment is Map)
+    if (appointment is Map) {
       return 'amount_jod_fixed'.tr(
         args: [appointment['price']?.toString() ?? '0.00'],
       );
+    }
     return 'zero_jod'.tr();
   }
 
@@ -123,8 +127,9 @@ class _HistoryPageState extends State<HistoryPage> {
             .map((s) => s is Map ? s['name'].toString() : s.toString())
             .toList();
       }
-      if (appointment['serviceName'] != null)
+      if (appointment['serviceName'] != null) {
         return [appointment['serviceName']];
+      }
     }
     return ['general_service'.tr()];
   }
@@ -358,7 +363,7 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               const SizedBox(height: 24),
               DropdownButtonFormField<String>(
-                value: selectedFrequency,
+                initialValue: selectedFrequency,
                 decoration: InputDecoration(
                   labelText: 'frequency_caps'.tr(),
                   border: OutlineInputBorder(
@@ -373,7 +378,7 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selectedDuration,
+                initialValue: selectedDuration,
                 decoration: InputDecoration(
                   labelText: 'for_how_long'.tr(),
                   border: OutlineInputBorder(

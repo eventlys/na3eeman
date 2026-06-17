@@ -4,6 +4,7 @@ import '../../../../../Services/api/api_service.dart';
 import '../../../../../Services/api/endpoints.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class FeedbackManagementPage extends StatefulWidget {
   const FeedbackManagementPage({super.key});
@@ -49,7 +50,7 @@ class _FeedbackManagementPageState extends State<FeedbackManagementPage> {
         }).toList();
       });
     } catch (e) {
-      print('Error loading reviews: $e');
+      AppLogger.error('Error loading reviews: $e');
     } finally {
       setState(() => _isLoading = false);
     }

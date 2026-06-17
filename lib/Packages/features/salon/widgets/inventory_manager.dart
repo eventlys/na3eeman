@@ -8,6 +8,7 @@ import '../../../Core/constants/app_images.dart';
 import '../overlays/Inventory_add_item_dialog.dart';
 import 'inventory_list_item.dart';
 import 'inventory_low_stock_alert.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 // import 'low_stock_alert.dart';
 
 class InventoryManager extends StatefulWidget {
@@ -57,7 +58,7 @@ class InventoryManagerState extends State<InventoryManager> {
     salonId ??= authProvider.user?.salonId;
 
     if (salonId == null) {
-      print('InventoryManager: Skipping load items because salonId is null');
+      AppLogger.error('InventoryManager: Skipping load items because salonId is null');
       return;
     }
 

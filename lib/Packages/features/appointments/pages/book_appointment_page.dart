@@ -302,11 +302,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   leading: const Icon(Icons.stars_rounded, color: Colors.amber),
                   title: Text('use_loyalty_points'.tr()),
                   subtitle: Text(
-                    'balance'.tr() + ': ${pointsProvider.currentBalance} pts',
+                    '${'balance'.tr()}: ${pointsProvider.currentBalance} pts',
                   ),
                   trailing: Switch(
                     value: _appliedPoints > 0,
-                    activeColor: Colors.amber,
+                    activeThumbColor: Colors.amber,
                     onChanged: (val) {
                       setModalState(() {
                         if (val) {
@@ -493,13 +493,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'alias'.tr() +
-                              ': ${salonData!['cliq_alias'] ?? 'SalonAlias'}',
+                          '${'alias'.tr()}: ${salonData!['cliq_alias'] ?? 'SalonAlias'}',
                           style: const TextStyle(fontSize: 13),
                         ),
                         Text(
-                          'phone'.tr() +
-                              ': ${salonData!['cliq_phone_num'] ?? '00962...'}',
+                          '${'phone'.tr()}: ${salonData!['cliq_phone_num'] ?? '00962...'}',
                           style: const TextStyle(fontSize: 13),
                         ),
                       ],
@@ -748,10 +746,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       }
     } catch (e) {
       if (mounted) Navigator.pop(context); // Close loading dialog
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('booking_failed'.tr(args: [e.toString()]))),
         );
+      }
     }
   }
 
@@ -919,7 +918,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       color: AppColors.pink,
                     ),
                     title: Text(card.code),
-                    subtitle: Text('balance'.tr() + ': ${card.balance} JOD'),
+                    subtitle: Text('${'balance'.tr()}: ${card.balance} JOD'),
                     onTap: () => Navigator.pop(context, card),
                   );
                 },
@@ -959,8 +958,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 const SizedBox(height: 16),
                 Consumer<PointsProvider>(
                   builder: (context, points, child) {
-                    if (!points.hasPendingPenalty)
+                    if (!points.hasPendingPenalty) {
                       return const SizedBox.shrink();
+                    }
                     return Container(
                       margin: const EdgeInsets.only(bottom: 24),
                       padding: const EdgeInsets.all(16),

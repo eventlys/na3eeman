@@ -1,7 +1,5 @@
-import 'package:logger/logger.dart';
 
 class PasswordHelper {
-  final Logger _logger = Logger();
 
   /// Validates password strength
   Map<String, dynamic> validatePassword(String password) {

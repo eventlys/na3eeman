@@ -270,7 +270,6 @@
 //                   navigationRoute: '/home',
 //                   isActive: _homeActive,
 //                   onTap: () {
-//                     print('Home sphere tapped');
 //                     setState(() {
 //                       _homeActive = true;
 //                       _settingsActive = false;
@@ -298,7 +297,6 @@
 //                   navigationRoute: '/settings',
 //                   isActive: _settingsActive,
 //                   onTap: () {
-//                     print('Settings sphere tapped');
 //                     setState(() {
 //                       _homeActive = false;
 //                       _settingsActive = true;
@@ -326,7 +324,6 @@
 //                   navigationRoute: '/profile',
 //                   isActive: _profileActive,
 //                   onTap: () {
-//                     print('Profile sphere tapped');
 //                     setState(() {
 //                       _homeActive = false;
 //                       _settingsActive = false;

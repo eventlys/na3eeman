@@ -79,9 +79,7 @@ class _InternAttendanceReportPageState
       itemCount: provider.attendanceLogs.length,
       itemBuilder: (context, index) {
         final log = provider.attendanceLogs[index];
-        final duration = log.clockOut != null
-            ? log.clockOut!.difference(log.clockIn)
-            : null;
+        final duration = log.clockOut?.difference(log.clockIn);
 
         return Container(
           margin: const EdgeInsets.only(bottom: 16),

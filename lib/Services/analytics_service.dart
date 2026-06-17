@@ -1,6 +1,7 @@
 // lib/Services/analytics/analytics_service.dart
 import 'api/api_service.dart';
 import 'api/endpoints.dart';
+import 'package:na3eeman/Helpers/logger.dart';
 
 class AnalyticsService {
   static final AnalyticsService _instance = AnalyticsService._internal();
@@ -185,10 +186,10 @@ class AnalyticsService {
       // await _apiService.post('/analytics/events', data: eventData);
 
       // Also log locally for debugging
-      print('Analytics Event: $name, Parameters: $parameters');
+      AppLogger.info('Analytics Event: $name, Parameters: $parameters');
     } catch (e) {
       // Silent fail for analytics - we don't want analytics failures to break the app
-      print('Analytics error: $e');
+      AppLogger.error('Analytics error: $e');
     }
   }
 
@@ -260,8 +261,9 @@ class AnalyticsService {
       queryParams: params,
     );
     if (result is List) return result;
-    if (result is Map && result.containsKey('results'))
+    if (result is Map && result.containsKey('results')) {
       return result['results'];
+    }
     return [];
   }
 }
