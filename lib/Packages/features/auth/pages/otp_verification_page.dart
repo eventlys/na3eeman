@@ -44,7 +44,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     _canResend = false;
     _resendCooldown = 30;
 
-    for (int i = 0; i < _resendCooldown; i++) {
+    for (int i = 0; i <= 30; i++) {
       Future.delayed(Duration(seconds: i), () {
         if (mounted) {
           setState(() {

@@ -39,7 +39,7 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   static const _paymentMethods = [
     {'value': 'CASH', 'label': 'cash', 'icon': Icons.money_rounded},
     {'value': 'CLIQ', 'label': 'cliq_label', 'icon': Icons.qr_code_rounded},
-    {'value': 'VISA', 'label': 'card', 'icon': Icons.credit_card_rounded},
+    // {'value': 'VISA', 'label': 'card', 'icon': Icons.credit_card_rounded},
     {
       'value': 'VOUCHER',
       'label': 'voucher_label',
@@ -563,7 +563,8 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
     );
 
     if (!hasServiceOrPackage) {
-      _showPaymentModal(theme, isDark);
+      // _showPaymentModal(theme, isDark);
+      _handleCompleteBooking();
       return;
     }
 
@@ -613,7 +614,8 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
                     return;
                   }
                   Navigator.pop(context);
-                  _showPaymentModal(theme, isDark);
+                  // _showPaymentModal(theme, isDark);
+                  _handleCompleteBooking();
                 },
               ),
               const SizedBox(height: 16),

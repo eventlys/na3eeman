@@ -8,6 +8,8 @@ import '../../../../Services/api/auth_service.dart';
 import '../../../../Services/repositories/auth_repository.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../Packages/Core/utils/validators.dart';
+import '../../../../Packages/Core/widgets/password_strength_indicator.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -29,6 +31,8 @@ class _SignupPageState extends State<SignupPage>
   String _selectedGender = 'male';
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  bool _isLoading = false;
+  bool _autoValidate = false;
 
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
@@ -121,20 +125,15 @@ class _SignupPageState extends State<SignupPage>
   }
 
   Future<void> _handleSignup() async {
+    setState(() {
+      _autoValidate = true;
+    });
+    
     if (_formKey.currentState!.validate()) {
-      if (_passwordController.text != _confirmPasswordController.text) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Passwords do not match'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
       final authRepository = AuthRepository(ApiService());
       final authService = AuthService(authRepository);
 
+      setState(() => _isLoading = true);
       try {
         final response = await authService.signup(
           firstName: _firstNameController.text,
@@ -165,6 +164,8 @@ class _SignupPageState extends State<SignupPage>
             ),
           );
         }
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
       }
     }
   }
@@ -250,6 +251,9 @@ class _SignupPageState extends State<SignupPage>
 
                       Form(
                         key: _formKey,
+                        autovalidateMode: _autoValidate 
+                            ? AutovalidateMode.onUserInteraction 
+                            : AutovalidateMode.disabled,
                         child: Column(
                           children: [
                             Row(
@@ -266,8 +270,7 @@ class _SignupPageState extends State<SignupPage>
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                     ),
-                                    validator: (v) =>
-                                        v!.isEmpty ? 'Required' : null,
+                                    validator: (v) => AppValidators.validateName(v),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -283,8 +286,7 @@ class _SignupPageState extends State<SignupPage>
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                     ),
-                                    validator: (v) =>
-                                        v!.isEmpty ? 'Required' : null,
+                                    validator: (v) => AppValidators.validateName(v),
                                   ),
                                 ),
                               ],
@@ -300,7 +302,7 @@ class _SignupPageState extends State<SignupPage>
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              validator: (v) => v!.isEmpty ? 'Required' : null,
+                              validator: (v) => AppValidators.validateEmail(v),
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
@@ -313,7 +315,7 @@ class _SignupPageState extends State<SignupPage>
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              validator: (v) => v!.isEmpty ? 'Required' : null,
+                              validator: (v) => AppValidators.validatePhone(v),
                             ),
                             const SizedBox(height: 16),
 
@@ -386,8 +388,10 @@ class _SignupPageState extends State<SignupPage>
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              validator: (v) => v!.isEmpty ? 'Required' : null,
+                              validator: (v) => AppValidators.validatePassword(v),
                             ),
+                            const SizedBox(height: 8),
+                            PasswordStrengthIndicator(controller: _passwordController),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _confirmPasswordController,
@@ -412,7 +416,15 @@ class _SignupPageState extends State<SignupPage>
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              validator: (v) => v!.isEmpty ? 'Required' : null,
+                              validator: (v) {
+                                if (v == null || v.isEmpty) {
+                                  return 'Confirm password is required';
+                                }
+                                if (v != _passwordController.text) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
                             ),
                           ],
                         ),
@@ -421,7 +433,8 @@ class _SignupPageState extends State<SignupPage>
                       const SizedBox(height: 32),
                       PrimaryButton(
                         text: "sign_up".tr(),
-                        onPressed: _handleSignup,
+                        isLoading: _isLoading,
+                        onPressed: _isLoading ? null : _handleSignup,
                       ),
 
                       const SizedBox(height: 24),

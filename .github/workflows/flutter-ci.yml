@@ -1,9 +1,9 @@
 name: Flutter CI/CD
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, stg ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, stg ]
 
 jobs:
   build_and_test:
@@ -60,3 +60,38 @@ jobs:
           path: |
             build/app/outputs/bundle/release/*.aab
             build/app/outputs/flutter-apk/*.apk
+
+  deploy_android:
+    name: Deploy Android to GCP Storage
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stg'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+          path: build/app/outputs/
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload APK to GCS
+        run: |
+          # The artifact download structure might have nested directories
+          APK_PATH=$(find build/app/outputs -name "*.apk" | head -n 1)
+          if [ -n "$APK_PATH" ]; then
+            gcloud storage cp "$APK_PATH" gs://na3eemn-mobile-apps/android/latest/app.apk
+            gcloud storage objects update gs://na3eemn-mobile-apps/android/latest/app.apk --add-acl-grant=entity=AllUsers,role=READER || true
+          else
+            echo "No APK found!"
+            exit 1
+          fi

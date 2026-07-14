@@ -70,7 +70,7 @@ class ApiService {
     ).replace(queryParameters: stringParams);
 
     try {
-      final response = await http.get(uri, headers: headers);
+      final response = await http.get(uri, headers: headers).timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -90,7 +90,7 @@ class ApiService {
         uri,
         headers: headers,
         body: data != null ? jsonEncode(data) : null,
-      );
+      ).timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -110,7 +110,7 @@ class ApiService {
         uri,
         headers: headers,
         body: data != null ? jsonEncode(data) : null,
-      );
+      ).timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -130,7 +130,7 @@ class ApiService {
         uri,
         headers: headers,
         body: data != null ? jsonEncode(data) : null,
-      );
+      ).timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -145,7 +145,7 @@ class ApiService {
     final uri = Uri.parse('$baseUrl$path');
 
     try {
-      final response = await http.delete(uri, headers: headers);
+      final response = await http.delete(uri, headers: headers).timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -204,11 +204,30 @@ class ApiService {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return body;
     } else {
-      throw Exception(
-        body?['detail'] ??
-            body?['message'] ??
-            'API Error ${response.statusCode}',
-      );
+      String errorMessage = 'API Error ${response.statusCode}';
+      
+      if (body != null && body is Map) {
+        if (body.containsKey('detail')) {
+          errorMessage = body['detail'].toString();
+        } else if (body.containsKey('message')) {
+          errorMessage = body['message'].toString();
+        } else {
+          // Extract DRF field validation errors (e.g. {"email": ["Email already exists"]})
+          final errors = <String>[];
+          body.forEach((key, value) {
+            if (value is List && value.isNotEmpty) {
+              errors.add('$key: ${value[0]}');
+            } else if (value is String) {
+              errors.add('$key: $value');
+            }
+          });
+          if (errors.isNotEmpty) {
+            errorMessage = errors.join('\n');
+          }
+        }
+      }
+      
+      throw Exception(errorMessage);
     }
   }
 
@@ -227,6 +246,9 @@ class ApiService {
 
   Future<SalonPaymentConfig> getSalonPaymentConfig(int salonId) async {
     final response = await get(Endpoints.salonPaymentConfig(salonId));
+    if (response == null) {
+      return SalonPaymentConfig(id: 0, salonId: salonId);
+    }
     return SalonPaymentConfig.fromJson(response);
   }
 
@@ -242,6 +264,16 @@ class ApiService {
       Endpoints.loyaltyBalance,
       queryParams: {'customer_id': customerId},
     );
+    if (response == null) {
+      return LoyaltyBalance(
+        points: 0,
+        freeHaircutCounter: 0,
+        freeHaircutsAvailable: 0,
+        freeHaircutProgress: '0/0',
+        hasPendingPenalty: false,
+        transactions: [],
+      );
+    }
     return LoyaltyBalance.fromJson(response);
   }
 

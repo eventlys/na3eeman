@@ -189,8 +189,11 @@ class _LoginPageState extends State<LoginPage>
             tier: tier,
           );
         } else {
+          final errorMsg = authProvider.error != null && authProvider.error!.isNotEmpty 
+              ? authProvider.error! 
+              : 'invalid_email_password'.tr();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('invalid_email_password'.tr())),
+            SnackBar(content: Text(errorMsg)),
           );
         }
       }

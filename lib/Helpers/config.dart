@@ -35,8 +35,6 @@ class AppConfig {
   static String? get appleClientId => Environment.config.appleClientId;
 
   // Payment
-  static String? get stripePublishableKey =>
-      Environment.config.stripePublishableKey;
 
   // Cache Configuration
   static const Duration cacheShortDuration = Duration(minutes: 5);

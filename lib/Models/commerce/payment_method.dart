@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum PaymentMethod { cash, cliq, visa, subscription }
+enum PaymentMethod { cash, cliq, subscription }
 
 extension PaymentMethodExtension on PaymentMethod {
   String get value {
@@ -9,8 +9,8 @@ extension PaymentMethodExtension on PaymentMethod {
         return 'CASH';
       case PaymentMethod.cliq:
         return 'CLIQ';
-      case PaymentMethod.visa:
-        return 'VISA';
+      // case PaymentMethod.visa:
+      //   return 'VISA';
       case PaymentMethod.subscription:
         return 'SUBSCRIPTION';
     }
@@ -22,8 +22,8 @@ extension PaymentMethodExtension on PaymentMethod {
         return 'Cash';
       case PaymentMethod.cliq:
         return 'CliQ';
-      case PaymentMethod.visa:
-        return 'Credit Card';
+      // case PaymentMethod.visa:
+      //   return 'Credit Card';
       case PaymentMethod.subscription:
         return 'Subscription';
     }
@@ -35,8 +35,8 @@ extension PaymentMethodExtension on PaymentMethod {
         return Icons.money;
       case PaymentMethod.cliq:
         return Icons.account_balance_wallet;
-      case PaymentMethod.visa:
-        return Icons.credit_card;
+      // case PaymentMethod.visa:
+      //   return Icons.credit_card;
       case PaymentMethod.subscription:
         return Icons.subscriptions;
     }
@@ -48,8 +48,8 @@ extension PaymentMethodExtension on PaymentMethod {
         return PaymentMethod.cash;
       case 'CLIQ':
         return PaymentMethod.cliq;
-      case 'VISA':
-        return PaymentMethod.visa;
+      // case 'VISA':
+      //   return PaymentMethod.visa;
       case 'SUBSCRIPTION':
         return PaymentMethod.subscription;
       default:

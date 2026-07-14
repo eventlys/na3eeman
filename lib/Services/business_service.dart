@@ -292,7 +292,7 @@ class BusinessService {
       };
 
       final response = await _apiService.post(
-        '/appointments/book',
+        '/appointments/',
         data: appointmentData,
       );
       return SalonAppointment.fromJson(response['data']);
@@ -541,12 +541,12 @@ class BusinessService {
       String endpoint = '/payments/process/$paymentMethod';
       Map<String, dynamic> data = {'amount': amount, 'currency': currency};
 
-      if (paymentMethod == 'visa' && cardDetails != null) {
-        data['card_details'] = cardDetails.toJson();
-        if (userId != null) data['user_id'] = userId;
-      } else if (paymentMethod == 'stripe' && paymentMethodId != null) {
-        data['payment_method_id'] = paymentMethodId;
-      }
+      // if (paymentMethod == 'visa' && cardDetails != null) {
+      //   data['card_details'] = cardDetails.toJson();
+      //   if (userId != null) data['user_id'] = userId;
+      // } else if (paymentMethod == 'stripe' && paymentMethodId != null) {
+      //   data['payment_method_id'] = paymentMethodId;
+      // }
 
       if (metadata != null) data['metadata'] = metadata;
 

@@ -74,11 +74,27 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
-                  child: Image.asset(
-                    'assets/images/salon_placeholder.png', // Fallback for now
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
+                  child: images[index].startsWith('http')
+                      ? Image.network(
+                          images[index],
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                            'assets/images/salon_placeholder.png',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        )
+                      : Image.asset(
+                          images[index],
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                            'assets/images/salon_placeholder.png',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        ),
                 ),
               );
             },

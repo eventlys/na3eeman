@@ -142,6 +142,7 @@ class _ReceptionistSalonProfilePageState
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
+              /*
               _buildModalActionButton(
                 context,
                 Icons.confirmation_num_rounded,
@@ -149,6 +150,7 @@ class _ReceptionistSalonProfilePageState
                 Colors.orange,
                 () => Navigator.pushNamed(context, '/management/vouchers'),
               ),
+              */
 
               const SizedBox(height: 32),
 

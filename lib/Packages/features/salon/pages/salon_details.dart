@@ -10,6 +10,9 @@ import '../../../Core/constants/app_roles.dart';
 import '../widgets/salon_gallary.dart';
 import '../widgets/salon_info_section.dart';
 import '../widgets/services_section.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
+import '../../../Core/constants/app_constants.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SalonDetailsPage extends StatefulWidget {
   final Map<String, dynamic> salonData;
@@ -53,9 +56,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
     if (!RolePermissionManager.canBookAppointments(
       authProvider.user?.userRole ?? UserRole.customer,
     )) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Staff members cannot book appointments')),
-      );
+      AppSnackBar.error(context, 'Staff members cannot book appointments');
       return;
     }
 
@@ -104,54 +105,32 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
-          // Collapsing Header
+          // Simple Header
           SliverAppBar(
-            expandedHeight: 180,
             pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                salonName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
-                ),
-              ),
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset(
-                    'assets/images/salon_placeholder.png',
-                    fit: BoxFit.cover,
-                  ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black87],
-                      ),
-                    ),
-                  ),
-                ],
+            floating: true,
+            backgroundColor: Theme.of(context).primaryColor,
+            title: Text(
+              salonName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
               ),
             ),
-            backgroundColor: Theme.of(context).primaryColor,
+            iconTheme: const IconThemeData(color: AppColors.white),
             leading: const BackButton(color: AppColors.white),
             actions: [
               IconButton(
                 icon: const Icon(Icons.favorite_border, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("added_to_favorites".tr())),
-                  );
+                  AppSnackBar.success(context, "added_to_favorites".tr());
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: AppColors.white),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("share_dialog_opened".tr())),
-                  );
+                  final link = "${AppConstants.webAppUrl}/salon/${widget.salonData['id']}";
+                  Share.share("check_out_this_salon".tr(args: [salonName, link]));
                 },
               ),
               if (RolePermissionManager.canEditSalonInfo(
@@ -218,23 +197,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                           ? List<Map<String, dynamic>>.from(
                               widget.salonData['services'],
                             )
-                          : [
-                              {
-                                'name': 'Classic Haircut',
-                                'price': '15.00',
-                                'duration': '30 min',
-                              },
-                              {
-                                'name': 'Beard Grooming',
-                                'price': '10.00',
-                                'duration': '20 min',
-                              },
-                              {
-                                'name': 'Premium Shave',
-                                'price': '20.00',
-                                'duration': '40 min',
-                              },
-                            ],
+                          : [],
                     ),
                   ],
                 ),
@@ -242,158 +205,95 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
 
               const SizedBox(height: 24),
 
-              // Packages Section Placeholder
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "packages".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    ListTile(
-                      tileColor: AppColors.almostBlack50,
-                      title: Text("packages_and_bundles_coming_soon".tr()),
-                      leading: Icon(Icons.card_giftcard),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Products Section Placeholder
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "products".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    ListTile(
-                      tileColor: AppColors.almostBlack50,
-                      title: Text("salon_products_catalog_coming_soon".tr()),
-                      leading: Icon(Icons.shopping_bag_outlined),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Offers and Groups Section Placeholder
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "offers_groups".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    ListTile(
-                      tileColor: AppColors.almostBlack50,
-                      title: Text("exclusive_offers_coming_soon".tr()),
-                      leading: Icon(Icons.local_offer_outlined),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Feedback/Reviews Section Placeholder
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "salon_feedback".tr(),
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.orange, size: 30),
-                        const SizedBox(width: 8),
-                        Text(
-                          "key485".tr(),
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
+              // Packages Section
+              if (widget.salonData['packages'] != null &&
+                  (widget.salonData['packages'] as List).isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "packages".tr(),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16),
+                      ServicesSection(
+                        selectedServiceNames: _selectedServiceNames,
+                        onToggleService: _toggleService,
+                        services: List<Map<String, dynamic>>.from(
+                          widget.salonData['packages'],
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "key120_reviews".tr(),
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? AppColors.almostBlack600
-                            : AppColors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.almostBlack50),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 16,
-                                child: Icon(Icons.person, size: 16),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                "ahmed_m".tr(),
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Spacer(),
-                              Icon(Icons.star, color: Colors.orange, size: 16),
-                              Icon(Icons.star, color: Colors.orange, size: 16),
-                              Icon(Icons.star, color: Colors.orange, size: 16),
-                              Icon(Icons.star, color: Colors.orange, size: 16),
-                              Icon(Icons.star, color: Colors.orange, size: 16),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "great_service_completely_transformed_my_look_highl"
-                                .tr(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("feedback_entry_dialog".tr())),
-                        );
-                      },
-                      icon: const Icon(Icons.rate_review),
-                      label: Text("add_your_feedback".tr()),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                        side: BorderSide(color: Theme.of(context).primaryColor),
-                        foregroundColor: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+
+              if (widget.salonData['packages'] != null &&
+                  (widget.salonData['packages'] as List).isNotEmpty)
+                const SizedBox(height: 24),
+
+              // Products Section
+              if (widget.salonData['products'] != null &&
+                  (widget.salonData['products'] as List).isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "products".tr(),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16),
+                      ServicesSection(
+                        selectedServiceNames: _selectedServiceNames,
+                        onToggleService: _toggleService,
+                        services: List<Map<String, dynamic>>.from(
+                          widget.salonData['products'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              if (widget.salonData['products'] != null &&
+                  (widget.salonData['products'] as List).isNotEmpty)
+                const SizedBox(height: 24),
+
+              // Offers and Groups Section
+              if (widget.salonData['offers'] != null &&
+                  (widget.salonData['offers'] as List).isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "offers_and_groups".tr(),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16),
+                      ServicesSection(
+                        selectedServiceNames: _selectedServiceNames,
+                        onToggleService: _toggleService,
+                        services: List<Map<String, dynamic>>.from(
+                          widget.salonData['offers'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              if (widget.salonData['offers'] != null &&
+                  (widget.salonData['offers'] as List).isNotEmpty)
+                const SizedBox(height: 32),
+
+              // Removed Feedback/Reviews section as requested
+              const SizedBox(height: 16),
 
               const SizedBox(height: 48),
             ]),

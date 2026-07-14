@@ -89,7 +89,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         _isGift = args['giftMode'] ?? false;
         _receiverGender = args['giftGender'];
         if (salonData != null && salonData!['id'] != null) {
-          _fetchPaymentConfig(salonData!['id']);
+          // _fetchPaymentConfig(salonData!['id']);
+          Provider.of<ExpertProvider>(context, listen: false).refreshExperts(salonId: salonData!['id']);
         }
       }
       _initialized = true;
@@ -102,25 +103,23 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     }
   }
 
-  Future<void> _fetchPaymentConfig(int salonId) async {
-    setState(() => _isFetchingConfig = true);
-    try {
-      final config = await ApiService().getSalonPaymentConfig(salonId);
-      setState(() {
-        _paymentConfig = config;
-        // Default to first allowed method
-        if (!config.allowCash) {
-          _selectedPaymentMethod = config.allowOnline
-              ? 'STRIPE'
-              : (config.allowCliq ? 'CLIQ' : 'POINTS');
-        }
-      });
-    } catch (e) {
-      debugPrint('Error fetching payment config: $e');
-    } finally {
-      setState(() => _isFetchingConfig = false);
-    }
-  }
+  // Future<void> _fetchPaymentConfig(int salonId) async {
+  //   setState(() => _isFetchingConfig = true);
+  //   try {
+  //     final config = await ApiService().getSalonPaymentConfig(salonId);
+  //     setState(() {
+  //       _paymentConfig = config;
+  //       // Default to first allowed method
+  //       if (!config.allowCash) {
+  //         _selectedPaymentMethod = config.allowCliq ? 'CLIQ' : 'POINTS';
+  //       }
+  //     });
+  //   } catch (e) {
+  //     debugPrint('Error fetching payment config: $e');
+  //   } finally {
+  //     setState(() => _isFetchingConfig = false);
+  //   }
+  // }
 
   void _toggleService(Map<String, dynamic> service) {
     setState(() {
@@ -159,7 +158,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   List<String> _generateTimeSlots() {
-    if (_selectedExpert == null) return [];
+    if (_selectedExpert == null && _selectionMode != SelectionMode.noPreference) return [];
 
     final slots = <String>[];
     final startHour = 9;
@@ -190,7 +189,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       );
       return;
     }
-    if (_selectedExpert == null) {
+    if (_selectedExpert == null && _selectionMode != SelectionMode.noPreference) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('please_select_expert'.tr())));
@@ -263,7 +262,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 ),
                 _buildSummaryRow(
                   'expert'.tr(),
-                  _selectedExpert!['first_name'] ?? 'Professional',
+                  _selectionMode == SelectionMode.noPreference 
+                      ? 'any_expert'.tr() 
+                      : (_selectedExpert?['first_name'] ?? 'Professional'),
                 ),
                 _buildSummaryRow(
                   'date'.tr(),
@@ -296,6 +297,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 ),
                 const SizedBox(height: 12),
 
+                /*
                 // Points Slider/Toggle
                 ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -382,6 +384,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       ],
                     ),
                   ),
+                */
 
                 const Divider(height: 32),
 
@@ -391,7 +394,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     final deduction =
                         (_appliedPoints * 0.005) +
                         (_selectedUserGiftCard?.balance ?? 0);
-                    final finalTotal = max(0.0, totalAmount - deduction);
+                    final finalTotal = totalAmount; // max(0.0, totalAmount - deduction);
                     return _buildSummaryRow(
                       'final_total'.tr(),
                       '${finalTotal.toStringAsFixed(2)} JOD',
@@ -401,6 +404,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   },
                 ),
 
+                /*
                 const SizedBox(height: 16),
                 Text(
                   'payment_method'.tr(),
@@ -422,17 +426,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                     onTap: () =>
                         setModalState(() => _selectedPaymentMethod = 'CASH'),
                   ),
-                if (_paymentConfig?.allowOnline ?? true)
-                  _buildPaymentOption(
-                    id: 'STRIPE',
-                    title: 'Visa / Mastercard'.tr(),
-                    subtitle: 'powered_by_stripe'.tr(),
-                    icon: Icons.credit_card,
-                    color: Colors.purple,
-                    selected: _selectedPaymentMethod == 'STRIPE',
-                    onTap: () =>
-                        setModalState(() => _selectedPaymentMethod = 'STRIPE'),
-                  ),
+
                 if (_paymentConfig?.allowCliq ?? false)
                   _buildPaymentOption(
                     id: 'CLIQ',
@@ -578,23 +572,15 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   ),
                   const SizedBox(height: 12),
                 ],
+                */
 
                 const SizedBox(height: 16),
                 PrimaryButton(
-                  text:
-                      (_selectedPaymentMethod == 'STRIPE' && depositAmount > 0)
-                      ? 'pay_deposit'.tr()
-                      : 'confirm_booking'.tr(),
-                  onPressed:
-                      (_selectedPaymentMethod == 'POINTS' ||
-                          _selectedPaymentMethod == 'STRIPE' ||
-                          _selectedPaymentMethod == 'VOUCHER' ||
-                          _paymentProof != null)
-                      ? () {
-                          Navigator.pop(context);
-                          _processStandardPayment(totalAmount);
-                        }
-                      : null,
+                  text: 'confirm_appointment'.tr(),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _processStandardPayment(totalAmount);
+                  },
                 ),
                 Center(
                   child: TextButton(
@@ -676,26 +662,33 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
     final appointmentData = {
       'salon': salonData!['id'],
-      'expert': _selectedExpert!['id'],
+      if (_selectedExpert != null) 'expert': _selectedExpert!['id'],
       'start_time':
           "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T$_selectedTime:00Z",
       'end_time':
           "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T${_calculateEndTime()}:00Z",
       'services': _selectedServices
           .map(
-            (s) => {
-              'service_type': s['category'] == 'Product' ? 'PRODUCT' : 'OPTION',
-              'option': s['id'],
-              'quantity': 1,
+            (s) {
+              final type = s['type'] ?? (s['category'] == 'Product' ? 'PRODUCT' : 'OPTION');
+              return {
+                'service_type': type,
+                if (type == 'OPTION') 'option': s['id'],
+                if (type == 'PACKAGE') 'package': s['id'],
+                if (type == 'PRODUCT') 'product': s['id'],
+                'quantity': 1,
+              };
             },
           )
           .toList(),
-      'payment_method': _selectedPaymentMethod,
+      'payment_method': 'CASH', // _selectedPaymentMethod,
+      /*
       if (_selectedPaymentMethod == 'VOUCHER')
         'voucher_code': _voucherController.text,
       'points_to_redeem': _appliedPoints,
       if (_selectedUserGiftCard != null)
         'gift_card_code': _selectedUserGiftCard!.code,
+      */
       'is_gift': _isGift,
       if (_isGift) ...{
         'gift_receiver_name': _receiverNameController.text,
@@ -715,16 +708,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
       final result = await appointmentProvider.bookAppointment(appointmentData);
       final appointmentId = result['id'];
-      final checkoutUrl = result['checkout_url'];
-
-      // Handle Stripe Redirect if present
-      if (checkoutUrl != null) {
-        final uri = Uri.parse(checkoutUrl);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-          // After returning, the user will be back at home or we can poll for status
-        }
-      }
+      final cliqData = result['cliq_data'];
 
       // Upload proof if applicable
       if (_paymentProof != null && appointmentId != null) {
@@ -738,6 +722,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       }
 
       if (mounted) Navigator.pop(context); // Close loading dialog
+
+      if (cliqData != null && cliqData['type'] == 'QR' && cliqData['qr_image_base64'] != null) {
+        if (!mounted) return;
+        await _showCliqQRDialog(cliqData['qr_image_base64']);
+      }
 
       if (_isGift) {
         _showGiftSuccessDialog();
@@ -869,15 +858,45 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   void _completeBooking({String? method}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'booking_confirmed'.tr(args: [method != null ? ' ($method)' : '']),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text('appointment_confirmed'.tr(), textAlign: TextAlign.center),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.check_circle_rounded, size: 80, color: Colors.green),
+            const SizedBox(height: 24),
+            Text('booking_success_msg'.tr(), textAlign: TextAlign.center),
+          ],
         ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'done'.tr(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
       ),
     );
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    NavigationService.navigateToHomeBasedOnRole(context, 'CUSTOMER');
   }
 
   Future<UserGiftCard?> _showGiftCardPicker(List<UserGiftCard> cards) {
@@ -1028,6 +1047,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 ),
                 const SizedBox(height: 24),
 
+                /*
                 // Gift Section
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -1156,6 +1176,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
+                */
+
 
                 // Totals
                 Container(
@@ -1242,7 +1264,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: PrimaryButton(
-            text: "confirm_pay".tr(),
+            text: "confirm_appointment".tr(),
             onPressed: _handleConfirmBooking,
           ),
         ),
@@ -1258,12 +1280,14 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           icon: Icons.shuffle_rounded,
           mode: SelectionMode.noPreference,
         ),
+        /*
         const SizedBox(height: 12),
         _buildModeButton(
           label: "select_professional_per_service".tr(),
           icon: Icons.list_alt_rounded,
           mode: SelectionMode.perService,
         ),
+        */
         const SizedBox(height: 12),
         _buildModeButton(
           label: "individual_selection".tr(),
@@ -1678,6 +1702,49 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               ),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showCliqQRDialog(String base64Image) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('cliq_payment'.tr()),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('scan_cliq_qr'.tr(), textAlign: TextAlign.center),
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Image.memory(
+                  Uri.parse(base64Image).data!.contentAsBytes(),
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'amount_to_pay'.tr(args: [_calculateTotalCost().toStringAsFixed(2)]),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('done'.tr()),
+            ),
+          ],
         );
       },
     );

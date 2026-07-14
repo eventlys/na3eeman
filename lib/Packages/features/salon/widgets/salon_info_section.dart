@@ -130,21 +130,23 @@ class SalonInfoSection extends StatelessWidget {
     final googleUrl = "https://www.google.com/maps/search/?api=1&query=$query";
     final iosUrl = "http://maps.apple.com/?q=$query";
 
-    if (Platform.isIOS) {
-      final iosUri = Uri.parse(iosUrl);
-      if (await canLaunchUrl(iosUri)) {
-        await launchUrl(iosUri);
+    try {
+      if (Platform.isIOS) {
+        final iosUri = Uri.parse(iosUrl);
+        // Try apple maps first
+        if (await canLaunchUrl(iosUri)) {
+          await launchUrl(iosUri);
+        } else {
+          await launchUrl(
+            Uri.parse(googleUrl),
+            mode: LaunchMode.externalApplication,
+          );
+        }
       } else {
-        await launchUrl(
-          Uri.parse(googleUrl),
-          mode: LaunchMode.externalApplication,
-        );
+        await launchUrl(Uri.parse(googleUrl), mode: LaunchMode.externalApplication);
       }
-    } else {
-      final googleUri = Uri.parse(googleUrl);
-      if (await canLaunchUrl(googleUri)) {
-        await launchUrl(googleUri, mode: LaunchMode.externalApplication);
-      }
+    } catch (e) {
+      debugPrint('Could not launch map: $e');
     }
   }
 

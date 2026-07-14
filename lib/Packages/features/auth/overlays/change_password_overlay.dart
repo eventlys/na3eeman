@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Services/repositories/auth_repository.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:na3eeman/Packages/Core/utils/validators.dart';
+import 'package:na3eeman/Packages/Core/widgets/password_strength_indicator.dart';
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
 
@@ -17,6 +19,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   bool _obscureCurrentPassword = true;
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
+  bool _autoValidate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +27,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       title: Text("change_password".tr()),
       content: Form(
         key: _formKey,
+        autovalidateMode: _autoValidate 
+            ? AutovalidateMode.onUserInteraction 
+            : AutovalidateMode.disabled,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -72,16 +78,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                     },
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter new password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
+                validator: (value) => AppValidators.validatePassword(value),
               ),
+              const SizedBox(height: 8),
+              PasswordStrengthIndicator(controller: _newPasswordController),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _confirmPasswordController,
@@ -129,6 +129,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   }
 
   Future<void> _changePassword() async {
+    setState(() {
+      _autoValidate = true;
+    });
+
     if (_formKey.currentState!.validate()) {
       try {
         final authRepo = AuthRepository(ApiService());

@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../Packages/Core/constants/app_roles.dart';
 import '../base_provider.dart';
 import '../../Helpers/logger.dart';
+import '../../Helpers/error_handler.dart';
 import '../../Models/auth/user_model.dart';
 import '../../Models/auth/expert_profile.dart';
 import 'package:na3eeman/Models/auth/owner_profile.dart';
@@ -172,7 +173,15 @@ class AuthProvider extends BaseProvider {
         throw Exception('Invalid login parameters');
       }
     } catch (e) {
-      setError('Login failed: $e');
+      String errorMessage = 'Login failed: $e';
+      if (e is AppError && e.details != null) {
+        String detailMsg = e.details.toString();
+        if (detailMsg.contains('Exception: ')) detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        if (detailMsg.contains('non_field_errors: ')) detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        if (detailMsg.isNotEmpty) errorMessage = detailMsg;
+      }
+
+      setError(errorMessage);
       setLoading(false);
       AppLogger.error('Login failed', error: e);
       return false;
@@ -205,7 +214,15 @@ class AuthProvider extends BaseProvider {
         throw Exception('Invalid login response: missing access token');
       }
     } catch (e) {
-      setError('Login failed: $e');
+      String errorMessage = 'Login failed: $e';
+      if (e is AppError && e.details != null) {
+        String detailMsg = e.details.toString();
+        if (detailMsg.contains('Exception: ')) detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        if (detailMsg.contains('non_field_errors: ')) detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        if (detailMsg.isNotEmpty) errorMessage = detailMsg;
+      }
+
+      setError(errorMessage);
       setLoading(false);
       AppLogger.error('Login failed', error: e);
       return false;
@@ -245,7 +262,15 @@ class AuthProvider extends BaseProvider {
         throw Exception('Invalid social login response: missing access token');
       }
     } catch (e) {
-      setError('Social login failed: $e');
+      String errorMessage = 'Social login failed: $e';
+      if (e is AppError && e.details != null) {
+        String detailMsg = e.details.toString();
+        if (detailMsg.contains('Exception: ')) detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        if (detailMsg.contains('non_field_errors: ')) detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        if (detailMsg.isNotEmpty) errorMessage = detailMsg;
+      }
+
+      setError(errorMessage);
       setLoading(false);
       return false;
     }
@@ -286,10 +311,25 @@ class AuthProvider extends BaseProvider {
       return result;
     } catch (e) {
       setLoading(false);
+      
+      String errorMessage = 'Failed to send OTP. Please try again.';
+      if (e is AppError && e.details != null) {
+        String detailMsg = e.details.toString();
+        if (detailMsg.contains('Exception: ')) {
+          detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        }
+        if (detailMsg.contains('non_field_errors: ')) {
+          detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        }
+        if (detailMsg.isNotEmpty) {
+          errorMessage = detailMsg;
+        }
+      }
+
       setError('Failed to send OTP: $e');
       return {
         'success': false,
-        'message': 'Failed to send OTP. Please try again.',
+        'message': errorMessage,
       };
     }
   }

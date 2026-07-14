@@ -65,7 +65,6 @@ abstract class EnvironmentConfig {
   String? get appleClientId;
 
   // Payment
-  String? get stripePublishableKey;
 
   // Firebase
   String get firebaseApiKey;
@@ -118,8 +117,6 @@ class DevConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey =>
-      Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
 
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
@@ -180,8 +177,6 @@ class StagingConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey =>
-      Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
 
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
@@ -242,8 +237,6 @@ class ProdConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-  String? get stripePublishableKey =>
-      Environment.getEnv('STRIPE_PUBLISHABLE_KEY');
 
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');

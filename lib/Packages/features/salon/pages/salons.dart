@@ -19,6 +19,20 @@ class _SalonListPageState extends State<SalonListPage> {
   String _error = '';
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _filteredSalons = [];
+  
+  final List<String> _servicesFilters = [
+    "All",
+    "Haircut",
+    "Beard Grooming",
+    "Shave",
+    "Massage",
+    "Nails",
+    "Coloring",
+  ];
+  String _selectedService = "All";
+  String? _selectedDistance;
+  String? _selectedRating;
+  String? _selectedPrice;
 
   @override
   void initState() {
@@ -78,7 +92,7 @@ class _SalonListPageState extends State<SalonListPage> {
         actions: [
           IconButtonStyled(
             icon: Icons.filter_list_rounded,
-            onPressed: () {}, // Filter dialog
+            onPressed: _showFilterDialog,
           ),
           const SizedBox(width: 16),
         ],
@@ -103,23 +117,12 @@ class _SalonListPageState extends State<SalonListPage> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _filteredSalons = _salons.where((salon) {
-                    final name = (salon['salonName'] ?? salon['title'] ?? '')
-                        .toString()
-                        .toLowerCase();
-                    final location =
-                        (salon['salonLocation'] ?? salon['location'] ?? '')
-                            .toString()
-                            .toLowerCase();
-                    final query = value.toLowerCase();
-                    return name.contains(query) || location.contains(query);
-                  }).toList();
-                });
-              },
+              onChanged: (value) => _applyFilters(),
             ),
           ),
+          
+          _buildServicesSlider(),
+          const SizedBox(height: 16),
 
           // Content
           Expanded(child: _buildContent(isDark)),
@@ -187,8 +190,12 @@ class _SalonListPageState extends State<SalonListPage> {
           padding: const EdgeInsets.only(bottom: 16.0),
           child: ExpertSalonCard(
             title: salon['salonName'] ?? salon['title'] ?? 'Unknown',
-            workingHours: salon['workingHours'] ?? '9:00 AM - 9:00 PM',
-            profilePicture: 'assets/images/salon_placeholder.png',
+            workingHours: salon['workingHours'] ?? '9:00 AM - 00:00 AM',
+            profilePicture: salon['images'] != null && (salon['images'] as List).isNotEmpty 
+                ? salon['images'][0].toString() 
+                : (salon['salon_logo'] != null 
+                    ? 'assets/salons/${salon['salon_logo'].toString().split('/').last}' 
+                    : 'assets/images/salon5.png'),
             isClickable: true,
             salonLocation:
                 salon['salonLocation'] ?? salon['location'] ?? 'Downtown',
@@ -196,12 +203,174 @@ class _SalonListPageState extends State<SalonListPage> {
             onCardTap: () => Navigator.pushNamed(
               context,
               '/salon_details',
-              arguments: salon,
+              arguments: {'salonData': salon},
             ),
             onFavoriteChanged: (isFav) {
               // Handle favorite
             },
           ),
+        );
+      },
+    );
+  }
+
+  void _applyFilters() {
+    setState(() {
+      _filteredSalons = _salons.where((salon) {
+        bool match = true;
+        
+        final query = _searchController.text.toLowerCase();
+        if (query.isNotEmpty) {
+            final name = (salon['salonName'] ?? salon['title'] ?? '').toString().toLowerCase();
+            final location = (salon['salonLocation'] ?? salon['location'] ?? '').toString().toLowerCase();
+            if (!name.contains(query) && !location.contains(query)) {
+                match = false;
+            }
+        }
+        
+        // The mock filters below don't actually filter the mock data yet
+        // since the API data doesn't necessarily have distance or accurate price categories,
+        // but we'll apply rating if it exists just as an example.
+        if (_selectedRating != null) {
+            final rating = double.tryParse(salon['salonRating']?.toString() ?? '4.5') ?? 4.5;
+            final filterRating = double.tryParse(_selectedRating!) ?? 0;
+            if (rating < filterRating) {
+                match = false;
+            }
+        }
+
+        return match;
+      }).toList();
+    });
+  }
+
+  Widget _buildServicesSlider() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return SizedBox(
+      height: 45,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        itemCount: _servicesFilters.length,
+        itemBuilder: (context, index) {
+          final service = _servicesFilters[index];
+          final isSelected = _selectedService == service;
+          final key = service == "All" ? "all_services" : 'service_${service.toLowerCase().replaceAll(' ', '_')}';
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: FilterChip(
+              label: Text(key.tr()),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  _selectedService = selected ? service : "All";
+                  _applyFilters();
+                });
+              },
+              backgroundColor: isDark
+                  ? AppColors.almostBlack600
+                  : AppColors.almostBlack50,
+              selectedColor: Theme.of(context).primaryColor,
+              labelStyle: TextStyle(
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : Colors.black87),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text("filter_options".tr()),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("distance".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      children: ["1km", "2km", "5km", "10km"].map((dist) {
+                        return ChoiceChip(
+                          label: Text(dist),
+                          selected: _selectedDistance == dist,
+                          onSelected: (val) {
+                            setDialogState(() => _selectedDistance = val ? dist : null);
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    Text("rating".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      children: ["5", "4", "3", "2", "1", "0"].map((rating) {
+                        return ChoiceChip(
+                          label: Text("$rating \u2605"),
+                          selected: _selectedRating == rating,
+                          onSelected: (val) {
+                            setDialogState(() => _selectedRating = val ? rating : null);
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    Text("price_level".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      children: ["\$", "\$\$", "\$\$\$"].map((price) {
+                        return ChoiceChip(
+                          label: Text(price),
+                          selected: _selectedPrice == price,
+                          onSelected: (val) {
+                            setDialogState(() => _selectedPrice = val ? price : null);
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    setDialogState(() {
+                      _selectedDistance = null;
+                      _selectedRating = null;
+                      _selectedPrice = null;
+                    });
+                    setState(() {});
+                    _applyFilters();
+                  },
+                  child: Text("reset_filters".tr()),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {});
+                    _applyFilters();
+                    Navigator.pop(context);
+                  },
+                  child: Text("apply_filters".tr()),
+                ),
+              ],
+            );
+          },
         );
       },
     );

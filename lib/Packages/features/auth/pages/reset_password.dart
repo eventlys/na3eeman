@@ -7,6 +7,7 @@ import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
+import '../../../Core/widgets/password_strength_indicator.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   final String resetToken;
@@ -28,6 +29,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool _confirmPasswordVisible = false;
   String _message = '';
   bool _isSuccess = false;
+  bool _autoValidate = false;
   Map<String, dynamic> _passwordRequirements = {};
 
   @override
@@ -46,6 +48,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   Future<void> _submitResetPassword() async {
+    setState(() {
+      _autoValidate = true;
+    });
+
     if (!_formKey.currentState!.validate()) return;
 
     // Validate password match
@@ -95,129 +101,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
   }
 
-  Widget _buildPasswordRequirement(String text, bool isMet) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Row(
-      children: [
-        Image.asset(
-          isMet ? AppImages.tick : AppImages.check,
-          width: 16,
-          height: 16,
-          color: isMet
-              ? AppColor.featureCheckLight
-              : (isDark ? AppColor.darkTextHint : AppColor.lightTextHint),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 12,
-            color: isMet
-                ? AppColor.featureCheckLight
-                : (isDark
-                      ? AppColor.darkTextSecondary
-                      : AppColor.lightTextSecondary),
-            decoration: isMet
-                ? TextDecoration.lineThrough
-                : TextDecoration.none,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPasswordStrengthIndicator() {
-    final strength = _passwordRequirements['strength'] ?? 'weak';
-    final message = _passwordRequirements['message'] ?? '';
-    final requirements = _passwordRequirements['requirements'] ?? [];
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    Color strengthColor;
-    switch (strength) {
-      case 'strong':
-        strengthColor = AppColor.featureCheckLight;
-        break;
-      case 'good':
-        strengthColor = AppColor.lightInfo;
-        break;
-      case 'fair':
-        strengthColor = AppColor.lightWarning;
-        break;
-      case 'weak':
-      default:
-        strengthColor = AppColor.lightError;
-    }
-
-    // Adjust colors for dark theme
-    if (isDark) {
-      switch (strength) {
-        case 'strong':
-          strengthColor = AppColor.featureCheckDark;
-          break;
-        case 'good':
-          strengthColor = AppColor.darkInfo;
-          break;
-        case 'fair':
-          strengthColor = AppColor.darkWarning;
-          break;
-        case 'weak':
-        default:
-          strengthColor = AppColor.darkError;
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Strength indicator
-        if (_passwordController.text.isNotEmpty) ...[
-          LinearProgressIndicator(
-            value: _getStrengthValue(strength),
-            backgroundColor: isDark ? AppColor.darkCard : AppColor.lightCard,
-            color: strengthColor,
-            minHeight: 4,
-            borderRadius: BorderRadius.circular(2),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            style: TextStyle(
-              fontSize: 12,
-              color: strengthColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // Requirements list
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: requirements.map<Widget>((req) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: _buildPasswordRequirement(req['text'], req['isMet']),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  double _getStrengthValue(String strength) {
-    switch (strength) {
-      case 'strong':
-        return 1.0;
-      case 'good':
-        return 0.75;
-      case 'fair':
-        return 0.5;
-      case 'weak':
-      default:
-        return 0.25;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,6 +114,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       showBackButton: true,
       child: Form(
         key: _formKey,
+        autovalidateMode: _autoValidate 
+            ? AutovalidateMode.onUserInteraction 
+            : AutovalidateMode.disabled,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -367,7 +254,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             const SizedBox(height: 16),
 
             // Password Requirements
-            _buildPasswordStrengthIndicator(),
+            PasswordStrengthIndicator(controller: _passwordController),
 
             const SizedBox(height: 24),
 

@@ -128,6 +128,7 @@ class _OwnerManagementDashboardPageState
                           FeatureKey.financialControls,
                         ),
                       ),
+                      /*
                       _buildDashboardModule(
                         context,
                         title: 'vouchers'.tr(),
@@ -140,6 +141,7 @@ class _OwnerManagementDashboardPageState
                         ),
                         isEnabled: owner.canAccess(FeatureKey.vouchers),
                       ),
+                      */
                       _buildDashboardModule(
                         context,
                         title: "campaigns".tr(),

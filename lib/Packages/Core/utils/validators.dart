@@ -92,9 +92,26 @@ class AppValidators {
       }
     }
 
-    // Validate email format
+    final errors = <String>[];
+    if (!email.contains('@')) {
+      errors.add('• Include an @ symbol');
+    } else {
+      final parts = email.split('@');
+      if (parts[0].isEmpty) {
+        errors.add('• Text before @ (e.g., string@)');
+      }
+      if (parts.length > 1 && !parts[1].contains('.')) {
+        errors.add('• A domain name (e.g., mailservice.com)');
+      }
+    }
+
+    // Validate overall email format
     if (!_emailRegex.hasMatch(email)) {
-      return 'Please enter a valid email address';
+      if (errors.isNotEmpty) {
+        return 'Email must contain:\n${errors.join('\n')}';
+      } else {
+        return 'Please enter a valid email address (e.g., name@example.com)';
+      }
     }
 
     return null;
@@ -115,8 +132,20 @@ class AppValidators {
     // Clean phone number for validation
     final cleanedPhone = phone.replaceAll(RegExp(r'[\s\-()]'), '');
 
-    if (!_phoneRegex.hasMatch(cleanedPhone)) {
-      return 'Please enter a valid phone number';
+    final errors = <String>[];
+    
+    if (cleanedPhone.length != 10) {
+      errors.add('• Exactly 10 digits');
+    } else if (!RegExp(r'^\d+$').hasMatch(cleanedPhone)) {
+      errors.add('• Only numbers allowed');
+    }
+    
+    if (!cleanedPhone.startsWith('07')) {
+      errors.add('• Start with 07');
+    }
+
+    if (errors.isNotEmpty) {
+      return 'Phone number must contain:\n${errors.join('\n')}';
     }
 
     return null;
@@ -161,22 +190,32 @@ class AppValidators {
       return 'Password is required';
     }
 
-    // Security checks
     if (isPotentialMaliciousInput(value)) {
       return 'Invalid password format';
     }
 
     if (strongValidation) {
-      // Strong password validation
+      final errors = <String>[];
       if (value.length < 8) {
-        return 'Password must be at least 8 characters';
+        errors.add('• At least 8 characters');
+      }
+      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+        errors.add('• At least 1 uppercase letter');
+      }
+      if (!RegExp(r'[a-z]').hasMatch(value)) {
+        errors.add('• At least 1 lowercase letter');
+      }
+      if (!RegExp(r'[0-9]').hasMatch(value)) {
+        errors.add('• At least 1 number');
+      }
+      if (!RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(value)) {
+        errors.add('• At least 1 special character');
       }
 
-      if (!_strongPasswordRegex.hasMatch(value)) {
-        return 'Password must include uppercase, lowercase, number, and special character';
+      if (errors.isNotEmpty) {
+        return 'Password must contain:\n${errors.join('\n')}';
       }
     } else {
-      // Basic password validation
       if (value.length < 6) {
         return 'Password must be at least 6 characters';
       }
