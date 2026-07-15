@@ -225,7 +225,10 @@ class ThemeHelper {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.white.withValues(alpha:0.1), width: 1),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: 0.1),
+            width: 1,
+          ),
         ),
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       ),
@@ -263,14 +266,14 @@ class ThemeHelper {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: Colors.white.withValues(alpha:0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: Colors.white.withValues(alpha:0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             width: 1,
           ),
         ),
@@ -283,7 +286,7 @@ class ThemeHelper {
           fontWeight: FontWeight.w500,
         ),
         hintStyle: TextStyle(
-          color: Colors.white.withValues(alpha:0.4),
+          color: Colors.white.withValues(alpha: 0.4),
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -321,7 +324,7 @@ class ThemeHelper {
       ),
       iconTheme: const IconThemeData(color: darkText, size: 24),
       dividerTheme: DividerThemeData(
-        color: Colors.white.withValues(alpha:0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         thickness: 1,
         space: 24,
       ),
@@ -382,7 +385,7 @@ class ThemeHelper {
     bool isDark = false,
   }) {
     final bgColor = color ?? (isDark ? const Color(0xFF1E1E1E) : white);
-    final bColor = isDark ? Colors.white.withValues(alpha:0.1) : lightGray;
+    final bColor = isDark ? Colors.white.withValues(alpha: 0.1) : lightGray;
 
     return BoxDecoration(
       color: bgColor,
@@ -390,7 +393,7 @@ class ThemeHelper {
       border: Border.all(color: bColor, width: 1),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha:isDark ? 0.15 : 0.05),
+          color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.05),
           offset: const Offset(0, 2),
           blurRadius: 10,
         ),

@@ -121,12 +121,15 @@ class SubscriptionDetailsModal extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [color.withValues(alpha:0.15), color.withValues(alpha:0.05)],
+          colors: [
+            color.withValues(alpha: 0.15),
+            color.withValues(alpha: 0.05),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withValues(alpha:0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -135,7 +138,7 @@ class SubscriptionDetailsModal extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha:0.2),
+                  color: color.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.star_rounded, color: color, size: 28),
@@ -171,8 +174,8 @@ class SubscriptionDetailsModal extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: owner.isSubscriptionActive
-                      ? AppColors.success.withValues(alpha:0.1)
-                      : AppColors.error.withValues(alpha:0.1),
+                      ? AppColors.success.withValues(alpha: 0.1)
+                      : AppColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(

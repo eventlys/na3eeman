@@ -4,6 +4,7 @@ import 'package:na3eeman/Services/repositories/auth_repository.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/Packages/Core/utils/validators.dart';
 import 'package:na3eeman/Packages/Core/widgets/password_strength_indicator.dart';
+
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
 
@@ -27,8 +28,8 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       title: Text("change_password".tr()),
       content: Form(
         key: _formKey,
-        autovalidateMode: _autoValidate 
-            ? AutovalidateMode.onUserInteraction 
+        autovalidateMode: _autoValidate
+            ? AutovalidateMode.onUserInteraction
             : AutovalidateMode.disabled,
         child: SingleChildScrollView(
           child: Column(
@@ -152,10 +153,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
           );
         }
       }

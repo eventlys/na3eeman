@@ -51,10 +51,10 @@ class SpaAmenitiesGrid extends StatelessWidget {
   Widget _buildAmenityTile(AmenityItem amenity, BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha:0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha:0.2),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         ),
       ),
       padding: EdgeInsets.all(12),

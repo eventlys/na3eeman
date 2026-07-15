@@ -117,7 +117,6 @@ class DevConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
   @override
@@ -177,7 +176,6 @@ class StagingConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
   @override
@@ -237,7 +235,6 @@ class ProdConfig implements EnvironmentConfig {
   String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
 
   @override
-
   @override
   String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
   @override
@@ -257,5 +254,3 @@ class ProdConfig implements EnvironmentConfig {
   @override
   String get supportEmail => Environment.getEnv('SUPPORT_EMAIL');
 }
-
-

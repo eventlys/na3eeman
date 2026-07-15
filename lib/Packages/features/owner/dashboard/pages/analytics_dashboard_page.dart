@@ -191,7 +191,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -242,7 +242,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                     gradient: LinearGradient(
                       colors: [
                         theme.primaryColor,
-                        theme.primaryColor.withValues(alpha:0.5),
+                        theme.primaryColor.withValues(alpha: 0.5),
                       ],
                     ),
                     barWidth: 4,
@@ -252,8 +252,8 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          theme.primaryColor.withValues(alpha:0.2),
-                          theme.primaryColor.withValues(alpha:0.0),
+                          theme.primaryColor.withValues(alpha: 0.2),
+                          theme.primaryColor.withValues(alpha: 0.0),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -338,7 +338,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -401,9 +401,11 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
             width: 280,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: theme.primaryColor.withValues(alpha:0.05),
+              color: theme.primaryColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: theme.primaryColor.withValues(alpha:0.1)),
+              border: Border.all(
+                color: theme.primaryColor.withValues(alpha: 0.1),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,7 +502,9 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
                             minHeight: 8,
                             backgroundColor: theme.dividerColor,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).primaryColor.withValues(alpha:0.6),
+                              Theme.of(
+                                context,
+                              ).primaryColor.withValues(alpha: 0.6),
                             ),
                           ),
                         ),
@@ -563,7 +567,7 @@ class _PremiumKpiCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha:0.05),
+            color: color.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -578,7 +582,7 @@ class _PremiumKpiCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha:0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: color, size: 20),
@@ -632,7 +636,7 @@ class _StaffKpiTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -642,7 +646,7 @@ class _StaffKpiTile extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: theme.primaryColor.withValues(alpha:0.1),
+            backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
             child: Text(
               name.isNotEmpty ? name[0] : '?',
               style: TextStyle(
@@ -676,7 +680,7 @@ class _StaffKpiTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha:0.1),
+              color: Colors.amber.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Row(

@@ -128,7 +128,7 @@ class _SignupPageState extends State<SignupPage>
     setState(() {
       _autoValidate = true;
     });
-    
+
     if (_formKey.currentState!.validate()) {
       final authRepository = AuthRepository(ApiService());
       final authService = AuthService(authRepository);
@@ -187,7 +187,7 @@ class _SignupPageState extends State<SignupPage>
                     ? [AppColors.almostBlack700, AppColors.almostBlack800]
                     : [
                         AppColors.white,
-                        AppColors.creamyBackground.withValues(alpha:0.5),
+                        AppColors.creamyBackground.withValues(alpha: 0.5),
                       ],
               ),
             ),
@@ -251,8 +251,8 @@ class _SignupPageState extends State<SignupPage>
 
                       Form(
                         key: _formKey,
-                        autovalidateMode: _autoValidate 
-                            ? AutovalidateMode.onUserInteraction 
+                        autovalidateMode: _autoValidate
+                            ? AutovalidateMode.onUserInteraction
                             : AutovalidateMode.disabled,
                         child: Column(
                           children: [
@@ -270,7 +270,8 @@ class _SignupPageState extends State<SignupPage>
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                     ),
-                                    validator: (v) => AppValidators.validateName(v),
+                                    validator: (v) =>
+                                        AppValidators.validateName(v),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -286,7 +287,8 @@ class _SignupPageState extends State<SignupPage>
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                     ),
-                                    validator: (v) => AppValidators.validateName(v),
+                                    validator: (v) =>
+                                        AppValidators.validateName(v),
                                   ),
                                 ),
                               ],
@@ -326,7 +328,9 @@ class _SignupPageState extends State<SignupPage>
                                   child: ChoiceChip(
                                     label: const Text('Male'),
                                     selected: _selectedGender == 'male',
-                                    selectedColor: Colors.blue.withValues(alpha:0.2),
+                                    selectedColor: Colors.blue.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     checkmarkColor: Colors.blue,
                                     labelStyle: TextStyle(
                                       color: _selectedGender == 'male'
@@ -346,7 +350,9 @@ class _SignupPageState extends State<SignupPage>
                                   child: ChoiceChip(
                                     label: const Text('Female'),
                                     selected: _selectedGender == 'female',
-                                    selectedColor: Colors.pink.withValues(alpha:0.2),
+                                    selectedColor: Colors.pink.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     checkmarkColor: Colors.pink,
                                     labelStyle: TextStyle(
                                       color: _selectedGender == 'female'
@@ -388,10 +394,13 @@ class _SignupPageState extends State<SignupPage>
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              validator: (v) => AppValidators.validatePassword(v),
+                              validator: (v) =>
+                                  AppValidators.validatePassword(v),
                             ),
                             const SizedBox(height: 8),
-                            PasswordStrengthIndicator(controller: _passwordController),
+                            PasswordStrengthIndicator(
+                              controller: _passwordController,
+                            ),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _confirmPasswordController,

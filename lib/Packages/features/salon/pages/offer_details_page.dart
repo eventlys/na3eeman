@@ -99,10 +99,10 @@ class OfferDetailsPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Theme.of(context).primaryColor.withValues(alpha:0.3),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
             ),
           ),
           child: Text(
@@ -242,7 +242,7 @@ class OfferDetailsPage extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -5),
             blurRadius: 10,
           ),
@@ -338,7 +338,7 @@ class _BookingSheetState extends State<_BookingSheet> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.withValues(alpha:0.3)),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -396,7 +396,7 @@ class _BookingSheetState extends State<_BookingSheet> {
                           border: Border.all(
                             color: isSelected
                                 ? Theme.of(context).primaryColor
-                                : Colors.grey.withValues(alpha:0.3),
+                                : Colors.grey.withValues(alpha: 0.3),
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),

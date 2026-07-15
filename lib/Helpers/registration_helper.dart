@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class SocialRegistrationHelper {
-
   // Social provider types
   static const String googleProvider = 'google';
   static const String facebookProvider = 'facebook';

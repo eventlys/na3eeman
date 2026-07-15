@@ -347,7 +347,7 @@ class _MyCasesTab extends StatelessWidget {
                       vertical: 3,
                     ),
                     decoration: BoxDecoration(
-                      color: sc.withValues(alpha:0.12),
+                      color: sc.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(

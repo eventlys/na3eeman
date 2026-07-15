@@ -123,7 +123,7 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -133,7 +133,9 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha:0.05),
+              color: (isDark ? Colors.white : Colors.black).withValues(
+                alpha: 0.05,
+              ),
               shape: BoxShape.circle,
             ),
           ),
@@ -146,16 +148,16 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
                 Container(
                   width: 100,
                   height: 12,
-                  color: (isDark ? Colors.white : Colors.black).withValues(alpha:
-                    0.05,
+                  color: (isDark ? Colors.white : Colors.black).withValues(
+                    alpha: 0.05,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Container(
                   width: 150,
                   height: 8,
-                  color: (isDark ? Colors.white : Colors.black).withValues(alpha:
-                    0.05,
+                  color: (isDark ? Colors.white : Colors.black).withValues(
+                    alpha: 0.05,
                   ),
                 ),
               ],
@@ -214,9 +216,9 @@ class _ToolsAndInventoryOverviewState extends State<ToolsAndInventoryOverview> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isAlert
-                ? AppColors.error.withValues(alpha:0.3)
+                ? AppColors.error.withValues(alpha: 0.3)
                 : (isDark
-                      ? AppColors.white.withValues(alpha:0.1)
+                      ? AppColors.white.withValues(alpha: 0.1)
                       : AppColors.almostBlack50),
           ),
         ),

@@ -42,8 +42,8 @@ class GlobalStockValueWidget extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            theme.primaryColor.withValues(alpha:0.08),
-            theme.colorScheme.secondary.withValues(alpha:0.06),
+            theme.primaryColor.withValues(alpha: 0.08),
+            theme.colorScheme.secondary.withValues(alpha: 0.06),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

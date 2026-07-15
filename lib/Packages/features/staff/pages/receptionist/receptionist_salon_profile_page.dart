@@ -142,6 +142,7 @@ class _ReceptionistSalonProfilePageState
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
+
               /*
               _buildModalActionButton(
                 context,
@@ -151,7 +152,6 @@ class _ReceptionistSalonProfilePageState
                 () => Navigator.pushNamed(context, '/management/vouchers'),
               ),
               */
-
               const SizedBox(height: 32),
 
               _isSaving
@@ -216,7 +216,7 @@ class _ReceptionistSalonProfilePageState
         filled: true,
         fillColor: isDark
             ? AppColors.almostBlack600
-            : AppColors.almostBlack50.withValues(alpha:0.3),
+            : AppColors.almostBlack50.withValues(alpha: 0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -235,10 +235,10 @@ class _ReceptionistSalonProfilePageState
       decoration: BoxDecoration(
         color: isDark
             ? AppColors.almostBlack600
-            : AppColors.almostBlack50.withValues(alpha:0.3),
+            : AppColors.almostBlack50.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha:0.3),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
           style: BorderStyle.solid,
         ),
       ),
@@ -278,9 +278,9 @@ class _ReceptionistSalonProfilePageState
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withValues(alpha:0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha:0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [

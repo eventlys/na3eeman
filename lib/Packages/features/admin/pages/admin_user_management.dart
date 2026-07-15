@@ -200,7 +200,7 @@ class _UserTile extends StatelessWidget {
             radius: 22,
             backgroundColor: Theme.of(
               context,
-            ).colorScheme.primary.withValues(alpha:0.1),
+            ).colorScheme.primary.withValues(alpha: 0.1),
             backgroundImage: user.profilePic != null
                 ? NetworkImage(user.profilePic!)
                 : null,
@@ -253,7 +253,7 @@ class _UserTile extends StatelessWidget {
                         vertical: 1,
                       ),
                       decoration: BoxDecoration(
-                        color: _statusColor.withValues(alpha:0.12),
+                        color: _statusColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(

@@ -58,8 +58,8 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha:
-                            sidebarController.animation.value * 0.3,
+                          color: Colors.black.withValues(
+                            alpha: sidebarController.animation.value * 0.3,
                           ),
                           blurRadius: 20,
                           spreadRadius: 5,

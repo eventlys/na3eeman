@@ -261,7 +261,7 @@ class _LowStockAlertWidgetState extends State<LowStockAlertWidget> {
                 const SizedBox(height: 6),
                 LinearProgressIndicator(
                   value: pct.clamp(0.0, 1.0),
-                  backgroundColor: Colors.grey.withValues(alpha:0.2),
+                  backgroundColor: Colors.grey.withValues(alpha: 0.2),
                   valueColor: AlwaysStoppedAnimation(
                     item.qty <= 2 ? Colors.red : Colors.orange,
                   ),

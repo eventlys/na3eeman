@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/colors.dart';
@@ -19,7 +18,7 @@ class CustomerFeedbackSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:isDark ? 0.3 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -33,7 +32,7 @@ class CustomerFeedbackSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha:0.1),
+                  color: Colors.amber.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -71,10 +70,10 @@ class CustomerFeedbackSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha:0.05),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               ),
             ),
             child: Row(
@@ -88,7 +87,10 @@ class CustomerFeedbackSection extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'earn_25_points_feedback'.tr(),
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -110,7 +112,10 @@ class CustomerFeedbackSection extends StatelessWidget {
               ),
               child: Text(
                 'share_your_thoughts'.tr(),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
@@ -119,4 +124,3 @@ class CustomerFeedbackSection extends StatelessWidget {
     );
   }
 }
-

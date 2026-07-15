@@ -98,10 +98,12 @@ class _DataManagementPageState extends State<DataManagementPage>
           '/data/export/',
           queryParams: params,
         );
-        
+
         if (filePath != null) {
           _showSuccessSnackBar('Export ready!');
-          await share_plus.Share.shareXFiles([share_plus.XFile(filePath)], text: 'Exported Data');
+          await share_plus.Share.shareXFiles([
+            share_plus.XFile(filePath),
+          ], text: 'Exported Data');
         } else {
           setState(
             () => _exportError = 'Export returned no data from backend.',
@@ -369,9 +371,9 @@ class _ExportTab extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha:0.1),
+                color: Colors.red.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.withValues(alpha:0.3)),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
@@ -478,7 +480,9 @@ class _ImportTab extends StatelessWidget {
                     style: BorderStyle.solid,
                   ),
                   borderRadius: BorderRadius.circular(8),
-                  color: hasFile ? AppColors.primary.withValues(alpha:0.05) : null,
+                  color: hasFile
+                      ? AppColors.primary.withValues(alpha: 0.05)
+                      : null,
                 ),
                 child: Column(
                   children: [
@@ -572,9 +576,9 @@ class _ImportTab extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha:0.1),
+              color: Colors.amber.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.amber.withValues(alpha:0.3)),
+              border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -685,9 +689,9 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha:0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha:0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -734,7 +738,7 @@ class _SectionCard extends StatelessWidget {
         border: Border.all(color: theme.dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -748,7 +752,7 @@ class _SectionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha:0.12),
+                  color: iconColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: iconColor, size: 18),

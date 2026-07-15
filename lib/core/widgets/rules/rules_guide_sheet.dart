@@ -164,7 +164,7 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
                 height: 5,
                 decoration: BoxDecoration(
                   color: isDark
-                      ? AppColors.white.withValues(alpha:0.15)
+                      ? AppColors.white.withValues(alpha: 0.15)
                       : AppColors.almostBlack100,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -176,7 +176,7 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: accent.withValues(alpha:0.1),
+                        color: accent.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Icon(icon, color: accent, size: 32),
@@ -325,7 +325,7 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.almostBlack500 : Colors.grey[50],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accent.withValues(alpha:0.1)),
+        border: Border.all(color: accent.withValues(alpha: 0.1)),
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

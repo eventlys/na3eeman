@@ -104,8 +104,11 @@ class Sidebar extends StatelessWidget {
                   children: [
                     Builder(
                       builder: (context) {
-                        final isDark = Theme.of(context).brightness == Brightness.dark;
-                        final locale = Localizations.localeOf(context).languageCode;
+                        final isDark =
+                            Theme.of(context).brightness == Brightness.dark;
+                        final locale = Localizations.localeOf(
+                          context,
+                        ).languageCode;
                         final isArabic = locale == 'ar';
 
                         String logoPath;
@@ -130,7 +133,9 @@ class Sidebar extends StatelessWidget {
                     FutureBuilder<PackageInfo>(
                       future: PackageInfo.fromPlatform(),
                       builder: (context, snapshot) {
-                        final version = snapshot.hasData ? snapshot.data!.version : '2.0.0';
+                        final version = snapshot.hasData
+                            ? snapshot.data!.version
+                            : '2.0.0';
                         return Text(
                           'Version $version',
                           style: const TextStyle(

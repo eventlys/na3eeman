@@ -237,7 +237,7 @@ class AppThemes {
       cardTheme: CardThemeData(
         elevation: AppElevation.sm,
         color: surface,
-        shadowColor: Colors.black.withValues(alpha:0.06),
+        shadowColor: Colors.black.withValues(alpha: 0.06),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
@@ -274,7 +274,7 @@ class AppThemes {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: surface,
-        indicatorColor: primary.withValues(alpha:0.12),
+        indicatorColor: primary.withValues(alpha: 0.12),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return const IconThemeData(color: primary, size: 24);
@@ -296,7 +296,7 @@ class AppThemes {
           );
         }),
         elevation: 4,
-        shadowColor: Colors.black.withValues(alpha:0.08),
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         surfaceTintColor: AppColor.transparent,
       ),
       drawerTheme: DrawerThemeData(
@@ -348,7 +348,7 @@ class AppThemes {
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (s) => s.contains(WidgetState.selected)
-              ? primary.withValues(alpha:0.3)
+              ? primary.withValues(alpha: 0.3)
               : AppColor.lightGray,
         ),
       ),
@@ -406,7 +406,10 @@ class AppThemes {
         shadowColor: AppColor.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(color: Colors.white.withValues(alpha:0.08), width: 1),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: 0.08),
+            width: 1,
+          ),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -441,7 +444,7 @@ class AppThemes {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: surface,
-        indicatorColor: primary.withValues(alpha:0.15),
+        indicatorColor: primary.withValues(alpha: 0.15),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return const IconThemeData(color: primary, size: 24);
@@ -488,7 +491,7 @@ class AppThemes {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       ),
       dividerTheme: DividerThemeData(
-        color: Colors.white.withValues(alpha:0.08),
+        color: Colors.white.withValues(alpha: 0.08),
         thickness: 1,
         space: 1,
       ),
@@ -516,7 +519,7 @@ class AppThemes {
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (s) => s.contains(WidgetState.selected)
-              ? primary.withValues(alpha:0.3)
+              ? primary.withValues(alpha: 0.3)
               : AppColor.ninjaDivider,
         ),
       ),

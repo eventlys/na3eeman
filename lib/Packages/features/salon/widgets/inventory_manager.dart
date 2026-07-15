@@ -58,7 +58,9 @@ class InventoryManagerState extends State<InventoryManager> {
     salonId ??= authProvider.user?.salonId;
 
     if (salonId == null) {
-      AppLogger.error('InventoryManager: Skipping load items because salonId is null');
+      AppLogger.error(
+        'InventoryManager: Skipping load items because salonId is null',
+      );
       return;
     }
 
@@ -284,7 +286,7 @@ class InventoryManagerState extends State<InventoryManager> {
               Icon(
                 Icons.store_mall_directory_outlined,
                 size: 64,
-                color: AppColor.lightTextSecondary.withValues(alpha:0.5),
+                color: AppColor.lightTextSecondary.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16),
               Text(

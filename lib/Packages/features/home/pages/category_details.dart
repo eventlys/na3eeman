@@ -337,15 +337,12 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   }
 
   Widget _buildSalonsHeader() {
-    final key = 'category_${widget.category.nameEn.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
+    final key =
+        'category_${widget.category.nameEn.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
-        'salons_specialized_in'.tr(
-          args: [
-            key.tr(),
-          ],
-        ),
+        'salons_specialized_in'.tr(args: [key.tr()]),
         style: Theme.of(
           context,
         ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -457,7 +454,8 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
             itemBuilder: (context, index) {
               final sub = subCats[index];
               final isSelected = _searchQuery == sub.toLowerCase();
-              final key = 'service_${sub.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
+              final key =
+                  'service_${sub.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
               return Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: FilterChip(

@@ -99,7 +99,7 @@ class ThemedAvatar extends StatelessWidget {
         color: isDark ? AppColor.ninjaCard : AppColor.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: borderColor.withValues(alpha:0.25),
+            color: borderColor.withValues(alpha: 0.25),
             blurRadius: 12,
             spreadRadius: 1,
           ),

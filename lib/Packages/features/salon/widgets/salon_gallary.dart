@@ -66,7 +66,7 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha:0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -79,21 +79,23 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                           images[index],
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) => Image.asset(
-                            'assets/images/salon_placeholder.png',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                                'assets/images/salon_placeholder.png',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                         )
                       : Image.asset(
                           images[index],
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) => Image.asset(
-                            'assets/images/salon_placeholder.png',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                                'assets/images/salon_placeholder.png',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                         ),
                 ),
               );

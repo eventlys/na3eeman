@@ -198,11 +198,11 @@ class _CustomerHomePageState extends State<CustomerHomePage>
               colors: isDark
                   ? [
                       AppColors.almostBlack600,
-                      AppColors.almostBlack600.withValues(alpha:0.8),
+                      AppColors.almostBlack600.withValues(alpha: 0.8),
                     ]
                   : [
                       Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withValues(alpha:0.85),
+                      Theme.of(context).primaryColor.withValues(alpha: 0.85),
                     ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -212,7 +212,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
               BoxShadow(
                 color: Theme.of(
                   context,
-                ).primaryColor.withValues(alpha:isDark ? 0 : 0.2),
+                ).primaryColor.withValues(alpha: isDark ? 0 : 0.2),
                 offset: const Offset(0, 10),
                 blurRadius: 20,
               ),
@@ -230,7 +230,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                       Text(
                         'loyalty_balance_caps'.tr(),
                         style: TextStyle(
-                          color: AppColors.white.withValues(alpha:0.7),
+                          color: AppColors.white.withValues(alpha: 0.7),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.2,
@@ -250,7 +250,7 @@ class _CustomerHomePageState extends State<CustomerHomePage>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.white.withValues(alpha:0.2),
+                      color: AppColors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -298,8 +298,6 @@ class _CustomerHomePageState extends State<CustomerHomePage>
       },
     );
   }
-
-
 
   Widget _buildCategoriesGrid(bool isDark, Gender? userGender) {
     final isLadies = userGender == Gender.female;

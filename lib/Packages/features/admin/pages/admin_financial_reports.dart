@@ -94,7 +94,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -111,7 +111,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
               barWidth: 4,
               belowBarData: BarAreaData(
                 show: true,
-                color: AppColors.success.withValues(alpha:0.1),
+                color: AppColors.success.withValues(alpha: 0.1),
               ),
               dotData: const FlDotData(show: false),
             ),
@@ -130,7 +130,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -184,7 +184,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDark
-                  ? AppColors.white.withValues(alpha:0.05)
+                  ? AppColors.white.withValues(alpha: 0.05)
                   : AppColors.almostBlack50,
             ),
           ),
@@ -216,7 +216,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
                 ),
                 decoration: BoxDecoration(
                   color: (isPending ? AppColors.warning : AppColors.success)
-                      .withValues(alpha:0.1),
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(

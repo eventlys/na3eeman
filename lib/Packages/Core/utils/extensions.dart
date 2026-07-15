@@ -485,7 +485,8 @@ extension WidgetExtensions on Widget {
     double? height,
   }) => Tooltip(
     message: message,
-    decoration: decoration, height: height,
+    decoration: decoration,
+    height: height,
     child: this,
   );
 }

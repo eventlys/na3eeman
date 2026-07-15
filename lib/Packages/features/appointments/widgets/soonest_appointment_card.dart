@@ -302,13 +302,13 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
                 color: isDark
-                    ? AppColors.white.withValues(alpha:0.1)
+                    ? AppColors.white.withValues(alpha: 0.1)
                     : Theme.of(context).primaryColor.withValues(alpha: 0.05),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:isDark ? 0.3 : 0.08),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                   offset: const Offset(0, 8),
                   blurRadius: 24,
                 ),
@@ -326,7 +326,9 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -547,7 +549,7 @@ class _DelayAppointmentDialogState extends State<_DelayAppointmentDialog> {
           borderRadius: BorderRadius.circular(16),
           border: isSelected
               ? null
-              : Border.all(color: Colors.grey.withValues(alpha:0.2)),
+              : Border.all(color: Colors.grey.withValues(alpha: 0.2)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -565,7 +567,7 @@ class _DelayAppointmentDialogState extends State<_DelayAppointmentDialog> {
               '-$points Points',
               style: TextStyle(
                 color: isSelected
-                    ? AppColors.white.withValues(alpha:0.8)
+                    ? AppColors.white.withValues(alpha: 0.8)
                     : Colors.red,
                 fontWeight: FontWeight.w600,
                 fontSize: 12,

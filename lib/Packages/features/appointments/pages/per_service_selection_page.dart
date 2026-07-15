@@ -78,7 +78,9 @@ class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
                     decoration: BoxDecoration(
                       color: isDark ? AppColors.almostBlack600 : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.withValues(alpha:0.2)),
+                      border: Border.all(
+                        color: Colors.grey.withValues(alpha: 0.2),
+                      ),
                     ),
                     child: Row(
                       children: [

@@ -148,7 +148,7 @@ class _InternDashboardState extends State<InternDashboard>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).primaryColor.withValues(alpha:0.3),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -229,8 +229,8 @@ class _InternDashboardState extends State<InternDashboard>
                           value: totalCount == 0
                               ? 0
                               : completedCount / totalCount,
-                          backgroundColor: AppColors.almostBlack100.withValues(alpha:
-                            0.1,
+                          backgroundColor: AppColors.almostBlack100.withValues(
+                            alpha: 0.1,
                           ),
                           valueColor: AlwaysStoppedAnimation<Color>(
                             Theme.of(context).primaryColor,
@@ -520,7 +520,7 @@ class FeedbackSection extends StatelessWidget {
                 Icon(
                   Icons.feedback_outlined,
                   size: 48,
-                  color: AppColors.almostBlack300.withValues(alpha:0.5),
+                  color: AppColors.almostBlack300.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -556,7 +556,9 @@ class FeedbackSection extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 16,
-                          backgroundColor: AppColors.primary.withValues(alpha:0.1),
+                          backgroundColor: AppColors.primary.withValues(
+                            alpha: 0.1,
+                          ),
                           child: Text(
                             feedback.expertName?[0] ?? 'E',
                             style: TextStyle(
@@ -621,7 +623,7 @@ class ShadowingBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

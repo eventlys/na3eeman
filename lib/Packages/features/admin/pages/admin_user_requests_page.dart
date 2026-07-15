@@ -263,7 +263,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         borderRadius: AppSpacing.brSm,
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.1)
+              ? AppColors.white.withValues(alpha: 0.1)
               : AppColors.almostBlack100,
         ),
       ),
@@ -317,9 +317,9 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: color.withValues(alpha:0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: AppSpacing.brSm,
-          border: Border.all(color: color.withValues(alpha:0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Column(
           children: [
@@ -363,14 +363,14 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         borderRadius: AppSpacing.brLg,
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
         boxShadow: isDark
             ? null
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -392,7 +392,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
-                        color: accent.withValues(alpha:0.1),
+                        color: accent.withValues(alpha: 0.1),
                         borderRadius: AppSpacing.brXs,
                       ),
                       child: Icon(
@@ -450,7 +450,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                       ),
                       decoration: BoxDecoration(
                         color: isDark
-                            ? AppColors.white.withValues(alpha:0.07)
+                            ? AppColors.white.withValues(alpha: 0.07)
                             : AppColors.almostBlack50,
                         borderRadius: AppSpacing.brXs,
                       ),
@@ -507,9 +507,9 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha:0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: AppSpacing.brSm,
-        border: Border.all(color: color.withValues(alpha:0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         status.replaceAll('_', ' '),
@@ -543,7 +543,7 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                 height: 4,
                 decoration: BoxDecoration(
                   color: isDark
-                      ? AppColors.white.withValues(alpha:0.2)
+                      ? AppColors.white.withValues(alpha: 0.2)
                       : AppColors.almostBlack100,
                   borderRadius: AppSpacing.brRound,
                 ),
@@ -619,9 +619,11 @@ class _AdminUserRequestsPageState extends State<AdminUserRequestsPage> {
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
-                          color: accent.withValues(alpha:0.05),
+                          color: accent.withValues(alpha: 0.05),
                           borderRadius: AppSpacing.brMd,
-                          border: Border.all(color: accent.withValues(alpha:0.1)),
+                          border: Border.all(
+                            color: accent.withValues(alpha: 0.1),
+                          ),
                         ),
                         child: Text(
                           req.adminNotes!,

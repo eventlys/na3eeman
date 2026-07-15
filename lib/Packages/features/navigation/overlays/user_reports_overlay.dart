@@ -183,7 +183,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.red.withValues(alpha:0.2),
+        color: Colors.red.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Center(
@@ -389,7 +389,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha:0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

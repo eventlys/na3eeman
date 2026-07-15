@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class OtpHelper {
-
   /// Validates OTP format
   bool validateOtpFormat(String otp, {int requiredLength = 6}) {
     if (otp.length != requiredLength) {
-      AppLogger.warning('OTP length invalid: ${otp.length}, expected: $requiredLength');
+      AppLogger.warning(
+        'OTP length invalid: ${otp.length}, expected: $requiredLength',
+      );
       return false;
     }
 

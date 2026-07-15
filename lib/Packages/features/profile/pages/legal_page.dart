@@ -22,8 +22,9 @@ class _LegalDocsPageState extends State<LegalDocsPage> {
 
   Future<void> _loadDocs() async {
     try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/docs_data.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/docs_data.json',
+      );
       final Map<String, dynamic> data = json.decode(jsonString);
       setState(() {
         _docsData = data;
@@ -49,10 +50,7 @@ class _LegalDocsPageState extends State<LegalDocsPage> {
           appBar: AppBar(
             title: Text(title, style: const TextStyle(fontSize: 16)),
           ),
-          body: Markdown(
-            data: content,
-            selectable: true,
-          ),
+          body: Markdown(data: content, selectable: true),
         ),
       ),
     );
@@ -82,15 +80,11 @@ class _LegalDocsPageState extends State<LegalDocsPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Legal & Information'),
-      ),
+      appBar: AppBar(title: const Text('Legal & Information')),
       body: ListView.builder(
         itemCount: _docsData.keys.length,
         itemBuilder: (context, index) {
@@ -98,15 +92,21 @@ class _LegalDocsPageState extends State<LegalDocsPage> {
           final categoryData = _docsData[categoryKey];
 
           if (categoryData is Map) {
-            final pageKeys = categoryData.keys.where((k) => k != 'main').toList();
-            
+            final pageKeys = categoryData.keys
+                .where((k) => k != 'main')
+                .toList();
+
             return ExpansionTile(
               title: Text(
                 _formatName(categoryKey),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               children: pageKeys.map((pageKey) {
-                return _buildPageTile(pageKey, categoryData[pageKey], categoryKey);
+                return _buildPageTile(
+                  pageKey,
+                  categoryData[pageKey],
+                  categoryKey,
+                );
               }).toList(),
             );
           } else if (categoryData is String) {
@@ -117,7 +117,11 @@ class _LegalDocsPageState extends State<LegalDocsPage> {
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-                _openMarkdownPage(context, _formatName(categoryKey), categoryData);
+                _openMarkdownPage(
+                  context,
+                  _formatName(categoryKey),
+                  categoryData,
+                );
               },
             );
           }

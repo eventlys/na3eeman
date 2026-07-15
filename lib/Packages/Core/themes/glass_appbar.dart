@@ -50,8 +50,8 @@ class _GlassSliverAppBarState extends State<GlassSliverAppBar> {
     return SliverAppBar(
       centerTitle: false,
       backgroundColor: widget.isDarkMode
-          ? AppColor.darkBackground.withValues(alpha:0.9)
-          : AppColor.white.withValues(alpha:0.9),
+          ? AppColor.darkBackground.withValues(alpha: 0.9)
+          : AppColor.white.withValues(alpha: 0.9),
       elevation: 0,
       leading:
           widget.leading ?? (widget.showBackButton ? _buildBackButton() : null),

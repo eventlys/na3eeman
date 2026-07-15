@@ -58,7 +58,7 @@ class KitMaintenanceWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: item.urgencyColor.withValues(alpha:0.12),
+                    color: item.urgencyColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(item.icon, size: 18, color: item.urgencyColor),
@@ -89,7 +89,7 @@ class KitMaintenanceWidget extends StatelessWidget {
                     vertical: 3,
                   ),
                   decoration: BoxDecoration(
-                    color: item.urgencyColor.withValues(alpha:0.15),
+                    color: item.urgencyColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(

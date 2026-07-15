@@ -129,7 +129,7 @@ class _SlotTile extends StatelessWidget {
             height: 40,
             margin: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: color.withValues(alpha:0.4),
+              color: color.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(3),
             ),
           ),

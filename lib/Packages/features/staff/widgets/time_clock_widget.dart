@@ -143,15 +143,15 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: _isClockedIn
-              ? Colors.green.withValues(alpha:0.6)
+              ? Colors.green.withValues(alpha: 0.6)
               : theme.dividerColor,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
             color: _isClockedIn
-                ? Colors.green.withValues(alpha:0.25)
-                : Colors.black.withValues(alpha:0.05),
+                ? Colors.green.withValues(alpha: 0.25)
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -171,8 +171,8 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
                     height: 56,
                     decoration: BoxDecoration(
                       color: _isClockedIn
-                          ? Colors.white.withValues(alpha:0.2)
-                          : AppColors.primary.withValues(alpha:0.1),
+                          ? Colors.white.withValues(alpha: 0.2)
+                          : AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

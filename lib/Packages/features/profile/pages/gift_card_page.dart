@@ -151,25 +151,25 @@ class _GiftCardPageState extends State<GiftCardPage> {
             ),
             const SizedBox(height: 24),
             _buildPaymentOption(
-            //   'visa_mastercard'.tr(),
-            //   Icons.credit_card_rounded,
-            //   'visa',
-            //   primaryColor,
-            // ),
-            // const SizedBox(height: 12),
-            // _buildPaymentOption(
-            //   'apple_pay'.tr(),
-            //   Icons.apple_rounded,
-            //   'apple_pay',
-            //   primaryColor,
-            // ),
-            // const SizedBox(height: 12),
-            // _buildPaymentOption(
-            //   'google_pay'.tr(),
-            //   Icons.payment_rounded,
-            //   'google_pay',
-            //   primaryColor,
-            'CliQ'.tr(),
+              //   'visa_mastercard'.tr(),
+              //   Icons.credit_card_rounded,
+              //   'visa',
+              //   primaryColor,
+              // ),
+              // const SizedBox(height: 12),
+              // _buildPaymentOption(
+              //   'apple_pay'.tr(),
+              //   Icons.apple_rounded,
+              //   'apple_pay',
+              //   primaryColor,
+              // ),
+              // const SizedBox(height: 12),
+              // _buildPaymentOption(
+              //   'google_pay'.tr(),
+              //   Icons.payment_rounded,
+              //   'google_pay',
+              //   primaryColor,
+              'CliQ'.tr(),
               Icons.qr_code_rounded,
               'cliq',
               primaryColor,
@@ -193,7 +193,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.withValues(alpha:0.2)),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -223,7 +223,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
     final secondaryColor = isLadies
         ? AppColors.pinkBastil
         : AppColors.blueBastil;
-    final shadowColor = primaryColor.withValues(alpha:0.4);
+    final shadowColor = primaryColor.withValues(alpha: 0.4);
 
     if (_isLoading) {
       return Scaffold(
@@ -351,7 +351,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: primaryColor.withValues(alpha:0.1),
+                color: primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -499,7 +499,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha:0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(
@@ -532,14 +532,14 @@ class _VoucherTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha:0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withValues(alpha:0.12),
+              color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(Icons.card_giftcard_rounded, color: color, size: 22),

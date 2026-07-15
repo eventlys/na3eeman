@@ -129,8 +129,11 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: AppColors.white),
                 onPressed: () {
-                  final link = "${AppConstants.webAppUrl}/salon/${widget.salonData['id']}";
-                  Share.share("check_out_this_salon".tr(args: [salonName, link]));
+                  final link =
+                      "${AppConstants.webAppUrl}/salon/${widget.salonData['id']}";
+                  Share.share(
+                    "check_out_this_salon".tr(args: [salonName, link]),
+                  );
                 },
               ),
               if (RolePermissionManager.canEditSalonInfo(
@@ -312,7 +315,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha:0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),

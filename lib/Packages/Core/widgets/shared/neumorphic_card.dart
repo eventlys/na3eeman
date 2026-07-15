@@ -37,8 +37,8 @@ class NeumorphicCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: (isDark ? Colors.black : Colors.black).withValues(alpha:
-              isDark ? 0.2 : 0.06,
+            color: (isDark ? Colors.black : Colors.black).withValues(
+              alpha: isDark ? 0.2 : 0.06,
             ),
             offset: const Offset(0, 2),
             blurRadius: 12,

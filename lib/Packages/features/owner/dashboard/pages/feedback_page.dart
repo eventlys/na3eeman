@@ -184,7 +184,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.1)
+              ? AppColors.white.withValues(alpha: 0.1)
               : AppColors.almostBlack50,
         ),
       ),

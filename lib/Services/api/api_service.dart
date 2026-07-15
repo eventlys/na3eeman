@@ -70,7 +70,9 @@ class ApiService {
     ).replace(queryParameters: stringParams);
 
     try {
-      final response = await http.get(uri, headers: headers).timeout(const Duration(seconds: 30));
+      final response = await http
+          .get(uri, headers: headers)
+          .timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -86,11 +88,13 @@ class ApiService {
     final uri = Uri.parse('$baseUrl$path');
 
     try {
-      final response = await http.post(
-        uri,
-        headers: headers,
-        body: data != null ? jsonEncode(data) : null,
-      ).timeout(const Duration(seconds: 30));
+      final response = await http
+          .post(
+            uri,
+            headers: headers,
+            body: data != null ? jsonEncode(data) : null,
+          )
+          .timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -106,11 +110,13 @@ class ApiService {
     final uri = Uri.parse('$baseUrl$path');
 
     try {
-      final response = await http.put(
-        uri,
-        headers: headers,
-        body: data != null ? jsonEncode(data) : null,
-      ).timeout(const Duration(seconds: 30));
+      final response = await http
+          .put(
+            uri,
+            headers: headers,
+            body: data != null ? jsonEncode(data) : null,
+          )
+          .timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -126,11 +132,13 @@ class ApiService {
     final uri = Uri.parse('$baseUrl$path');
 
     try {
-      final response = await http.patch(
-        uri,
-        headers: headers,
-        body: data != null ? jsonEncode(data) : null,
-      ).timeout(const Duration(seconds: 30));
+      final response = await http
+          .patch(
+            uri,
+            headers: headers,
+            body: data != null ? jsonEncode(data) : null,
+          )
+          .timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -145,7 +153,9 @@ class ApiService {
     final uri = Uri.parse('$baseUrl$path');
 
     try {
-      final response = await http.delete(uri, headers: headers).timeout(const Duration(seconds: 30));
+      final response = await http
+          .delete(uri, headers: headers)
+          .timeout(const Duration(seconds: 30));
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -168,8 +178,10 @@ class ApiService {
       });
     }
 
-    final uri = Uri.parse('$baseUrl$path').replace(queryParameters: stringParams);
-    
+    final uri = Uri.parse(
+      '$baseUrl$path',
+    ).replace(queryParameters: stringParams);
+
     try {
       final response = await http.get(uri, headers: headers);
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -182,8 +194,8 @@ class ApiService {
             filename = match.group(1)!;
           }
         } else {
-            final ext = queryParams?['format'] == 'csv' ? 'csv' : 'json';
-            filename = 'export.$ext';
+          final ext = queryParams?['format'] == 'csv' ? 'csv' : 'json';
+          filename = 'export.$ext';
         }
 
         final directory = Directory.systemTemp;
@@ -205,7 +217,7 @@ class ApiService {
       return body;
     } else {
       String errorMessage = 'API Error ${response.statusCode}';
-      
+
       if (body != null && body is Map) {
         if (body.containsKey('detail')) {
           errorMessage = body['detail'].toString();
@@ -226,7 +238,7 @@ class ApiService {
           }
         }
       }
-      
+
       throw Exception(errorMessage);
     }
   }
@@ -827,10 +839,7 @@ class ApiService {
   Future<List<dynamic>> getWorkingHours({int? salonId, int? expertId}) async {
     final response = await get(
       Endpoints.workingHours,
-      queryParams: {
-        'salon_id': ?salonId,
-        'expert_id': ?expertId,
-      },
+      queryParams: {'salon_id': ?salonId, 'expert_id': ?expertId},
     );
     return response is List ? response : (response['results'] ?? []);
   }

@@ -60,7 +60,7 @@ class AppTypography {
       titleSmall: GoogleFonts.inter(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: textColor.withValues(alpha:0.7),
+        color: textColor.withValues(alpha: 0.7),
       ),
       bodyLarge: GoogleFonts.inter(
         fontSize: 16,
@@ -75,7 +75,7 @@ class AppTypography {
       bodySmall: GoogleFonts.inter(
         fontSize: 12,
         fontWeight: FontWeight.normal,
-        color: textColor.withValues(alpha:0.7),
+        color: textColor.withValues(alpha: 0.7),
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 14,

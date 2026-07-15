@@ -98,8 +98,10 @@ class _NotificationsContent extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
                       backgroundColor: isRead
-                          ? Colors.grey.withValues(alpha:0.05)
-                          : Theme.of(context).primaryColor.withValues(alpha:0.1),
+                          ? Colors.grey.withValues(alpha: 0.05)
+                          : Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.1),
                       child: Icon(
                         isRead
                             ? Icons.notifications_none_rounded

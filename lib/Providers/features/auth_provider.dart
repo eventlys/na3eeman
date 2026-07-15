@@ -176,8 +176,10 @@ class AuthProvider extends BaseProvider {
       String errorMessage = 'Login failed: $e';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: ')) detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        if (detailMsg.contains('non_field_errors: ')) detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        if (detailMsg.contains('Exception: '))
+          detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        if (detailMsg.contains('non_field_errors: '))
+          detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
         if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 
@@ -217,8 +219,10 @@ class AuthProvider extends BaseProvider {
       String errorMessage = 'Login failed: $e';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: ')) detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        if (detailMsg.contains('non_field_errors: ')) detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        if (detailMsg.contains('Exception: '))
+          detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        if (detailMsg.contains('non_field_errors: '))
+          detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
         if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 
@@ -265,8 +269,10 @@ class AuthProvider extends BaseProvider {
       String errorMessage = 'Social login failed: $e';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: ')) detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        if (detailMsg.contains('non_field_errors: ')) detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        if (detailMsg.contains('Exception: '))
+          detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+        if (detailMsg.contains('non_field_errors: '))
+          detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
         if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 
@@ -311,7 +317,7 @@ class AuthProvider extends BaseProvider {
       return result;
     } catch (e) {
       setLoading(false);
-      
+
       String errorMessage = 'Failed to send OTP. Please try again.';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
@@ -327,10 +333,7 @@ class AuthProvider extends BaseProvider {
       }
 
       setError('Failed to send OTP: $e');
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     }
   }
 

@@ -219,7 +219,7 @@ class DebugHelper {
     return Banner(
       message: "debug".tr(),
       location: BannerLocation.topEnd,
-      color: Colors.red.withValues(alpha:0.6),
+      color: Colors.red.withValues(alpha: 0.6),
       child: child,
     );
   }
@@ -353,7 +353,7 @@ class _DebugGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.blue.withValues(alpha:0.1)
+      ..color = Colors.blue.withValues(alpha: 0.1)
       ..strokeWidth = 1.0;
 
     const gridSize = 20.0;

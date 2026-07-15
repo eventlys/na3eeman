@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomShadows {
   static List<BoxShadow> small = [
     BoxShadow(
-      color: Colors.black.withValues(alpha:0.04),
+      color: Colors.black.withValues(alpha: 0.04),
       blurRadius: 4,
       offset: const Offset(0, 1),
     ),
@@ -12,7 +12,7 @@ class CustomShadows {
 
   static List<BoxShadow> medium = [
     BoxShadow(
-      color: Colors.black.withValues(alpha:0.06),
+      color: Colors.black.withValues(alpha: 0.06),
       blurRadius: 10,
       offset: const Offset(0, 2),
     ),
@@ -20,7 +20,7 @@ class CustomShadows {
 
   static List<BoxShadow> large = [
     BoxShadow(
-      color: Colors.black.withValues(alpha:0.08),
+      color: Colors.black.withValues(alpha: 0.08),
       blurRadius: 20,
       offset: const Offset(0, 4),
     ),
@@ -28,7 +28,7 @@ class CustomShadows {
 
   static List<BoxShadow> xl = [
     BoxShadow(
-      color: Colors.black.withValues(alpha:0.10),
+      color: Colors.black.withValues(alpha: 0.10),
       blurRadius: 30,
       offset: const Offset(0, 8),
     ),
@@ -37,7 +37,7 @@ class CustomShadows {
   // Soft shadows (replaces neumorphic)
   static List<BoxShadow> softLight = [
     BoxShadow(
-      color: Colors.black.withValues(alpha:0.04),
+      color: Colors.black.withValues(alpha: 0.04),
       blurRadius: 12,
       offset: const Offset(0, 2),
     ),
@@ -45,7 +45,7 @@ class CustomShadows {
 
   static List<BoxShadow> softDark = [
     BoxShadow(
-      color: Colors.black.withValues(alpha:0.2),
+      color: Colors.black.withValues(alpha: 0.2),
       blurRadius: 12,
       offset: const Offset(0, 2),
     ),

@@ -1558,7 +1558,9 @@ class InventoryService {
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
 
       AppLogger.info('--- getInventoryItems ---');
-      AppLogger.info('salonId: $salonId, lowStock: $lowStockOnly, category: $category');
+      AppLogger.info(
+        'salonId: $salonId, lowStock: $lowStockOnly, category: $category',
+      );
       AppLogger.info('Items count: ${data.length}');
       if (data.isNotEmpty) AppLogger.info('First item: ${data.first}');
 
@@ -1578,10 +1580,7 @@ class InventoryService {
     try {
       final response = await _apiService.patch(
         '/salons/salons/$salonId/inventory/$itemId/',
-        data: {
-          'quantity_in_stock': newQuantity,
-          'notes': ?reason,
-        },
+        data: {'quantity_in_stock': newQuantity, 'notes': ?reason},
       );
       return response['data'];
     } catch (e) {

@@ -132,7 +132,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isDark
-                ? AppColors.white.withValues(alpha:0.1)
+                ? AppColors.white.withValues(alpha: 0.1)
                 : AppColors.almostBlack50,
           ),
         ),
@@ -142,7 +142,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -181,8 +181,8 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                   ),
                   decoration: BoxDecoration(
                     color: stock < 10
-                        ? AppColors.error.withValues(alpha:0.1)
-                        : AppColors.success.withValues(alpha:0.1),
+                        ? AppColors.error.withValues(alpha: 0.1)
+                        : AppColors.success.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

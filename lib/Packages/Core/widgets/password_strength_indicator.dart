@@ -5,13 +5,11 @@ import '../constants/app_color.dart';
 class PasswordStrengthIndicator extends StatefulWidget {
   final TextEditingController controller;
 
-  const PasswordStrengthIndicator({
-    super.key,
-    required this.controller,
-  });
+  const PasswordStrengthIndicator({super.key, required this.controller});
 
   @override
-  State<PasswordStrengthIndicator> createState() => _PasswordStrengthIndicatorState();
+  State<PasswordStrengthIndicator> createState() =>
+      _PasswordStrengthIndicatorState();
 }
 
 class _PasswordStrengthIndicatorState extends State<PasswordStrengthIndicator> {
@@ -49,7 +47,11 @@ class _PasswordStrengthIndicatorState extends State<PasswordStrengthIndicator> {
     });
   }
 
-  Widget _buildPasswordRequirement(BuildContext context, String text, bool isMet) {
+  Widget _buildPasswordRequirement(
+    BuildContext context,
+    String text,
+    bool isMet,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Row(
@@ -108,7 +110,9 @@ class _PasswordStrengthIndicatorState extends State<PasswordStrengthIndicator> {
     Color strengthColor;
     switch (strength) {
       case 'strong':
-        strengthColor = isDark ? AppColor.featureCheckDark : AppColor.featureCheckLight;
+        strengthColor = isDark
+            ? AppColor.featureCheckDark
+            : AppColor.featureCheckLight;
         break;
       case 'good':
         strengthColor = isDark ? AppColor.darkInfo : AppColor.lightInfo;
@@ -143,12 +147,19 @@ class _PasswordStrengthIndicatorState extends State<PasswordStrengthIndicator> {
         const SizedBox(height: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: requirements.where((req) => req['isMet'] != true).map<Widget>((req) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: _buildPasswordRequirement(context, req['text'], req['isMet']),
-            );
-          }).toList(),
+          children: requirements
+              .where((req) => req['isMet'] != true)
+              .map<Widget>((req) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: _buildPasswordRequirement(
+                    context,
+                    req['text'],
+                    req['isMet'],
+                  ),
+                );
+              })
+              .toList(),
         ),
       ],
     );

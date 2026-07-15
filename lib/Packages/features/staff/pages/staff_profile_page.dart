@@ -118,7 +118,7 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
                       radius: 60,
                       backgroundColor: Theme.of(
                         context,
-                      ).primaryColor.withValues(alpha:0.1),
+                      ).primaryColor.withValues(alpha: 0.1),
                       child: Icon(
                         Icons.person,
                         size: 60,

@@ -1,6 +1,4 @@
-
 class PasswordHelper {
-
   /// Validates password strength
   Map<String, dynamic> validatePassword(String password) {
     if (password.isEmpty) {

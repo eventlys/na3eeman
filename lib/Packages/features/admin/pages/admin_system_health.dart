@@ -242,7 +242,7 @@ class _ErrorLogList extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: color.withValues(alpha:0.12),
+                        color: color.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(

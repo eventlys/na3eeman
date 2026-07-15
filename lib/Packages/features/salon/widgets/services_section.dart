@@ -45,14 +45,14 @@ class ServicesSection extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isSelected
-            ? Theme.of(context).primaryColor.withValues(alpha:0.1)
+            ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
             : (isDark ? AppColors.almostBlack600 : AppColors.white),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isSelected
               ? Theme.of(context).primaryColor
               : (isDark
-                    ? AppColors.white.withValues(alpha:0.1)
+                    ? AppColors.white.withValues(alpha: 0.1)
                     : AppColors.almostBlack50),
           width: isSelected ? 2 : 1,
         ),
@@ -66,8 +66,8 @@ class ServicesSection extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? Theme.of(context).primaryColor.withValues(alpha:0.2)
-                      : Theme.of(context).primaryColor.withValues(alpha:0.05),
+                      ? Theme.of(context).primaryColor.withValues(alpha: 0.2)
+                      : Theme.of(context).primaryColor.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(

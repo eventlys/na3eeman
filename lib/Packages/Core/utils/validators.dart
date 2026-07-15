@@ -133,13 +133,13 @@ class AppValidators {
     final cleanedPhone = phone.replaceAll(RegExp(r'[\s\-()]'), '');
 
     final errors = <String>[];
-    
+
     if (cleanedPhone.length != 10) {
       errors.add('• Exactly 10 digits');
     } else if (!RegExp(r'^\d+$').hasMatch(cleanedPhone)) {
       errors.add('• Only numbers allowed');
     }
-    
+
     if (!cleanedPhone.startsWith('07')) {
       errors.add('• Start with 07');
     }

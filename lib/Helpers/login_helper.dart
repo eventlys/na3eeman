@@ -4,7 +4,6 @@ import '../Packages/Core/constants/app_images.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class LoginHelper {
-
   static Future<bool> login(
     BuildContext context,
     String email,

@@ -118,7 +118,7 @@ class _ResourceOccupancyWidgetState extends State<ResourceOccupancyWidget> {
                 Expanded(
                   child: LinearProgressIndicator(
                     value: r.pct / 100,
-                    backgroundColor: Colors.grey.withValues(alpha:0.2),
+                    backgroundColor: Colors.grey.withValues(alpha: 0.2),
                     valueColor: AlwaysStoppedAnimation(color),
                     minHeight: 8,
                     borderRadius: BorderRadius.circular(4),

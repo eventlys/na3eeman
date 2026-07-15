@@ -7,7 +7,6 @@ import 'package:na3eeman/Services/security_service.dart';
 import 'package:na3eeman/Providers/main_providers.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -189,12 +188,13 @@ class _LoginPageState extends State<LoginPage>
             tier: tier,
           );
         } else {
-          final errorMsg = authProvider.error != null && authProvider.error!.isNotEmpty 
-              ? authProvider.error! 
+          final errorMsg =
+              authProvider.error != null && authProvider.error!.isNotEmpty
+              ? authProvider.error!
               : 'invalid_email_password'.tr();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(errorMsg)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(errorMsg)));
         }
       }
     }
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage>
                     ? [AppColors.almostBlack700, AppColors.almostBlack800]
                     : [
                         AppColors.white,
-                        AppColors.creamyBackground.withValues(alpha:0.5),
+                        AppColors.creamyBackground.withValues(alpha: 0.5),
                       ],
               ),
             ),

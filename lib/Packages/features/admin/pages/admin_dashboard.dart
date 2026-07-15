@@ -262,14 +262,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         borderRadius: AppSpacing.brXl,
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
         boxShadow: isDark
             ? null
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -284,7 +284,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha:0.12),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: AppSpacing.brSm,
                 ),
                 child: Icon(icon, color: color, size: AppSpacing.iconMd),
@@ -296,7 +296,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha:0.1),
+                    color: AppColors.success.withValues(alpha: 0.1),
                     borderRadius: AppSpacing.brSm,
                   ),
                   child: Text(
@@ -369,7 +369,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
               borderRadius: AppSpacing.brLg,
               border: Border.all(
                 color: isDark
-                    ? AppColors.white.withValues(alpha:0.05)
+                    ? AppColors.white.withValues(alpha: 0.05)
                     : AppColors.almostBlack50,
               ),
             ),
@@ -421,7 +421,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         borderRadius: AppSpacing.brMd,
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -444,7 +444,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
               vertical: AppSpacing.xs,
             ),
             decoration: BoxDecoration(
-              color: color.withValues(alpha:0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: AppSpacing.brSm,
             ),
             child: Row(
@@ -575,8 +575,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
               borderRadius: AppSpacing.brMd,
               border: Border.all(
                 color: isDark
-                    ? color.withValues(alpha:0.2)
-                    : color.withValues(alpha:0.15),
+                    ? color.withValues(alpha: 0.2)
+                    : color.withValues(alpha: 0.15),
               ),
             ),
             child: Row(
@@ -584,7 +584,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha:0.12),
+                    color: color.withValues(alpha: 0.12),
                     borderRadius: AppSpacing.brXs,
                   ),
                   child: Icon(icon, color: color, size: AppSpacing.iconMd),
@@ -620,9 +620,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
       margin: const EdgeInsets.only(bottom: AppSpacing.listGap),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.almostBlack600 : color.withValues(alpha:0.05),
+        color: isDark
+            ? AppColors.almostBlack600
+            : color.withValues(alpha: 0.05),
         borderRadius: AppSpacing.brMd,
-        border: Border.all(color: color.withValues(alpha:0.15)),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -647,9 +649,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha:0.08),
+        color: AppColors.error.withValues(alpha: 0.08),
         borderRadius: AppSpacing.brMd,
-        border: Border.all(color: AppColors.error.withValues(alpha:0.2)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -747,7 +749,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         borderRadius: AppSpacing.brXl,
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.05)
+              ? AppColors.white.withValues(alpha: 0.05)
               : AppColors.almostBlack50,
         ),
       ),
@@ -780,7 +782,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha:0.1),
+                  color: AppColors.success.withValues(alpha: 0.1),
                   borderRadius: AppSpacing.brSm,
                 ),
                 child: Text(

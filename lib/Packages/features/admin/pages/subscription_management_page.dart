@@ -148,7 +148,9 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
           const SizedBox(height: 8),
           LinearProgressIndicator(
             value: percent,
-            backgroundColor: Theme.of(context).primaryColor.withValues(alpha:0.1),
+            backgroundColor: Theme.of(
+              context,
+            ).primaryColor.withValues(alpha: 0.1),
             color: color,
             minHeight: 8,
             borderRadius: BorderRadius.circular(4),
@@ -168,7 +170,7 @@ class AdminSubscriptionManagementPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha:0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

@@ -39,7 +39,7 @@ class DashboardCard extends StatelessWidget {
             border ??
             Border.all(
               color: isDark
-                  ? AppColors.white.withValues(alpha:0.1)
+                  ? AppColors.white.withValues(alpha: 0.1)
                   : AppColors.almostBlack50,
             ),
       ),
@@ -111,7 +111,7 @@ class DashboardSummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? AppColors.white.withValues(alpha:0.1)
+              ? AppColors.white.withValues(alpha: 0.1)
               : AppColors.almostBlack50,
         ),
       ),
@@ -121,7 +121,7 @@ class DashboardSummaryCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha:0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -206,7 +206,7 @@ class FeedbackSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -272,7 +272,9 @@ class FeedbackSection extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(

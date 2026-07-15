@@ -31,7 +31,7 @@ class BranchManagementPage extends StatelessWidget {
                 height: 80,
                 color:
                     (isDarkTheme ? AppColor.darkPrimary : AppColor.lightPrimary)
-                        .withValues(alpha:0.5),
+                        .withValues(alpha: 0.5),
               ),
               SizedBox(height: 20),
               Text(

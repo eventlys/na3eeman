@@ -13,7 +13,7 @@ class SidebarBackground extends StatelessWidget {
         color: isDark ? AppColors.almostBlack600 : AppColors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 40,
             offset: const Offset(10, 0),
           ),

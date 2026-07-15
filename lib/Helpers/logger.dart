@@ -108,7 +108,9 @@ class AppLogger {
   }
 
   static void performance(String action, int durationMs, {String? category}) {
-    final level = durationMs > 1000 ? logger_pkg.Level.warning : logger_pkg.Level.info;
+    final level = durationMs > 1000
+        ? logger_pkg.Level.warning
+        : logger_pkg.Level.info;
     final emoji = durationMs > 1000 ? '🐌' : '⚡';
     final message = '$emoji Performance: $action - ${durationMs}ms';
 

@@ -101,8 +101,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -114,8 +112,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       showBackButton: true,
       child: Form(
         key: _formKey,
-        autovalidateMode: _autoValidate 
-            ? AutovalidateMode.onUserInteraction 
+        autovalidateMode: _autoValidate
+            ? AutovalidateMode.onUserInteraction
             : AutovalidateMode.disabled,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
