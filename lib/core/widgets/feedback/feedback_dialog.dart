@@ -275,26 +275,24 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                             attachments: _attachments,
                           );
 
-                          if (mounted) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('feedback_success'.tr()),
-                                backgroundColor: AppColors.success,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('feedback_success'.tr()),
+                              backgroundColor: AppColors.success,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            );
-                          }
+                            ),
+                          );
                         } catch (e) {
                           setState(() => _isSubmitting = false);
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('feedback_failed'.tr())),
-                            );
-                          }
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('feedback_failed'.tr())),
+                          );
                         }
                       },
                 style: ElevatedButton.styleFrom(
