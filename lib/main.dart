@@ -156,12 +156,8 @@ class _MyAppState extends State<MyApp> {
             locale: context.locale,
 
             theme: themeProvider.currentTheme,
-            darkTheme: themeProvider.isDark
-                ? themeProvider.currentTheme
-                : null,
-            themeMode: themeProvider.isDark
-                ? ThemeMode.dark
-                : ThemeMode.light,
+            darkTheme: themeProvider.isDark ? themeProvider.currentTheme : null,
+            themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
           ),
         );
       },

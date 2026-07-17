@@ -159,7 +159,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   List<String> _generateTimeSlots() {
-    if (_selectedExpert == null && _selectionMode != SelectionMode.noPreference) {
+    if (_selectedExpert == null &&
+        _selectionMode != SelectionMode.noPreference) {
       return [];
     }
 
