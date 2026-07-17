@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_shadowing_type_parameters
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Helpers/error_handler.dart';
@@ -341,7 +342,7 @@ class BasePageWithFlexibleSpace extends StatelessWidget {
             actions: actions,
             expandedHeight: expandedHeight,
           ),
-          if (slivers != null) ...slivers!,
+          ...?slivers,
           if (slivers == null) SliverToBoxAdapter(child: SafeArea(child: body)),
         ],
       ),

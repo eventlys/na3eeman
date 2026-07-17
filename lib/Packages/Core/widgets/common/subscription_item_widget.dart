@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 

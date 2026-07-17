@@ -1,3 +1,4 @@
+// ignore_for_file: unused_element, unused_local_variable, use_build_context_synchronously
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

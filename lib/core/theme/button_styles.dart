@@ -61,7 +61,7 @@ class AppButtonStyles {
   // Gradient helper for specialized buttons
   static Decoration primaryGradientDecoration(BuildContext context) {
     final primary = Theme.of(context).primaryColor;
-    final isPink = primary.value == AppColors.pink.value;
+    final isPink = primary.toARGB32() == AppColors.pink.toARGB32();
 
     final color1 = isPink ? AppColors.pink500 : AppColors.blue600;
     final color2 = isPink ? AppColors.pink600 : AppColors.blue700;
@@ -85,7 +85,7 @@ class AppButtonStyles {
 
   static Decoration secondaryGradientDecoration(BuildContext context) {
     final secondary = Theme.of(context).colorScheme.secondary;
-    final isPink = secondary.value == AppColors.pink.value;
+    final isPink = secondary.toARGB32() == AppColors.pink.toARGB32();
 
     final color1 = isPink ? AppColors.pink500 : AppColors.blue400;
     final color2 = isPink ? AppColors.pink600 : AppColors.blue600;

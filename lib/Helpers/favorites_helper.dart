@@ -1,3 +1,4 @@
+// ignore_for_file: unused_element
 class FavoritesHelper {
   // Format salon data for display
   static String formatSalonName(Map<String, dynamic> salon) {

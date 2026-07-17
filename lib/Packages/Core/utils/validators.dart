@@ -1,3 +1,4 @@
+// ignore_for_file: unused_field
 class AppValidators {
   // Singleton pattern with private constructor
   AppValidators._();

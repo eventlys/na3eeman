@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';

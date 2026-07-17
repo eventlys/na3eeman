@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 class AppImages {
   // Main Images
   static const String logo = 'assets/images/Layer.png';

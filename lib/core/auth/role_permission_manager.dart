@@ -1,3 +1,4 @@
+// ignore_for_file: unreachable_switch_default
 import '../../Packages/Core/constants/app_roles.dart';
 import '../../core/enums/app_enums.dart';
 

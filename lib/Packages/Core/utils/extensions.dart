@@ -1,5 +1,5 @@
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' as intl;
 
 // Context extensions for easy access to theme, media query, etc.
@@ -486,7 +486,7 @@ extension WidgetExtensions on Widget {
   }) => Tooltip(
     message: message,
     decoration: decoration,
-    height: height,
+    constraints: height != null ? BoxConstraints(minHeight: height) : null,
     child: this,
   );
 }

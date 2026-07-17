@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 // helpers/points_tracker_helpers.dart
 import 'package:flutter/material.dart';
 import '../../Packages/Core/constants/app_color.dart';

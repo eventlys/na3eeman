@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use, must_call_super
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../Helpers/logger.dart';

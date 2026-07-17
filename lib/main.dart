@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -110,45 +111,60 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    ShowcaseView.register();
+  }
+
+  @override
+  void dispose() {
+    ShowcaseView.get().unregister();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ShowcaseView.register(
-      builder: (context) => Consumer2<ThemeProvider, LocaleProvider>(
-        builder: (context, themeProvider, localeProvider, _) {
-          return ErrorBoundary(
-            isDarkMode: themeProvider.isDark,
-            userGender: themeProvider.gender,
-            onRetry: () {
-              Navigator.of(
-                SideNavigationService.navigatorKey.currentContext!,
-              ).pushReplacementNamed('/');
-            },
-            child: MaterialApp(
-              title: AppConfig.appName,
-              navigatorKey: SideNavigationService.navigatorKey,
-              initialRoute: '/login',
-              routes: AppRoutes.routes,
-              debugShowCheckedModeBanner: AppConfig.showDebugBanner,
+    return Consumer2<ThemeProvider, LocaleProvider>(
+      builder: (context, themeProvider, localeProvider, _) {
+        return ErrorBoundary(
+          isDarkMode: themeProvider.isDark,
+          userGender: themeProvider.gender,
+          onRetry: () {
+            Navigator.of(
+              SideNavigationService.navigatorKey.currentContext!,
+            ).pushReplacementNamed('/');
+          },
+          child: MaterialApp(
+            title: AppConfig.appName,
+            navigatorKey: SideNavigationService.navigatorKey,
+            initialRoute: '/login',
+            routes: AppRoutes.routes,
+            debugShowCheckedModeBanner: AppConfig.showDebugBanner,
 
-              // Localization Configuration
-              localizationsDelegates: context.localizationDelegates,
-              supportedLocales: context.supportedLocales,
-              locale: context.locale,
+            // Localization Configuration
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
 
-              theme: themeProvider.currentTheme,
-              darkTheme: themeProvider.isDark
-                  ? themeProvider.currentTheme
-                  : null,
-              themeMode: themeProvider.isDark
-                  ? ThemeMode.dark
-                  : ThemeMode.light,
-            ),
-          );
-        },
-      ),
+            theme: themeProvider.currentTheme,
+            darkTheme: themeProvider.isDark
+                ? themeProvider.currentTheme
+                : null,
+            themeMode: themeProvider.isDark
+                ? ThemeMode.dark
+                : ThemeMode.light,
+          ),
+        );
+      },
     );
   }
 }

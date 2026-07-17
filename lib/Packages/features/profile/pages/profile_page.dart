@@ -249,7 +249,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                        side: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
                       ),
                     ),
                   ],

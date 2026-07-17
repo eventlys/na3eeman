@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 import '../../Helpers/logger.dart';
 
 import 'package:flutter/foundation.dart';

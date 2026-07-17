@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings, unused_element, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';

@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_null_comparison
 import 'dart:convert';
 // import 'package:flutter/material.dart';
 import '../../Packages/Core/constants/app_roles.dart';
@@ -176,10 +177,12 @@ class AuthProvider extends BaseProvider {
       String errorMessage = 'Login failed: $e';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: '))
+        if (detailMsg.contains('Exception: ')) {
           detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        if (detailMsg.contains('non_field_errors: '))
+        }
+        if (detailMsg.contains('non_field_errors: ')) {
           detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        }
         if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 
@@ -219,10 +222,12 @@ class AuthProvider extends BaseProvider {
       String errorMessage = 'Login failed: $e';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: '))
+        if (detailMsg.contains('Exception: ')) {
           detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        if (detailMsg.contains('non_field_errors: '))
+        }
+        if (detailMsg.contains('non_field_errors: ')) {
           detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        }
         if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 
@@ -269,10 +274,12 @@ class AuthProvider extends BaseProvider {
       String errorMessage = 'Social login failed: $e';
       if (e is AppError && e.details != null) {
         String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: '))
+        if (detailMsg.contains('Exception: ')) {
           detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        if (detailMsg.contains('non_field_errors: '))
+        }
+        if (detailMsg.contains('non_field_errors: ')) {
           detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+        }
         if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 

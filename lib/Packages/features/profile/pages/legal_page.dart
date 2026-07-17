@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class LegalDocsPage extends StatefulWidget {
-  const LegalDocsPage({Key? key}) : super(key: key);
+  const LegalDocsPage({super.key});
 
   @override
   State<LegalDocsPage> createState() => _LegalDocsPageState();

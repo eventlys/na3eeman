@@ -1,3 +1,4 @@
+// ignore_for_file: control_flow_in_finally, unused_local_variable
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';

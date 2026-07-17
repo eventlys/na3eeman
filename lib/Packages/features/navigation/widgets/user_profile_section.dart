@@ -1,3 +1,4 @@
+// ignore_for_file: unreachable_switch_case
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/animations.dart';

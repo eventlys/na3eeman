@@ -1,3 +1,4 @@
+// ignore_for_file: overridden_fields
 import '../../Services/enums/staff_role.dart';
 import '../auth/expert_profile.dart';
 import '../auth/user_model.dart';

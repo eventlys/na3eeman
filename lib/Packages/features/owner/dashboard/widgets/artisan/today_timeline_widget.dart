@@ -1,3 +1,4 @@
+// ignore_for_file: dead_null_aware_expression
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

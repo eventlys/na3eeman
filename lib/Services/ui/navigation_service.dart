@@ -1,3 +1,4 @@
+// ignore_for_file: unreachable_switch_default
 import 'package:flutter/material.dart';
 import '../../Packages/Core/constants/app_roles.dart';
 

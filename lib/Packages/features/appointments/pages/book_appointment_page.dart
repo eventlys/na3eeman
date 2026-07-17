@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use, unused_element, unused_field, unused_local_variable, use_build_context_synchronously
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Services/api/api_service.dart';
@@ -10,11 +11,8 @@ import '../../../../Packages/Core/constants/app_constants.dart';
 import '../../../../Services/ui/navigation_service.dart';
 import '../../../features/salon/widgets/services_section.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
-import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
-import 'dart:math';
 import 'package:na3eeman/Models/salon/payment_config_model.dart';
 import 'package:na3eeman/Models/loyalty/gift_card_model.dart';
 import 'package:na3eeman/Providers/features/gift_card_provider.dart';
@@ -58,17 +56,17 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     'Other',
   ];
 
-  String _selectedPaymentMethod = 'CASH';
+  final String _selectedPaymentMethod = 'CASH';
   XFile? _paymentProof;
   bool _initialized = false;
   SalonPaymentConfig? _paymentConfig;
   SelectionMode _selectionMode = SelectionMode.individual;
   final Map<int, dynamic> _perServiceExperts = {}; // serviceId -> expertData
 
-  int _appliedPoints = 0;
+  final int _appliedPoints = 0;
   UserGiftCard? _selectedUserGiftCard;
 
-  bool _isFetchingConfig = false;
+  final bool _isFetchingConfig = false;
 
   @override
   void didChangeDependencies() {
@@ -161,8 +159,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   }
 
   List<String> _generateTimeSlots() {
-    if (_selectedExpert == null && _selectionMode != SelectionMode.noPreference)
+    if (_selectedExpert == null && _selectionMode != SelectionMode.noPreference) {
       return [];
+    }
 
     final slots = <String>[];
     final startHour = 9;

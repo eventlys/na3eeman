@@ -621,7 +621,7 @@ class ApiService {
         'min_rating': minRating,
         'location': location,
         'open_now': openNow,
-        if (filters != null) ...filters,
+        ...?filters,
       },
     );
   }

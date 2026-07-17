@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use, unused_local_variable
 import 'dart:io' as io show File;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

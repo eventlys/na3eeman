@@ -1,3 +1,4 @@
+// ignore_for_file: unrelated_type_equality_checks, unused_local_variable
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';

@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 // lib/Services/analytics/analytics_service.dart
 import 'api/api_service.dart';
 import 'api/endpoints.dart';
