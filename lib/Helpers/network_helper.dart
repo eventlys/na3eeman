@@ -149,6 +149,7 @@ class NetworkHelper {
         case ConnectivityResult.bluetooth:
           return NetworkType.bluetooth;
         case ConnectivityResult.other:
+        case ConnectivityResult.satellite:
           return NetworkType.other;
         case ConnectivityResult.none:
           return NetworkType.none;
