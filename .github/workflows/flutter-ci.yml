@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
@@ -70,6 +76,9 @@ jobs:
     needs: build_and_test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stg'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -81,9 +90,12 @@ jobs:
           path: build/app/outputs/
 
       - name: Authenticate to Google Cloud
+        id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          token_format: 'access_token'
+          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+          service_account: '${{ secrets.SA_EMAIL }}'
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
