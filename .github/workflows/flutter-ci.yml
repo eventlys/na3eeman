@@ -27,8 +27,12 @@ jobs:
       - name: Format
         run: dart format --set-exit-if-changed .
 
-      - name: Create Dummy Env Files
-        run: touch .env .env.dev
+      - name: Inject Production Env File
+        run: |
+          cat << 'EOF' > .env
+          ${{ secrets.ENV_PROD }}
+          EOF
+          touch .env.dev
 
       - name: Analyze
         run: |
