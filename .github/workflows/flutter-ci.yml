@@ -102,11 +102,15 @@ jobs:
 
       - name: Upload APK to GCS
         run: |
+          # Extract version from pubspec.yaml and replace + with _ for URL safety
+          APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r' | tr '+' '_')
+          DEST_NAME="na3eman.${APP_VERSION}.apk"
+          
           # The artifact download structure might have nested directories
           APK_PATH=$(find build/app/outputs -name "*.apk" | head -n 1)
           if [ -n "$APK_PATH" ]; then
-            gcloud storage cp "$APK_PATH" gs://na3eemn-mobile-apps/android/latest/app.apk
-            gcloud storage objects update gs://na3eemn-mobile-apps/android/latest/app.apk --add-acl-grant=entity=AllUsers,role=READER || true
+            gcloud storage cp "$APK_PATH" "gs://na3eemn-mobile-apps/android/latest/${DEST_NAME}"
+            gcloud storage objects update "gs://na3eemn-mobile-apps/android/latest/${DEST_NAME}" --add-acl-grant=entity=AllUsers,role=READER || true
           else
             echo "No APK found!"
             exit 1
