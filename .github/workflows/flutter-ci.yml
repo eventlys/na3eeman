@@ -27,32 +27,6 @@ jobs:
       - name: Format
         run: dart format --set-exit-if-changed .
 
-      - name: Inject Production Env File
-        run: |
-          cat << EOF > .env
-          API_BASE_URL=${{ vars.API_BASE_URL }}
-          ENVIRONMENT=${{ vars.ENVIRONMENT }}
-          DEBUG_BANNER=${{ vars.DEBUG_BANNER }}
-          LOGGING_ENABLED=${{ vars.LOGGING_ENABLED }}
-          WEB_APP_URL=${{ vars.WEB_APP_URL }}
-          ADMIN_EMAIL=${{ vars.ADMIN_EMAIL }}
-          SUPPORT_EMAIL=${{ vars.SUPPORT_EMAIL }}
-          APP_NAME=${{ vars.APP_NAME }}
-          GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}
-          FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_APP_ID=${{ vars.FIREBASE_APP_ID }}
-          FIREBASE_MESSAGING_SENDER_ID=${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
-          FIREBASE_PROJECT_ID=${{ vars.FIREBASE_PROJECT_ID }}
-          FIREBASE_STORAGE_BUCKET=${{ vars.FIREBASE_STORAGE_BUCKET }}
-          CLOUDFLARE_ANALYTICS_TOKEN=${{ secrets.CLOUDFLARE_ANALYTICS_TOKEN }}
-          CLOUDFLARE_TURNSTILE_SITE_KEY=${{ secrets.CLOUDFLARE_TURNSTILE_SITE_KEY }}
-          STRIPE_PUBLISHABLE_KEY=${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-          TWILIO_VERIFY_SERVICE_SID=${{ secrets.TWILIO_VERIFY_SERVICE_SID }}
-          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-          APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}
-          EOF
-          touch .env.dev
-
       - name: Analyze
         run: |
           dart analyze
@@ -81,10 +55,54 @@ jobs:
             -Dsonar.qualitygate.wait=false
 
       - name: Build Android AppBundle
-        run: flutter build appbundle --release --dart-define=FLAVOR=prod
+        run: >
+          flutter build appbundle --release 
+          --dart-define=FLAVOR=prod 
+          --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }} 
+          --dart-define=ENVIRONMENT=${{ vars.ENVIRONMENT }} 
+          --dart-define=DEBUG_BANNER=${{ vars.DEBUG_BANNER }} 
+          --dart-define=LOGGING_ENABLED=${{ vars.LOGGING_ENABLED }} 
+          --dart-define=WEB_APP_URL=${{ vars.WEB_APP_URL }} 
+          --dart-define=ADMIN_EMAIL=${{ vars.ADMIN_EMAIL }} 
+          --dart-define=SUPPORT_EMAIL=${{ vars.SUPPORT_EMAIL }} 
+          --dart-define=APP_NAME="${{ vars.APP_NAME }}" 
+          --dart-define=GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }} 
+          --dart-define=FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }} 
+          --dart-define=FIREBASE_APP_ID=${{ vars.FIREBASE_APP_ID }} 
+          --dart-define=FIREBASE_MESSAGING_SENDER_ID=${{ vars.FIREBASE_MESSAGING_SENDER_ID }} 
+          --dart-define=FIREBASE_PROJECT_ID=${{ vars.FIREBASE_PROJECT_ID }} 
+          --dart-define=FIREBASE_STORAGE_BUCKET=${{ vars.FIREBASE_STORAGE_BUCKET }} 
+          --dart-define=CLOUDFLARE_ANALYTICS_TOKEN=${{ secrets.CLOUDFLARE_ANALYTICS_TOKEN }} 
+          --dart-define=CLOUDFLARE_TURNSTILE_SITE_KEY=${{ secrets.CLOUDFLARE_TURNSTILE_SITE_KEY }} 
+          --dart-define=STRIPE_PUBLISHABLE_KEY=${{ secrets.STRIPE_PUBLISHABLE_KEY }} 
+          --dart-define=TWILIO_VERIFY_SERVICE_SID=${{ secrets.TWILIO_VERIFY_SERVICE_SID }} 
+          --dart-define=GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} 
+          --dart-define=APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}
 
       - name: Build Android APK
-        run: flutter build apk --release --dart-define=FLAVOR=prod
+        run: >
+          flutter build apk --release 
+          --dart-define=FLAVOR=prod 
+          --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }} 
+          --dart-define=ENVIRONMENT=${{ vars.ENVIRONMENT }} 
+          --dart-define=DEBUG_BANNER=${{ vars.DEBUG_BANNER }} 
+          --dart-define=LOGGING_ENABLED=${{ vars.LOGGING_ENABLED }} 
+          --dart-define=WEB_APP_URL=${{ vars.WEB_APP_URL }} 
+          --dart-define=ADMIN_EMAIL=${{ vars.ADMIN_EMAIL }} 
+          --dart-define=SUPPORT_EMAIL=${{ vars.SUPPORT_EMAIL }} 
+          --dart-define=APP_NAME="${{ vars.APP_NAME }}" 
+          --dart-define=GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }} 
+          --dart-define=FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }} 
+          --dart-define=FIREBASE_APP_ID=${{ vars.FIREBASE_APP_ID }} 
+          --dart-define=FIREBASE_MESSAGING_SENDER_ID=${{ vars.FIREBASE_MESSAGING_SENDER_ID }} 
+          --dart-define=FIREBASE_PROJECT_ID=${{ vars.FIREBASE_PROJECT_ID }} 
+          --dart-define=FIREBASE_STORAGE_BUCKET=${{ vars.FIREBASE_STORAGE_BUCKET }} 
+          --dart-define=CLOUDFLARE_ANALYTICS_TOKEN=${{ secrets.CLOUDFLARE_ANALYTICS_TOKEN }} 
+          --dart-define=CLOUDFLARE_TURNSTILE_SITE_KEY=${{ secrets.CLOUDFLARE_TURNSTILE_SITE_KEY }} 
+          --dart-define=STRIPE_PUBLISHABLE_KEY=${{ secrets.STRIPE_PUBLISHABLE_KEY }} 
+          --dart-define=TWILIO_VERIFY_SERVICE_SID=${{ secrets.TWILIO_VERIFY_SERVICE_SID }} 
+          --dart-define=GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} 
+          --dart-define=APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}
         
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

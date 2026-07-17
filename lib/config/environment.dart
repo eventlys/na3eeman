@@ -40,7 +40,8 @@ class Environment {
   static bool get isProduction => _flavor == AppFlavor.prod;
 
   // Helper to get env variables with defaults
-  static String getEnv(String key, {String defaultValue = ''}) {
+  static String getEnv(String key, {String defaultValue = '', String dartDefineValue = ''}) {
+    if (dartDefineValue.isNotEmpty) return dartDefineValue;
     return dotenv.env[key] ?? defaultValue;
   }
 }
@@ -81,10 +82,10 @@ abstract class EnvironmentConfig {
 /// Development environment configuration
 class DevConfig implements EnvironmentConfig {
   @override
-  String get apiBaseUrl => Environment.getEnv('API_BASE_URL');
+  String get apiBaseUrl => Environment.getEnv('API_BASE_URL', dartDefineValue: const String.fromEnvironment('API_BASE_URL'));
 
   @override
-  String get appName => Environment.getEnv('APP_NAME');
+  String get appName => Environment.getEnv('APP_NAME', dartDefineValue: const String.fromEnvironment('APP_NAME'));
 
   @override
   bool get showDebugBanner => false;
@@ -111,39 +112,39 @@ class DevConfig implements EnvironmentConfig {
   bool get enableAnalytics => false;
 
   @override
-  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID');
+  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID', dartDefineValue: const String.fromEnvironment('GOOGLE_CLIENT_ID'));
 
   @override
-  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
+  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID', dartDefineValue: const String.fromEnvironment('APPLE_CLIENT_ID'));
 
   @override
   @override
-  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
+  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY', dartDefineValue: const String.fromEnvironment('FIREBASE_API_KEY'));
   @override
-  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
+  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_APP_ID'));
   @override
   String get firebaseMessagingSenderId =>
-      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'));
   @override
-  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
+  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_PROJECT_ID'));
 
   @override
-  String get webAppUrl => Environment.getEnv('WEB_APP_URL');
+  String get webAppUrl => Environment.getEnv('WEB_APP_URL', dartDefineValue: const String.fromEnvironment('WEB_APP_URL'));
 
   @override
-  String get adminEmail => Environment.getEnv('ADMIN_EMAIL');
+  String get adminEmail => Environment.getEnv('ADMIN_EMAIL', dartDefineValue: const String.fromEnvironment('ADMIN_EMAIL'));
 
   @override
-  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL');
+  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL', dartDefineValue: const String.fromEnvironment('SUPPORT_EMAIL'));
 }
 
 /// Staging environment configuration
 class StagingConfig implements EnvironmentConfig {
   @override
-  String get apiBaseUrl => Environment.getEnv('API_BASE_URL');
+  String get apiBaseUrl => Environment.getEnv('API_BASE_URL', dartDefineValue: const String.fromEnvironment('API_BASE_URL'));
 
   @override
-  String get appName => Environment.getEnv('APP_NAME');
+  String get appName => Environment.getEnv('APP_NAME', dartDefineValue: const String.fromEnvironment('APP_NAME'));
 
   @override
   bool get showDebugBanner => false;
@@ -170,39 +171,39 @@ class StagingConfig implements EnvironmentConfig {
   bool get enableAnalytics => true;
 
   @override
-  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID');
+  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID', dartDefineValue: const String.fromEnvironment('GOOGLE_CLIENT_ID'));
 
   @override
-  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
+  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID', dartDefineValue: const String.fromEnvironment('APPLE_CLIENT_ID'));
 
   @override
   @override
-  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
+  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY', dartDefineValue: const String.fromEnvironment('FIREBASE_API_KEY'));
   @override
-  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
+  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_APP_ID'));
   @override
   String get firebaseMessagingSenderId =>
-      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'));
   @override
-  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
+  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_PROJECT_ID'));
 
   @override
-  String get webAppUrl => Environment.getEnv('WEB_APP_URL');
+  String get webAppUrl => Environment.getEnv('WEB_APP_URL', dartDefineValue: const String.fromEnvironment('WEB_APP_URL'));
 
   @override
-  String get adminEmail => Environment.getEnv('ADMIN_EMAIL');
+  String get adminEmail => Environment.getEnv('ADMIN_EMAIL', dartDefineValue: const String.fromEnvironment('ADMIN_EMAIL'));
 
   @override
-  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL');
+  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL', dartDefineValue: const String.fromEnvironment('SUPPORT_EMAIL'));
 }
 
 /// Production environment configuration
 class ProdConfig implements EnvironmentConfig {
   @override
-  String get apiBaseUrl => Environment.getEnv('API_BASE_URL');
+  String get apiBaseUrl => Environment.getEnv('API_BASE_URL', dartDefineValue: const String.fromEnvironment('API_BASE_URL'));
 
   @override
-  String get appName => Environment.getEnv('APP_NAME');
+  String get appName => Environment.getEnv('APP_NAME', dartDefineValue: const String.fromEnvironment('APP_NAME'));
 
   @override
   bool get showDebugBanner => false;
@@ -229,28 +230,28 @@ class ProdConfig implements EnvironmentConfig {
   bool get enableAnalytics => true;
 
   @override
-  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID');
+  String? get googleClientId => Environment.getEnv('GOOGLE_CLIENT_ID', dartDefineValue: const String.fromEnvironment('GOOGLE_CLIENT_ID'));
 
   @override
-  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID');
+  String? get appleClientId => Environment.getEnv('APPLE_CLIENT_ID', dartDefineValue: const String.fromEnvironment('APPLE_CLIENT_ID'));
 
   @override
   @override
-  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY');
+  String get firebaseApiKey => Environment.getEnv('FIREBASE_API_KEY', dartDefineValue: const String.fromEnvironment('FIREBASE_API_KEY'));
   @override
-  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID');
+  String get firebaseAppId => Environment.getEnv('FIREBASE_APP_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_APP_ID'));
   @override
   String get firebaseMessagingSenderId =>
-      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID');
+      Environment.getEnv('FIREBASE_MESSAGING_SENDER_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'));
   @override
-  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID');
+  String get firebaseProjectId => Environment.getEnv('FIREBASE_PROJECT_ID', dartDefineValue: const String.fromEnvironment('FIREBASE_PROJECT_ID'));
 
   @override
-  String get webAppUrl => Environment.getEnv('WEB_APP_URL');
+  String get webAppUrl => Environment.getEnv('WEB_APP_URL', dartDefineValue: const String.fromEnvironment('WEB_APP_URL'));
 
   @override
-  String get adminEmail => Environment.getEnv('ADMIN_EMAIL');
+  String get adminEmail => Environment.getEnv('ADMIN_EMAIL', dartDefineValue: const String.fromEnvironment('ADMIN_EMAIL'));
 
   @override
-  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL');
+  String get supportEmail => Environment.getEnv('SUPPORT_EMAIL', dartDefineValue: const String.fromEnvironment('SUPPORT_EMAIL'));
 }
