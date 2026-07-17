@@ -27,6 +27,9 @@ jobs:
       - name: Format
         run: dart format --set-exit-if-changed .
 
+      - name: Create Dummy Env Files for Analyzer
+        run: touch .env .env.dev
+
       - name: Analyze
         run: |
           dart analyze
