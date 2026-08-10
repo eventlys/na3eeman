@@ -190,6 +190,20 @@ class UserService {
     }
   }
 
+  Future<void> deactivateMyAccount() async {
+    final result = await _apiInterceptor.executeApiCall(
+      endpoint: '$_baseUrl/users/profile/deactivate/',
+      method: 'PATCH',
+      data: {},
+      requireAuth: true,
+    );
+
+    // The API returns 200 with {"message": "Account deactivated successfully"}
+    if (result['error'] != null) {
+      throw Exception('Failed to delete account: ${result['error']}');
+    }
+  }
+
   Future<void> activateUser(int userId) async {
     final result = await _apiInterceptor.executeApiCall(
       endpoint: '$_baseUrl/users/$userId/activate/',

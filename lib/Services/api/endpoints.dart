@@ -220,6 +220,7 @@ class Endpoints {
   static const String guides = '/content/guides/';
   static String guidesByRole(String role) => '/content/guides/by-role/$role/';
   static const String privacyPolicy = '/content/privacy-policy/current/';
+  static String legalDocument(String slug) => '/content/legal-documents/$slug/';
 
   // ==================== UTILITY ====================
   static const String health = '/health/';

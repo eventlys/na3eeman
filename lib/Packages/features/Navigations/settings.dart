@@ -15,8 +15,8 @@ import '../../../Providers/app_providers.dart';
 import '../../../Providers/locale_provider.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../../core/widgets/rules/rules_guide_sheet.dart';
-
 import '../../../../core/widgets/feedback/feedback_dialog.dart';
+import '../../../Services/core/user_service.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -199,6 +199,34 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           const SizedBox(height: 48),
+
+          // Delete Account
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: TextButton.icon(
+              icon: const Icon(
+                Icons.person_remove_rounded,
+                color: Colors.red,
+                size: 20,
+              ),
+              label: Text(
+                "delete_account".tr(),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+              onPressed: () => _showDeleteAccountConfirmation(),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Colors.red.withValues(alpha: 0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
 
           // Logout
           Padding(
@@ -589,5 +617,55 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _showUserGuide() {
     RulesGuideSheet.showGuideSheet(context);
+  }
+
+  void _showDeleteAccountConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('delete_account'.tr()),
+        content: Text('delete_account_confirmation_desc'.tr()),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr()),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              // Show loading
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const Center(child: CircularProgressIndicator()),
+              );
+              try {
+                final userService = UserService();
+                await userService.deactivateMyAccount();
+                if (mounted) {
+                  Navigator.pop(context); // hide loading
+                  // Clear auth state and navigate to login
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  await authProvider.logout();
+                  SideNavigationService.navigateToLogin();
+                }
+              } catch (e) {
+                if (mounted) {
+                  Navigator.pop(context); // hide loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${e.toString()}')),
+                  );
+                }
+              }
+            },
+            child: Text(
+              'delete'.tr(),
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -47,10 +47,27 @@ class ContentService {
 
   Future<String> getPrivacyPolicy() async {
     try {
-      final response = await _apiService.get(Endpoints.privacyPolicy);
+      // Fetching from the new dynamic legal documents endpoint instead of the old one
+      final response = await _apiService.get(Endpoints.legalDocument('privacy-policy'));
       return response['content'] ?? '';
     } catch (e) {
-      AppLogger.error('Error fetching privacy policy: $e');
+      // Fallback to old endpoint if not found
+      try {
+        final response = await _apiService.get(Endpoints.privacyPolicy);
+        return response['content'] ?? '';
+      } catch (innerE) {
+        AppLogger.error('Error fetching privacy policy: $innerE');
+        return '';
+      }
+    }
+  }
+
+  Future<String> getLegalDocument(String slug) async {
+    try {
+      final response = await _apiService.get(Endpoints.legalDocument(slug));
+      return response['content'] ?? '';
+    } catch (e) {
+      AppLogger.error('Error fetching legal document $slug: $e');
       return '';
     }
   }

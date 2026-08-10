@@ -11,12 +11,16 @@ class RulesGuideSheet extends StatefulWidget {
   final bool showGuide;
   final bool showPrivacy;
   final bool isPointsRules;
+  final String? documentSlug;
+  final String? documentTitle;
 
   const RulesGuideSheet({
     super.key,
     required this.showGuide,
     this.showPrivacy = false,
     this.isPointsRules = false,
+    this.documentSlug,
+    this.documentTitle,
   });
 
   static Future<void> showPointsRules(BuildContext context) {
@@ -57,6 +61,16 @@ class RulesGuideSheet extends StatefulWidget {
     );
   }
 
+  static Future<void> showLegalDocument(BuildContext context, String slug, String title) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) =>
+          RulesGuideSheet(showGuide: false, documentSlug: slug, documentTitle: title),
+    );
+  }
+
   @override
   State<RulesGuideSheet> createState() => _RulesGuideSheetState();
 }
@@ -77,7 +91,9 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
     final roleName = role.toString().split('.').last;
 
     String fetchedContent = '';
-    if (widget.isPointsRules) {
+    if (widget.documentSlug != null) {
+      fetchedContent = await _contentService.getLegalDocument(widget.documentSlug!);
+    } else if (widget.isPointsRules) {
       fetchedContent = await _contentService.getAppRules('LOYALTY');
     } else if (widget.showPrivacy) {
       fetchedContent = await _contentService.getPrivacyPolicy();
@@ -127,7 +143,11 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
     final IconData icon;
     final Color accent;
 
-    if (widget.isPointsRules) {
+    if (widget.documentSlug != null) {
+      title = widget.documentTitle ?? widget.documentSlug!;
+      icon = Icons.description_rounded;
+      accent = const Color(0xFF00695C); // Teal variant
+    } else if (widget.isPointsRules) {
       title = 'loyalty_points_rules'.tr();
       icon = Icons.stars_rounded;
       accent = AppColors.pink;

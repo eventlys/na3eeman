@@ -1,4 +1,4 @@
-package com.example.na3eeman
+package com.na3eman.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
