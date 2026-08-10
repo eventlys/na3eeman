@@ -622,45 +622,43 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showDeleteAccountConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text('delete_account'.tr()),
         content: Text('delete_account_confirmation_desc'.tr()),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text('cancel'.tr()),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
               // Show loading
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) =>
+                builder: (loadingContext) =>
                     const Center(child: CircularProgressIndicator()),
               );
               try {
                 final userService = UserService();
                 await userService.deactivateMyAccount();
-                if (mounted) {
-                  Navigator.pop(context); // hide loading
-                  // Clear auth state and navigate to login
-                  final authProvider = Provider.of<AuthProvider>(
-                    context,
-                    listen: false,
-                  );
-                  await authProvider.logout();
-                  SideNavigationService.navigateToLogin();
-                }
+                if (!mounted) return;
+                Navigator.pop(context); // hide loading
+                // Clear auth state and navigate to login
+                final authProvider = Provider.of<AuthProvider>(
+                  context,
+                  listen: false,
+                );
+                await authProvider.logout();
+                SideNavigationService.navigateToLogin();
               } catch (e) {
-                if (mounted) {
-                  Navigator.pop(context); // hide loading
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${e.toString()}')),
-                  );
-                }
+                if (!mounted) return;
+                Navigator.pop(context); // hide loading
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: ${e.toString()}')),
+                );
               }
             },
             child: Text(
