@@ -48,7 +48,9 @@ class ContentService {
   Future<String> getPrivacyPolicy() async {
     try {
       // Fetching from the new dynamic legal documents endpoint instead of the old one
-      final response = await _apiService.get(Endpoints.legalDocument('privacy-policy'));
+      final response = await _apiService.get(
+        Endpoints.legalDocument('privacy-policy'),
+      );
       return response['content'] ?? '';
     } catch (e) {
       // Fallback to old endpoint if not found

@@ -16,12 +16,10 @@ class LegalDocsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isRtl = context.locale.languageCode == 'ar';
     final String lang = isRtl ? 'ar' : 'en';
-    final String baseUrl = 'https://legal.na3eeman.com/$lang';
+    final String baseUrl = 'https://legal.n3eemn.com/$lang';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(isRtl ? 'الشروط والأحكام' : 'Legal & Terms'),
-      ),
+      appBar: AppBar(title: Text(isRtl ? 'الشروط والأحكام' : 'Legal & Terms')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -32,12 +30,16 @@ class LegalDocsPage extends StatelessWidget {
           ),
           const Divider(),
           _buildLinkTile(
-            title: isRtl ? 'الشروط والأحكام للعملاء' : 'Customer Terms & Conditions',
+            title: isRtl
+                ? 'الشروط والأحكام للعملاء'
+                : 'Customer Terms & Conditions',
             icon: Icons.description_rounded,
             onTap: () => _launchUrl('$baseUrl/customers/terms'),
           ),
           _buildLinkTile(
-            title: isRtl ? 'الشروط والأحكام للبائعين' : 'Vendor Terms & Conditions',
+            title: isRtl
+                ? 'الشروط والأحكام للبائعين'
+                : 'Vendor Terms & Conditions',
             icon: Icons.store_rounded,
             onTap: () => _launchUrl('$baseUrl/vendors/terms'),
           ),
@@ -80,4 +82,3 @@ class LegalDocsPage extends StatelessWidget {
     );
   }
 }
-

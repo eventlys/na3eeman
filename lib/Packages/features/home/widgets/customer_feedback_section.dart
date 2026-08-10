@@ -55,7 +55,7 @@ class CustomerFeedbackSection extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'your_suggestions_make_na3eeman_better'.tr(),
+                      'your_suggestions_make_n3eemn_better'.tr(),
                       style: TextStyle(
                         fontSize: 13,
                         color: isDark ? Colors.grey[400] : Colors.grey[600],

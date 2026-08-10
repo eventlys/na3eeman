@@ -61,13 +61,20 @@ class RulesGuideSheet extends StatefulWidget {
     );
   }
 
-  static Future<void> showLegalDocument(BuildContext context, String slug, String title) {
+  static Future<void> showLegalDocument(
+    BuildContext context,
+    String slug,
+    String title,
+  ) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          RulesGuideSheet(showGuide: false, documentSlug: slug, documentTitle: title),
+      builder: (_) => RulesGuideSheet(
+        showGuide: false,
+        documentSlug: slug,
+        documentTitle: title,
+      ),
     );
   }
 
@@ -92,7 +99,9 @@ class _RulesGuideSheetState extends State<RulesGuideSheet> {
 
     String fetchedContent = '';
     if (widget.documentSlug != null) {
-      fetchedContent = await _contentService.getLegalDocument(widget.documentSlug!);
+      fetchedContent = await _contentService.getLegalDocument(
+        widget.documentSlug!,
+      );
     } else if (widget.isPointsRules) {
       fetchedContent = await _contentService.getAppRules('LOYALTY');
     } else if (widget.showPrivacy) {

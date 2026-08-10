@@ -638,7 +638,8 @@ class _SettingsPageState extends State<SettingsPage> {
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const Center(child: CircularProgressIndicator()),
+                builder: (context) =>
+                    const Center(child: CircularProgressIndicator()),
               );
               try {
                 final userService = UserService();
@@ -646,7 +647,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (mounted) {
                   Navigator.pop(context); // hide loading
                   // Clear auth state and navigate to login
-                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  final authProvider = Provider.of<AuthProvider>(
+                    context,
+                    listen: false,
+                  );
                   await authProvider.logout();
                   SideNavigationService.navigateToLogin();
                 }

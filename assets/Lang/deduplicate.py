@@ -19,5 +19,5 @@ def deduplicate_json(file_path):
     except Exception as e:
         print(f"Error deduplicating {file_path}: {e}")
 
-deduplicate_json('/home/azeez/Documents/proj/na3eeman/assets/Lang/en-US.json')
-deduplicate_json('/home/azeez/Documents/proj/na3eeman/assets/Lang/ar-EG.json')
+deduplicate_json('/home/azeez/Documents/proj/n3eemn/assets/Lang/en-US.json')
+deduplicate_json('/home/azeez/Documents/proj/n3eemn/assets/Lang/ar-EG.json')

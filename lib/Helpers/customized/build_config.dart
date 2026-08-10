@@ -32,12 +32,12 @@ class BuildConfig {
   static String get baseUrl {
     switch (flavor) {
       case 'development':
-        return 'https://dev-api.na3eeman.com/api';
+        return 'https://dev-api.n3eemn.com/api';
       case 'staging':
-        return 'https://staging-api.na3eeman.com/api';
+        return 'https://staging-api.n3eemn.com/api';
       case 'production':
       default:
-        return 'https://api.na3eeman.com/api';
+        return 'https://api.n3eemn.com/api';
     }
   }
 
