@@ -530,6 +530,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         'manage-faqs',
         Colors.orange,
       ),
+      (
+        'register_staff'.tr(),
+        Icons.person_add_alt_1_rounded,
+        '/admin/create-staff',
+        Colors.indigo,
+      ),
     ];
 
     return GridView.builder(
