@@ -23,7 +23,9 @@ jobs:
           cache: true
       
       - name: Create Dummy .env
-        run: cp .env.example .env || touch .env
+        run: |
+          touch .env .env.dev .env.stg .env.prod
+          cp .env.example .env || true
         
       - name: Install Dependencies
         run: flutter pub get
