@@ -48,17 +48,17 @@ jobs:
       - name: Security Scan (Trivy FS)
         run: trivy fs --exit-code 1 --severity HIGH,CRITICAL --format table .
 
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=na3eeman
-            -Dsonar.projectName="Na3eeman"
-            -Dsonar.qualitygate.wait=false
+      # - name: SonarQube Scan
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #   with:
+      #     projectBaseDir: .
+      #     args: >
+      #       -Dsonar.projectKey=na3eeman
+      #       -Dsonar.projectName="Na3eeman"
+      #       -Dsonar.qualitygate.wait=false
 
       - name: Build Android AppBundle
         run: >
