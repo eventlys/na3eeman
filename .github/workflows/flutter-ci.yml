@@ -21,6 +21,9 @@ jobs:
           channel: 'stable'
           cache: true
       
+      - name: Create Dummy .env
+        run: cp .env.example .env || touch .env
+        
       - name: Install Dependencies
         run: flutter pub get
 
