@@ -364,6 +364,12 @@ class AuthService {
     return await _authRepository.adminCreateStaff(staffData);
   }
 
+  Future<Map<String, dynamic>> adminOnboardSalon(
+    Map<String, dynamic> payload,
+  ) async {
+    return await _authRepository.adminOnboardSalon(payload);
+  }
+
   Future<List<dynamic>> adminFetchSalons() async {
     return await _authRepository.adminFetchSalons();
   }

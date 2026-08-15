@@ -60,6 +60,7 @@ class Endpoints {
 
   // ==================== ADMIN ENDPOINTS ====================
   static const String adminCreateStaff = '/auth/admin/create-staff/';
+  static const String adminOnboardSalon = '/salons/onboard/';
   static String adminResetStaffPassword(int userId) =>
       '/auth/admin/reset-staff-password/$userId/';
   static String adminChangeUserRole(int userId) =>

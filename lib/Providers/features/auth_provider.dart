@@ -523,6 +523,21 @@ class AuthProvider extends BaseProvider {
     }
   }
 
+  Future<Map<String, dynamic>> adminOnboardSalon(
+    Map<String, dynamic> payload,
+  ) async {
+    try {
+      setLoading(true);
+      final response = await _authService.adminOnboardSalon(payload);
+      setLoading(false);
+      return response;
+    } catch (e) {
+      setLoading(false);
+      AppLogger.error('Admin onboard salon failed', error: e);
+      rethrow;
+    }
+  }
+
   Future<List<dynamic>> fetchSalons() async {
     try {
       setLoading(true);
