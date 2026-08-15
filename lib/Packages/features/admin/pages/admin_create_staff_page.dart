@@ -30,6 +30,8 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
   final _locationController = TextEditingController();
   final _openingTimeController = TextEditingController(text: "09:00:00");
   final _closingTimeController = TextEditingController(text: "22:00:00");
+  final _seatsController = TextEditingController(text: "4");
+  final _staffController = TextEditingController(text: "4");
 
   String _selectedRole = 'EXPERT';
   int? _selectedSalonId;
@@ -85,6 +87,8 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
     _locationController.dispose();
     _openingTimeController.dispose();
     _closingTimeController.dispose();
+    _seatsController.dispose();
+    _staffController.dispose();
     super.dispose();
   }
 
@@ -116,6 +120,8 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
           "location": _locationController.text,
           "opening_time": _openingTimeController.text,
           "closing_time": _closingTimeController.text,
+          "salon_seats": int.tryParse(_seatsController.text) ?? 4,
+          "salon_staff": int.tryParse(_staffController.text) ?? 4,
           "owner_first_name": _firstNameController.text,
           "owner_last_name": _lastNameController.text,
           "owner_email": _emailController.text,
@@ -323,6 +329,30 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
                         controller: _closingTimeController,
                         label: "Closing Time (HH:MM:SS)",
                         prefixIcon: Icons.access_time_filled,
+                        validator: (val) => val!.isEmpty ? 'Required' : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppTextField(
+                        controller: _seatsController,
+                        label: "Number of Seats",
+                        prefixIcon: Icons.chair_alt,
+                        keyboardType: TextInputType.number,
+                        validator: (val) => val!.isEmpty ? 'Required' : null,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: AppTextField(
+                        controller: _staffController,
+                        label: "Number of Staff",
+                        prefixIcon: Icons.people_outline,
+                        keyboardType: TextInputType.number,
                         validator: (val) => val!.isEmpty ? 'Required' : null,
                       ),
                     ),
