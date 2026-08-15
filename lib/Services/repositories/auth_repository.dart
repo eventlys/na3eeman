@@ -389,11 +389,10 @@ class AuthRepository {
     Map<String, dynamic> payload,
   ) async {
     try {
-      AppLogger.debug('Admin onboarding salon and owner: ${payload['owner_email']}');
-      return await _apiService.post(
-        Endpoints.adminOnboardSalon,
-        data: payload,
+      AppLogger.debug(
+        'Admin onboarding salon and owner: ${payload['owner_email']}',
       );
+      return await _apiService.post(Endpoints.adminOnboardSalon, data: payload);
     } catch (error) {
       AppLogger.error('Admin salon onboarding failed', error: error);
       throw ErrorHandler.handleException(error);
