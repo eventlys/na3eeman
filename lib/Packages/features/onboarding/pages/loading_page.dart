@@ -73,12 +73,12 @@ class _LoadingPageState extends State<LoadingPage>
 
     if (isArabic) {
       return isDark
-          ? 'assets/images/logo_ar_dark.png'
-          : 'assets/images/logo_ar_light.png';
+          ? 'assets/logos/logo_ar_dark.png'
+          : 'assets/logos/logo_ar_light.png';
     } else {
       return isDark
-          ? 'assets/images/logo_en_dark.png'
-          : 'assets/images/logo_en_light.png';
+          ? 'assets/logos/logo_en_dark.png'
+          : 'assets/logos/logo_en_light.png';
     }
   }
 
@@ -93,7 +93,7 @@ class _LoadingPageState extends State<LoadingPage>
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: const AssetImage('assets/images/bg_faded.png'),
+            image: const AssetImage('assets/logos/bg_faded.png'),
             fit: BoxFit.cover,
             opacity: isDark ? 0.05 : 0.08,
           ),

@@ -114,12 +114,12 @@ class Sidebar extends StatelessWidget {
                         String logoPath;
                         if (isArabic) {
                           logoPath = isDark
-                              ? 'assets/images/logo_ar_dark.png'
-                              : 'assets/images/logo_ar_light.png';
+                              ? 'assets/logos/logo_ar_dark.png'
+                              : 'assets/logos/logo_ar_light.png';
                         } else {
                           logoPath = isDark
-                              ? 'assets/images/logo_en_dark.png'
-                              : 'assets/images/logo_en_light.png';
+                              ? 'assets/logos/logo_en_dark.png'
+                              : 'assets/logos/logo_en_light.png';
                         }
 
                         return Image.asset(

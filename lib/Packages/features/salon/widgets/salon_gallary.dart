@@ -25,10 +25,10 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
     final images =
         widget.imageUrls ??
         [
-          'assets/images/gallery1.png',
-          'assets/images/gallery2.png',
-          'assets/images/gallery3.png',
-          'assets/images/gallery4.png',
+          'assets/logos/gallery1.png',
+          'assets/logos/gallery2.png',
+          'assets/logos/gallery3.png',
+          'assets/logos/gallery4.png',
         ];
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -82,7 +82,7 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                           width: double.infinity,
                           errorBuilder: (context, error, stackTrace) =>
                               Image.asset(
-                                'assets/images/salon_placeholder.png',
+                                'assets/logos/salon_placeholder.png',
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),
@@ -93,7 +93,7 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                           width: double.infinity,
                           errorBuilder: (context, error, stackTrace) =>
                               Image.asset(
-                                'assets/images/salon_placeholder.png',
+                                'assets/logos/salon_placeholder.png',
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),

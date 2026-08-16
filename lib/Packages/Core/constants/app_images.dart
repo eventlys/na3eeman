@@ -1,28 +1,28 @@
 // ignore_for_file: constant_identifier_names
 class AppImages {
   // Main Images
-  static const String logo = 'assets/images/Layer.png';
-  static const String appLogo = 'assets/images/logo.png';
-  static const String placeholderImage = 'assets/images/placeholder.jpg';
-  static const String defaultProfile = 'assets/images/default_profile.png';
-  static const String defaultSalon = 'assets/images/default_salon.jpg';
+  static const String logo = 'assets/logos/Layer.png';
+  static const String appLogo = 'assets/logos/logo.png';
+  static const String placeholderImage = 'assets/logos/placeholder.jpg';
+  static const String defaultProfile = 'assets/logos/default_profile.png';
+  static const String defaultSalon = 'assets/logos/default_salon.jpg';
 
   // Salon Images
-  static const String salon1 = 'assets/images/salon1.jpg';
-  static const String salon2 = 'assets/images/salon2.jpg';
-  static const String salon3 = 'assets/images/salon3.jpg';
-  static const String salon4 = 'assets/images/salon4.jpg';
-  static const String salon5 = 'assets/images/salon5.jpg';
-  static const String salon6 = 'assets/images/salon6.jpg';
-  static const String salon7 = 'assets/images/salon7.jpg';
-  static const String salon8 = 'assets/images/salon8.jpg';
-  static const String salon9 = 'assets/images/salon9.jpg';
-  static const String salon10 = 'assets/images/salon10.jpg';
+  static const String salon1 = 'assets/logos/salon1.jpg';
+  static const String salon2 = 'assets/logos/salon2.jpg';
+  static const String salon3 = 'assets/logos/salon3.jpg';
+  static const String salon4 = 'assets/logos/salon4.jpg';
+  static const String salon5 = 'assets/logos/salon5.jpg';
+  static const String salon6 = 'assets/logos/salon6.jpg';
+  static const String salon7 = 'assets/logos/salon7.jpg';
+  static const String salon8 = 'assets/logos/salon8.jpg';
+  static const String salon9 = 'assets/logos/salon9.jpg';
+  static const String salon10 = 'assets/logos/salon10.jpg';
 
   // Mock Images for Development
-  static const String mockAvatar1 = 'assets/images/mock_avatar1.png';
-  static const String mockAvatar2 = 'assets/images/mock_avatar2.png';
-  static const String mockAvatar3 = 'assets/images/mock_avatar3.png';
+  static const String mockAvatar1 = 'assets/logos/mock_avatar1.png';
+  static const String mockAvatar2 = 'assets/logos/mock_avatar2.png';
+  static const String mockAvatar3 = 'assets/logos/mock_avatar3.png';
 
   static const String chat = 'assets/icons/chat.png';
   static const String info = 'assets/icons/info.png';

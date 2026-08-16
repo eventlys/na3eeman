@@ -808,13 +808,13 @@ MaterialTextField(
                 keyboardType: TextInputType.emailAddress,
                 hint: 'Email',
                 textInputAction: TextInputAction.next,
-                prefixIcon: Image.asset('assets/images/ic_lock.png'),
+                prefixIcon: Image.asset('assets/logos/ic_lock.png'),
                 controller: _emailTextController,
                 validator: FormValidation.emailTextField,
                 onChanged: (text) {
                   print('First text field: $text');
                 },
-                suffixIcon: Image.asset('assets/images/ic_lock.png'),
+                suffixIcon: Image.asset('assets/logos/ic_lock.png'),
                 enabled: false,
                 obscureText: true,
                 style: const TextStyle(fontSize: 16, color: Colors.black),

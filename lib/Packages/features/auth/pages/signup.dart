@@ -63,12 +63,12 @@ class _SignupPageState extends State<SignupPage>
 
     if (isArabic) {
       return isDark
-          ? 'assets/images/logo_ar_dark.png'
-          : 'assets/images/logo_ar_light.png';
+          ? 'assets/logos/logo_ar_dark.png'
+          : 'assets/logos/logo_ar_light.png';
     } else {
       return isDark
-          ? 'assets/images/logo_en_dark.png'
-          : 'assets/images/logo_en_light.png';
+          ? 'assets/logos/logo_en_dark.png'
+          : 'assets/logos/logo_en_light.png';
     }
   }
 

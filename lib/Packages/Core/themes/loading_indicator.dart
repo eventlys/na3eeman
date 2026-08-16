@@ -71,7 +71,7 @@ class LoadingIndicator extends StatelessWidget {
                   width: size * 0.7,
                   height: size * 0.7,
                   child: Image.asset(
-                    'assets/images/PRIMERY_loading.png',
+                    'assets/logos/PRIMERY_loading.png',
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -112,7 +112,7 @@ class LoadingIndicator extends StatelessWidget {
             width: size * 0.7,
             height: size * 0.7,
             child: Image.asset(
-              'assets/images/PRIMERY_loading.png',
+              'assets/logos/PRIMERY_loading.png',
               fit: BoxFit.contain,
             ),
           ),
