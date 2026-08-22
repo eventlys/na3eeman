@@ -49,6 +49,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
 
   Position? _currentPosition;
   String _searchQuery = '';
+  List<String> _selectedSubcategories = [];
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
     if (widget.subQuery != null) {
       _searchQuery = widget.subQuery!.toLowerCase();
       _searchController.text = widget.subQuery!;
+      _selectedSubcategories.add(widget.subQuery!.toLowerCase());
     }
 
     _loadAllData();
@@ -72,11 +74,30 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   }
 
   Future<void> _loadAllData() async {
+    setState(() {
+      _isLoadingSalons = true;
+      _isLoadingAds = true;
+      _isLoadingOffers = true;
+      _isLoadingPrevious = true;
+    });
     await _determinePosition();
-    _loadAds();
-    _loadOffers();
-    _loadSalons();
-    _loadPreviousAppointment();
+    
+    // Load all required data concurrently
+    await Future.wait([
+      _loadAds(),
+      _loadOffers(),
+      _loadSalons(),
+      _loadPreviousAppointment(),
+    ]);
+    
+    if (mounted) {
+      setState(() {
+        _isLoadingSalons = false;
+        _isLoadingAds = false;
+        _isLoadingOffers = false;
+        _isLoadingPrevious = false;
+      });
+    }
   }
 
   Future<void> _loadPreviousAppointment() async {
@@ -238,43 +259,39 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
               ],
             ),
           ),
-          body: RefreshIndicator(
-            onRefresh: _loadAllData,
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-
-                  _buildSubCategoriesRow(),
-
-                  const SizedBox(height: 16),
-
-                  // Horizontal slider for offers
-                  OffersHorizontalList(
-                    offers: _offers,
-                    isLoading: _isLoadingOffers,
+          body: _isLoadingSalons
+              ? Center(
+                  child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor))
+              : RefreshIndicator(
+                  onRefresh: _loadAllData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        _buildSubCategoriesRow(),
+                        const SizedBox(height: 16),
+                        OffersHorizontalList(
+                          offers: _offers,
+                          isLoading: false, // Prevent multiple loaders
+                        ),
+                        const SizedBox(height: 24),
+                        AdsHorizontalList(
+                          ads: _ads, 
+                          isLoading: false, // Prevent multiple loaders
+                        ),
+                        const SizedBox(height: 24),
+                        _buildPreviousSalonCard(),
+                        const SizedBox(height: 24),
+                        _buildSalonsHeader(),
+                        _buildSalonsList(),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
                   ),
-
-                  const SizedBox(height: 24),
-
-                  // Horizontal slider for ads
-                  AdsHorizontalList(ads: _ads, isLoading: _isLoadingAds),
-
-                  const SizedBox(height: 24),
-
-                  // Card for previous customer appointment Salon
-                  _buildPreviousSalonCard(),
-
-                  const SizedBox(height: 24),
-                  _buildSalonsHeader(),
-                  _buildSalonsList(),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ),
+                ),
         ),
         Sidebar(controller: _sidebarController),
       ],
@@ -282,12 +299,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   }
 
   Widget _buildPreviousSalonCard() {
-    if (_isLoadingPrevious) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: LinearProgressIndicator(),
-      );
-    }
 
     if (_previousSalon == null) return const SizedBox.shrink();
 
@@ -362,7 +373,25 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       final name = (salon['salonName'] ?? salon['salon_name'] ?? '')
           .toString()
           .toLowerCase();
-      return name.contains(_searchQuery);
+          
+      bool matchesSearch = _searchQuery.isEmpty || name.contains(_searchQuery);
+      
+      bool matchesSubs = _selectedSubcategories.isEmpty || 
+          _selectedSubcategories.every((sub) {
+            // Must have ALL selected subcategories
+            final services = salon['services'] as List<dynamic>? ?? [];
+            final hasService = services.any((service) {
+              final serviceName = (service['name'] ?? service['serviceName'] ?? service['title'] ?? '')
+                  .toString()
+                  .toLowerCase();
+              return serviceName.contains(sub);
+            });
+            
+            // Fallback to name just in case the salon name implies the service
+            return hasService || name.contains(sub);
+          });
+          
+      return matchesSearch && matchesSubs;
     }).toList();
 
     if (filteredSalons.isEmpty) {
@@ -453,7 +482,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
             itemCount: subCats.length,
             itemBuilder: (context, index) {
               final sub = subCats[index];
-              final isSelected = _searchQuery == sub.toLowerCase();
+              final isSelected = _selectedSubcategories.contains(sub.toLowerCase());
               final key =
                   'service_${sub.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
               return Padding(
@@ -464,11 +493,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
                   onSelected: (selected) {
                     setState(() {
                       if (selected) {
-                        _searchQuery = sub.toLowerCase();
-                        _searchController.text = sub;
+                        _selectedSubcategories.add(sub.toLowerCase());
                       } else {
-                        _searchQuery = '';
-                        _searchController.text = '';
+                        _selectedSubcategories.remove(sub.toLowerCase());
                       }
                     });
                   },

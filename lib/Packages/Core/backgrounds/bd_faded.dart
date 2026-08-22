@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:na3eeman/Packages/Core/constants/app_style.dart';
 
 import '../constants/app_color.dart';
@@ -57,7 +59,9 @@ class ThirdPage extends StatelessWidget {
               ),
               const SizedBox(height: AppConstants.defaultPadding),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  AppSnackBar.info(context, 'feature_coming_soon'.tr());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.lightPrimary,
                   foregroundColor: AppColor.lightCard,

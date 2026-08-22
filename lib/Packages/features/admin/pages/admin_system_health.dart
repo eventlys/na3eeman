@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
@@ -21,7 +22,9 @@ class AdminSystemHealthPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            onPressed: () {},
+            onPressed: () {
+              AppSnackBar.info(context, 'feature_coming_soon'.tr());
+            },
             tooltip: 'Refresh',
           ),
         ],

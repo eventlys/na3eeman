@@ -503,7 +503,9 @@ class FeedbackSection extends StatelessWidget {
         DashboardSectionHeader(
           title: "recent_feedback".tr(),
           actionText: "view_all".tr(),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/feedback_page');
+          },
         ),
         const SizedBox(height: 16),
         if (feedbacks.isEmpty)

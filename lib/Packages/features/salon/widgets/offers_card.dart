@@ -49,7 +49,6 @@ class OffersCard extends StatelessWidget {
               //     Icons.add_circle_outline_rounded,
               //     color: Theme.of(context).primaryColor,
               //   ),
-              //   onPressed: () {},
               // ),
             ],
           ),

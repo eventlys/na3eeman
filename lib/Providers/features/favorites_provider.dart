@@ -19,7 +19,7 @@ class FavoritesProvider extends BaseProvider {
   // Check if a salon is favorited
   bool isSalonFavorited(String salonId) {
     return _favoriteSalons.any(
-      (salon) => salon['id'].toString() == salonId.toString(),
+      (salon) => (salon['id'] ?? salon['_id']).toString() == salonId.toString(),
     );
   }
 
@@ -51,7 +51,7 @@ class FavoritesProvider extends BaseProvider {
     try {
       setLoading(true);
 
-      final salonId = salonData['id'].toString();
+      final salonId = (salonData['id'] ?? salonData['_id']).toString();
 
       // Check if already favorited
       if (isSalonFavorited(salonId)) {
@@ -74,7 +74,7 @@ class FavoritesProvider extends BaseProvider {
       } else {
         // Rollback if API call failed
         _favoriteSalons.removeWhere(
-          (salon) => salon['id'].toString() == salonId,
+          (salon) => (salon['id'] ?? salon['_id']).toString() == salonId,
         );
         notifyListeners();
         await _saveFavoritesToCache();
@@ -82,8 +82,8 @@ class FavoritesProvider extends BaseProvider {
       }
     } catch (e) {
       // Rollback on error
-      final salonId = salonData['id'].toString();
-      _favoriteSalons.removeWhere((salon) => salon['id'].toString() == salonId);
+      final salonId = (salonData['id'] ?? salonData['_id']).toString();
+      _favoriteSalons.removeWhere((salon) => (salon['id'] ?? salon['_id']).toString() == salonId);
       notifyListeners();
       await _saveFavoritesToCache();
 
@@ -91,7 +91,7 @@ class FavoritesProvider extends BaseProvider {
       AppLogger.error(
         'Failed to add to favorites',
         error: e,
-        extra: {'salonId': salonData['id']},
+        extra: {'salonId': salonId},
       );
       return false;
     } finally {
@@ -106,11 +106,11 @@ class FavoritesProvider extends BaseProvider {
 
       // Remove from local list immediately for instant UI feedback
       final removedSalon = _favoriteSalons.firstWhere(
-        (salon) => salon['id'].toString() == salonId,
+        (salon) => (salon['id'] ?? salon['_id']).toString() == salonId,
         orElse: () => {},
       );
 
-      _favoriteSalons.removeWhere((salon) => salon['id'].toString() == salonId);
+      _favoriteSalons.removeWhere((salon) => (salon['id'] ?? salon['_id']).toString() == salonId);
       notifyListeners();
 
       // Save to cache
@@ -153,7 +153,7 @@ class FavoritesProvider extends BaseProvider {
 
   // Toggle favorite status
   Future<bool> toggleFavorite(Map<String, dynamic> salonData) async {
-    final salonId = salonData['id'].toString();
+    final salonId = (salonData['id'] ?? salonData['_id']).toString();
 
     if (isSalonFavorited(salonId)) {
       return await removeFromFavorites(salonId);

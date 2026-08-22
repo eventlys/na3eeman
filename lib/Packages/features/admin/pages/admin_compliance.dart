@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
@@ -215,21 +217,36 @@ class _DisputeQueue extends StatelessWidget {
                         AppButton(
                           label: 'Resolve',
                           size: AppButtonSize.sm,
-                          onPressed: () {},
+                          onPressed: () {
+                            AppSnackBar.info(
+                              context,
+                              'feature_coming_soon'.tr(),
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                         AppButton(
                           label: 'Dismiss',
                           type: AppButtonType.outline,
                           size: AppButtonSize.sm,
-                          onPressed: () {},
+                          onPressed: () {
+                            AppSnackBar.info(
+                              context,
+                              'feature_coming_soon'.tr(),
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                         AppButton(
                           label: 'Escalate',
                           type: AppButtonType.ghost,
                           size: AppButtonSize.sm,
-                          onPressed: () {},
+                          onPressed: () {
+                            AppSnackBar.info(
+                              context,
+                              'feature_coming_soon'.tr(),
+                            );
+                          },
                         ),
                       ],
                     ),

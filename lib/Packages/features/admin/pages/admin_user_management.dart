@@ -170,8 +170,11 @@ class _UserListState extends State<_UserList> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: users.length,
             separatorBuilder: (_, _) => const SizedBox(height: 8),
-            itemBuilder: (context, i) =>
-                _UserTile(user: users[i], isDark: widget.isDark),
+            itemBuilder: (context, i) => _UserTile(
+              user: users[i],
+              isDark: widget.isDark,
+              onActionComplete: _loadUsers,
+            ),
           ),
         );
       },
@@ -179,15 +182,88 @@ class _UserListState extends State<_UserList> {
   }
 }
 
-class _UserTile extends StatelessWidget {
-  const _UserTile({required this.user, required this.isDark});
+class _UserTile extends StatefulWidget {
+  const _UserTile({
+    required this.user,
+    required this.isDark,
+    required this.onActionComplete,
+  });
   final User user;
   final bool isDark;
+  final VoidCallback onActionComplete;
+
+  @override
+  State<_UserTile> createState() => _UserTileState();
+}
+
+class _UserTileState extends State<_UserTile> {
+  bool _isLoading = false;
 
   Color get _statusColor {
-    if (!user.isActive) return AppColor.error;
-    // We can add more logic here if backend provides specific status
+    if (!widget.user.isActive) return AppColor.error;
     return AppColor.success;
+  }
+
+  Future<void> _handleAction(BuildContext context, String action) async {
+    if (action == 'view') {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(widget.user.fullName),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Username: @${widget.user.username}'),
+              const SizedBox(height: 8),
+              Text('Email: ${widget.user.email}'),
+              const SizedBox(height: 8),
+              Text('Phone: ${widget.user.phone ?? "N/A"}'),
+              const SizedBox(height: 8),
+              Text('Role: ${widget.user.role}'),
+              const SizedBox(height: 8),
+              Text('Status: ${widget.user.isActive ? "Active" : "Banned"}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      final status = action == 'ban' ? 'INACTIVE' : 'ACTIVE';
+      await ApiService().updateUserStatus(widget.user.id, status);
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Successfully ${action == 'ban' ? 'banned' : 'unbanned'} ${widget.user.fullName}',
+          ),
+          backgroundColor: AppColor.success,
+        ),
+      );
+      widget.onActionComplete();
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update user status: $e'),
+          backgroundColor: AppColor.error,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -201,12 +277,14 @@ class _UserTile extends StatelessWidget {
             backgroundColor: Theme.of(
               context,
             ).colorScheme.primary.withValues(alpha: 0.1),
-            backgroundImage: user.profilePic != null
-                ? NetworkImage(user.profilePic!)
+            backgroundImage: widget.user.profilePic != null
+                ? NetworkImage(widget.user.profilePic!)
                 : null,
-            child: user.profilePic == null
+            child: widget.user.profilePic == null
                 ? Text(
-                    user.firstName[0],
+                    widget.user.firstName.isNotEmpty
+                        ? widget.user.firstName[0]
+                        : '?',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.primary,
@@ -223,14 +301,14 @@ class _UserTile extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        user.fullName,
+                        widget.user.fullName,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (user.isEmailVerified) ...[
+                    if (widget.user.isEmailVerified) ...[
                       const SizedBox(width: 4),
                       const Icon(
                         Icons.verified_rounded,
@@ -243,7 +321,7 @@ class _UserTile extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '@${user.username}',
+                      '@${widget.user.username}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(width: 6),
@@ -257,7 +335,7 @@ class _UserTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
-                        user.isActive ? 'active' : 'inactive',
+                        widget.user.isActive ? 'active' : 'inactive',
                         style: TextStyle(
                           fontSize: 10,
                           color: _statusColor,
@@ -270,37 +348,44 @@ class _UserTile extends StatelessWidget {
               ],
             ),
           ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: isDark ? AppColor.darkTextHint : AppColor.lightTextHint,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            onSelected: (action) => _handleAction(context, action),
-            itemBuilder: (_) => [
-              if (user.isActive)
-                const PopupMenuItem(value: 'ban', child: Text('Ban User')),
-              if (!user.isActive)
-                const PopupMenuItem(
-                  value: 'unban',
-                  child: Text('Unban / Restore'),
+          _isLoading
+              ? const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.more_vert_rounded,
+                    color: widget.isDark
+                        ? AppColor.darkTextHint
+                        : AppColor.lightTextHint,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                  onSelected: (action) => _handleAction(context, action),
+                  itemBuilder: (_) => [
+                    if (widget.user.isActive)
+                      const PopupMenuItem(
+                        value: 'ban',
+                        child: Text('Ban User'),
+                      ),
+                    if (!widget.user.isActive)
+                      const PopupMenuItem(
+                        value: 'unban',
+                        child: Text('Unban / Restore'),
+                      ),
+                    const PopupMenuItem(
+                      value: 'view',
+                      child: Text('View Profile'),
+                    ),
+                  ],
                 ),
-              const PopupMenuItem(value: 'view', child: Text('View Profile')),
-            ],
-          ),
         ],
-      ),
-    );
-  }
-
-  void _handleAction(BuildContext context, String action) {
-    // In a real app, this would call ApiService.updateUserStatus
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Action $action initiated for ${user.fullName}'),
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }

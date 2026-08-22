@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../../../core/widgets/buttons/styled_buttons.dart';
@@ -237,7 +238,25 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
               TextButton.icon(
                 icon: const Icon(Icons.edit, size: 16),
                 label: Text("edit".tr()),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Edit Inventory Item'),
+                      content: Text('Edit functionality goes here.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Save'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
               TextButton.icon(
                 icon: const Icon(
@@ -249,7 +268,34 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
                   "delete".tr(),
                   style: const TextStyle(color: AppColors.error),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Delete Item'),
+                      content: Text(
+                        'Are you sure you want to delete this item?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.error,
+                          ),
+                          onPressed: () {
+                            // Call delete API here
+                            Navigator.pop(context);
+                            AppSnackBar.success(context, 'Item deleted');
+                          },
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ],
           ),

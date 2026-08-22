@@ -29,7 +29,7 @@ class _SalonListPageState extends State<SalonListPage> {
     "Nails",
     "Coloring",
   ];
-  String _selectedService = "All";
+  List<String> _selectedServices = [];
   String? _selectedDistance;
   String? _selectedRating;
   String? _selectedPrice;
@@ -233,9 +233,21 @@ class _SalonListPageState extends State<SalonListPage> {
           }
         }
 
-        // The mock filters below don't actually filter the mock data yet
-        // since the API data doesn't necessarily have distance or accurate price categories,
-        // but we'll apply rating if it exists just as an example.
+        // New AND logic for multiple services
+        if (_selectedServices.isNotEmpty) {
+          final salonServices = salon['services'] as List<dynamic>? ?? [];
+          final hasAllServices = _selectedServices.every((selectedService) {
+            final selectedServiceLower = selectedService.toLowerCase();
+            return salonServices.any((s) {
+              final serviceName = (s['name'] ?? s['serviceName'] ?? s['title'] ?? '').toString().toLowerCase();
+              return serviceName.contains(selectedServiceLower);
+            }) || (salon['salonName'] ?? salon['title'] ?? '').toString().toLowerCase().contains(selectedServiceLower);
+          });
+          if (!hasAllServices) {
+            match = false;
+          }
+        }
+
         if (_selectedRating != null) {
           final rating =
               double.tryParse(salon['salonRating']?.toString() ?? '4.5') ?? 4.5;
@@ -260,10 +272,35 @@ class _SalonListPageState extends State<SalonListPage> {
         itemCount: _servicesFilters.length,
         itemBuilder: (context, index) {
           final service = _servicesFilters[index];
-          final isSelected = _selectedService == service;
-          final key = service == "All"
-              ? "all_services"
-              : 'service_${service.toLowerCase().replaceAll(' ', '_')}';
+          
+          if (service == "All") {
+            final isSelected = _selectedServices.isEmpty;
+            return Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: FilterChip(
+                label: Text("all_services".tr()),
+                selected: isSelected,
+                onSelected: (selected) {
+                  setState(() {
+                    if (selected) {
+                      _selectedServices.clear();
+                      _applyFilters();
+                    }
+                  });
+                },
+                backgroundColor: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
+                selectedColor: Theme.of(context).primaryColor,
+                labelStyle: TextStyle(
+                  color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            );
+          }
+
+          final isSelected = _selectedServices.contains(service);
+          final key = 'service_${service.toLowerCase().replaceAll(' ', '_')}';
           return Padding(
             padding: const EdgeInsets.only(right: 10),
             child: FilterChip(
@@ -271,23 +308,21 @@ class _SalonListPageState extends State<SalonListPage> {
               selected: isSelected,
               onSelected: (selected) {
                 setState(() {
-                  _selectedService = selected ? service : "All";
+                  if (selected) {
+                    _selectedServices.add(service);
+                  } else {
+                    _selectedServices.remove(service);
+                  }
                   _applyFilters();
                 });
               },
-              backgroundColor: isDark
-                  ? AppColors.almostBlack600
-                  : AppColors.almostBlack50,
+              backgroundColor: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
               selectedColor: Theme.of(context).primaryColor,
               labelStyle: TextStyle(
-                color: isSelected
-                    ? Colors.white
-                    : (isDark ? Colors.white70 : Colors.black87),
+                color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
           );
         },

@@ -665,10 +665,22 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       context,
       listen: false,
     );
+    final expertProvider = Provider.of<ExpertProvider>(
+      context,
+      listen: false,
+    );
+    
+    // Assign an expert automatically if "No Preference" is selected
+    var finalExpert = _selectedExpert;
+    if (finalExpert == null && _selectionMode == SelectionMode.noPreference) {
+      if (expertProvider.experts.isNotEmpty) {
+        finalExpert = expertProvider.experts.first.toJson();
+      }
+    }
 
     final appointmentData = {
       'salon': salonData!['id'],
-      if (_selectedExpert != null) 'expert': _selectedExpert!['id'],
+      if (finalExpert != null) 'expert': finalExpert['id'],
       'start_time':
           "${DateFormat('yyyy-MM-dd').format(_selectedDate)}T$_selectedTime:00Z",
       'end_time':

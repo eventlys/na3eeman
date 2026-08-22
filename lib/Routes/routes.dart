@@ -83,6 +83,7 @@ import '../Packages/features/admin/pages/feedback_review_page.dart';
 
 // ── NEW: Missing Pages ──
 import '../Packages/features/onboarding/pages/onboarding.dart';
+import '../Packages/features/onboarding/pages/loading_page.dart';
 import '../Packages/features/subscription/pages/subscription_upgrade.dart';
 import '../Packages/features/disputes/pages/dispute_resolution.dart';
 import '../Providers/features/auth_provider.dart';
@@ -90,7 +91,7 @@ import '../Providers/features/auth_provider.dart';
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
     // ── Entry ─────────────────────────────────────────────────────────────
-    // '/': (context) => const LoadingPage(),
+    '/': (context) => const LoadingPage(),
     '/onboarding': (context) => const OnboardingPage(),
     '/login': (context) => LoginPage(),
     '/signup': (context) => const SignupPage(),
@@ -146,6 +147,13 @@ class AppRoutes {
     '/history': (context) => const HistoryPage(),
     '/favorites': (context) => const FavoritesPage(),
     '/profile': (context) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.user?.isStaffMember == true) {
+        return const StaffProfilePage();
+      }
+      return const ProfilePage();
+    },
+    '/user_profile': (context) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.user?.isStaffMember == true) {
         return const StaffProfilePage();

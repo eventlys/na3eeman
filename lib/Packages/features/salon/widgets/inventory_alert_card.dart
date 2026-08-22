@@ -68,7 +68,9 @@ class InventoryAlertCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/management/inventory');
+              },
               child: Text(
                 "manage_inventory".tr(),
                 style: TextStyle(

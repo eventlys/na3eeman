@@ -231,7 +231,7 @@ class UnifiedStorageService {
   }
 
   Future<User?> getUserProfile() async {
-    final data = getPreference('user_profile');
+    final data = getPreference('user_data') ?? getPreference('user_profile');
     if (data != null) {
       try {
         return User.fromJson(json.decode(data));
@@ -241,6 +241,7 @@ class UnifiedStorageService {
     }
     return null;
   }
+
 
   Future<void> saveUserData(Map<String, dynamic> userData) async {
     final userJson = json.encode(userData);

@@ -385,7 +385,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        '${GiftCardUtils.calculateValue(_selectedGiftCard?.price ?? 0).toStringAsFixed(2)} JOD',
+                        '${GiftCardUtils.calculateValue(_selectedGiftCard?.price ?? 0.0).toStringAsFixed(2)} JOD',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,

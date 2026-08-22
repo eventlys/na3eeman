@@ -146,8 +146,15 @@ class _MyAppState extends State<MyApp> {
           child: MaterialApp(
             title: AppConfig.appName,
             navigatorKey: SideNavigationService.navigatorKey,
-            initialRoute: '/login',
+            initialRoute: '/',
             routes: AppRoutes.routes,
+            onUnknownRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const Scaffold(
+                  body: Center(child: Text('Route not found!')),
+                ),
+              );
+            },
             debugShowCheckedModeBanner: AppConfig.showDebugBanner,
 
             // Localization Configuration

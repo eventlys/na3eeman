@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
 import '../../../../../../Providers/features/inventory_provider.dart';
@@ -124,7 +125,65 @@ class InterBranchTransfersWidget extends StatelessWidget {
             ),
         if (needsRestock.isNotEmpty)
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                    left: 16,
+                    right: 16,
+                    top: 16,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'New Inter-Branch Transfer',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'From Branch',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'To Branch',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Item Name',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Quantity',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          AppSnackBar.success(
+                            context,
+                            'Transfer created successfully',
+                          );
+                        },
+                        child: const Text('Create Transfer'),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              );
+            },
             icon: const Icon(Icons.add_rounded, size: 16),
             label: Text("new_transfer".tr()),
           ),

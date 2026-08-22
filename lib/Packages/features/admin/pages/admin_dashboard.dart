@@ -32,7 +32,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
     sidebarController = SidebarController();
     sidebarController.init(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AdminAnalyticsProvider>().fetchOverview();
+      context.read<AdminAnalyticsProvider>().fetchAllAnalytics();
       context.read<OffersProvider>().loadCampaigns(
         1,
       ); // Default salon for admin preview
@@ -59,7 +59,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: _buildAppBar(adminProvider),
           body: RefreshIndicator(
-            onRefresh: () => adminProvider.fetchOverview(),
+            onRefresh: () => adminProvider.fetchAllAnalytics(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: AppSpacing.pagePadding,
@@ -143,7 +143,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   // ── Real-Time Monitoring ───────────────────────────────────
                   _buildSectionHeader("realtime_metrics".tr(), null),
                   const SizedBox(height: AppSpacing.sectionGap),
-                  _buildMonitoringRow(isDark),
+                  _buildMonitoringRow(isDark, adminProvider.usageStats),
                   const SizedBox(height: AppSpacing.sectionSpacing),
 
                   // ── System Health ──────────────────────────────────────────
@@ -154,21 +154,22 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
                   const SizedBox(height: AppSpacing.sectionGap),
                   _buildHealthTile(
                     "api_status".tr(),
-                    '99.9% Uptime',
+                    adminProvider.systemStats?['api_uptime']?.toString() ?? '—',
                     AppColors.success,
                     Icons.cloud_done_rounded,
                     isDark,
                   ),
                   _buildHealthTile(
                     "cache_status".tr(),
-                    'Connected',
+                    adminProvider.systemStats?['cache_status']?.toString() ??
+                        '—',
                     AppColors.success,
                     Icons.memory_rounded,
                     isDark,
                   ),
                   _buildHealthTile(
                     "db_status".tr(),
-                    'Active',
+                    adminProvider.systemStats?['db_status']?.toString() ?? '—',
                     AppColors.success,
                     Icons.storage_rounded,
                     isDark,
@@ -335,18 +336,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
 
   // ─── Monitoring Row ──────────────────────────────────────────────────────────
 
-  Widget _buildMonitoringRow(bool isDark) {
+  Widget _buildMonitoringRow(bool isDark, Map<String, dynamic>? usageStats) {
     final metrics = [
-      ('247', "active_users".tr(), Icons.person_rounded, AppColors.blue),
       (
-        '68%',
+        usageStats?['active_users']?.toString() ?? '—',
+        "active_users".tr(),
+        Icons.person_rounded,
+        AppColors.blue,
+      ),
+      (
+        usageStats?['conversion_rate']?.toString() ?? '—',
         "conversion_rate".tr(),
         Icons.sync_alt_rounded,
         AppColors.success,
       ),
-      ('3.2%', "churn_rate".tr(), Icons.trending_down_rounded, AppColors.error),
       (
-        '4m32s',
+        usageStats?['churn_rate']?.toString() ?? '—',
+        "churn_rate".tr(),
+        Icons.trending_down_rounded,
+        AppColors.error,
+      ),
+      (
+        usageStats?['avg_session_time']?.toString() ?? '—',
         "avg_session_time".tr(),
         Icons.timer_rounded,
         Theme.of(context).primaryColor,
@@ -696,7 +707,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage>
         ),
         if (action != null)
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              AppSnackBar.info(context, 'feature_coming_soon'.tr());
+            },
             child: Text(
               action,
               style: TextStyle(

@@ -121,10 +121,25 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
             iconTheme: const IconThemeData(color: AppColors.white),
             leading: const BackButton(color: AppColors.white),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.favorite_border, color: AppColors.white),
-                onPressed: () {
-                  AppSnackBar.success(context, "added_to_favorites".tr());
+              Consumer<FavoritesProvider>(
+                builder: (context, favoritesProvider, child) {
+                  final salonId = (widget.salonData['id'] ?? widget.salonData['_id']).toString();
+                  final isFav = favoritesProvider.isSalonFavorited(salonId);
+                  return IconButton(
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: isFav ? Colors.red : AppColors.white,
+                    ),
+                    onPressed: () async {
+                      final success = await favoritesProvider.toggleFavorite(widget.salonData);
+                      if (success && mounted) {
+                        AppSnackBar.success(
+                          context,
+                          isFav ? "removed_from_favorites".tr() : "added_to_favorites".tr(),
+                        );
+                      }
+                    },
+                  );
                 },
               ),
               IconButton(
@@ -238,6 +253,49 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                   (widget.salonData['packages'] as List).isNotEmpty)
                 const SizedBox(height: 24),
 
+              // Employees Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "employees".tr(),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    Consumer<ExpertProvider>(
+                      builder: (context, expertProvider, child) {
+                        if (expertProvider.isLoading && expertProvider.experts.isEmpty) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (expertProvider.experts.isEmpty) {
+                          return Text("no_employees_found".tr());
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: expertProvider.experts.length,
+                          itemBuilder: (context, index) {
+                            final expert = expertProvider.experts[index];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                child: Text(expert.name.isNotEmpty ? expert.name[0] : '?'),
+                              ),
+                              title: Text(expert.name),
+                              subtitle: Text(expert.specialties.join(', ')),
+                              contentPadding: EdgeInsets.zero,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
+              
               // Products Section
               if (widget.salonData['products'] != null &&
                   (widget.salonData['products'] as List).isNotEmpty)

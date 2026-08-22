@@ -15,11 +15,13 @@ class GiftCard {
 
   factory GiftCard.fromJson(Map<String, dynamic> json) {
     return GiftCard(
-      id: json['id'],
-      price: double.parse(json['price'].toString()),
-      description: json['description'],
-      expirationDays: json['expiration_days'],
-      createdAt: DateTime.parse(json['created_at']),
+      id: json['id'] ?? 0,
+      price: double.tryParse((json['price'] ?? 0).toString()) ?? 0.0,
+      description: json['description'] ?? '',
+      expirationDays: json['expiration_days'] ?? 0,
+      createdAt: json['created_at'] != null 
+          ? DateTime.tryParse(json['created_at']) ?? DateTime.now() 
+          : DateTime.now(),
     );
   }
 }
@@ -51,18 +53,22 @@ class UserGiftCard {
 
   factory UserGiftCard.fromJson(Map<String, dynamic> json) {
     return UserGiftCard(
-      id: json['id'],
-      giftCardId: json['gift_card'],
+      id: json['id'] ?? 0,
+      giftCardId: json['gift_card'] ?? 0,
       giftCardDetails: json['gift_card_details'] != null
           ? GiftCard.fromJson(json['gift_card_details'])
           : null,
-      code: json['code'],
-      balance: double.parse(json['balance'].toString()),
-      isActive: json['is_active'],
+      code: json['code'] ?? '',
+      balance: double.tryParse((json['balance'] ?? 0).toString()) ?? 0.0,
+      isActive: json['is_active'] ?? false,
       receiverPhone: json['receiver_phone'],
       message: json['message'],
-      expiresAt: DateTime.parse(json['expires_at']),
-      purchasedAt: DateTime.parse(json['purchased_at']),
+      expiresAt: json['expires_at'] != null 
+          ? DateTime.tryParse(json['expires_at']) ?? DateTime.now() 
+          : DateTime.now(),
+      purchasedAt: json['purchased_at'] != null 
+          ? DateTime.tryParse(json['purchased_at']) ?? DateTime.now() 
+          : DateTime.now(),
     );
   }
 }
