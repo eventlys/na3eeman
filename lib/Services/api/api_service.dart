@@ -850,9 +850,7 @@ class ApiService {
   Future<List<dynamic>> getPTORequests({int? salonId}) async {
     final response = await get(
       Endpoints.pto,
-      queryParams: {
-        if (salonId != null) 'salon_id': salonId.toString(),
-      },
+      queryParams: {if (salonId != null) 'salon_id': salonId.toString()},
     );
     return response is List ? response : (response['results'] ?? []);
   }

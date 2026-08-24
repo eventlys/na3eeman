@@ -57,7 +57,9 @@ class Salon {
       confirmedPhone: json['confirmed_phone'] as bool? ?? false,
       ownerId: int.tryParse(json['owner_id']?.toString() ?? '') ?? 0,
       salonLogo: json['salon_logo'] as String?,
-      avgRating: double.tryParse((json['salonRating'] ?? json['salon_rating'])?.toString() ?? ''),
+      avgRating: double.tryParse(
+        (json['salonRating'] ?? json['salon_rating'])?.toString() ?? '',
+      ),
       reviews: json['reviews'] != null
           ? (json['reviews'] as List).map((r) => Review.fromJson(r)).toList()
           : null,

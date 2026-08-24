@@ -239,9 +239,16 @@ class _SalonListPageState extends State<SalonListPage> {
           final hasAllServices = _selectedServices.every((selectedService) {
             final selectedServiceLower = selectedService.toLowerCase();
             return salonServices.any((s) {
-              final serviceName = (s['name'] ?? s['serviceName'] ?? s['title'] ?? '').toString().toLowerCase();
-              return serviceName.contains(selectedServiceLower);
-            }) || (salon['salonName'] ?? salon['title'] ?? '').toString().toLowerCase().contains(selectedServiceLower);
+                  final serviceName =
+                      (s['name'] ?? s['serviceName'] ?? s['title'] ?? '')
+                          .toString()
+                          .toLowerCase();
+                  return serviceName.contains(selectedServiceLower);
+                }) ||
+                (salon['salonName'] ?? salon['title'] ?? '')
+                    .toString()
+                    .toLowerCase()
+                    .contains(selectedServiceLower);
           });
           if (!hasAllServices) {
             match = false;
@@ -272,7 +279,7 @@ class _SalonListPageState extends State<SalonListPage> {
         itemCount: _servicesFilters.length,
         itemBuilder: (context, index) {
           final service = _servicesFilters[index];
-          
+
           if (service == "All") {
             final isSelected = _selectedServices.isEmpty;
             return Padding(
@@ -288,13 +295,19 @@ class _SalonListPageState extends State<SalonListPage> {
                     }
                   });
                 },
-                backgroundColor: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
+                backgroundColor: isDark
+                    ? AppColors.almostBlack600
+                    : AppColors.almostBlack50,
                 selectedColor: Theme.of(context).primaryColor,
                 labelStyle: TextStyle(
-                  color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                  color: isSelected
+                      ? Colors.white
+                      : (isDark ? Colors.white70 : Colors.black87),
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             );
           }
@@ -316,13 +329,19 @@ class _SalonListPageState extends State<SalonListPage> {
                   _applyFilters();
                 });
               },
-              backgroundColor: isDark ? AppColors.almostBlack600 : AppColors.almostBlack50,
+              backgroundColor: isDark
+                  ? AppColors.almostBlack600
+                  : AppColors.almostBlack50,
               selectedColor: Theme.of(context).primaryColor,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : Colors.black87),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           );
         },

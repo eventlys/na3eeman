@@ -83,7 +83,9 @@ class FavoritesProvider extends BaseProvider {
     } catch (e) {
       // Rollback on error
       final salonId = (salonData['id'] ?? salonData['_id']).toString();
-      _favoriteSalons.removeWhere((salon) => (salon['id'] ?? salon['_id']).toString() == salonId);
+      _favoriteSalons.removeWhere(
+        (salon) => (salon['id'] ?? salon['_id']).toString() == salonId,
+      );
       notifyListeners();
       await _saveFavoritesToCache();
 
@@ -110,7 +112,9 @@ class FavoritesProvider extends BaseProvider {
         orElse: () => {},
       );
 
-      _favoriteSalons.removeWhere((salon) => (salon['id'] ?? salon['_id']).toString() == salonId);
+      _favoriteSalons.removeWhere(
+        (salon) => (salon['id'] ?? salon['_id']).toString() == salonId,
+      );
       notifyListeners();
 
       // Save to cache

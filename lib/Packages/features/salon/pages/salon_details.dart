@@ -123,7 +123,9 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
             actions: [
               Consumer<FavoritesProvider>(
                 builder: (context, favoritesProvider, child) {
-                  final salonId = (widget.salonData['id'] ?? widget.salonData['_id']).toString();
+                  final salonId =
+                      (widget.salonData['id'] ?? widget.salonData['_id'])
+                          .toString();
                   final isFav = favoritesProvider.isSalonFavorited(salonId);
                   return IconButton(
                     icon: Icon(
@@ -131,11 +133,15 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                       color: isFav ? Colors.red : AppColors.white,
                     ),
                     onPressed: () async {
-                      final success = await favoritesProvider.toggleFavorite(widget.salonData);
+                      final success = await favoritesProvider.toggleFavorite(
+                        widget.salonData,
+                      );
                       if (success && mounted) {
                         AppSnackBar.success(
                           context,
-                          isFav ? "removed_from_favorites".tr() : "added_to_favorites".tr(),
+                          isFav
+                              ? "removed_from_favorites".tr()
+                              : "added_to_favorites".tr(),
                         );
                       }
                     },
@@ -267,8 +273,11 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                     const SizedBox(height: 16),
                     Consumer<ExpertProvider>(
                       builder: (context, expertProvider, child) {
-                        if (expertProvider.isLoading && expertProvider.experts.isEmpty) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (expertProvider.isLoading &&
+                            expertProvider.experts.isEmpty) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
                         if (expertProvider.experts.isEmpty) {
                           return Text("no_employees_found".tr());
@@ -281,7 +290,9 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                             final expert = expertProvider.experts[index];
                             return ListTile(
                               leading: CircleAvatar(
-                                child: Text(expert.name.isNotEmpty ? expert.name[0] : '?'),
+                                child: Text(
+                                  expert.name.isNotEmpty ? expert.name[0] : '?',
+                                ),
                               ),
                               title: Text(expert.name),
                               subtitle: Text(expert.specialties.join(', ')),
@@ -295,7 +306,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 ),
               ),
               const SizedBox(height: 32),
-              
+
               // Products Section
               if (widget.salonData['products'] != null &&
                   (widget.salonData['products'] as List).isNotEmpty)

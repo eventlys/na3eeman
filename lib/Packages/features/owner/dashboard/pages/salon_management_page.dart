@@ -133,8 +133,6 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
         images: images.isNotEmpty ? images : null,
       );
 
-
-
       if (mounted) {
         AppSnackBar.success(context, 'salon_details_updated_successfully'.tr());
       }

@@ -665,11 +665,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       context,
       listen: false,
     );
-    final expertProvider = Provider.of<ExpertProvider>(
-      context,
-      listen: false,
-    );
-    
+    final expertProvider = Provider.of<ExpertProvider>(context, listen: false);
+
     // Assign an expert automatically if "No Preference" is selected
     var finalExpert = _selectedExpert;
     if (finalExpert == null && _selectionMode == SelectionMode.noPreference) {

@@ -19,8 +19,8 @@ class GiftCard {
       price: double.tryParse((json['price'] ?? 0).toString()) ?? 0.0,
       description: json['description'] ?? '',
       expirationDays: json['expiration_days'] ?? 0,
-      createdAt: json['created_at'] != null 
-          ? DateTime.tryParse(json['created_at']) ?? DateTime.now() 
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at']) ?? DateTime.now()
           : DateTime.now(),
     );
   }
@@ -63,11 +63,11 @@ class UserGiftCard {
       isActive: json['is_active'] ?? false,
       receiverPhone: json['receiver_phone'],
       message: json['message'],
-      expiresAt: json['expires_at'] != null 
-          ? DateTime.tryParse(json['expires_at']) ?? DateTime.now() 
+      expiresAt: json['expires_at'] != null
+          ? DateTime.tryParse(json['expires_at']) ?? DateTime.now()
           : DateTime.now(),
-      purchasedAt: json['purchased_at'] != null 
-          ? DateTime.tryParse(json['purchased_at']) ?? DateTime.now() 
+      purchasedAt: json['purchased_at'] != null
+          ? DateTime.tryParse(json['purchased_at']) ?? DateTime.now()
           : DateTime.now(),
     );
   }

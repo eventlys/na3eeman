@@ -81,7 +81,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       _isLoadingPrevious = true;
     });
     await _determinePosition();
-    
+
     // Load all required data concurrently
     await Future.wait([
       _loadAds(),
@@ -89,7 +89,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       _loadSalons(),
       _loadPreviousAppointment(),
     ]);
-    
+
     if (mounted) {
       setState(() {
         _isLoadingSalons = false;
@@ -262,7 +262,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           body: _isLoadingSalons
               ? Center(
                   child: CircularProgressIndicator(
-                      color: Theme.of(context).primaryColor))
+                    color: Theme.of(context).primaryColor,
+                  ),
+                )
               : RefreshIndicator(
                   onRefresh: _loadAllData,
                   child: SingleChildScrollView(
@@ -279,7 +281,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
                         ),
                         const SizedBox(height: 24),
                         AdsHorizontalList(
-                          ads: _ads, 
+                          ads: _ads,
                           isLoading: false, // Prevent multiple loaders
                         ),
                         const SizedBox(height: 24),
@@ -299,7 +301,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   }
 
   Widget _buildPreviousSalonCard() {
-
     if (_previousSalon == null) return const SizedBox.shrink();
 
     return Padding(
@@ -373,24 +374,29 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       final name = (salon['salonName'] ?? salon['salon_name'] ?? '')
           .toString()
           .toLowerCase();
-          
+
       bool matchesSearch = _searchQuery.isEmpty || name.contains(_searchQuery);
-      
-      bool matchesSubs = _selectedSubcategories.isEmpty || 
+
+      bool matchesSubs =
+          _selectedSubcategories.isEmpty ||
           _selectedSubcategories.every((sub) {
             // Must have ALL selected subcategories
             final services = salon['services'] as List<dynamic>? ?? [];
             final hasService = services.any((service) {
-              final serviceName = (service['name'] ?? service['serviceName'] ?? service['title'] ?? '')
-                  .toString()
-                  .toLowerCase();
+              final serviceName =
+                  (service['name'] ??
+                          service['serviceName'] ??
+                          service['title'] ??
+                          '')
+                      .toString()
+                      .toLowerCase();
               return serviceName.contains(sub);
             });
-            
+
             // Fallback to name just in case the salon name implies the service
             return hasService || name.contains(sub);
           });
-          
+
       return matchesSearch && matchesSubs;
     }).toList();
 
@@ -482,7 +488,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
             itemCount: subCats.length,
             itemBuilder: (context, index) {
               final sub = subCats[index];
-              final isSelected = _selectedSubcategories.contains(sub.toLowerCase());
+              final isSelected = _selectedSubcategories.contains(
+                sub.toLowerCase(),
+              );
               final key =
                   'service_${sub.toLowerCase().replaceAll(RegExp(r"[\s\-&()+/]+"), '_').replaceAll("'", "")}';
               return Padding(
