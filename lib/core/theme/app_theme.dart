@@ -49,6 +49,12 @@ class AppTheme {
       scaffoldBackgroundColor: mainColor,
       colorScheme: colorScheme,
       textTheme: AppTypography.buildTextTheme(onMainColor),
+      appBarTheme: AppBarTheme(
+        scrolledUnderElevation: 0.0,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: mainColor,
+        elevation: 0,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: secondColor,

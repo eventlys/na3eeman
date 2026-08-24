@@ -1580,7 +1580,10 @@ class InventoryService {
     try {
       final response = await _apiService.patch(
         '/salons/salons/$salonId/inventory/$itemId/',
-        data: {'quantity_in_stock': newQuantity, 'notes': ?reason},
+        data: {
+          'quantity_in_stock': newQuantity,
+          if (reason != null) 'notes': reason,
+        },
       );
       return response['data'];
     } catch (e) {
@@ -1602,12 +1605,12 @@ class InventoryService {
       final response = await _apiService.post(
         '/salons/salons/$salonId/inventory/',
         data: {
-          'product': ?productId,
-          'product_name': ?productName,
-          'product_price': ?productPrice,
-          'category': ?category,
+          if (productId != null) 'product': productId,
+          if (productName != null) 'product_name': productName,
+          if (productPrice != null) 'product_price': productPrice,
+          if (category != null) 'category': category,
           'quantity_in_stock': initialQuantity,
-          'notes': ?notes,
+          if (notes != null) 'notes': notes,
         },
       );
       return response['data'];

@@ -839,7 +839,10 @@ class ApiService {
   Future<List<dynamic>> getWorkingHours({int? salonId, int? expertId}) async {
     final response = await get(
       Endpoints.workingHours,
-      queryParams: {'salon_id': ?salonId, 'expert_id': ?expertId},
+      queryParams: {
+        if (salonId != null) 'salon_id': salonId.toString(),
+        if (expertId != null) 'expert_id': expertId.toString(),
+      },
     );
     return response is List ? response : (response['results'] ?? []);
   }
@@ -847,7 +850,9 @@ class ApiService {
   Future<List<dynamic>> getPTORequests({int? salonId}) async {
     final response = await get(
       Endpoints.pto,
-      queryParams: {'salon_id': ?salonId},
+      queryParams: {
+        if (salonId != null) 'salon_id': salonId.toString(),
+      },
     );
     return response is List ? response : (response['results'] ?? []);
   }

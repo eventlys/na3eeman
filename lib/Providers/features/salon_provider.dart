@@ -242,9 +242,9 @@ class SalonProvider extends BaseProvider {
           'salonPhoneNum': phone,
           'location': location,
           'salonDescription': description,
-          'slogan': ?slogan,
-          'openingTime': ?openingTime,
-          'closingTime': ?closingTime,
+          if (slogan != null) 'slogan': slogan,
+          if (openingTime != null) 'openingTime': openingTime,
+          if (closingTime != null) 'closingTime': closingTime,
         };
         AppLogger.info('Updating Salon on Backend with fields: $fields');
         final response = await ApiService().updateSalonWithImages(

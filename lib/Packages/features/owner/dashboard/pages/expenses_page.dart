@@ -21,7 +21,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
   // Summary
   double get _totalAmount => _expenses.fold(
     0.0,
-    (sum, e) => sum + ((e['amount'] as num?)?.toDouble() ?? 0.0),
+    (sum, e) => sum + (double.tryParse(e['amount']?.toString() ?? '0') ?? 0.0),
   );
 
   final _categories = [
@@ -421,7 +421,7 @@ class _ExpenseCard extends StatelessWidget {
     );
     final color = catMeta['color'] as Color;
     final icon = catMeta['icon'] as IconData;
-    final amount = (expense['amount'] as num?)?.toDouble() ?? 0.0;
+    final amount = double.tryParse(expense['amount']?.toString() ?? '0') ?? 0.0;
     final label = (expense['category_display'] ?? cat).toString().tr();
 
     return Container(

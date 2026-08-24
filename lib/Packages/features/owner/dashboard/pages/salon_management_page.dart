@@ -133,15 +133,7 @@ class _SalonManagementPageState extends State<SalonManagementPage> {
         images: images.isNotEmpty ? images : null,
       );
 
-      context.read<SalonProvider>().updateSalonInMemory(
-        name: _nameCtrl.text,
-        phone: _phoneCtrl.text,
-        location: _locationCtrl.text,
-        description: _descCtrl.text,
-        slogan: _sloganCtrl.text,
-        openingTime: openingStr,
-        closingTime: closingStr,
-      );
+
 
       if (mounted) {
         AppSnackBar.success(context, 'salon_details_updated_successfully'.tr());

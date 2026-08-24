@@ -48,17 +48,16 @@ class Salon {
           json['salonDescription'] ?? json['salon_description'] ?? '',
       slogan: json['slogan'] ?? json['salon_slogan'],
       location: json['location'] ?? '',
-      lat: (json['lat'] as num?)?.toDouble() ?? 0.0,
-      lng: (json['lng'] as num?)?.toDouble() ?? 0.0,
+      lat: double.tryParse(json['lat']?.toString() ?? '0') ?? 0.0,
+      lng: double.tryParse(json['lng']?.toString() ?? '0') ?? 0.0,
       openingTime: json['openingTime'] ?? json['opening_time'] ?? '09:00',
       closingTime: json['closingTime'] ?? json['closing_time'] ?? '21:00',
       salonSeats: json['salonSeats'] ?? json['salon_seats'] ?? 0,
       salonStaff: json['salonStaff'] ?? json['salon_staff'] ?? 0,
       confirmedPhone: json['confirmed_phone'] as bool? ?? false,
-      ownerId: json['owner_id'] ?? json['owner'] ?? 0,
+      ownerId: int.tryParse(json['owner_id']?.toString() ?? '') ?? 0,
       salonLogo: json['salon_logo'] as String?,
-      avgRating: (json['salonRating'] ?? json['salon_rating'] as num?)
-          ?.toDouble(),
+      avgRating: double.tryParse((json['salonRating'] ?? json['salon_rating'])?.toString() ?? ''),
       reviews: json['reviews'] != null
           ? (json['reviews'] as List).map((r) => Review.fromJson(r)).toList()
           : null,
