@@ -136,7 +136,8 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                       final success = await favoritesProvider.toggleFavorite(
                         widget.salonData,
                       );
-                      if (success && mounted) {
+                      if (success) {
+                        if (!context.mounted) return;
                         AppSnackBar.success(
                           context,
                           isFav

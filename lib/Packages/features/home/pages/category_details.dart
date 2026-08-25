@@ -42,14 +42,11 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   List<dynamic> _salons = [];
   Map<String, dynamic>? _previousSalon;
 
-  bool _isLoadingAds = true;
-  bool _isLoadingOffers = true;
   bool _isLoadingSalons = true;
-  bool _isLoadingPrevious = true;
 
   Position? _currentPosition;
   String _searchQuery = '';
-  List<String> _selectedSubcategories = [];
+  final List<String> _selectedSubcategories = [];
 
   @override
   void initState() {
@@ -76,9 +73,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
   Future<void> _loadAllData() async {
     setState(() {
       _isLoadingSalons = true;
-      _isLoadingAds = true;
-      _isLoadingOffers = true;
-      _isLoadingPrevious = true;
     });
     await _determinePosition();
 
@@ -93,9 +87,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
     if (mounted) {
       setState(() {
         _isLoadingSalons = false;
-        _isLoadingAds = false;
-        _isLoadingOffers = false;
-        _isLoadingPrevious = false;
       });
     }
   }
@@ -104,7 +95,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.user?.id == null) {
-        setState(() => _isLoadingPrevious = false);
         return;
       }
 
@@ -123,17 +113,13 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           if (mounted) {
             setState(() {
               _previousSalon = salonDetails;
-              _isLoadingPrevious = false;
             });
           }
         } else {
-          setState(() => _isLoadingPrevious = false);
         }
       } else {
-        setState(() => _isLoadingPrevious = false);
       }
-    } catch (e) {
-      if (mounted) setState(() => _isLoadingPrevious = false);
+    } catch (e) { /* ignore */ 
     }
   }
 
@@ -159,7 +145,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           _currentPosition = pos;
         });
       }
-    } catch (e) {
+    } catch (e) { /* ignore */ 
       debugPrint('location_error_msg'.tr(args: [e.toString()]));
     }
   }
@@ -170,11 +156,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       if (mounted) {
         setState(() {
           _ads = ads;
-          _isLoadingAds = false;
         });
       }
-    } catch (e) {
-      if (mounted) setState(() => _isLoadingAds = false);
+    } catch (e) { /* ignore */ 
     }
   }
 
@@ -184,11 +168,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       if (mounted) {
         setState(() {
           _offers = offers;
-          _isLoadingOffers = false;
         });
       }
-    } catch (e) {
-      if (mounted) setState(() => _isLoadingOffers = false);
+    } catch (e) { /* ignore */ 
     }
   }
 
@@ -212,7 +194,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           _isLoadingSalons = false;
         });
       }
-    } catch (e) {
+    } catch (e) { /* ignore */ 
       if (mounted) setState(() => _isLoadingSalons = false);
     }
   }

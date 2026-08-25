@@ -29,7 +29,7 @@ class _SalonListPageState extends State<SalonListPage> {
     "Nails",
     "Coloring",
   ];
-  List<String> _selectedServices = [];
+  final List<String> _selectedServices = [];
   String? _selectedDistance;
   String? _selectedRating;
   String? _selectedPrice;
