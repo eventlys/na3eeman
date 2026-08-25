@@ -1580,10 +1580,7 @@ class InventoryService {
     try {
       final response = await _apiService.patch(
         '/salons/salons/$salonId/inventory/$itemId/',
-        data: {
-          'quantity_in_stock': newQuantity,
-          'notes': ?reason,
-        },
+        data: {'quantity_in_stock': newQuantity, 'notes': ?reason},
       );
       return response['data'];
     } catch (e) {

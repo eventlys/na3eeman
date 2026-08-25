@@ -115,11 +115,10 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
               _previousSalon = salonDetails;
             });
           }
-        } else {
-        }
-      } else {
-      }
-    } catch (e) { /* ignore */ 
+        } else {}
+      } else {}
+    } catch (e) {
+      /* ignore */
     }
   }
 
@@ -145,7 +144,8 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           _currentPosition = pos;
         });
       }
-    } catch (e) { /* ignore */ 
+    } catch (e) {
+      /* ignore */
       debugPrint('location_error_msg'.tr(args: [e.toString()]));
     }
   }
@@ -158,7 +158,8 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           _ads = ads;
         });
       }
-    } catch (e) { /* ignore */ 
+    } catch (e) {
+      /* ignore */
     }
   }
 
@@ -170,7 +171,8 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           _offers = offers;
         });
       }
-    } catch (e) { /* ignore */ 
+    } catch (e) {
+      /* ignore */
     }
   }
 
@@ -194,7 +196,8 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           _isLoadingSalons = false;
         });
       }
-    } catch (e) { /* ignore */ 
+    } catch (e) {
+      /* ignore */
       if (mounted) setState(() => _isLoadingSalons = false);
     }
   }
