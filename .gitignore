@@ -24,6 +24,8 @@ migrate_working_dir/
 .env.example
 .env.staging
 .metadata
+devtools_options.yaml
+coverage/
 
 
 # The .vscode folder contains launch configuration and tasks you configure in
