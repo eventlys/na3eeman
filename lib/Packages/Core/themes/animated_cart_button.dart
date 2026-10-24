@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/colors.dart';
+
 class CustomAnimatedIcon extends StatefulWidget {
   final IconData icon;
   final VoidCallback onTap;
@@ -12,7 +14,7 @@ class CustomAnimatedIcon extends StatefulWidget {
     super.key,
     required this.icon,
     required this.onTap,
-    this.backgroundColor = const Color(0xFF4CAF50),
+    this.backgroundColor = AppColors.success,
     this.iconColor = Colors.white,
     this.size = 20.0,
     this.duration = const Duration(milliseconds: 1000),

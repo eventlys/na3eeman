@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Packages/Core/utils/validators.dart';
 import '../../../../Packages/Core/widgets/password_strength_indicator.dart';
 import '../../../../Routes/route_names.dart';
@@ -93,7 +94,7 @@ class _SignupPageState extends State<SignupPage>
             ),
             ListTile(
               leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
-              title: const Text('English'),
+              title: Text('english'.tr()),
               trailing: context.locale.languageCode == 'en'
                   ? Icon(Icons.check, color: AppColors.primary)
                   : null,
@@ -145,22 +146,12 @@ class _SignupPageState extends State<SignupPage>
 
         if (mounted &&
             (response['user'] != null || response['email'] != null)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Signup successful! Please login.'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          AppSnackBar.success(context, 'Signup successful! Please login.');
           Navigator.pushReplacementNamed(context, RouteNames.login);
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Signup failed: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          AppSnackBar.error(context, 'Signup failed: $e');
         }
       } finally {
         if (mounted) setState(() => _isLoading = false);
@@ -324,7 +315,7 @@ class _SignupPageState extends State<SignupPage>
                               children: [
                                 Expanded(
                                   child: ChoiceChip(
-                                    label: const Text('Male'),
+                                    label: Text('male'.tr()),
                                     selected: _selectedGender == 'male',
                                     selectedColor: Colors.blue.withValues(
                                       alpha: 0.2,
@@ -346,7 +337,7 @@ class _SignupPageState extends State<SignupPage>
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: ChoiceChip(
-                                    label: const Text('Female'),
+                                    label: Text('female'.tr()),
                                     selected: _selectedGender == 'female',
                                     selectedColor: Colors.pink.withValues(
                                       alpha: 0.2,

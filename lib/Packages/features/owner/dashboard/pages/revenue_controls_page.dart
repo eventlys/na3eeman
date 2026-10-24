@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
 import 'package:na3eeman/Models/salon/payment_config_model.dart';
 import '../../../../../../core/theme/colors.dart';
+import '../../../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class RevenueControlsPage extends StatefulWidget {
   const RevenueControlsPage({super.key});
@@ -35,10 +36,9 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('error_loading_config'.tr(args: [e.toString()])),
-          ),
+        AppSnackBar.error(
+          context,
+          'error_loading_config'.tr(args: [e.toString()]),
         );
       }
     }
@@ -52,16 +52,13 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
       final owner = context.read<OwnerProvider>();
       await owner.updateSalonPaymentConfig(_config!.salonId, _config!.toJson());
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('config_saved_success'.tr())));
+        AppSnackBar.success(context, 'config_saved_success'.tr());
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('error_saving_config'.tr(args: [e.toString()])),
-          ),
+        AppSnackBar.error(
+          context,
+          'error_saving_config'.tr(args: [e.toString()]),
         );
       }
     } finally {

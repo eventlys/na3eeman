@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 // import '../../../../Helpers/profile_helper_functions.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 // import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/profile_widgets.dart';
 import 'legal_page.dart';
@@ -71,9 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        AppSnackBar.error(context, 'Error: $e');
       }
     }
   }

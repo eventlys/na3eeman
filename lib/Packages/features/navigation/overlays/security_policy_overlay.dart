@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/colors.dart';
+
 class SecurityPolicyOverlay extends StatelessWidget {
   const SecurityPolicyOverlay({super.key});
 
@@ -46,7 +48,7 @@ class SecurityPolicyOverlay extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xffc25858),
+                      color: AppColors.pink,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -103,7 +105,10 @@ class SecurityPolicyOverlay extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: const TextStyle(fontSize: 12, color: Color(0x80000000)),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.almostBlack.withValues(alpha: 0.5),
+                ),
               ),
             ],
           ),

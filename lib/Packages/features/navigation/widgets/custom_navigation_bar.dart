@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/themes/custome_neomorphics.dart';
 import '../navigation_config.dart';
+import '../../../../core/theme/colors.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   final String currentRoute;
@@ -37,7 +38,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: const Color(0x80806C99),
+        color: AppColors.blue200.withValues(alpha: 0.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -67,7 +68,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: const Color(0x4dC25858),
+                color: AppColors.pink.withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(5, 5),
               ),

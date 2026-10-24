@@ -298,7 +298,7 @@ class _InternDashboardState extends State<InternDashboard>
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: TextButton(
                   onPressed: () => setState(() => isShowingAllTasks = true),
-                  child: const Text('Show more'),
+                  child: Text('show_more'.tr()),
                 ),
               ),
             if (isShowingAllTasks || !hasMore) const SizedBox(height: 10),

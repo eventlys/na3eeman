@@ -18,7 +18,7 @@ class AdminCompliancePage extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Compliance & Violations')),
+      appBar: AppBar(title: Text('compliance_and_violations'.tr())),
       drawer: const AppDrawer(
         role: UserRole.admin,
         currentRoute: '/admin/compliance',

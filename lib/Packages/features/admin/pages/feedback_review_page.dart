@@ -1,10 +1,10 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:na3eeman/Models/loyalty/feedback_model.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/admin_service_provider.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
-import 'package:intl/intl.dart';
 
 class FeedbackReviewPage extends StatefulWidget {
   const FeedbackReviewPage({super.key});
@@ -62,7 +62,7 @@ class _FeedbackReviewPageState extends State<FeedbackReviewPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer Feedback Review'),
+        title: Text('customer_feedback_review'.tr()),
         actions: [
           IconButton(icon: const Icon(Icons.refresh), onPressed: _loadFeedback),
         ],
@@ -70,7 +70,7 @@ class _FeedbackReviewPageState extends State<FeedbackReviewPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _feedbacks.isEmpty
-          ? const Center(child: Text('No feedback entries found.'))
+          ? Center(child: Text('no_feedback_entries_found'.tr()))
           : ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: _feedbacks.length,
@@ -178,14 +178,14 @@ class _FeedbackCard extends StatelessWidget {
                   TextButton.icon(
                     onPressed: onMarkRead,
                     icon: const Icon(Icons.check, size: 18),
-                    label: const Text('Mark as Read'),
+                    label: Text('mark_as_read'.tr()),
                     style: TextButton.styleFrom(foregroundColor: Colors.grey),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton.icon(
                     onPressed: onMarkValuable,
                     icon: const Icon(Icons.auto_awesome, size: 18),
-                    label: const Text('Mark Valuable'),
+                    label: Text('mark_valuable'.tr()),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.amber,
                       foregroundColor: Colors.black,

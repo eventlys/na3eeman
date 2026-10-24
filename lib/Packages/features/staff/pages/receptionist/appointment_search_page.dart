@@ -51,9 +51,7 @@ class _AppointmentSearchPageState extends State<AppointmentSearchPage> {
             child: appointmentProvider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : filteredAppointments.isEmpty
-                ? const Center(
-                    child: Text('No appointments found matching criteria'),
-                  )
+                ? Center(child: Text('no_appointments_found_matching'.tr()))
                 : ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: filteredAppointments.length,

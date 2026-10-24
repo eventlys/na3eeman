@@ -5,6 +5,7 @@ import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
 
@@ -108,25 +109,15 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
       await _loadSoonestAppointment();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Appointment delayed by $minutes minutes'),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        AppSnackBar.success(context, 'Appointment delayed by $minutes minutes');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString().contains('points')
-                  ? 'Insufficient points for this delay'
-                  : 'Error updating appointment',
-            ),
-            backgroundColor: AppColors.error,
-          ),
+        AppSnackBar.error(
+          context,
+          e.toString().contains('points')
+              ? 'Insufficient points for this delay'
+              : 'Error updating appointment',
         );
       }
     }
@@ -136,9 +127,7 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
     if (recurrence == null || recurrence == 'NONE') return;
 
     // Simulate updating recurrence or call API
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Setting appointment to repeat: $recurrence')),
-    );
+    AppSnackBar.info(context, 'Setting appointment to repeat: $recurrence');
   }
 
   void _showAppointmentDetails(BuildContext context) {
@@ -392,19 +381,19 @@ class _SoonestAppointmentCardState extends State<SoonestAppointmentCard> {
                           items: [
                             DropdownMenuItem(
                               value: 'NONE',
-                              child: Text('No Repeat'),
+                              child: Text('no_repeat'.tr()),
                             ),
                             DropdownMenuItem(
                               value: 'WEEKLY',
-                              child: Text('Weekly'),
+                              child: Text('weekly'.tr()),
                             ),
                             DropdownMenuItem(
                               value: 'BIWEEKLY',
-                              child: Text('Bi-Weekly'),
+                              child: Text('bi_weekly'.tr()),
                             ),
                             DropdownMenuItem(
                               value: 'MONTHLY',
-                              child: Text('Monthly'),
+                              child: Text('monthly'.tr()),
                             ),
                           ],
                           onChanged: _handleRepeatAppointment,

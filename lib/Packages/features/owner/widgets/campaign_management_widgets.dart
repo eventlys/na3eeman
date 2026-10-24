@@ -7,6 +7,7 @@ import '../../../../Models/salon/offer_model.dart';
 import '../../../../Models/salon/ad_campaign_model.dart';
 import '../../../../Models/salon/package_model.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class CampaignManagement {
   static void showCampaignModal(
@@ -191,18 +192,11 @@ class CampaignManagement {
 
                           if (context.mounted) {
                             if (provider.error != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(provider.error!),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
+                              AppSnackBar.error(context, provider.error!);
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('offer_created_success'.tr()),
-                                  backgroundColor: Colors.green,
-                                ),
+                              AppSnackBar.success(
+                                context,
+                                'offer_created_success'.tr(),
                               );
                               if (onRefresh != null) onRefresh();
                               Navigator.pop(context);
@@ -306,18 +300,11 @@ class CampaignManagement {
 
                         if (context.mounted) {
                           if (provider.error != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(provider.error!),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                            AppSnackBar.error(context, provider.error!);
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('campaign_launched_success'.tr()),
-                                backgroundColor: Colors.green,
-                              ),
+                            AppSnackBar.success(
+                              context,
+                              'campaign_launched_success'.tr(),
                             );
                             if (onRefresh != null) onRefresh();
                             Navigator.pop(context);
@@ -409,11 +396,9 @@ class CampaignManagement {
                       if (nameController.text.trim().isEmpty ||
                           descController.text.trim().isEmpty ||
                           priceController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Please fill all required fields'),
-                            backgroundColor: Colors.red,
-                          ),
+                        AppSnackBar.warning(
+                          context,
+                          'Please fill all required fields',
                         );
                         return;
                       }
@@ -439,18 +424,11 @@ class CampaignManagement {
 
                         if (context.mounted) {
                           if (provider.error != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(provider.error!),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                            AppSnackBar.error(context, provider.error!);
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('package_created_success'.tr()),
-                                backgroundColor: Colors.green,
-                              ),
+                            AppSnackBar.success(
+                              context,
+                              'package_created_success'.tr(),
                             );
                             if (onRefresh != null) onRefresh();
                             Navigator.pop(context);

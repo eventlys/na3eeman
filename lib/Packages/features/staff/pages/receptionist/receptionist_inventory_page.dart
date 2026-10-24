@@ -242,16 +242,16 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text('Edit Inventory Item'),
-                      content: Text('Edit functionality goes here.'),
+                      title: Text('edit_inventory_item'.tr()),
+                      content: Text('edit_functionality_goes_here'.tr()),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text('Cancel'),
+                          child: Text('cancel'.tr()),
                         ),
                         ElevatedButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text('Save'),
+                          child: Text('save'.tr()),
                         ),
                       ],
                     ),
@@ -272,14 +272,14 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text('Delete Item'),
+                      title: Text('delete_item'.tr()),
                       content: Text(
                         'Are you sure you want to delete this item?',
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text('Cancel'),
+                          child: Text('cancel'.tr()),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -290,7 +290,7 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
                             Navigator.pop(context);
                             AppSnackBar.success(context, 'Item deleted');
                           },
-                          child: Text('Delete'),
+                          child: Text('delete'.tr()),
                         ),
                       ],
                     ),
@@ -414,15 +414,14 @@ class _ReceptionistInventoryPageState extends State<ReceptionistInventoryPage>
                       _priceController.clear();
                       _stockController.clear();
                       _notesController.clear();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('item_added_successfully'.tr())),
+                      AppSnackBar.success(
+                        context,
+                        'item_added_successfully'.tr(),
                       );
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${'error'.tr()}: ${e.toString()}'),
-                          backgroundColor: AppColors.error,
-                        ),
+                      AppSnackBar.error(
+                        context,
+                        '${'error'.tr()}: ${e.toString()}',
                       );
                     }
                   }

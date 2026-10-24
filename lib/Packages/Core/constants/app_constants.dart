@@ -10,7 +10,7 @@ class AppConstants {
   // Store Links
   static const String appStoreLink = 'https://apps.apple.com/app/idYOUR_APP_ID';
   static const String playStoreLink =
-      'https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME';
+      'https://play.google.com/store/apps/details?id=com.na3eeman.app';
 
   // API Constants
   static String get baseUrl => Environment.config.apiBaseUrl;

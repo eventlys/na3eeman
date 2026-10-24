@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Services/business_service.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
@@ -113,21 +114,17 @@ class InventoryManagerState extends State<InventoryManager> {
 
       if (mounted) {
         final itemName = item['product_name'] ?? item['name'] ?? 'Item';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Increased $itemName count to ${currentCount + 1}'),
-            backgroundColor: AppColor.lightSuccess,
-          ),
+        AppSnackBar.success(
+          context,
+          'Increased $itemName count to ${currentCount + 1}',
         );
       }
     } catch (e) {
       if (mounted) {
         final itemName = item['product_name'] ?? item['name'] ?? 'Item';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to update $itemName: ${e.toString()}'),
-            backgroundColor: AppColor.lightError,
-          ),
+        AppSnackBar.error(
+          context,
+          'Failed to update $itemName: ${e.toString()}',
         );
       }
     }
@@ -168,21 +165,11 @@ class InventoryManagerState extends State<InventoryManager> {
         await _loadItems();
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Added ${result['name']} to inventory'),
-              backgroundColor: AppColor.lightSuccess,
-            ),
-          );
+          AppSnackBar.success(context, 'Added ${result['name']} to inventory');
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to add item: ${e.toString()}'),
-              backgroundColor: AppColor.lightError,
-            ),
-          );
+          AppSnackBar.error(context, 'Failed to add item: ${e.toString()}');
         }
       }
     }
@@ -236,23 +223,17 @@ class InventoryManagerState extends State<InventoryManager> {
           await inventoryProvider.removeItem(itemId);
 
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Deleted ${item['name']} from inventory'),
-                backgroundColor: AppColor.lightSuccess,
-              ),
+            AppSnackBar.success(
+              context,
+              'Deleted ${item['name']} from inventory',
             );
           }
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Failed to delete ${item['name']}: ${e.toString()}',
-              ),
-              backgroundColor: AppColor.lightError,
-            ),
+          AppSnackBar.error(
+            context,
+            'Failed to delete ${item['name']}: ${e.toString()}',
           );
         }
       }

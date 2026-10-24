@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/colors.dart';
+import '../../../../Helpers/config.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class InviteFriendsOverlay extends StatefulWidget {
@@ -11,7 +14,8 @@ class InviteFriendsOverlay extends StatefulWidget {
 }
 
 class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
-  final String inviteLink = 'https://yourapp.com/invite/ABC123XYZ';
+  // TODO: invite code should come from the backend per-user; using webAppUrl base.
+  String get inviteLink => '${AppConfig.webAppUrl}/invite/';
   bool _copied = false;
 
   void _copyToClipboard() {
@@ -50,13 +54,16 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Color(0x80c25858)),
+            border: Border.all(color: AppColors.pink.withValues(alpha: 0.5)),
           ),
           child: Column(
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.card_giftcard, color: Color(0x80c25858)),
+                  Icon(
+                    Icons.card_giftcard,
+                    color: AppColors.pink.withValues(alpha: 0.5),
+                  ),
                   SizedBox(width: 8),
                   Text(
                     'Invitation Rewards',
@@ -74,8 +81,8 @@ class _InviteFriendsOverlayState extends State<InviteFriendsOverlay> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            color: Color(0x4dffffff),
-            border: Border.all(color: Color(0x80ffffff)),
+            color: AppColors.white.withValues(alpha: 0.3),
+            border: Border.all(color: AppColors.white.withValues(alpha: 0.5)),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(

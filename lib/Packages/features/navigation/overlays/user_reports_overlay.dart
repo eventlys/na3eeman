@@ -8,6 +8,9 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../Services/enums/report_enums.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class UserReportsOverlay extends StatefulWidget {
@@ -148,7 +151,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0x80F3E0FF),
+        color: AppColors.pink100.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -166,7 +169,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0x80F3E0FF),
+        color: AppColors.pink100.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
       ),
       child: const Row(
@@ -206,7 +209,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(fontSize: 14, color: Color(0xffffffff)),
+          style: const TextStyle(fontSize: 14, color: AppColors.white),
         ),
       ],
     );
@@ -294,7 +297,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
     final status = _getReportStatus(report);
 
     return Card(
-      color: const Color(0x4dffffff),
+      color: AppColors.white.withValues(alpha: 0.3),
       shadowColor: Colors.transparent,
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -473,7 +476,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
                 _respondToReport(report['id']);
                 Navigator.of(context).pop();
               },
-              child: const Text('Respond'),
+              child: Text('respond'.tr()),
             ),
         ],
       ),
@@ -483,11 +486,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
   void _respondToReport(String reportId) {
     // Implement response logic here
     // This would typically open a dialog or navigate to a response page
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Response feature would be implemented here'),
-      ),
-    );
+    AppSnackBar.info(context, 'Response feature would be implemented here');
   }
 }
 

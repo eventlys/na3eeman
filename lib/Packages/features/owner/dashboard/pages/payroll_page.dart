@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
@@ -99,7 +100,7 @@ class _PayrollPageState extends State<PayrollPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           FilledButton(
             onPressed: () async {
@@ -127,7 +128,7 @@ class _PayrollPageState extends State<PayrollPage> {
               }
             },
             style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Save'),
+            child: Text('save'.tr()),
           ),
         ],
       ),
@@ -158,7 +159,7 @@ class _PayrollPageState extends State<PayrollPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Payroll Management'),
+        title: Text('payroll_management'.tr()),
         actions: [
           IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _load),
         ],
@@ -167,7 +168,7 @@ class _PayrollPageState extends State<PayrollPage> {
         onPressed: _showCreateDialog,
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('New Record'),
+        label: Text('new_record'.tr()),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -328,7 +329,7 @@ class _PayrollCard extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: onMarkPaid,
                 icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
-                label: const Text('Mark as Paid'),
+                label: Text('mark_as_paid'.tr()),
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(

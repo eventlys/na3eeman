@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Providers/features/auth_provider.dart';
 import '../../../../Providers/features/schedule_provider.dart';
 import '../../../../Models/staff/weekly_working_hours.dart';
@@ -272,11 +273,9 @@ class _MyTimesPageState extends State<MyTimesPage>
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('schedule_updated_successfully'.tr()),
-                    backgroundColor: AppColors.success,
-                  ),
+                AppSnackBar.success(
+                  context,
+                  'schedule_updated_successfully'.tr(),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -678,21 +677,12 @@ class _MyTimesPageState extends State<MyTimesPage>
                           .updateStaffAvailability({'status': 'ON_PTO'});
                     }
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('pto_request_submitted'.tr()),
-                        backgroundColor: AppColors.success,
-                      ),
-                    );
+                    AppSnackBar.success(context, 'pto_request_submitted'.tr());
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          context.read<ScheduleProvider>().error ??
-                              'failed_to_submit_request'.tr(),
-                        ),
-                        backgroundColor: AppColors.error,
-                      ),
+                    AppSnackBar.error(
+                      context,
+                      context.read<ScheduleProvider>().error ??
+                          'failed_to_submit_request'.tr(),
                     );
                   }
                 }

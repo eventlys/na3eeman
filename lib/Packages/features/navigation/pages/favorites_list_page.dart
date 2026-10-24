@@ -12,6 +12,7 @@ import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/loading_indicator.dart';
 import '../../../Core/utils/helpers/refresh_widgets.dart';
 import '../../../Core/widgets/shared/error_widget.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../salon/widgets/expert_salon_card.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
@@ -417,27 +418,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
     try {
       final success = await provider.removeFromFavorites(salonId);
       if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Removed $salonName from favorites',
-              style: const TextStyle(color: AppColor.light),
-            ),
-            backgroundColor: AppColor.primary,
-          ),
-        );
+        AppSnackBar.info(context, 'Removed $salonName from favorites');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Failed to remove from favorites: $e',
-              style: const TextStyle(color: AppColor.light),
-            ),
-            backgroundColor: AppColor.secondary,
-          ),
-        );
+        AppSnackBar.error(context, 'Failed to remove from favorites: $e');
       }
     }
   }
@@ -447,15 +432,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (provider.favoriteSalons.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'No favorites to clear',
-            style: TextStyle(color: AppColor.light),
-          ),
-          backgroundColor: AppColor.primary,
-        ),
-      );
+      AppSnackBar.info(context, 'No favorites to clear');
       return;
     }
 
@@ -511,26 +488,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     try {
                       await provider.clearFavorites();
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Cleared all favorites',
-                              style: TextStyle(color: AppColor.light),
-                            ),
-                            backgroundColor: AppColor.primary,
-                          ),
-                        );
+                        AppSnackBar.success(context, 'Cleared all favorites');
                       }
                     } catch (e) {
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Failed to clear favorites: $e',
-                              style: TextStyle(color: AppColor.light),
-                            ),
-                            backgroundColor: AppColor.secondary,
-                          ),
+                        AppSnackBar.error(
+                          context,
+                          'Failed to clear favorites: $e',
                         );
                       }
                     }
@@ -554,14 +518,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
   void _bookAppointment(Map<String, dynamic> salon) {
     Navigator.of(context).pop(); // Close the details dialog
     // Navigate to booking page or show booking dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Book appointment at ${salon['salonName'] ?? 'salon'}',
-          style: TextStyle(color: AppColor.light),
-        ),
-        backgroundColor: AppColor.primary,
-      ),
+    AppSnackBar.info(
+      context,
+      'Book appointment at ${salon['salonName'] ?? 'salon'}',
     );
   }
 }

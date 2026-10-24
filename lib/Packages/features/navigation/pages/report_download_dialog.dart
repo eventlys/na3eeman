@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 // Add this simple dialog class before your ReportsPage class
 import 'package:flutter/material.dart';
 
-import '../../../../Services/business_service.dart';
+import '../../../../Services/repositories/report_repository.dart';
 import '../../../../Services/enums/report_enums.dart';
 
 // import 'package:easy_localization/easy_localization.dart';

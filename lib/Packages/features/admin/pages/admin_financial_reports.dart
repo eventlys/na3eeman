@@ -1,5 +1,6 @@
 // ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/theme/colors.dart';
@@ -77,9 +78,9 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
   Widget _buildRevenueChart(List<dynamic> data) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (data.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 200,
-        child: Center(child: Text('No financial data')),
+        child: Center(child: Text('no_financial_data'.tr())),
       );
     }
 

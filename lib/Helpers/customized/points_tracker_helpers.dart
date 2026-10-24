@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../Packages/Core/constants/app_color.dart';
 import '../../Services/enums/points_types.dart';
+import '../../core/widgets/snackbar/app_snackbar.dart';
 
 class PointsTrackerHelpers {
   // Action styling helpers
@@ -388,38 +389,12 @@ class PointsTrackerHelpers {
 
   // Success message helper
   static void showSuccessMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: AppColor.light),
-            const SizedBox(width: 8),
-            Expanded(child: Text(message)),
-          ],
-        ),
-        backgroundColor: AppColor.lightSuccess,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    AppSnackBar.success(context, message);
   }
 
   // Error message helper
   static void showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.error, color: AppColor.light),
-            const SizedBox(width: 8),
-            Expanded(child: Text(message)),
-          ],
-        ),
-        backgroundColor: AppColor.lightError,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    AppSnackBar.error(context, message);
   }
 
   // Get category for grouping points activities

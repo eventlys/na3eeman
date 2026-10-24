@@ -60,9 +60,7 @@ class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _experts.isEmpty
-          ? const Center(
-              child: Text('No professionals available for this service.'),
-            )
+          ? Center(child: Text('no_professionals_available'.tr()))
           : ListView.separated(
               padding: const EdgeInsets.all(24),
               itemCount: _experts.length,

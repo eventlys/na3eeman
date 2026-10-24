@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../Models/salon/offer_model.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class OfferDetailsPage extends StatelessWidget {
   final OfferModel offer;
@@ -428,12 +429,9 @@ class _BookingSheetState extends State<_BookingSheet> {
               onPressed: (selectedDate != null && selectedTime != null)
                   ? () {
                       Navigator.pop(context); // Close sheet
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "booking_request_sent_successfully".tr(),
-                          ),
-                        ),
+                      AppSnackBar.success(
+                        context,
+                        "booking_request_sent_successfully".tr(),
                       );
                     }
                   : null,

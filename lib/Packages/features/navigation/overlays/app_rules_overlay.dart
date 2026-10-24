@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/colors.dart';
+
 class AppRulesOverlay extends StatelessWidget {
   const AppRulesOverlay({super.key});
 
@@ -61,14 +63,14 @@ class AppRulesOverlay extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0x80ffffff),
-                side: BorderSide(color: Color(0x80c25858)),
+                backgroundColor: AppColors.white.withValues(alpha: 0.5),
+                side: BorderSide(color: AppColors.pink.withValues(alpha: 0.5)),
                 shadowColor: Colors.transparent,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text(
                 'I Agree',
-                style: TextStyle(fontSize: 16, color: Color(0xffc25858)),
+                style: TextStyle(fontSize: 16, color: AppColors.pink),
               ),
             ),
           ),
@@ -83,14 +85,14 @@ class AppRulesOverlay extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, color: Color(0x80c25858), size: 20),
+            Icon(icon, color: AppColors.pink.withValues(alpha: 0.5), size: 20),
             const SizedBox(width: 8),
             Text(
               title,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: Color(0xffc25858),
+                color: AppColors.pink,
               ),
             ),
           ],
@@ -119,9 +121,9 @@ class AppRulesOverlay extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0x4dffffff),
+        color: AppColors.white.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(0x80ffffff)),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

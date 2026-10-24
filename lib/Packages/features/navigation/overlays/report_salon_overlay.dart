@@ -6,6 +6,8 @@ import 'dart:io';
 
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
+import '../../../../core/theme/colors.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class ReportSalonOverlay extends StatefulWidget {
@@ -84,9 +86,7 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
   void _submitReport() {
     if (_formKey.currentState!.validate()) {
       // Implement report submission
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Report submitted successfully!')),
-      );
+      AppSnackBar.success(context, 'Report submitted successfully!');
       Navigator.of(context).pop();
     }
   }
@@ -122,14 +122,14 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
                           _selectedIssueType = newValue!;
                         });
                       },
-                      dropdownColor: Color(0xffffffff),
+                      dropdownColor: AppColors.white,
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       decoration: InputDecoration(
                         labelText: "issue_type".tr(),
                         border: const OutlineInputBorder(),
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.warning,
-                          color: Color(0xb3c25858),
+                          color: AppColors.pink.withValues(alpha: 0.7),
                         ),
                       ),
                     ),
@@ -139,7 +139,10 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
                       decoration: InputDecoration(
                         labelText: "salon_name".tr(),
                         border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.store, color: Color(0xb3c25858)),
+                        prefixIcon: Icon(
+                          Icons.store,
+                          color: AppColors.pink.withValues(alpha: 0.7),
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -180,7 +183,7 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
             child: ElevatedButton(
               onPressed: _submitReport,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0x80c25858),
+                backgroundColor: AppColors.pink.withValues(alpha: 0.5),
                 shadowColor: Colors.transparent,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -199,9 +202,9 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0x4dffffff),
+        color: AppColors.white.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Color(0x80ffffff)),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,9 +214,12 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Screenshots, order numbers, or any other evidence that supports your report.',
-            style: TextStyle(fontSize: 12, color: Color(0x80000000)),
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.almostBlack.withValues(alpha: 0.5),
+            ),
           ),
           const SizedBox(height: 12),
 
@@ -265,24 +271,24 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: _pickImage,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.photo,
-                    color: Color(0xb3c25858),
+                    color: AppColors.pink.withValues(alpha: 0.7),
                     size: 18,
                   ),
-                  label: const Text('Add Screenshot'),
+                  label: Text('add_screenshot'.tr()),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: _pickFile,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.attach_file,
-                    color: Color(0xb3c25858),
+                    color: AppColors.pink.withValues(alpha: 0.7),
                     size: 18,
                   ),
-                  label: const Text('Add File'),
+                  label: Text('add_file'.tr()),
                 ),
               ),
             ],

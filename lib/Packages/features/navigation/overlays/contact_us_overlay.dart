@@ -1,6 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
+import '../../../../Helpers/config.dart';
+
 class ContactUsOverlay extends StatefulWidget {
   const ContactUsOverlay({super.key});
 
@@ -38,9 +42,7 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Implement form submission
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Message sent successfully!')),
-      );
+      AppSnackBar.success(context, 'Message sent successfully!');
       Navigator.of(context).pop();
     }
   }
@@ -93,23 +95,31 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0x4dffffff),
-        border: Border.all(color: Color(0x80ffffff)),
+        color: AppColors.white.withValues(alpha: 0.3),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Row(
             children: [
-              Icon(Icons.email, size: 16, color: Color(0x80000000)),
+              Icon(
+                Icons.email,
+                size: 16,
+                color: AppColors.almostBlack.withValues(alpha: 0.5),
+              ),
               SizedBox(width: 8),
-              Text('support@yourapp.com', style: TextStyle(fontSize: 12)),
+              Text(AppConfig.supportEmail, style: TextStyle(fontSize: 12)),
             ],
           ),
           SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.phone, size: 16, color: Color(0x80000000)),
+              Icon(
+                Icons.phone,
+                size: 16,
+                color: AppColors.almostBlack.withValues(alpha: 0.5),
+              ),
               SizedBox(width: 8),
               Text('+1 (555) 123-4567', style: TextStyle(fontSize: 12)),
             ],
@@ -117,9 +127,16 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
           SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.access_time, size: 16, color: Color(0x80000000)),
+              Icon(
+                Icons.access_time,
+                size: 16,
+                color: AppColors.almostBlack.withValues(alpha: 0.5),
+              ),
               SizedBox(width: 8),
-              Text('Mon-Fri 9:00 AM - 6:00 PM', style: TextStyle(fontSize: 12)),
+              Text(
+                'working_hours_mon_fri'.tr(),
+                style: const TextStyle(fontSize: 12),
+              ),
             ],
           ),
         ],
@@ -140,7 +157,7 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
               _selectedCategory = newValue!;
             });
           },
-          dropdownColor: Color(0xffffffff),
+          dropdownColor: AppColors.white,
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),

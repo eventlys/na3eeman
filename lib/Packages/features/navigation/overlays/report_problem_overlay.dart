@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class ReportProblemOverlay extends StatefulWidget {
   const ReportProblemOverlay({super.key});
@@ -89,7 +90,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
         ),
         ElevatedButton(
           onPressed: _submitReport,
-          child: const Text('Report Problem'),
+          child: Text('report_problem_title'.tr()),
         ),
       ],
     );
@@ -98,9 +99,7 @@ class _ReportProblemOverlayState extends State<ReportProblemOverlay> {
   void _submitReport() {
     if (_formKey.currentState!.validate()) {
       // Implement problem report submission logic here
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Problem reported successfully')),
-      );
+      AppSnackBar.success(context, 'Problem reported successfully');
       Navigator.pop(context);
     }
   }

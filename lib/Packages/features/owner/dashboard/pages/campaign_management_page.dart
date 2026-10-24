@@ -121,11 +121,11 @@ class _CampaignManagementPageState extends State<CampaignManagementPage>
         title: Text(
           item is PackageModel ? 'Delete Package?' : 'Delete Campaign?',
         ),
-        content: const Text('This action cannot be undone.'),
+        content: Text('this_action_cannot_be_undone'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           TextButton(
             onPressed: () async {
@@ -138,7 +138,10 @@ class _CampaignManagementPageState extends State<CampaignManagementPage>
                 await provider.deletePackage(salonId, item.id);
               }
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'delete'.tr(),
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),

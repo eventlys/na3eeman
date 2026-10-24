@@ -5,6 +5,7 @@ import '../../../../Providers/main_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../Services/ui/navigation_service.dart';
 import '../../../../Routes/route_names.dart';
+import '../../../../core/theme/colors.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
@@ -102,8 +103,8 @@ class _LoadingPageState extends State<LoadingPage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isDark
-                ? [Colors.black, const Color(0xff121212)]
-                : [const Color(0xffFDFBF7), const Color(0xffF3EFDF)],
+                ? [Colors.black, AppColors.darkBackground]
+                : [AppColors.cream, AppColors.cream100],
           ),
         ),
         child: Center(

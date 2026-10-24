@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/colors.dart';
+
 class PrivacyPolicyOverlay extends StatelessWidget {
   const PrivacyPolicyOverlay({super.key});
 
@@ -62,7 +64,7 @@ privacy@yourapp.com
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xffc25858),
+                backgroundColor: AppColors.pink,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text(
@@ -85,7 +87,7 @@ privacy@yourapp.com
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xffc25858),
+            color: AppColors.pink,
           ),
         ),
         const SizedBox(height: 8),

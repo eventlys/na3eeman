@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../Models/content/faq_model.dart';
 import '../../../../Services/content_service.dart';
@@ -93,13 +94,13 @@ class _FAQPageState extends State<FAQPage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _fetchFAQs,
-                    child: const Text('Retry'),
+                    child: Text('retry'.tr()),
                   ),
                 ],
               ),
             )
           : _faqs.isEmpty
-          ? const Center(child: Text('No FAQs available.'))
+          ? Center(child: Text('no_faqs_available'.tr()))
           : ListView.builder(
               padding: const EdgeInsets.all(20),
               itemCount: _faqs.length,

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../Core/widgets/common/app_text_field.dart';
 
 class StaffProfilePage extends StatefulWidget {
@@ -69,16 +70,12 @@ class _StaffProfilePageState extends State<StaffProfilePage> {
           _isEditing = false;
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("profile_updated_successfully".tr())),
-        );
+        AppSnackBar.success(context, "profile_updated_successfully".tr());
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        AppSnackBar.error(context, 'Error: $e');
       }
     }
   }

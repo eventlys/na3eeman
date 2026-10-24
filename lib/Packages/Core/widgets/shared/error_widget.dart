@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 /// Different types of errors that can be displayed
@@ -308,6 +309,11 @@ class ToastMessage {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    if (onRetry == null) {
+      AppSnackBar.error(context, message, duration: duration);
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -320,20 +326,19 @@ class ToastMessage {
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
-            if (onRetry != null)
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  onRetry();
-                },
-                child: Text(
-                  tr('retry'),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+            TextButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                onRetry();
+              },
+              child: Text(
+                tr('retry'),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
           ],
         ),
         backgroundColor: isDark ? AppColor.darkError : AppColor.lightError,
@@ -351,30 +356,7 @@ class ToastMessage {
     required String message,
     Duration duration = const Duration(seconds: 3),
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: isDark ? AppColor.darkSuccess : AppColor.lightSuccess,
-        behavior: SnackBarBehavior.floating,
-        duration: duration,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-    );
+    AppSnackBar.success(context, message, duration: duration);
   }
 
   static void showWarning({
@@ -382,30 +364,7 @@ class ToastMessage {
     required String message,
     Duration duration = const Duration(seconds: 4),
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.warning_amber_outlined, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: isDark ? AppColor.darkWarning : AppColor.lightWarning,
-        behavior: SnackBarBehavior.floating,
-        duration: duration,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-    );
+    AppSnackBar.warning(context, message, duration: duration);
   }
 
   static void showInfo({
@@ -413,30 +372,7 @@ class ToastMessage {
     required String message,
     Duration duration = const Duration(seconds: 3),
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.info_outline, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: isDark ? AppColor.darkInfo : AppColor.lightInfo,
-        behavior: SnackBarBehavior.floating,
-        duration: duration,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-    );
+    AppSnackBar.info(context, message, duration: duration);
   }
 }
 

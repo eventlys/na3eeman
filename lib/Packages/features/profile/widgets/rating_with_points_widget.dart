@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class RatingWithPointsWidget extends StatefulWidget {
   final Map<String, dynamic> salonData;
@@ -56,23 +58,17 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
         });
 
         // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Thanks for rating ${widget.salonData['title']}! +25 points',
-            ),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
+        AppSnackBar.success(
+          context,
+          'Thanks for rating ${widget.salonData['title']}! +25 points',
+          duration: Duration(seconds: 2),
         );
       } catch (e) {
         // Show error message if points awarding fails
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to award points for rating'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 2),
-          ),
+        AppSnackBar.error(
+          context,
+          'Failed to award points for rating',
+          duration: Duration(seconds: 2),
         );
       }
     }
@@ -87,7 +83,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
           children: [
             Text(
               'Rating: ',
-              style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14),
+              style: TextStyle(color: AppColors.white, fontSize: 14),
             ),
             SizedBox(width: 8),
             ...List.generate(5, (index) {
@@ -103,7 +99,7 @@ class _RatingWithPointsWidgetState extends State<RatingWithPointsWidget> {
             SizedBox(width: 8),
             Text(
               _userRating.toStringAsFixed(1),
-              style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14),
+              style: TextStyle(color: AppColors.white, fontSize: 14),
             ),
             if (!_hasAwardedPoints && _userRating > 0) ...[
               SizedBox(width: 8),

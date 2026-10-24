@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../Core/widgets/common/app_text_field.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
@@ -102,9 +103,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
         _selectedRole == 'COFOUNDER';
 
     if (!isOwnerMode && _selectedSalonId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a salon')));
+      AppSnackBar.warning(context, 'Please select a salon');
       return;
     }
 
@@ -141,7 +140,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-              title: const Text('Success'),
+              title: Text('success'.tr()),
               content: Text(pwdMessage),
               actions: [
                 TextButton(
@@ -149,7 +148,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
                     Navigator.pop(ctx);
                     Navigator.pop(context);
                   },
-                  child: const Text('OK'),
+                  child: Text('ok'.tr()),
                 ),
               ],
             ),
@@ -173,17 +172,13 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
         await authProvider.adminCreateStaff(staffData);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("staff_created_successfully".tr())),
-          );
+          AppSnackBar.success(context, "staff_created_successfully".tr());
           Navigator.pop(context);
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        AppSnackBar.error(context, 'Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -259,7 +254,7 @@ class _AdminCreateStaffPageState extends State<AdminCreateStaffPage> {
                     ? const Center(child: CircularProgressIndicator())
                     : DropdownButtonFormField<int>(
                         initialValue: _selectedSalonId,
-                        hint: const Text('Select Salon'),
+                        hint: Text('select_salon'.tr()),
                         items: _salons.map((salon) {
                           return DropdownMenuItem<int>(
                             value: salon['id'] as int,

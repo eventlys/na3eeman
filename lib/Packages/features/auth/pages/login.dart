@@ -7,6 +7,7 @@ import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/Services/security_service.dart';
 import 'package:na3eeman/Providers/main_providers.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
+import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -84,7 +85,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             ListTile(
               leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
-              title: const Text('English'),
+              title: Text('english'.tr()),
               trailing: context.locale.languageCode == 'en'
                   ? Icon(Icons.check, color: AppColors.primary)
                   : null,
@@ -119,9 +120,7 @@ class _LoginPageState extends State<LoginPage>
     final bool canCheck = await securityService.isBiometricAvailable();
     if (!canCheck) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('biometrics_not_available'.tr())),
-        );
+        AppSnackBar.warning(context, 'biometrics_not_available'.tr());
       }
       return;
     }
@@ -144,9 +143,7 @@ class _LoginPageState extends State<LoginPage>
         );
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('enable_biometrics_message'.tr())),
-          );
+          AppSnackBar.info(context, 'enable_biometrics_message'.tr());
         }
       }
     }
@@ -193,9 +190,7 @@ class _LoginPageState extends State<LoginPage>
               authProvider.error != null && authProvider.error!.isNotEmpty
               ? authProvider.error!
               : 'invalid_email_password'.tr();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(errorMsg)));
+          AppSnackBar.error(context, errorMsg);
         }
       }
     }

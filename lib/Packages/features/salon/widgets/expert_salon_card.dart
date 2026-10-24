@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class ExpertSalonCard extends StatefulWidget {
   final String title;
@@ -71,9 +72,7 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("could_not_launch_maps".tr())));
+        AppSnackBar.error(context, "could_not_launch_maps".tr());
       }
     }
   }

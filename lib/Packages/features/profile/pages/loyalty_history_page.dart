@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/points_provider.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
@@ -60,7 +61,7 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Loyalty Points'),
+        title: Text('loyalty_points_title'.tr()),
         actions: [
           IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _load),
         ],
@@ -256,7 +257,7 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
         FilledButton.icon(
           onPressed: _load,
           icon: const Icon(Icons.refresh_rounded),
-          label: const Text('Retry'),
+          label: Text('retry'.tr()),
         ),
       ],
     ),

@@ -8,6 +8,7 @@ import '../../../../../Providers/features/staff_provider.dart';
 import '../../../../../Services/api/endpoints.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
+import '../../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 // import '../../../../../Providers/main_providers.dart';
@@ -120,12 +121,7 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
       appt['statusColor'] = AppColors.success;
     });
     // Optional: Call API to complete
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('appointment_completed_successfully'.tr()),
-        backgroundColor: AppColors.success,
-      ),
-    );
+    AppSnackBar.success(context, 'appointment_completed_successfully'.tr());
   }
 
   Future<void> _handlePenaltyAppointment(
@@ -138,12 +134,7 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
       appt['status'] = reason;
       appt['statusColor'] = AppColors.error;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('points_reduced_msg'.tr(args: [reason])),
-        backgroundColor: AppColors.error,
-      ),
-    );
+    AppSnackBar.error(context, 'points_reduced_msg'.tr(args: [reason]));
   }
 
   bool _isAppointmentActive(Map<String, dynamic> appt) {

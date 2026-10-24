@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_roles.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -756,9 +757,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
   }
 
   void _remindCustomer(BuildContext context, String id) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('payment_reminder_sent'.tr())));
+    AppSnackBar.info(context, 'payment_reminder_sent'.tr());
   }
 
   void _showReportIncompletePaymentDialog(BuildContext context, String id) {
@@ -766,7 +765,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Report Payment Issue'),
+        title: Text('report_payment_issue'.tr()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -791,9 +790,7 @@ class _AppointmentAccordionState extends State<AppointmentAccordion> {
             onPressed: () {
               // Logic here
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('report_submitted_success'.tr())),
-              );
+              AppSnackBar.success(context, 'report_submitted_success'.tr());
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text('submit_report'.tr()),

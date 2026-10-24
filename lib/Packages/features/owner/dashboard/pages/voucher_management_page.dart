@@ -6,6 +6,7 @@ import '../../../../../../Providers/features/auth_provider.dart';
 import 'package:na3eeman/Models/salon/voucher_model.dart';
 import '../../../../../../core/theme/colors.dart';
 import '../../../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'dart:math';
 
 class VoucherManagementPage extends StatefulWidget {
@@ -337,9 +338,7 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
                     }
                   } catch (e) {
                     if (context.mounted) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                      AppSnackBar.error(context, 'Error: $e');
                     }
                   }
                 },

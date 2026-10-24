@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/features/auth_provider.dart';
 import '../../../../Providers/features/points_provider.dart';
-import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class FeedbackOverlay extends StatefulWidget {
   const FeedbackOverlay({super.key});
@@ -128,22 +128,11 @@ class _FeedbackOverlayState extends State<FeedbackOverlay> {
 
       if (!mounted) return;
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('feedback_success'.tr()),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
+      AppSnackBar.success(context, 'feedback_success'.tr());
     } catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('feedback_failed'.tr())));
+      AppSnackBar.error(context, 'feedback_failed'.tr());
     }
   }
 

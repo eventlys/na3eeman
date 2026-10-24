@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Services/core/user_service.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
@@ -73,9 +74,7 @@ class ProfileHelperFunctions {
       AppLogger.info('Profile saved successfully');
     } catch (e) {
       AppLogger.error('Error saving profile: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
+      AppSnackBar.error(context, 'Failed to save profile: $e');
       onError();
     }
   }
@@ -120,16 +119,12 @@ class ProfileHelperFunctions {
       // Replace with your actual API call:
       // await ApiService.deleteProfile();
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("profile_deleted".tr())));
+      AppSnackBar.success(context, "profile_deleted".tr());
 
       onSuccess();
     } catch (e) {
       AppLogger.error('Error deleting profile: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to delete profile: $e')));
+      AppSnackBar.error(context, 'Failed to delete profile: $e');
     }
   }
 

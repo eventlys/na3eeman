@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 // import '../../../../Services/ui/overlay_service.dart';
 import '../../../../Packages/Core/constants/app_constants.dart';
 import '../../../../Services/ui/navigation_service.dart';
@@ -187,22 +188,16 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
   void _handleConfirmBooking() {
     if (_selectedServices.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('select_at_least_one_service'.tr())),
-      );
+      AppSnackBar.warning(context, 'select_at_least_one_service'.tr());
       return;
     }
     if (_selectedExpert == null &&
         _selectionMode != SelectionMode.noPreference) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('please_select_expert'.tr())));
+      AppSnackBar.warning(context, 'please_select_expert'.tr());
       return;
     }
     if (_selectedTime == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('please_select_time'.tr())));
+      AppSnackBar.warning(context, 'please_select_time'.tr());
       return;
     }
 
@@ -749,9 +744,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     } catch (e) {
       if (mounted) Navigator.pop(context); // Close loading dialog
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('booking_failed'.tr(args: [e.toString()]))),
-        );
+        AppSnackBar.error(context, 'booking_failed'.tr(args: [e.toString()]));
       }
     }
   }

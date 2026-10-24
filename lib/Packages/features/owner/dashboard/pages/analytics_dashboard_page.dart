@@ -100,9 +100,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.almostBlack900
-          : const Color(0xFFF8F9FE),
+      backgroundColor: isDark ? AppColors.almostBlack900 : AppColors.offWhite,
       appBar: AppBar(
         title: Text(
           'analytics_dashboard'.tr(),

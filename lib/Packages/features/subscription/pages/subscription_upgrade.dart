@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 /// Renders a receipt-like detail view for the selected subscription plan.
 class SubscriptionUpgradePage extends StatelessWidget {
@@ -193,10 +194,9 @@ class SubscriptionUpgradePage extends StatelessWidget {
               height: 52,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("processing_payment_mock_step".tr()),
-                    ),
+                  AppSnackBar.info(
+                    context,
+                    "processing_payment_mock_step".tr(),
                   );
                 },
                 child: Text(
@@ -211,12 +211,9 @@ class SubscriptionUpgradePage extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          "admin_alerted_regarding_multi_branch_access".tr(),
-                        ),
-                      ),
+                    AppSnackBar.info(
+                      context,
+                      "admin_alerted_regarding_multi_branch_access".tr(),
                     );
                   },
                   icon: const Icon(Icons.support_agent_rounded, size: 20),

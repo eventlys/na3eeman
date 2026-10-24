@@ -7,6 +7,7 @@ import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../../../Providers/features/salon_provider.dart';
 import '../../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../../Models/inventory/inventory_item.dart';
+import '../../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class ReceptionistProductsPage extends StatefulWidget {
   const ReceptionistProductsPage({super.key});
@@ -203,12 +204,9 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                       item.id,
                       1,
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${'incrementing_stock'.tr()} ${item.productName}',
-                        ),
-                      ),
+                    AppSnackBar.info(
+                      context,
+                      '${'incrementing_stock'.tr()} ${item.productName}',
                     );
                   },
                   child: Text(
@@ -266,9 +264,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
               text: 'edit_product_info'.tr(),
               onPressed: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('edit_product_info_triggers'.tr())),
-                );
+                AppSnackBar.info(context, 'edit_product_info_triggers'.tr());
               },
             ),
           ],
@@ -352,9 +348,7 @@ class _ReceptionistProductsPageState extends State<ReceptionistProductsPage> {
                   stock: stock,
                 );
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${'creating'.tr()} $name...')),
-                );
+                AppSnackBar.info(context, '${'creating'.tr()} $name...');
               }
             },
             child: Text("create".tr()),

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/points_provider.dart';
@@ -71,7 +72,7 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Referral Programme'),
+        title: Text('referral_programme'.tr()),
         actions: [
           IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _load),
         ],
@@ -255,12 +256,12 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
           color: theme.colorScheme.error,
         ),
         const SizedBox(height: 16),
-        const Text('Could not load referral code', textAlign: TextAlign.center),
+        Text('could_not_load_referral_code'.tr(), textAlign: TextAlign.center),
         const SizedBox(height: 20),
         FilledButton.icon(
           onPressed: _load,
           icon: const Icon(Icons.refresh_rounded),
-          label: const Text('Retry'),
+          label: Text('retry'.tr()),
         ),
       ],
     ),

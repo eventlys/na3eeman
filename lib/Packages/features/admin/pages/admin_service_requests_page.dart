@@ -44,7 +44,7 @@ class _AdminServiceRequestsPageState extends State<AdminServiceRequestsPage> {
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : provider.requests.isEmpty
-          ? const Center(child: Text('No service requests found.'))
+          ? Center(child: Text('no_service_requests_found'.tr()))
           : ListView.builder(
               padding: const EdgeInsets.all(24),
               itemCount: provider.requests.length,

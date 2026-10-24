@@ -6,6 +6,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -298,26 +299,16 @@ class _HistoryPageState extends State<HistoryPage> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'recurring_appointment_msg'.tr(
-                args: [frequency.tr(), duration.tr()],
-              ),
-            ),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-          ),
+        AppSnackBar.success(
+          context,
+          'recurring_appointment_msg'.tr(args: [frequency.tr(), duration.tr()]),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('failed_to_set_repeat'.tr(args: [e.toString()])),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-          ),
+        AppSnackBar.error(
+          context,
+          'failed_to_set_repeat'.tr(args: [e.toString()]),
         );
       }
     } finally {

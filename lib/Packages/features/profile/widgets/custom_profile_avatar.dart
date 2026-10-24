@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/colors.dart';
 import 'profile_avatar_style.dart';
 
 class MyProfileAvatar extends StatelessWidget {
@@ -31,7 +32,7 @@ class MyProfileAvatar extends StatelessWidget {
             border: style?.border,
             boxShadow: [
               BoxShadow(
-                color: const Color(0x6699806C),
+                color: AppColors.opal.withValues(alpha: 0.4),
                 blurRadius: 10,
                 offset: const Offset(3, 3),
               ),

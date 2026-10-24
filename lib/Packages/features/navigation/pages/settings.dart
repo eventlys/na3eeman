@@ -16,6 +16,7 @@ import '../../../../Providers/features/auth_provider.dart';
 import '../../../../Providers/features/subscription_provider.dart';
 import '../../../../../core/widgets/rules/rules_guide_sheet.dart';
 import '../../../../Services/core/user_service.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Routes/route_names.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -551,9 +552,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await launchUrl(url);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('could_not_open_app_store'.tr())),
-        );
+        AppSnackBar.error(context, 'could_not_open_app_store'.tr());
       }
     }
   }
@@ -590,9 +589,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('report_submitted_thanks'.tr())),
-              );
+              AppSnackBar.success(context, 'report_submitted_thanks'.tr());
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -655,9 +652,7 @@ class _SettingsPageState extends State<SettingsPage> {
               } catch (e) {
                 if (!mounted) return;
                 Navigator.pop(context); // hide loading
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${e.toString()}')),
-                );
+                AppSnackBar.error(context, 'Error: ${e.toString()}');
               }
             },
             child: Text(

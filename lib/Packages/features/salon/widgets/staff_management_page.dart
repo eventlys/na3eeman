@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/salon_provider.dart';
 import '../../../../../core/theme/colors.dart';
+import '../../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../../Services/api/endpoints.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
@@ -503,12 +504,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
 
   Future<void> _removeExpert(String id) async {
     setState(() => _staffList.removeWhere((item) => item['id'] == id));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('staff_member_removed_successfully'.tr()),
-        backgroundColor: AppColors.success,
-      ),
-    );
+    AppSnackBar.success(context, 'staff_member_removed_successfully'.tr());
   }
 
   void _showAddExpertDialog() {

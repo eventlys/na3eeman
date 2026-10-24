@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
-import '../../../../Services/business_service.dart';
+import '../../../../Services/repositories/report_repository.dart';
 import '../../../../Services/enums/report_enums.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'report_download_dialog.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
@@ -22,7 +23,7 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   ReportTime _selectedTime = ReportTime.monthly;
-  final BusinessService _businessService = BusinessService();
+  final ReportRepository _reportRepository = ReportRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -224,46 +225,29 @@ class _ReportsPageState extends State<ReportsPage> {
       );
 
       if (updatedRequest != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("generating_report".tr()),
-            backgroundColor: AppColor.primary,
-          ),
-        );
+        AppSnackBar.info(context, "generating_report".tr());
 
         // Get salon ID from auth provider or context
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final salonId = authProvider.user?.salonId;
         if (salonId == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Salon associated with operations not found.'),
-              backgroundColor: AppColor.lightError,
-            ),
+          AppSnackBar.error(
+            context,
+            'Salon associated with operations not found.',
           );
           return;
         }
 
-        // Use BusinessService to generate the report
-        await _businessService.generateStaffReport(
+        // Generate the report via ReportRepository
+        await _reportRepository.generateStaffReport(
           updatedRequest,
           salonId: salonId,
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("report_success".tr()),
-            backgroundColor: AppColor.lightSuccess,
-          ),
-        );
+        AppSnackBar.success(context, "report_success".tr());
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to generate report: $e'),
-          backgroundColor: AppColor.lightError,
-        ),
-      );
+      AppSnackBar.error(context, 'Failed to generate report: $e');
     }
   }
 

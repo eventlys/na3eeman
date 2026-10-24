@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
 import 'package:na3eeman/Packages/Core/utils/validators.dart';
 import 'package:na3eeman/Packages/Core/widgets/password_strength_indicator.dart';
+import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -143,19 +144,12 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
           newPassword: _newPasswordController.text,
         );
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("password_changed_successfully".tr()),
-              backgroundColor: Colors.green,
-            ),
-          );
+          AppSnackBar.success(context, "password_changed_successfully".tr());
           Navigator.pop(context);
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
-          );
+          AppSnackBar.error(context, e.toString());
         }
       }
     }

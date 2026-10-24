@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
 import 'package:na3eeman/Providers/features/owner_provider.dart';
@@ -217,7 +218,7 @@ class _OffersManagementPageState extends State<OffersManagementPage>
                     }
                   },
                   icon: const Icon(Icons.check_rounded),
-                  label: const Text('Create Offer'),
+                  label: Text('create_offer'.tr()),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
@@ -240,7 +241,7 @@ class _OffersManagementPageState extends State<OffersManagementPage>
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Offers & Packages'),
+        title: Text('offers_packages'.tr()),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -253,7 +254,7 @@ class _OffersManagementPageState extends State<OffersManagementPage>
         onPressed: _showAddOfferDialog,
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('New Offer'),
+        label: Text('new_offer'.tr()),
       ),
       body: TabBarView(
         controller: _tabController,

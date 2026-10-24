@@ -7,6 +7,8 @@ import '../../../../Providers/main_providers.dart';
 import '../../../Core/backgrounds/bd_faded.dart';
 import '../../../Core/themes/glass_appbar.dart';
 import '../../../Core/widgets/common/date_time_pickers.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class SalonSchedulePage extends StatefulWidget {
   final Map<String, dynamic> serviceData;
@@ -104,9 +106,9 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
           backgroundColor: Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xffffffff),
+              color: AppColors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFFFFFFF), width: 1.0),
+              border: Border.all(color: AppColors.white, width: 1.0),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -115,7 +117,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xffffffff),
+                    color: AppColors.white,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
@@ -123,17 +125,14 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.calendar_today,
-                        color: const Color(0xffc25858),
-                      ),
+                      Icon(Icons.calendar_today, color: AppColors.pink),
                       const SizedBox(width: 8),
                       Text(
                         "schedule_type".tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xffc25858),
+                          color: AppColors.pink,
                         ),
                       ),
                     ],
@@ -201,10 +200,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   padding: const EdgeInsets.all(16),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color(0xffc25858),
-                        width: 1.0,
-                      ),
+                      border: Border.all(color: AppColors.pink, width: 1.0),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: TextButton(
@@ -212,7 +208,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                       child: Text(
                         "cancel".tr(),
                         style: TextStyle(
-                          color: const Color(0xffc25858),
+                          color: AppColors.pink,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -240,13 +236,13 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0x26c25858),
+          color: AppColors.pink.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xffc25858)),
+          border: Border.all(color: AppColors.pink),
         ),
         child: Row(
           children: [
-            Icon(icon, color: const Color(0xffc25858), size: 24),
+            Icon(icon, color: AppColors.pink, size: 24),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -255,7 +251,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   Text(
                     title,
                     style: TextStyle(
-                      color: const Color(0xff040000),
+                      color: AppColors.almostBlack,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -263,7 +259,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: const Color(0xff040000).withValues(alpha: 0.7),
+                      color: AppColors.almostBlack.withValues(alpha: 0.7),
                       fontSize: 14,
                     ),
                   ),
@@ -278,12 +274,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
 
   void _confirmSchedule(String scheduleType) {
     if (_selectedDate == null || _selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("please_select_both_date_and_time".tr()),
-          backgroundColor: Colors.red,
-        ),
-      );
+      AppSnackBar.warning(context, "please_select_both_date_and_time".tr());
       return;
     }
 
@@ -297,12 +288,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
       'Schedule confirmed: $scheduleType for ${allServices.length} services',
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$scheduleType schedule booked successfully!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    AppSnackBar.success(context, '$scheduleType schedule booked successfully!');
   }
 
   @override
@@ -502,12 +488,12 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0x26c25858)
+              ? AppColors.pink.withValues(alpha: 0.15)
               : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
-                ? const Color(0xffc25858)
+                ? AppColors.pink
                 : Colors.white.withValues(alpha: 0.2),
           ),
         ),
@@ -546,7 +532,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
                 const SizedBox(width: 8),
                 Icon(
                   isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                  color: isSelected ? const Color(0xffc25858) : Colors.white,
+                  color: isSelected ? AppColors.pink : Colors.white,
                 ),
               ],
             ),
@@ -562,7 +548,7 @@ class SalonSchedulePageState extends State<SalonSchedulePage> {
       child: Container(
         height: 90,
         decoration: BoxDecoration(
-          color: const Color(0xFFC25858),
+          color: AppColors.pink,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(

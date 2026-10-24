@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/common/app_text_field.dart';
 import '../../../../Packages/Core/constants/app_constants.dart';
@@ -53,11 +54,9 @@ class _DisputeResolutionPageState extends State<DisputeResolutionPage>
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
     setState(() => _submitting = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Dispute submitted. We\'ll respond within 48 hours.'),
-        behavior: SnackBarBehavior.floating,
-      ),
+    AppSnackBar.success(
+      context,
+      'Dispute submitted. We\'ll respond within 48 hours.',
     );
     _descCtrl.clear();
   }
@@ -69,7 +68,7 @@ class _DisputeResolutionPageState extends State<DisputeResolutionPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report & Disputes'),
+        title: Text('report_and_disputes'.tr()),
         bottom: TabBar(
           controller: _tabs,
           labelColor: primary,

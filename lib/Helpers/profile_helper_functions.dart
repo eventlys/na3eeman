@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/main_providers.dart';
 import '../Services/core/user_service.dart';
+import '../core/widgets/snackbar/app_snackbar.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
@@ -86,13 +87,9 @@ class ProfileHelperFunctions {
       // Update the local provider state with the new data
       await _updateProviderState(profile, authProvider, context);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("profile_updated_successfully".tr())),
-      );
+      AppSnackBar.success(context, "profile_updated_successfully".tr());
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to update profile: $e')));
+      AppSnackBar.error(context, 'Failed to update profile: $e');
       onError();
     }
   }
@@ -188,15 +185,11 @@ class ProfileHelperFunctions {
       final authProvider = AuthProvider();
       await authProvider.logout();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("profile_deleted_successfully".tr())),
-      );
+      AppSnackBar.success(context, "profile_deleted_successfully".tr());
 
       onSuccess();
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to delete profile: $e')));
+      AppSnackBar.error(context, 'Failed to delete profile: $e');
     }
   }
 

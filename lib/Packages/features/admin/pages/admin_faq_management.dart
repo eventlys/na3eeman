@@ -1,8 +1,10 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/features/admin_service_provider.dart';
 import '../../../../Models/content/faq_model.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class AdminFAQManagementPage extends StatefulWidget {
   const AdminFAQManagementPage({super.key});
@@ -48,15 +50,11 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
       await context.read<AdminServiceProvider>().deleteFAQ(id);
       _fetchFAQs();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('FAQ deleted successfully')),
-        );
+        AppSnackBar.success(context, 'FAQ deleted successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to delete FAQ: $e')));
+        AppSnackBar.error(context, 'Failed to delete FAQ: $e');
       }
     }
   }
@@ -99,7 +97,7 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -124,13 +122,11 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
                 }
               } catch (e) {
                 if (mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                  AppSnackBar.error(context, 'Error: $e');
                 }
               }
             },
-            child: const Text('Save'),
+            child: Text('save'.tr()),
           ),
         ],
       ),
@@ -143,7 +139,7 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage FAQs'),
+        title: Text('manage_faqs'.tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -165,13 +161,13 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
                   Text('Error: $_error'),
                   ElevatedButton(
                     onPressed: _fetchFAQs,
-                    child: const Text('Retry'),
+                    child: Text('retry'.tr()),
                   ),
                 ],
               ),
             )
           : _faqs.isEmpty
-          ? const Center(child: Text('No FAQs found.'))
+          ? Center(child: Text('no_faqs_found'.tr()))
           : ListView.builder(
               itemCount: _faqs.length,
               itemBuilder: (context, index) {
@@ -210,14 +206,14 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Delete FAQ'),
+                                title: Text('delete_faq'.tr()),
                                 content: const Text(
                                   'Are you sure you want to delete this FAQ?',
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancel'),
+                                    child: Text('cancel'.tr()),
                                   ),
                                   TextButton(
                                     onPressed: () {

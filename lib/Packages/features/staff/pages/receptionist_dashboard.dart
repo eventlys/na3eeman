@@ -5,6 +5,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart'; // Added
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'receptionist/receptionist_inventory_page.dart'; // Added
 import '../../salon/pages/salon_owner_dashboard.dart';
 import '../../../features/navigation/sidebar.dart';
@@ -16,7 +17,6 @@ import '../../../../Providers/features/inventory_provider.dart';
 import '../../../../Providers/features/offers_provider.dart';
 import '../../../../Providers/features/auth_provider.dart';
 import '../../../../Services/enums/appointment_status.dart';
-import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 class ReceptionistDashboard extends StatefulWidget {
   const ReceptionistDashboard({super.key});
@@ -596,10 +596,9 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                 const SizedBox(width: 8),
                 if (isExpired)
                   GestureDetector(
-                    onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('renewing_campaign'.tr(args: [title])),
-                      ),
+                    onTap: () => AppSnackBar.info(
+                      context,
+                      'renewing_campaign'.tr(args: [title]),
                     ),
                     child: Text(
                       actionText,
@@ -933,18 +932,13 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                 try {
                   await appointmentProvider.confirmPayment(appointmentId);
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('payment_confirmed_msg'.tr())),
-                    );
+                    AppSnackBar.success(context, 'payment_confirmed_msg'.tr());
                   }
                 } catch (e) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'failed_to_confirm_err'.tr(args: [e.toString()]),
-                        ),
-                      ),
+                    AppSnackBar.error(
+                      context,
+                      'failed_to_confirm_err'.tr(args: [e.toString()]),
                     );
                   }
                 }
@@ -959,10 +953,9 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
               () {
                 Navigator.pop(context);
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('notification_reminder_sent_msg'.tr()),
-                    ),
+                  AppSnackBar.info(
+                    context,
+                    'notification_reminder_sent_msg'.tr(),
                   );
                 }
               },
@@ -1042,7 +1035,10 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                 }
               }
             },
-            child: const Text('Report', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'report'.tr(),
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),

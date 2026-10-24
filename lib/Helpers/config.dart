@@ -34,6 +34,11 @@ class AppConfig {
   static String? get googleClientId => Environment.config.googleClientId;
   static String? get appleClientId => Environment.config.appleClientId;
 
+  // Contact / Support
+  static String get supportEmail => Environment.config.supportEmail;
+  static String get adminEmail => Environment.config.adminEmail;
+  static String get webAppUrl => Environment.config.webAppUrl;
+
   // Payment
 
   // Cache Configuration

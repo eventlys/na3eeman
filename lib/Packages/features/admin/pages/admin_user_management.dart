@@ -8,6 +8,7 @@ import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/features/admin_service_provider.dart';
 import '../../../../Models/auth/user_model.dart';
+import '../../../../core/widgets/snackbar/app_snackbar.dart';
 
 /// Super Admin — User Management Page.
 /// Lists all platform users (customers + experts/staff) from backend.
@@ -162,7 +163,7 @@ class _UserListState extends State<_UserList> {
         final users = snapshot.data ?? [];
 
         if (users.isEmpty) {
-          return const Center(child: Text('No users found'));
+          return Center(child: Text('no_users_found'.tr()));
         }
 
         return RefreshIndicator(
@@ -229,7 +230,7 @@ class _UserTileState extends State<_UserTile> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+              child: Text('close'.tr()),
             ),
           ],
         ),
@@ -246,23 +247,14 @@ class _UserTileState extends State<_UserTile> {
       );
 
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Successfully ${action == 'ban' ? 'banned' : 'unbanned'} ${widget.user.fullName}',
-          ),
-          backgroundColor: AppColor.success,
-        ),
+      AppSnackBar.success(
+        context,
+        'Successfully ${action == 'ban' ? 'banned' : 'unbanned'} ${widget.user.fullName}',
       );
       widget.onActionComplete();
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update user status: $e'),
-          backgroundColor: AppColor.error,
-        ),
-      );
+      AppSnackBar.error(context, 'Failed to update user status: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -374,18 +366,15 @@ class _UserTileState extends State<_UserTile> {
                   onSelected: (action) => _handleAction(context, action),
                   itemBuilder: (_) => [
                     if (widget.user.isActive)
-                      const PopupMenuItem(
-                        value: 'ban',
-                        child: Text('Ban User'),
-                      ),
+                      PopupMenuItem(value: 'ban', child: Text('ban_user'.tr())),
                     if (!widget.user.isActive)
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'unban',
-                        child: Text('Unban / Restore'),
+                        child: Text('unban_restore'.tr()),
                       ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'view',
-                      child: Text('View Profile'),
+                      child: Text('view_profile'.tr()),
                     ),
                   ],
                 ),

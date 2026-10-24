@@ -2,6 +2,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:na3eeman/core/theme/colors.dart';
+import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
 // import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 
@@ -85,13 +86,9 @@ class _AttachFeedbackDialogState extends State<AttachFeedbackDialog> {
       // Mocking the success for now
       Navigator.pop(context, _feedbackController.text);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Attached to ${widget.staffName}. Notifications sent to Owner & Receptionist.',
-          ),
-          backgroundColor: AppColors.success,
-        ),
+      AppSnackBar.success(
+        context,
+        'Attached to ${widget.staffName}. Notifications sent to Owner & Receptionist.',
       );
     }
   }
