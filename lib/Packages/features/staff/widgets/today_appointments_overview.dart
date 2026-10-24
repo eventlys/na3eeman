@@ -3,11 +3,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 
-import '../../../../../Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../../Providers/features/staff_provider.dart';
 import '../../../../../Services/api/endpoints.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import 'package:na3eeman/Helpers/logger.dart';
+
 // import '../../../../../Providers/main_providers.dart';
 
 class TodayAppointmentsOverview extends StatefulWidget {
@@ -44,8 +46,9 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final apiService = ApiService();
-      final response = await apiService.get(Endpoints.appointments);
+      final response = await context.read<StaffProvider>().apiGet(
+        Endpoints.appointments,
+      );
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
 
       final today = DateTime.now();

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -43,12 +44,14 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage> {
   Future<void> _load({bool silent = false}) async {
     if (!silent) setState(() => _isLoading = true);
     try {
-      final api = ApiService();
+      final owner = context.read<OwnerProvider>();
       final results = await Future.wait([
-        api.get('/analytics/overview/?period=$_period').catchError((_) => null),
-        api.get('/analytics/staff-kpis/').catchError((_) => null),
-        api.get('/analytics/top-services/').catchError((_) => null),
-        api.get('/analytics/smart-insights/').catchError((_) => null),
+        owner
+            .apiGet('/analytics/overview/?period=$_period')
+            .catchError((_) => null),
+        owner.apiGet('/analytics/staff-kpis/').catchError((_) => null),
+        owner.apiGet('/analytics/top-services/').catchError((_) => null),
+        owner.apiGet('/analytics/smart-insights/').catchError((_) => null),
       ]);
 
       if (mounted) {

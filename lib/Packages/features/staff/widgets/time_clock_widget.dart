@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/staff_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -45,8 +46,9 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
   Future<void> _loadStatus() async {
     setState(() => _isLoading = true);
     try {
-      final api = ApiService();
-      final res = await api.get('/salons/timeclock/current_status/');
+      final res = await context.read<StaffProvider>().apiGet(
+        '/salons/timeclock/current_status/',
+      );
       if (res is Map) {
         setState(() {
           _isClockedIn = res['is_clocked_in'] as bool? ?? false;
@@ -66,8 +68,10 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
   Future<void> _clockIn() async {
     setState(() => _isProcessing = true);
     try {
-      final api = ApiService();
-      final res = await api.post('/salons/timeclock/clock_in/', data: {});
+      final res = await context.read<StaffProvider>().apiPost(
+        '/salons/timeclock/clock_in/',
+        data: {},
+      );
       if (res != null) {
         setState(() {
           _isClockedIn = true;
@@ -91,8 +95,10 @@ class _TimeClockWidgetState extends State<TimeClockWidget>
   Future<void> _clockOut() async {
     setState(() => _isProcessing = true);
     try {
-      final api = ApiService();
-      final res = await api.post('/salons/timeclock/clock_out/', data: {});
+      final res = await context.read<StaffProvider>().apiPost(
+        '/salons/timeclock/clock_out/',
+        data: {},
+      );
       if (res != null) {
         final mins = (res as Map)['shift_duration_minutes'] as int? ?? 0;
         setState(() {

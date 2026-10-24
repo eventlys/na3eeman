@@ -5,7 +5,8 @@ import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
-import '../../../../Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/admin_service_provider.dart';
 import '../../../../Models/auth/user_model.dart';
 
 /// Super Admin — User Management Page.
@@ -116,7 +117,6 @@ class _UserList extends StatefulWidget {
 
 class _UserListState extends State<_UserList> {
   late Future<List<User>> _usersFuture;
-  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -134,7 +134,8 @@ class _UserListState extends State<_UserList> {
 
   void _loadUsers() {
     setState(() {
-      _usersFuture = _apiService
+      _usersFuture = context
+          .read<AdminServiceProvider>()
           .getUsers(
             role: widget.role == 'STAFF'
                 ? null
@@ -239,7 +240,10 @@ class _UserTileState extends State<_UserTile> {
     setState(() => _isLoading = true);
     try {
       final status = action == 'ban' ? 'INACTIVE' : 'ACTIVE';
-      await ApiService().updateUserStatus(widget.user.id, status);
+      await context.read<AdminServiceProvider>().updateUserStatus(
+        widget.user.id,
+        status,
+      );
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

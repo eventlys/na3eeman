@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import '../../../../../../Providers/features/owner_provider.dart';
 import '../../../../../../Providers/features/auth_provider.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/Models/salon/voucher_model.dart';
 import '../../../../../../core/theme/colors.dart';
 import '../../../../../../core/widgets/buttons/styled_buttons.dart';
@@ -17,7 +16,6 @@ class VoucherManagementPage extends StatefulWidget {
 }
 
 class _VoucherManagementPageState extends State<VoucherManagementPage> {
-  final ApiService _apiService = ApiService();
   List<Voucher> _vouchers = [];
   bool _isLoading = true;
 
@@ -33,7 +31,7 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
 
     try {
       setState(() => _isLoading = true);
-      final List<dynamic> data = await _apiService.getSalonVouchers(salonId);
+      final List<dynamic> data = await owner.getSalonVouchers(salonId);
 
       setState(() {
         _vouchers = data.map((e) => Voucher.fromJson(e)).toList();
@@ -311,7 +309,7 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
 
                   try {
                     if (voucher == null) {
-                      await _apiService.createVoucher({
+                      await ownerProvider.createVoucher({
                         'salon': salonId,
                         'fixed_amount': amount,
                         'expires_at': DateTime.now()
@@ -325,7 +323,7 @@ class _VoucherManagementPageState extends State<VoucherManagementPage> {
                         ),
                       });
                     } else {
-                      await _apiService.updateVoucher(voucher.id, {
+                      await ownerProvider.updateVoucher(voucher.id, {
                         'fixed_amount': amount,
                         'expires_at': DateTime.now()
                             .add(Duration(days: days))

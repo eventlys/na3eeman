@@ -1,14 +1,17 @@
 import '../base_provider.dart';
 import 'auth_provider.dart';
-import '../../Models/salon/staff_member_model.dart';
-import '../../Models/salon/expert_model.dart';
+import '../../Models/staff/staff_member.dart';
+import '../../Models/staff/expert.dart';
 import '../../Models/intern/intern_models.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/endpoints.dart';
 import '../../Helpers/logger.dart';
 
 class StaffProvider extends BaseProvider {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
+
+  StaffProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
   List<StaffMember> _staff = [];
   List<Expert> _experts = [];
   AuthProvider? _authProvider;
@@ -82,6 +85,21 @@ class StaffProvider extends BaseProvider {
     _selectedStaff = staff;
     notifyListeners();
   }
+
+  // ---------------------------------------------------------------------------
+  // DATA-ACCESS DELEGATES
+  // Pure pass-throughs so staff-facing widgets never touch ApiService directly.
+  // ---------------------------------------------------------------------------
+
+  /// Generic authenticated GET (raw JSON response).
+  Future<dynamic> apiGet(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+  }) => _apiService.get(endpoint, queryParams: queryParams);
+
+  /// Generic authenticated POST (raw JSON response).
+  Future<dynamic> apiPost(String endpoint, {Map<String, dynamic>? data}) =>
+      _apiService.post(endpoint, data: data);
 
   Future<void> fetchInternAttendance() async {
     try {

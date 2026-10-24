@@ -10,7 +10,6 @@ import 'Helpers/logger.dart';
 import 'Providers/main_providers.dart';
 import 'Providers/provider_wrapper.dart';
 import 'Routes/routes.dart';
-import 'Services/api/api_service.dart';
 import 'Services/core/performance_service.dart';
 import 'Services/general_service.dart';
 import 'Services/storage_service.dart';
@@ -77,9 +76,6 @@ void main() async {
   // Setup global error handling
   GlobalErrorHandler.setup();
 
-  // Setup dependency injection
-  DependencyInjection.setup();
-
   // Register background tasks
   BackgroundService().registerPeriodicTasks();
 
@@ -100,13 +96,7 @@ void main() async {
       supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
       path: 'assets/Lang',
       fallbackLocale: const Locale('en', 'US'),
-      child: MultiProvider(
-        providers: [
-          ...providers,
-          ChangeNotifierProvider(create: (_) => PointsProvider(ApiService())),
-        ],
-        child: const MyApp(),
-      ),
+      child: MultiProvider(providers: providers, child: const MyApp()),
     ),
   );
 }

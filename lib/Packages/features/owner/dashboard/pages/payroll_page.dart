@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
@@ -30,8 +31,9 @@ class _PayrollPageState extends State<PayrollPage> {
       _error = null;
     });
     try {
-      final api = ApiService();
-      final res = await api.get('/salons/payroll/');
+      final res = await context.read<OwnerProvider>().apiGet(
+        '/salons/payroll/',
+      );
       if (res is List) {
         setState(
           () => _records = List<Map<String, dynamic>>.from(
@@ -56,8 +58,10 @@ class _PayrollPageState extends State<PayrollPage> {
 
   Future<void> _markPaid(int id) async {
     try {
-      final api = ApiService();
-      await api.post('/salons/payroll/$id/mark_paid/', data: {});
+      await context.read<OwnerProvider>().apiPost(
+        '/salons/payroll/$id/mark_paid/',
+        data: {},
+      );
       AppSnackBar.success(context, 'Payroll record marked as paid');
       _load();
     } catch (e) {
@@ -101,9 +105,8 @@ class _PayrollPageState extends State<PayrollPage> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                final api = ApiService();
                 final now = DateTime.now();
-                await api.post(
+                await context.read<OwnerProvider>().apiPost(
                   '/salons/payroll/',
                   data: {
                     'expert': int.tryParse(expertCtrl.text) ?? 0,

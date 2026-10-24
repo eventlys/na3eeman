@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use, unused_element, unused_field, unused_local_variable, use_build_context_synchronously
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../../../Services/api/api_service.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
@@ -724,7 +723,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
       // Upload proof if applicable
       if (_paymentProof != null && appointmentId != null) {
-        await Provider.of<ApiService>(
+        await Provider.of<AppointmentProvider>(
           context,
           listen: false,
         ).uploadPaymentProof(

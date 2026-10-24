@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously
 import 'package:flutter/material.dart';
-import '../../../../Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/admin_service_provider.dart';
 import '../../../../Models/content/faq_model.dart';
 
 class AdminFAQManagementPage extends StatefulWidget {
@@ -27,7 +28,9 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
         _isLoading = true;
         _error = null;
       });
-      final List<dynamic> data = await ApiService().getFAQs();
+      final List<dynamic> data = await context
+          .read<AdminServiceProvider>()
+          .getFAQs();
       setState(() {
         _faqs = data.map((e) => FAQModel.fromJson(e)).toList();
         _isLoading = false;
@@ -42,7 +45,7 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
 
   Future<void> _deleteFAQ(int id) async {
     try {
-      await ApiService().deleteFAQ(id);
+      await context.read<AdminServiceProvider>().deleteFAQ(id);
       _fetchFAQs();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -108,9 +111,12 @@ class _AdminFAQManagementPageState extends State<AdminFAQManagementPage> {
 
               try {
                 if (faq == null) {
-                  await ApiService().createFAQ(data);
+                  await context.read<AdminServiceProvider>().createFAQ(data);
                 } else {
-                  await ApiService().updateFAQ(faq.id!, data);
+                  await context.read<AdminServiceProvider>().updateFAQ(
+                    faq.id!,
+                    data,
+                  );
                 }
                 if (mounted) {
                   Navigator.pop(context);

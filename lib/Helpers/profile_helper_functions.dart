@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../Providers/main_providers.dart';
 import '../Services/core/user_service.dart';
 import 'package:na3eeman/Helpers/logger.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHelperFunctions {

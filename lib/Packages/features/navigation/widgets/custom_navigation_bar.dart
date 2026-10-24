@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/themes/custome_neomorphics.dart';
-import '../../Navigations/navigation_config.dart';
+import '../navigation_config.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   final String currentRoute;

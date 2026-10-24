@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/points_provider.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
 /// Loyalty Points History page — WAJ + Fresha parity
@@ -30,8 +31,9 @@ class _LoyaltyHistoryPageState extends State<LoyaltyHistoryPage> {
     });
 
     try {
-      final api = ApiService();
-      final balanceRes = await api.get('/loyalty/balance/');
+      final balanceRes = await context.read<PointsProvider>().apiGet(
+        '/loyalty/balance/',
+      );
 
       if (balanceRes is Map) {
         _balance = Map<String, dynamic>.from(balanceRes);

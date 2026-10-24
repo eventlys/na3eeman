@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
 import '../../constants/app_roles.dart';
 import '../../themes/app_theme.dart';
+import '../../../../Routes/route_names.dart';
 
 /// Side drawer navigation widget for Admin, Owner, and Manager roles.
 /// Renders a different set of sections based on [role].
@@ -81,7 +82,7 @@ class AppDrawer extends StatelessWidget {
             _DrawerItem(
               icon: Icons.dashboard_outlined,
               label: "overview".tr(),
-              route: '/admin',
+              route: RouteNames.admin,
               currentRoute: currentRoute,
               primary: primary,
               isDark: isDark,
@@ -89,7 +90,7 @@ class AppDrawer extends StatelessWidget {
             _DrawerItem(
               icon: Icons.people_outline_rounded,
               label: "user_management".tr(),
-              route: '/admin/users',
+              route: RouteNames.adminUsers,
               currentRoute: currentRoute,
               primary: primary,
               isDark: isDark,
@@ -152,7 +153,7 @@ class AppDrawer extends StatelessWidget {
             _DrawerItem(
               icon: Icons.group_outlined,
               label: "staff".tr(),
-              route: '/staff',
+              route: RouteNames.staff,
               currentRoute: currentRoute,
               primary: primary,
               isDark: isDark,
@@ -178,7 +179,7 @@ class AppDrawer extends StatelessWidget {
           _DrawerItem(
             icon: Icons.person_outline_rounded,
             label: "profile".tr(),
-            route: '/profile',
+            route: RouteNames.profile,
             currentRoute: currentRoute,
             primary: primary,
             isDark: isDark,
@@ -186,7 +187,7 @@ class AppDrawer extends StatelessWidget {
           _DrawerItem(
             icon: Icons.settings_outlined,
             label: "settings".tr(),
-            route: '/settings',
+            route: RouteNames.settings,
             currentRoute: currentRoute,
             primary: primary,
             isDark: isDark,

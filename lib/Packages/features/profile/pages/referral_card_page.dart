@@ -1,7 +1,8 @@
 // ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/points_provider.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
 /// Referral Programme page — WAJ parity
@@ -31,8 +32,9 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
     });
 
     try {
-      final api = ApiService();
-      final res = await api.get('/loyalty/referral/');
+      final res = await context.read<PointsProvider>().apiGet(
+        '/loyalty/referral/',
+      );
       if (res is Map) {
         setState(() => _referral = Map<String, dynamic>.from(res));
       } else if (res is List && res.isNotEmpty) {
@@ -40,9 +42,12 @@ class _ReferralCardPageState extends State<ReferralCardPage> {
       }
     } catch (e) {
       // If 404, create a referral code automatically
+      if (!mounted) return;
       try {
-        final api = ApiService();
-        final res = await api.post('/loyalty/referral/', data: {});
+        final res = await context.read<PointsProvider>().apiPost(
+          '/loyalty/referral/',
+          data: {},
+        );
         if (res is Map) {
           setState(() => _referral = Map<String, dynamic>.from(res));
         }

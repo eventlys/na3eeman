@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:get_it/get_it.dart';
 import '../Helpers/config.dart';
 import '../Services/business_service.dart';
 import '../Services/api/api_service.dart';
-import '../Services/ui/navigation_service.dart';
-// import '../Packages/Core/utils/helpers/themes_helpers.dart';
 import 'app_providers.dart';
-// import 'base_provider.dart';
 import 'features/app_state_provider.dart';
 import 'features/auth_provider.dart';
 import 'features/salon_provider.dart';
@@ -26,28 +22,13 @@ import 'features/offers_provider.dart';
 import 'features/owner_provider.dart'; // ← Owner module
 import 'features/intern_provider.dart'; // Added
 import 'features/notification_provider.dart';
+import 'features/points_provider.dart';
 import 'features/admin_analytics_provider.dart';
 import 'features/admin_service_provider.dart';
 import 'features/schedule_provider.dart';
 import 'features/gift_card_provider.dart';
 import '../Helpers/inventory_helpers.dart'; // Added
 import 'locale_provider.dart';
-
-// Service Locator
-final GetIt locator = GetIt.instance;
-
-class DependencyInjection {
-  static void setup() {
-    // Services
-    // locator.registerLazySingleton(() => AuthService());
-    locator.registerLazySingleton(() => ApiService());
-    locator.registerLazySingleton(() => NavigationService());
-
-    // Providers will be registered through Provider package
-  }
-
-  static T get<T extends Object>() => locator.get<T>();
-}
 
 // Provider List for MultiProvider
 List<SingleChildWidget> providers = [
@@ -147,5 +128,6 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider(create: (_) => AdminServiceProvider()),
   ChangeNotifierProvider(create: (_) => NotificationProvider()),
   ChangeNotifierProvider(create: (_) => ScheduleProvider()),
-  ChangeNotifierProvider(create: (_) => GiftCardProvider(ApiService())),
+  ChangeNotifierProvider(create: (_) => GiftCardProvider()),
+  ChangeNotifierProvider(create: (_) => PointsProvider()),
 ];

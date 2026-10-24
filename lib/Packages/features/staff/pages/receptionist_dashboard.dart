@@ -6,9 +6,6 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart'; // Added
 import 'receptionist/receptionist_inventory_page.dart'; // Added
-// Added
-// Added
-// Added
 import '../../salon/pages/salon_owner_dashboard.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
@@ -1657,52 +1654,6 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
       ],
     );
   }
-
-  // Widget _buildGuideLink(BuildContext context, String title, String hint) {
-  //   return Row(
-  //     children: [
-  //       Container(
-  //         padding: const EdgeInsets.all(8),
-  //         decoration: BoxDecoration(
-  //           color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-  //           borderRadius: BorderRadius.circular(10),
-  //         ),
-  //         child: Icon(
-  //           Icons.lightbulb_outline_rounded,
-  //           color: Theme.of(context).primaryColor,
-  //           size: 20,
-  //         ),
-  //       ),
-  //       const SizedBox(width: 16),
-  //       Expanded(
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(
-  //               title,
-  //               style: const TextStyle(
-  //                 fontWeight: FontWeight.bold,
-  //                 fontSize: 14,
-  //               ),
-  //             ),
-  //             Text(
-  //               hint,
-  //               style: const TextStyle(
-  //                 color: AppColors.almostBlack300,
-  //                 fontSize: 12,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       const Icon(
-  //         Icons.arrow_forward_ios_rounded,
-  //         size: 14,
-  //         color: AppColors.almostBlack300,
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildCustomerSearchItem(String name, String phone) {
     return ListTile(

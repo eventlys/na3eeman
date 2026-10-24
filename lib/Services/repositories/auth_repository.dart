@@ -3,12 +3,12 @@ import '../api/endpoints.dart';
 import '../../Helpers/error_handler.dart';
 import '../../Helpers/logger.dart';
 import '../../Models/auth/user_model.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AuthRepository {
   final ApiService _apiService;
 
-  AuthRepository(this._apiService);
+  AuthRepository([ApiService? apiService])
+    : _apiService = apiService ?? ApiService();
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
@@ -198,13 +198,13 @@ class AuthRepository {
       if (response is Map<String, dynamic>) {
         return {
           'success': response['success'] ?? true,
-          'message': response['message'] ?? 'OTP sent successfully'.tr(),
+          'message': response['message'] ?? 'OTP sent successfully',
           ...response,
         };
       }
       return {
         'success': true,
-        'message': 'OTP sent successfully'.tr(),
+        'message': 'OTP sent successfully',
         'data': response,
       };
     } catch (error) {
@@ -228,13 +228,13 @@ class AuthRepository {
       if (response is Map<String, dynamic>) {
         return {
           'success': response['success'] ?? true,
-          'message': response['message'] ?? 'OTP verified successfully'.tr(),
+          'message': response['message'] ?? 'OTP verified successfully',
           ...response,
         };
       }
       return {
         'success': true,
-        'message': 'OTP verified successfully'.tr(),
+        'message': 'OTP verified successfully',
         'data': response,
       };
     } catch (error) {
@@ -266,13 +266,13 @@ class AuthRepository {
       if (response is Map<String, dynamic>) {
         return {
           'success': response['success'] ?? true,
-          'message': response['message'] ?? 'Password reset successful'.tr(),
+          'message': response['message'] ?? 'Password reset successful',
           ...response,
         };
       }
       return {
         'success': true,
-        'message': 'Password reset successful'.tr(),
+        'message': 'Password reset successful',
         'data': response,
       };
     } catch (error) {

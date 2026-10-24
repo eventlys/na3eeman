@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
@@ -41,8 +41,9 @@ class _OffersManagementPageState extends State<OffersManagementPage>
     try {
       final auth = Provider.of<AuthProvider>(context, listen: false);
       final salonId = auth.user?.salonId ?? 1;
-      final api = ApiService();
-      final res = await api.get('/salons/$salonId/offers/');
+      final res = await context.read<OwnerProvider>().apiGet(
+        '/salons/$salonId/offers/',
+      );
       if (res is List) {
         setState(() {
           _offers = List<Map<String, dynamic>>.from(
@@ -69,8 +70,9 @@ class _OffersManagementPageState extends State<OffersManagementPage>
     try {
       final auth = Provider.of<AuthProvider>(context, listen: false);
       final salonId = auth.user?.salonId ?? 1;
-      final api = ApiService();
-      final res = await api.get('/salons/$salonId/packages/');
+      final res = await context.read<OwnerProvider>().apiGet(
+        '/salons/$salonId/packages/',
+      );
       if (res is List) {
         setState(() {
           _packages = List<Map<String, dynamic>>.from(
@@ -197,8 +199,7 @@ class _OffersManagementPageState extends State<OffersManagementPage>
                         listen: false,
                       );
                       final salonId = auth.user?.salonId ?? 1;
-                      final api = ApiService();
-                      await api.post(
+                      await context.read<OwnerProvider>().apiPost(
                         '/salons/$salonId/offers/',
                         data: {
                           'title': titleCtrl.text,

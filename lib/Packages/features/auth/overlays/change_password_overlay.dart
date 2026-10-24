@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/repositories/auth_repository.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/auth_provider.dart';
 import 'package:na3eeman/Packages/Core/utils/validators.dart';
 import 'package:na3eeman/Packages/Core/widgets/password_strength_indicator.dart';
 
@@ -136,8 +136,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
     if (_formKey.currentState!.validate()) {
       try {
-        final authRepo = AuthRepository(ApiService());
-        await authRepo.changePassword(
+        // Route through the AuthProvider's shared AuthService (which guards
+        // the call with ChangePasswordUseCase validation).
+        await context.read<AuthProvider>().authService.changePassword(
           currentPassword: _currentPasswordController.text,
           newPassword: _newPasswordController.text,
         );

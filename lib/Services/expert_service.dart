@@ -5,7 +5,10 @@ import 'api/api_service.dart';
 import 'api/endpoints.dart';
 
 class ExpertService {
-  final ApiService _apiService = ApiService();
+  ExpertService({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
+
+  final ApiService _apiService;
 
   Future<List<ExpertDto>> getExperts({
     int page = 1,

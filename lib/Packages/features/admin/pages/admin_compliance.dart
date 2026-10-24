@@ -6,7 +6,7 @@ import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/constants/app_roles.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
-import '../../../../Packages/Core/widgets/common/app_button.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../Packages/Core/widgets/navigation/app_drawer.dart';
 
 /// Super Admin — Compliance & Violations Page.
@@ -214,39 +214,40 @@ class _DisputeQueue extends StatelessWidget {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        AppButton(
-                          label: 'Resolve',
-                          size: AppButtonSize.sm,
-                          onPressed: () {
-                            AppSnackBar.info(
-                              context,
-                              'feature_coming_soon'.tr(),
-                            );
-                          },
+                        Expanded(
+                          child: PrimaryButton(
+                            text: 'Resolve',
+                            onPressed: () {
+                              AppSnackBar.info(
+                                context,
+                                'feature_coming_soon'.tr(),
+                              );
+                            },
+                          ),
                         ),
                         const SizedBox(width: 8),
-                        AppButton(
-                          label: 'Dismiss',
-                          type: AppButtonType.outline,
-                          size: AppButtonSize.sm,
-                          onPressed: () {
-                            AppSnackBar.info(
-                              context,
-                              'feature_coming_soon'.tr(),
-                            );
-                          },
+                        Expanded(
+                          child: SecondaryButton(
+                            text: 'Dismiss',
+                            onPressed: () {
+                              AppSnackBar.info(
+                                context,
+                                'feature_coming_soon'.tr(),
+                              );
+                            },
+                          ),
                         ),
                         const SizedBox(width: 8),
-                        AppButton(
-                          label: 'Escalate',
-                          type: AppButtonType.ghost,
-                          size: AppButtonSize.sm,
-                          onPressed: () {
-                            AppSnackBar.info(
-                              context,
-                              'feature_coming_soon'.tr(),
-                            );
-                          },
+                        Expanded(
+                          child: DangerButton(
+                            text: 'Escalate',
+                            onPressed: () {
+                              AppSnackBar.info(
+                                context,
+                                'feature_coming_soon'.tr(),
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),

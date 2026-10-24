@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../../themes/app_theme.dart';
 import '../../constants/app_color.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 /// Themed input field that adapts to the active theme accent.

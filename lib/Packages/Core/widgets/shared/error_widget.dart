@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../constants/app_color.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -66,7 +65,7 @@ class AppErrorWidget extends StatelessWidget {
             if (title != null) ...[
               Text(
                 title!,
-                style: context.textTheme.titleLarge?.copyWith(
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: _getErrorColor(context),
                 ),
@@ -76,7 +75,7 @@ class AppErrorWidget extends StatelessWidget {
             ],
             Text(
               message,
-              style: context.textTheme.bodyMedium?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: isDark
                     ? AppColor.darkTextSecondary
                     : AppColor.lightTextSecondary,
@@ -117,14 +116,14 @@ class AppErrorWidget extends StatelessWidget {
                 if (title != null)
                   Text(
                     title!,
-                    style: context.textTheme.bodySmall?.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: errorColor,
                     ),
                   ),
                 Text(
                   message,
-                  style: context.textTheme.bodySmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: isDark
                         ? AppColor.darkTextSecondary
                         : AppColor.lightTextSecondary,

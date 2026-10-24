@@ -12,7 +12,8 @@ class PointsProvider with ChangeNotifier {
   bool _hasPendingPenalty = false;
   LoyaltyProgram? _rules;
 
-  PointsProvider(this._loyaltyService);
+  PointsProvider({ApiService? apiService})
+    : _loyaltyService = apiService ?? ApiService();
 
   int get currentBalance => _currentBalance;
   bool get isLoading => _isLoading;
@@ -95,6 +96,12 @@ class PointsProvider with ChangeNotifier {
     }
   }
 
+  /// Submit a feedback opinion (pure delegate, no state change).
+  Future<dynamic> submitFeedbackOpinion({
+    required String message,
+    required String role,
+  }) => _loyaltyService.submitFeedbackOpinion(message: message, role: role);
+
   Future<void> submitSalonFeedback({
     required int customerId,
     required String salonName,
@@ -168,6 +175,22 @@ class PointsProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Look up a loyalty balance by customer phone (pure delegate, raw GET).
+  Future<dynamic> getLoyaltyBalanceByPhone(String phone) => _loyaltyService.get(
+    '/loyalty/balance-by-phone/',
+    queryParams: {'phone': phone},
+  );
+
+  /// Generic authenticated GET against the loyalty API (pure delegate).
+  Future<dynamic> apiGet(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+  }) => _loyaltyService.get(endpoint, queryParams: queryParams);
+
+  /// Generic authenticated POST against the loyalty API (pure delegate).
+  Future<dynamic> apiPost(String endpoint, {Map<String, dynamic>? data}) =>
+      _loyaltyService.post(endpoint, data: data);
 
   int calculatePointsValue(double jod) => (jod * 200).toInt();
 

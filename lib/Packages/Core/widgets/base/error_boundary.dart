@@ -5,6 +5,7 @@ import '../../constants/app_color.dart';
 import '../../constants/app_images.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../../../../Helpers/error_handler.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class ErrorBoundary extends StatefulWidget {

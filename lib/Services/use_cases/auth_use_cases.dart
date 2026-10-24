@@ -43,6 +43,12 @@ class RegisterUseCase {
 
   RegisterUseCase(this._repository);
 
+  /// Validates a registration payload in the shape the app actually sends.
+  ///
+  /// The email signup page posts `phone` (10-digit local format) and
+  /// uppercase `gender`/`role`; the social signup helper posts `phone_number`
+  /// (optional) and title-case `gender` with lowercase `role`. Both shapes
+  /// are accepted here so valid existing inputs keep working.
   Future<Map<String, dynamic>> execute(Map<String, dynamic> userData) async {
     // Validation
     final requiredFields = [
@@ -50,7 +56,6 @@ class RegisterUseCase {
       'last_name',
       'email',
       'password',
-      'phone_number',
       'gender',
       'role',
     ];
@@ -64,22 +69,27 @@ class RegisterUseCase {
       throw AppError('Please enter a valid email', type: ErrorType.validation);
     }
 
-    if (userData['password'].length < 6) {
+    if (userData['password'].toString().length < 6) {
       throw AppError(
         'Password must be at least 6 characters',
         type: ErrorType.validation,
       );
     }
 
-    if (!_isValidPhone(userData['phone_number'])) {
-      throw AppError(
-        'Please enter a valid phone number',
-        type: ErrorType.validation,
-      );
+    // Phone is optional (absent for most social signups) but validated when
+    // present; `phone` (email signup) and `phone_number` (social) both count.
+    final phone = userData['phone'] ?? userData['phone_number'];
+    if (phone != null && phone.toString().isNotEmpty) {
+      if (!_isValidPhone(phone.toString())) {
+        throw AppError(
+          'Please enter a valid phone number',
+          type: ErrorType.validation,
+        );
+      }
     }
 
-    final validRoles = ['customer', 'expert', 'owner', 'admin'];
-    if (!validRoles.contains(userData['role'])) {
+    const validRoles = ['customer', 'expert', 'owner', 'admin'];
+    if (!validRoles.contains(userData['role'].toString().toLowerCase())) {
       throw AppError('Invalid role specified', type: ErrorType.validation);
     }
 
@@ -94,8 +104,11 @@ class RegisterUseCase {
   }
 
   bool _isValidPhone(String phone) {
+    // Accepts the email-signup format (07XXXXXXXX) and international
+    // E.164-style numbers, with or without separators.
+    final cleaned = phone.replaceAll(RegExp(r'[\s\-()]'), '');
     final phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
-    return phoneRegex.hasMatch(phone);
+    return phoneRegex.hasMatch(cleaned);
   }
 }
 
@@ -121,6 +134,42 @@ class ForgotPasswordUseCase {
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
     return emailRegex.hasMatch(email);
+  }
+}
+
+class VerifyPasswordResetOtpUseCase {
+  final AuthRepository _repository;
+
+  VerifyPasswordResetOtpUseCase(this._repository);
+
+  Future<Map<String, dynamic>> execute({
+    required String email,
+    required String otp,
+  }) async {
+    if (email.isEmpty || otp.isEmpty) {
+      throw AppError('Email and OTP are required', type: ErrorType.validation);
+    }
+
+    if (!_isValidEmail(email)) {
+      throw AppError('Please enter a valid email', type: ErrorType.validation);
+    }
+
+    if (!_isValidOtp(otp)) {
+      throw AppError('OTP must be 4 to 8 digits', type: ErrorType.validation);
+    }
+
+    return await _repository.verifyPasswordResetOtp(email: email, otp: otp);
+  }
+
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
+  bool _isValidOtp(String otp) {
+    return RegExp(r'^[0-9]{4,8}$').hasMatch(otp);
   }
 }
 

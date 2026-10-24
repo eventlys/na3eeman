@@ -3,10 +3,10 @@ class Subscription {
   final int customerId;
   final int salonId;
   final String planName;
-  final String subscriptionType;
+  final String subscriptionType; // 'MONTHLY', 'BIWEEKLY'
   final double price;
   final DateTime startDate;
-  final DateTime endDate;
+  final DateTime? endDate;
   final String status;
   final bool isActive;
   final bool autoRenew;
@@ -20,26 +20,43 @@ class Subscription {
     required this.subscriptionType,
     required this.price,
     required this.startDate,
-    required this.endDate,
+    this.endDate,
     required this.status,
-    required this.isActive,
-    required this.autoRenew,
+    this.isActive = true,
+    this.autoRenew = true,
     required this.features,
   });
 
   factory Subscription.fromJson(Map<String, dynamic> json) {
+    // Accepts both API payload shapes:
+    // - Django FK ids: 'customer' / 'salon'
+    // - Flutter-style ids: 'customer_id'/'customerId', 'salon_id'/'salonId'
+    final dynamic customer = json['customer'];
+    final dynamic salon = json['salon'];
+    final dynamic price = json['price'];
+    final dynamic startDate = json['start_date'] ?? json['startDate'];
+    final dynamic endDate = json['end_date'] ?? json['endDate'];
     return Subscription(
-      id: json['id'].toString(),
-      customerId: json['customer_id'] ?? json['customerId'] ?? 0,
-      salonId: json['salon_id'] ?? json['salonId'] ?? 0,
-      planName: json['plan_name'] ?? json['planName'],
-      subscriptionType: json['subscription_type'] ?? json['subscriptionType'],
-      price: (json['price'] as num).toDouble(),
-      startDate: DateTime.parse(json['start_date'] ?? json['startDate']),
-      endDate: DateTime.parse(json['end_date'] ?? json['endDate']),
-      status: json['status'],
-      isActive: json['is_active'] ?? false,
-      autoRenew: json['auto_renew'] ?? false,
+      id: json['id']?.toString() ?? '',
+      customerId: customer is int
+          ? customer
+          : (json['customer_id'] ?? json['customerId'] ?? 0),
+      salonId: salon is int
+          ? salon
+          : (json['salon_id'] ?? json['salonId'] ?? 0),
+      planName: json['plan_name'] ?? json['planName'] ?? 'Premium Plan',
+      subscriptionType:
+          json['subscription_type'] as String? ??
+          json['subscriptionType'] as String? ??
+          'MONTHLY',
+      price: price is double
+          ? price
+          : (double.tryParse(price?.toString() ?? '0.0') ?? 0.0),
+      startDate: DateTime.parse(startDate as String),
+      endDate: endDate != null ? DateTime.parse(endDate as String) : null,
+      status: json['status'] ?? 'Active',
+      isActive: json['is_active'] as bool? ?? true,
+      autoRenew: json['auto_renew'] as bool? ?? true,
       features: List<String>.from(json['features'] ?? []),
     );
   }
@@ -47,17 +64,90 @@ class Subscription {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'customer_id': customerId,
-      'salon_id': salonId,
+      'customer': customerId,
+      'salon': salonId,
       'plan_name': planName,
       'subscription_type': subscriptionType,
       'price': price,
       'start_date': startDate.toIso8601String(),
-      'end_date': endDate.toIso8601String(),
+      'end_date': endDate?.toIso8601String(),
       'status': status,
       'is_active': isActive,
       'auto_renew': autoRenew,
       'features': features,
     };
+  }
+
+  int get daysRemaining => endDate?.difference(DateTime.now()).inDays ?? 0;
+  bool get isExpired => endDate != null && DateTime.now().isAfter(endDate!);
+}
+
+class SalonSubscription {
+  final String id;
+  final String name;
+  final String description;
+  final double price;
+  final String duration; // 'MONTHLY', 'BIWEEKLY'
+  final List<String> features;
+  final bool isPopular;
+  final int? salonId;
+
+  const SalonSubscription({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.duration,
+    required this.features,
+    this.isPopular = false,
+    this.salonId,
+  });
+
+  String get formattedPrice => '\$${price.toStringAsFixed(2)}';
+
+  String get formattedDuration {
+    switch (duration) {
+      case 'MONTHLY':
+        return '1 month';
+      case 'BIWEEKLY':
+        return '2 weeks';
+      default:
+        return duration.toLowerCase();
+    }
+  }
+
+  factory SalonSubscription.fromJson(Map<String, dynamic> json) {
+    return SalonSubscription(
+      id: json['id']?.toString() ?? '',
+      name: json['name'] as String,
+      description: json['description'] as String,
+      price: (json['price'] as num).toDouble(),
+      duration: json['duration'] as String? ?? 'MONTHLY',
+      features: List<String>.from(json['features'] ?? []),
+      isPopular: json['is_popular'] as bool? ?? false,
+      salonId: json['salon'] as int?,
+    );
+  }
+
+  SalonSubscription copyWith({
+    String? id,
+    String? name,
+    String? description,
+    double? price,
+    String? duration,
+    List<String>? features,
+    bool? isPopular,
+    int? salonId,
+  }) {
+    return SalonSubscription(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      duration: duration ?? this.duration,
+      features: features ?? this.features,
+      isPopular: isPopular ?? this.isPopular,
+      salonId: salonId ?? this.salonId,
+    );
   }
 }

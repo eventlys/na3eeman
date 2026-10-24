@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/salon_provider.dart';
 import '../../../../../core/theme/colors.dart';
-import '../../../../../Services/api/api_service.dart';
 import '../../../../../Services/api/endpoints.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
@@ -37,8 +36,7 @@ class _StaffManagementPageState extends State<StaffManagementPage>
     setState(() => _isLoading = true);
     try {
       final salon = context.read<SalonProvider>().selectedSalon;
-      final apiService = ApiService();
-      final response = await apiService.get(
+      final response = await context.read<SalonProvider>().apiGet(
         Endpoints.usersStaff,
         queryParams: salon != null ? {'salon': salon.id.toString()} : null,
       );

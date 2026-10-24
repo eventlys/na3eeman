@@ -11,10 +11,14 @@ class ServiceProvider with ChangeNotifier {
   List<Map<String, dynamic>> get availableAdditionalServices =>
       _availableAdditionalServices;
 
-  final ApiService _apiService = ApiService();
+  // Retained as an injection seam: no instance reads it directly today
+  // (the public getter that exposed it was removed), so it is discarded.
+  // ignore: unused_field
+  final ApiService _apiService;
   late ExpertService _expertService;
 
-  ServiceProvider() {
+  ServiceProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService() {
     _initializeServices();
   }
 
@@ -23,7 +27,6 @@ class ServiceProvider with ChangeNotifier {
   }
 
   ExpertService get expertService => _expertService;
-  ApiService get apiService => _apiService;
 
   // Initialize with main service
   void initializeServiceSelection(Map<String, dynamic> mainService) {

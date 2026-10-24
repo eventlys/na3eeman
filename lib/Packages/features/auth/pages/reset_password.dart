@@ -9,6 +9,7 @@ import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import '../../../Core/widgets/password_strength_indicator.dart';
+import '../../../../Routes/route_names.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   final String resetToken;
@@ -97,7 +98,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       // Navigate to login page after successful reset
       await Future.delayed(const Duration(seconds: 2));
       if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteNames.login,
+          (route) => false,
+        );
       }
     }
   }

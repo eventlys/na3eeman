@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/salon_provider.dart';
 import '../../../../core/theme/colors.dart';
 
 class PerServiceSelectionPage extends StatefulWidget {
@@ -19,7 +20,6 @@ class PerServiceSelectionPage extends StatefulWidget {
 }
 
 class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
-  final ApiService _api = ApiService();
   List<dynamic> _experts = [];
   bool _isLoading = true;
 
@@ -31,7 +31,9 @@ class _PerServiceSelectionPageState extends State<PerServiceSelectionPage> {
 
   Future<void> _loadExperts() async {
     try {
-      final experts = await _api.getSalonExperts(widget.salonId);
+      final experts = await context.read<SalonProvider>().getSalonExpertsRaw(
+        widget.salonId,
+      );
       // In a real app, you might filter experts by the specific service they provide
       if (mounted) {
         setState(() {

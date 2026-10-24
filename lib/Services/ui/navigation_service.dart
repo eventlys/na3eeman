@@ -1,6 +1,7 @@
 // ignore_for_file: unreachable_switch_default
 import 'package:flutter/material.dart';
 import '../../Packages/Core/constants/app_roles.dart';
+import '../../Routes/route_names.dart';
 
 class NavigationService {
   static void navigateToHomeBasedOnRole(
@@ -14,7 +15,7 @@ class NavigationService {
       case UserRole.customer:
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/customer_home',
+          RouteNames.customerHome,
           (route) => false,
         );
         break;
@@ -25,21 +26,21 @@ class NavigationService {
       case UserRole.manager:
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/expert_home',
+          RouteNames.expertHome,
           (route) => false,
         );
         break;
       case UserRole.intern:
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/intern_dashboard',
+          RouteNames.internDashboard,
           (route) => false,
         );
         break;
       case UserRole.receptionist:
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/receptionist_dashboard',
+          RouteNames.receptionistDashboard,
           (route) => false,
         );
         break;
@@ -47,17 +48,21 @@ class NavigationService {
       case UserRole.cofounder:
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/management_dashboard',
+          RouteNames.managementDashboard,
           (route) => false,
         );
         break;
       case UserRole.admin:
-        Navigator.pushNamedAndRemoveUntil(context, '/admin', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteNames.admin,
+          (route) => false,
+        );
         break;
       default:
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/customer_home',
+          RouteNames.customerHome,
           (route) => false,
         );
     }
@@ -70,11 +75,11 @@ class NavigationService {
   }
 
   static void navigateToProfile(BuildContext context) {
-    Navigator.pushNamed(context, '/profile');
+    Navigator.pushNamed(context, RouteNames.profile);
   }
 
   static void navigateToSettings(BuildContext context) {
-    Navigator.pushNamed(context, '/settings');
+    Navigator.pushNamed(context, RouteNames.settings);
   }
 
   static void navigateToSalonDetails(

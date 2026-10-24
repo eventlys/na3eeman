@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:na3eeman/Providers/features/salon_provider.dart';
+import 'package:na3eeman/Providers/features/gift_card_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/points_provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
@@ -67,10 +68,10 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
       }
 
       final results = await Future.wait([
-        ApiService().getSalonServices(salonId),
-        ApiService().getSalonPackages(salonId),
-        ApiService().getSalonOffers(salonId),
-        ApiService().getSalonProducts(salonId),
+        context.read<SalonProvider>().getSalonServicesRaw(salonId),
+        context.read<SalonProvider>().getSalonPackagesRaw(salonId),
+        context.read<SalonProvider>().getSalonOffersRaw(salonId),
+        context.read<SalonProvider>().getSalonProductsRaw(salonId),
       ]);
 
       setState(() {
@@ -128,7 +129,9 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   Future<void> _verifyVoucher(StateSetter setModalState) async {
     if (_voucherCtrl.text.isEmpty) return;
     try {
-      final res = await ApiService().verifyGiftCard(_voucherCtrl.text);
+      final res = await context.read<GiftCardProvider>().verifyGiftCard(
+        _voucherCtrl.text,
+      );
       if (mounted) {
         setModalState(() {
           _voucherCode = _voucherCtrl.text;
@@ -305,9 +308,8 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   Future<void> _lookupCustomer() async {
     if (_phoneCtrl.text.isEmpty) return;
     try {
-      final res = await ApiService().get(
-        '/loyalty/balance-by-phone/',
-        queryParams: {'phone': _phoneCtrl.text},
+      final res = await context.read<PointsProvider>().getLoyaltyBalanceByPhone(
+        _phoneCtrl.text,
       );
       setState(() {
         _customerBalance = res['points'];
@@ -630,7 +632,9 @@ class _PosTerminalPageState extends State<PosTerminalPage> {
   Widget _buildExpertSelector(StateSetter setModalState) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return FutureBuilder<List<dynamic>>(
-      future: ApiService().getSalonExperts(authProvider.user!.salonId!),
+      future: context.read<SalonProvider>().getSalonExpertsRaw(
+        authProvider.user!.salonId!,
+      ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();

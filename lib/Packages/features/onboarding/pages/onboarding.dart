@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
 // import '../../../../Packages/Core/utils/helpers/themes_helpers.dart';
-import '../../../../Packages/Core/widgets/common/app_button.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../Routes/route_names.dart';
+
 // import '../../../../Providers/app_providers.dart';
 // import 'package:provider/provider.dart';
 
@@ -30,7 +32,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, RouteNames.login);
     }
   }
 
@@ -121,11 +123,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
                   child: Column(
                     children: [
-                      AppButton(
-                        label: _page == 2
-                            ? 'get_started'.tr()
-                            : 'continue'.tr(),
-                        fullWidth: true,
+                      PrimaryButton(
+                        text: _page == 2 ? 'get_started'.tr() : 'continue'.tr(),
                         icon: _page == 2 ? Icons.arrow_forward_rounded : null,
                         onPressed: (_page == 1 && _gender == null)
                             ? null
@@ -134,8 +133,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       if (_page == 0) ...[
                         const SizedBox(height: 12),
                         TextButton(
-                          onPressed: () =>
-                              Navigator.pushReplacementNamed(context, '/login'),
+                          onPressed: () => Navigator.pushReplacementNamed(
+                            context,
+                            RouteNames.login,
+                          ),
                           child: Text(
                             "already_have_an_account_log_in".tr(),
                             style: TextStyle(

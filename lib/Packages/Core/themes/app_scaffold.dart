@@ -6,6 +6,7 @@ import '../utils/helpers/refresh_widgets.dart';
 import 'app_theme.dart';
 import 'glass_appbar.dart';
 import '../widgets/shared/error_widget.dart';
+import '../../../Routes/route_names.dart';
 
 class AppScaffold extends StatelessWidget {
   final String? title;
@@ -282,7 +283,7 @@ class AppScaffold extends StatelessWidget {
 
   Widget _buildNavigationBar(BuildContext context) {
     return CustomNavigationBar(
-      currentRoute: ModalRoute.of(context)?.settings.name ?? '/login',
+      currentRoute: ModalRoute.of(context)?.settings.name ?? RouteNames.login,
     );
   }
 

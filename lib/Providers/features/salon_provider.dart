@@ -12,6 +12,10 @@ import '../../Services/api/endpoints.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class SalonProvider extends BaseProvider {
+  SalonProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
+
+  final ApiService _apiService;
   List<Salon> _salons = [];
   List<Branch> _branches = [];
   List<SalonService> _services = [];
@@ -44,6 +48,71 @@ class SalonProvider extends BaseProvider {
     return _services;
   }
 
+  // ---------------------------------------------------------------------------
+  // DATA-ACCESS DELEGATES
+  // Pure pass-throughs so catalog-facing widgets never touch ApiService
+  // directly. No business logic lives here.
+  // ---------------------------------------------------------------------------
+
+  /// Generic authenticated GET (raw JSON response).
+  Future<dynamic> apiGet(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+  }) => _apiService.get(endpoint, queryParams: queryParams);
+
+  Future<List<dynamic>> getCategories() => _apiService.getCategories();
+
+  Future<List<dynamic>> getAdsByCategory(int categoryId) =>
+      _apiService.getAdsByCategory(categoryId);
+
+  Future<List<dynamic>> getOffersByCategory(int categoryId) =>
+      _apiService.getOffersByCategory(categoryId);
+
+  Future<Map<String, dynamic>> getNearbySalonsByCategory({
+    required double latitude,
+    required double longitude,
+    required int categoryId,
+    bool forGift = false,
+    String? giftGender,
+  }) => _apiService.getNearbySalonsByCategory(
+    latitude: latitude,
+    longitude: longitude,
+    categoryId: categoryId,
+    forGift: forGift,
+    giftGender: giftGender,
+  );
+
+  Future<dynamic> getSalonsRaw({int page = 1, int limit = 20}) =>
+      _apiService.getSalons(page: page, limit: limit);
+
+  Future<Map<String, dynamic>> getSalonDetailsRaw(int salonId) =>
+      _apiService.getSalonDetails(salonId);
+
+  Future<List<dynamic>> getSalonServicesRaw(int salonId) =>
+      _apiService.getSalonServices(salonId);
+
+  Future<List<dynamic>> getSalonPackagesRaw(int salonId) =>
+      _apiService.getSalonPackages(salonId);
+
+  Future<List<dynamic>> getSalonOffersRaw(int salonId) =>
+      _apiService.getSalonOffers(salonId);
+
+  Future<List<dynamic>> getSalonProductsRaw(int salonId) =>
+      _apiService.getSalonProducts(salonId);
+
+  Future<List<dynamic>> getSalonExpertsRaw(int salonId) =>
+      _apiService.getSalonExperts(salonId);
+
+  Future<Map<String, dynamic>> getAppointmentsRaw({
+    int? customerId,
+    String? status,
+    int? pageSize,
+  }) => _apiService.getAppointments(
+    customerId: customerId,
+    status: status,
+    pageSize: pageSize,
+  );
+
   // Methods
   void updateAuth(AuthProvider authProvider) {
     _authProvider = authProvider;
@@ -75,7 +144,7 @@ class SalonProvider extends BaseProvider {
 
   Future<void> loadSalons() async {
     try {
-      final response = await ApiService().get(Endpoints.salons);
+      final response = await _apiService.get(Endpoints.salons);
       AppLogger.info('loadSalons Response: $response');
       final List<dynamic> results =
           response['results'] ?? response['data'] ?? [];
@@ -95,7 +164,7 @@ class SalonProvider extends BaseProvider {
       if (_selectedSalon == null) return;
       // Note: Branch endpoint might need to be added to Endpoints.dart if it doesn't exist
       // For now using the existing pattern
-      final response = await ApiService().get(
+      final response = await _apiService.get(
         '/salons/salons/${_selectedSalon!.id}/branches/',
       );
       AppLogger.info('loadBranches Response: $response');
@@ -112,7 +181,7 @@ class SalonProvider extends BaseProvider {
   Future<void> loadServices() async {
     try {
       if (_selectedSalon == null) return;
-      final response = await ApiService().get(
+      final response = await _apiService.get(
         '/salons/${_selectedSalon!.id}/services/',
       );
       AppLogger.info('loadServices Response: $response');
@@ -131,7 +200,7 @@ class SalonProvider extends BaseProvider {
   Future<void> loadInventory() async {
     try {
       if (_selectedSalon == null) return;
-      final response = await ApiService().get(
+      final response = await _apiService.get(
         Endpoints.salonInventory(_selectedSalon!.id),
       );
       AppLogger.info('loadInventory Response: $response');
@@ -182,7 +251,7 @@ class SalonProvider extends BaseProvider {
         };
         AppLogger.info('Creating Product with data: $data');
         // Actual endpoint logic here or simulation with endpoint setups
-        final response = await ApiService().post(
+        final response = await _apiService.post(
           '/salons/${_selectedSalon!.id}/inventory/',
           data: data,
         );
@@ -198,7 +267,7 @@ class SalonProvider extends BaseProvider {
     try {
       AppLogger.info('Adjusting Stock count for $inventoryId by $increment');
       // Simulated endpoint PUT logic
-      final response = await ApiService().post(
+      final response = await _apiService.post(
         '/salons/inventory/$inventoryId/adjust_stock/',
         data: {'increment': increment},
       );
@@ -247,7 +316,7 @@ class SalonProvider extends BaseProvider {
           'closingTime': ?closingTime,
         };
         AppLogger.info('Updating Salon on Backend with fields: $fields');
-        final response = await ApiService().updateSalonWithImages(
+        final response = await _apiService.updateSalonWithImages(
           salonId: _selectedSalon!.id,
           fields: fields,
           images: images,

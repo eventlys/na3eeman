@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // import '../../../../core/theme/colors.dart';
 
 class OffersHorizontalList extends StatelessWidget {

@@ -6,7 +6,7 @@ import 'package:na3eeman/Services/enums/gender.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:na3eeman/Providers/features/gift_card_provider.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:na3eeman/core/utils/gift_card_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,9 +44,9 @@ class _GiftCardPageState extends State<GiftCardPage> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final api = ApiService();
-      final cards = await api.getGiftCards();
-      final myCards = await api.getUserGiftCards();
+      final giftCards = context.read<GiftCardProvider>();
+      final cards = await giftCards.getGiftCards();
+      final myCards = await context.read<GiftCardProvider>().getUserGiftCards();
 
       setState(() {
         _availableCards = cards;
@@ -76,8 +76,7 @@ class _GiftCardPageState extends State<GiftCardPage> {
 
     setState(() => _isBuying = true);
     try {
-      final api = ApiService();
-      final res = await api.purchaseGiftCard(
+      final res = await context.read<GiftCardProvider>().purchaseGiftCard(
         _selectedGiftCard!.id,
         receiverPhone: _receiverPhoneCtrl.text,
         message: _messageCtrl.text,

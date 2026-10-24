@@ -3,7 +3,10 @@ import 'package:na3eeman/Models/staff/weekly_working_hours.dart';
 import 'package:na3eeman/Services/api/api_service.dart';
 
 class ScheduleProvider with ChangeNotifier {
-  final ApiService _api = ApiService();
+  final ApiService _api;
+
+  ScheduleProvider({ApiService? apiService})
+    : _api = apiService ?? ApiService();
 
   List<WeeklyWorkingHours> _workingHours = [];
   bool _isLoading = false;

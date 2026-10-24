@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../Services/api/api_service.dart';
+import '../../Models/loyalty/feedback_model.dart';
 
 class AdminServiceProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
+
+  AdminServiceProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
+
   List<dynamic> _requests = [];
   bool _isLoading = false;
   String? _error;
@@ -44,4 +49,30 @@ class AdminServiceProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // DATA-ACCESS DELEGATES
+  // Pure pass-throughs so admin pages never touch ApiService directly.
+  // ---------------------------------------------------------------------------
+
+  Future<List<dynamic>> getUsers({String? role, String? query}) =>
+      _apiService.getUsers(role: role, query: query);
+
+  Future<dynamic> updateUserStatus(int userId, String status) =>
+      _apiService.updateUserStatus(userId, status);
+
+  Future<List<HelpFeedback>> getFeedback() => _apiService.getFeedback();
+
+  Future<dynamic> reviewFeedback(int feedbackId, String status) =>
+      _apiService.reviewFeedback(feedbackId, status);
+
+  Future<List<dynamic>> getFAQs() => _apiService.getFAQs();
+
+  Future<dynamic> createFAQ(Map<String, dynamic> data) =>
+      _apiService.createFAQ(data);
+
+  Future<dynamic> updateFAQ(int id, Map<String, dynamic> data) =>
+      _apiService.updateFAQ(id, data);
+
+  Future<dynamic> deleteFAQ(int id) => _apiService.deleteFAQ(id);
 }

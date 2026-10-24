@@ -5,9 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../Services/enums/gender.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
-// import '../../../../Providers/app_providers.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../../Services/api/api_service.dart';
 import '../../../features/navigation/sidebar.dart';
 import '../../../features/navigation/sidebar_controller.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart';
@@ -31,7 +29,6 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   bool _isSidebarOpen = false;
 
   late AuthProvider _authProvider;
-  final ApiService _apiService = ApiService();
 
   List<Category> _allCategories = [];
   bool _isLoading = true;
@@ -80,7 +77,9 @@ class _CustomerHomePageState extends State<CustomerHomePage>
 
   Future<void> _loadCategories() async {
     try {
-      final List<dynamic> categories = await _apiService.getCategories();
+      final List<dynamic> categories = await context
+          .read<SalonProvider>()
+          .getCategories();
       if (mounted) {
         setState(() {
           _allCategories = categories.map((e) => Category.fromJson(e)).toList();
@@ -345,93 +344,8 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   }
 
   void _handleCategoryTap(Category cat, bool isLadies) {
-    // If it's a female category and has sub-categories in the 'icon' field
-    // if (isLadies && cat.icon != 'none' && cat.icon.contains(',')) {
-    //   _showSubCategories(cat);
-    // } else {
     _navigateToCategoryDetails(cat);
-    // }
   }
-
-  // void _showSubCategories(Category parentCat) {
-  //   final subCats = parentCat.icon.split(',').map((s) => s.trim()).toList();
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     isScrollControlled: true,
-  //     builder: (context) => _buildBottomSheetContainer(
-  //       context: context,
-  //       title: parentCat.nameEn,
-  //       child: Column(
-  //         children: [
-  //           SizedBox(
-  //             height: 120,
-  //             child: ListView.builder(
-  //               scrollDirection: Axis.horizontal,
-  //               padding: const EdgeInsets.symmetric(horizontal: 16),
-  //               itemCount: subCats.length,
-  //               itemBuilder: (context, index) {
-  //                 final subName = subCats[index];
-  //                 return Padding(
-  //                   padding: const EdgeInsets.only(right: 12),
-  //                   child: GestureDetector(
-  //                     onTap: () {
-  //                       Navigator.pop(context);
-  //                       // Create a temporary category object for the sub-category
-  //                       final subCat = Category(
-  //                         id: parentCat
-  //                             .id, // Keep parent ID for API calls or use a specific one if available
-  //                         name: subName,
-  //                         nameEn: subName,
-  //                         icon: 'none',
-  //                         targetGender: 'female',
-  //                         image: parentCat.image,
-  //                       );
-  //                       _navigateToCategoryDetails(subCat, subQuery: subName);
-  //                     },
-  //                     child: Column(
-  //                       children: [
-  //                         Container(
-  //                           width: 80,
-  //                           height: 80,
-  //                           decoration: BoxDecoration(
-  //                             color: Theme.of(
-  //                               context,
-  //                             ).primaryColor.withValues(alpha:0.1),
-  //                             borderRadius: BorderRadius.circular(20),
-  //                             border: Border.all(
-  //                               color: Theme.of(
-  //                                 context,
-  //                               ).primaryColor.withValues(alpha:0.2),
-  //                             ),
-  //                           ),
-  //                           child: Icon(
-  //                             Icons.auto_awesome_rounded,
-  //                             color: Theme.of(context).primaryColor,
-  //                           ),
-  //                         ),
-  //                         const SizedBox(height: 8),
-  //                         Text(
-  //                           subName,
-  //                           style: const TextStyle(
-  //                             fontSize: 12,
-  //                             fontWeight: FontWeight.bold,
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ),
-  //           const SizedBox(height: 32),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   void _navigateToCategoryDetails(Category cat, {String? subQuery}) {
     Navigator.pushNamed(

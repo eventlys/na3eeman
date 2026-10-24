@@ -1,24 +1,36 @@
 import '../../Helpers/registration_helper.dart';
 import '../../Models/auth/user_model.dart';
 import '../repositories/auth_repository.dart';
+import '../use_cases/auth_use_cases.dart';
 import '../analytics_service.dart';
 import '../../Helpers/logger.dart';
 import '../storage_service.dart';
 
 class AuthService {
   final AuthRepository _authRepository;
+  final LoginUseCase _loginUseCase;
+  final RegisterUseCase _registerUseCase;
+  final ChangePasswordUseCase _changePasswordUseCase;
   final UnifiedStorageService _secureStorage = UnifiedStorageService();
   final AnalyticsService _analyticsService = AnalyticsService();
   final SocialRegistrationHelper _socialHelper = SocialRegistrationHelper();
 
-  AuthService(this._authRepository);
+  AuthService(
+    this._authRepository, {
+    LoginUseCase? loginUseCase,
+    RegisterUseCase? registerUseCase,
+    ChangePasswordUseCase? changePasswordUseCase,
+  }) : _loginUseCase = loginUseCase ?? LoginUseCase(_authRepository),
+       _registerUseCase = registerUseCase ?? RegisterUseCase(_authRepository),
+       _changePasswordUseCase =
+           changePasswordUseCase ?? ChangePasswordUseCase(_authRepository);
 
-  // Email/Password Login
+  // Email/Password Login (guarded by LoginUseCase validation)
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       AppLogger.debug('Login attempt for: $email');
 
-      final response = await _authRepository.login(email, password);
+      final response = await _loginUseCase.execute(email, password);
 
       if (response['access'] != null) {
         await _saveAuthData(response);
@@ -63,7 +75,7 @@ class AuthService {
         'role': role.toUpperCase(),
       };
 
-      final response = await _authRepository.register(userData);
+      final response = await _registerUseCase.execute(userData);
 
       if (response['access'] != null) {
         await _saveAuthData(response);
@@ -102,7 +114,7 @@ class AuthService {
       );
 
       // Register user with processed data
-      final response = await _authRepository.register(userData);
+      final response = await _registerUseCase.execute(userData);
 
       if (response['access'] != null) {
         await _saveAuthData(response);
@@ -280,6 +292,23 @@ class AuthService {
       );
     } catch (e) {
       AppLogger.error('Reset password error: $e');
+      rethrow;
+    }
+  }
+
+  // Password change (guarded by ChangePasswordUseCase validation)
+  Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      AppLogger.debug('Changing password');
+      return await _changePasswordUseCase.execute(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+    } catch (e) {
+      AppLogger.error('Change password error: $e');
       rethrow;
     }
   }

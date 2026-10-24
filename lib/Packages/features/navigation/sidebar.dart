@@ -4,12 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../Models/ui/menu_item_model.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../core/enums/app_enums.dart';
-// import '../../../core/auth/role_permission_manager.dart';
 import '../../../core/theme/colors.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
-// import '../../../core/widgets/rules/rules_guide_sheet.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class Sidebar extends StatelessWidget {
@@ -169,30 +167,6 @@ class Sidebar extends StatelessWidget {
         requiresAuth: true,
         requiredRoles: [UserRole.admin],
       ),
-      // if (role == UserRole.owner || role == UserRole.admin)
-      //   MenuItem(
-      //     // title: ''.tr(),
-      //     // assetIcon: 'assets/icons/setting.png',
-      //     // delay: 1,
-      //     // onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.salonId ?? 1}),
-      //     // requiresAuth: true,
-      //     // requiredRoles: [UserRole.owner, UserRole.admin],
-      //   ),
-      // MenuItem(
-      //   title: 'shop_dashboard'.tr(),
-      //   assetIcon: 'assets/icons/shop.png',
-      //   delay: 1,
-      //   onTap: () => Navigator.pushNamed(context, '/shop_details', arguments: {'id': user?.salonId ?? 1}),
-      //   requiresAuth: true,
-      //   requiredRoles: [
-      //     // UserRole.owner,
-      //     UserRole.admin,
-      //     UserRole.ownerExpert,
-      //     // UserRole.cofounder,
-      //     UserRole.cofounderExpert,
-      //     // UserRole.manager
-      //   ],
-      // ),
       MenuItem(
         title: 'management'.tr(),
         assetIcon: 'assets/icons/setting.png',
@@ -218,79 +192,6 @@ class Sidebar extends StatelessWidget {
           UserRole.cofounderExpert,
         ],
       ),
-      // MenuItem(
-      //   title: 'Data Management'.tr(),
-      //   assetIcon: 'assets/icons/report.png',
-      //   delay: 1,
-      //   onTap: () {
-      //     controller.closeSidebar();
-      //     Navigator.pushNamed(context, '/management/data');
-      //   },
-      //   requiresAuth: true,
-      //   requiredRoles: [
-      //     UserRole.owner,
-      //     UserRole.admin,
-      //     UserRole.cofounder,
-      //     UserRole.manager,
-      //     UserRole.ownerExpert,
-      //     UserRole.cofounderExpert
-      //   ],
-      // ),
-      // MenuItem(
-      //   title: 'Expenses'.tr(),
-      //   assetIcon: 'assets/icons/money.png',
-      //   delay: 1,
-      //   onTap: () {
-      //     controller.closeSidebar();
-      //     Navigator.pushNamed(context, '/management/expenses');
-      //   },
-      //   requiresAuth: true,
-      //   requiredRoles: [
-      //     UserRole.owner,
-      //     UserRole.admin,
-      //     UserRole.cofounder,
-      //     UserRole.manager,
-      //     UserRole.ownerExpert,
-      //     UserRole.cofounderExpert
-      //   ],
-      // ),
-      // MenuItem(
-      //   title: 'Payroll'.tr(),
-      //   assetIcon: 'assets/icons/wallet.png',
-      //   delay: 1,
-      //   onTap: () {
-      //     controller.closeSidebar();
-      //     Navigator.pushNamed(context, '/management/payroll');
-      //   },
-      //   requiresAuth: true,
-      //   requiredRoles: [
-      //     UserRole.owner,
-      //     UserRole.admin,
-      //     UserRole.cofounder,
-      //     UserRole.manager,
-      //     UserRole.ownerExpert,
-      //     UserRole.cofounderExpert
-      //   ],
-      // ),
-      // ── Receptionist POS ─────────────────────────────────────────
-      // MenuItem(
-      //   title: 'pos_terminal'.tr(),
-      //   assetIcon: 'assets/icons/plus.png',
-      //   delay: 2,
-      //   onTap: () {
-      //     controller.closeSidebar();
-      //     Navigator.pushNamed(context, '/pos');
-      //   },
-      //   requiresAuth: true,
-      //   requiredRoles: [
-      //     UserRole.owner,
-      //     UserRole.ownerExpert,
-      //     UserRole.cofounder,
-      //     UserRole.cofounderExpert,
-      //     UserRole.manager,
-      //     UserRole.receptionist
-      //   ],
-      // ),
       MenuItem(
         title: 'FAQs'.tr(),
         assetIcon: 'assets/icons/info.png',

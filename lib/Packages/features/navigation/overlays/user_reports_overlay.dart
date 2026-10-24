@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
-import '../../../../Services/api/api_service.dart';
-import '../../../../Services/business_service.dart';
 import '../../../../Services/enums/report_enums.dart';
 import 'package:na3eeman/Helpers/logger.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class UserReportsOverlay extends StatefulWidget {
@@ -19,9 +18,6 @@ class UserReportsOverlay extends StatefulWidget {
 }
 
 class _UserReportsOverlayState extends State<UserReportsOverlay> {
-  final ReportService _reportService = ReportService();
-  final BusinessService _businessService = BusinessService();
-
   List<dynamic> _reports = [];
   bool _isLoading = true;
   String? _error;
@@ -69,7 +65,7 @@ class _UserReportsOverlayState extends State<UserReportsOverlay> {
 
   Future<List<dynamic>> _fetchReportsAboutUser(int userId) async {
     try {
-      final response = await ApiService().get(
+      final response = await context.read<SalonProvider>().apiGet(
         '/reports/about-user/$userId',
         queryParams: {'include_resolved': 'false'},
       );

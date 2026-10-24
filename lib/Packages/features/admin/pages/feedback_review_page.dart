@@ -1,7 +1,8 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:na3eeman/Models/loyalty/feedback_model.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/admin_service_provider.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:intl/intl.dart';
 
@@ -25,8 +26,9 @@ class _FeedbackReviewPageState extends State<FeedbackReviewPage> {
   Future<void> _loadFeedback() async {
     setState(() => _isLoading = true);
     try {
-      final api = ApiService();
-      final List<HelpFeedback> data = await api.getFeedback();
+      final List<HelpFeedback> data = await context
+          .read<AdminServiceProvider>()
+          .getFeedback();
       setState(() {
         _feedbacks = data;
         // Sort by date descending
@@ -41,8 +43,7 @@ class _FeedbackReviewPageState extends State<FeedbackReviewPage> {
 
   Future<void> _reviewFeedback(int id, String status) async {
     try {
-      final api = ApiService();
-      await api.reviewFeedback(id, status);
+      await context.read<AdminServiceProvider>().reviewFeedback(id, status);
       AppSnackBar.success(
         context,
         status == 'valuable'

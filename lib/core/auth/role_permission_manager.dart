@@ -1,5 +1,6 @@
 // ignore_for_file: unreachable_switch_default
 import '../../Packages/Core/constants/app_roles.dart';
+import '../../Routes/route_names.dart';
 import '../../core/enums/app_enums.dart';
 
 class RolePermissionManager {
@@ -75,19 +76,19 @@ class RolePermissionManager {
       case UserRole.cofounder:
       case UserRole.manager:
       case UserRole.receptionist:
-        return '/management_dashboard';
+        return RouteNames.managementDashboard;
       case UserRole.ownerExpert:
       case UserRole.cofounderExpert:
       case UserRole.expert:
       case UserRole.artisan:
-        return '/expert_dashboard';
+        return RouteNames.expertDashboard;
       case UserRole.admin:
-        return '/admin';
+        return RouteNames.admin;
       case UserRole.intern:
-        return '/intern_dashboard';
+        return RouteNames.internDashboard;
       case UserRole.customer:
       default:
-        return '/customer_home';
+        return RouteNames.customerHome;
     }
   }
 }

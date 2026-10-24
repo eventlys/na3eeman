@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../Services/ui/navigation_service.dart';
+import '../../../../Routes/route_names.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
@@ -62,7 +63,7 @@ class _LoadingPageState extends State<LoadingPage>
         tier: tier,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, RouteNames.login);
     }
   }
 

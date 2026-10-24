@@ -23,7 +23,7 @@ import '../Packages/features/salon/pages/salon_owner_dashboard.dart';
 import '../Packages/features/staff/pages/my_times_page.dart';
 import '../Packages/features/staff/pages/staff_profile_page.dart';
 import '../Packages/features/staff/pages/staff_schedules_page.dart';
-import '../Packages/features/Navigations/faq_page.dart';
+import '../Packages/features/navigation/pages/faq_page.dart';
 
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/owner_dashboard_page.dart';
 import 'package:na3eeman/Packages/features/owner/dashboard/pages/owner_management_dashboard_page.dart';
@@ -39,11 +39,11 @@ import '../Packages/features/staff/pages/intern_activity_page.dart';
 import '../Packages/features/staff/pages/intern_attendance_report_page.dart';
 
 // Navigations
-import '../Packages/features/Navigations/favorites_list_page.dart';
-import '../Packages/features/Navigations/history_page.dart';
-import '../Packages/features/Navigations/logout.dart';
-import '../Packages/features/Navigations/reports_list_page.dart';
-import '../Packages/features/Navigations/settings.dart';
+import '../Packages/features/navigation/pages/favorites_list_page.dart';
+import '../Packages/features/navigation/pages/history_page.dart';
+import '../Packages/features/navigation/pages/logout.dart';
+import '../Packages/features/navigation/pages/reports_list_page.dart';
+import '../Packages/features/navigation/pages/settings.dart';
 
 // Appointments
 import '../Packages/features/appointments/pages/appointments_page.dart';
@@ -88,26 +88,28 @@ import '../Packages/features/subscription/pages/subscription_upgrade.dart';
 import '../Packages/features/disputes/pages/dispute_resolution.dart';
 import '../Providers/features/auth_provider.dart';
 
+import 'route_names.dart';
+
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
     // ── Entry ─────────────────────────────────────────────────────────────
-    '/': (context) => const LoadingPage(),
-    '/onboarding': (context) => const OnboardingPage(),
-    '/login': (context) => LoginPage(),
-    '/signup': (context) => const SignupPage(),
-    '/forgot-password': (context) => const ForgotPasswordPage(),
-    '/otp-verification': (context) {
+    RouteNames.root: (context) => const LoadingPage(),
+    RouteNames.onboarding: (context) => const OnboardingPage(),
+    RouteNames.login: (context) => LoginPage(),
+    RouteNames.signup: (context) => const SignupPage(),
+    RouteNames.forgotPassword: (context) => const ForgotPasswordPage(),
+    RouteNames.otpVerification: (context) {
       final email = ModalRoute.of(context)!.settings.arguments as String;
       return OtpVerificationPage(email: email);
     },
-    '/reset-password': (context) {
+    RouteNames.resetPassword: (context) {
       final token = ModalRoute.of(context)!.settings.arguments as String;
       return ResetPasswordPage(resetToken: token);
     },
 
     // ── Customer ──────────────────────────────────────────────────────────
-    '/customer_home': (context) => const CustomerHomePage(),
-    '/category_details': (context) {
+    RouteNames.customerHome: (context) => const CustomerHomePage(),
+    RouteNames.categoryDetails: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final category = args['category'] as Category;
@@ -121,7 +123,7 @@ class AppRoutes {
         subQuery: subQuery,
       );
     },
-    '/category_selection': (context) {
+    RouteNames.categorySelection: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ??
           {};
@@ -129,8 +131,8 @@ class AppRoutes {
       final giftGender = args['giftGender'] as String?;
       return CategorySelectionPage(giftMode: giftMode, giftGender: giftGender);
     },
-    '/salons': (context) => const SalonListPage(),
-    '/salon_details': (context) {
+    RouteNames.salons: (context) => const SalonListPage(),
+    RouteNames.salonDetails: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final salonData = args['salonData'] as Map<String, dynamic>;
@@ -142,87 +144,100 @@ class AppRoutes {
         giftGender: giftGender,
       );
     },
-    '/book_appointment': (context) => const BookAppointmentPage(),
-    '/appointments': (context) => const AppointmentsPage(),
-    '/history': (context) => const HistoryPage(),
-    '/favorites': (context) => const FavoritesPage(),
-    '/profile': (context) {
+    RouteNames.bookAppointment: (context) => const BookAppointmentPage(),
+    RouteNames.appointments: (context) => const AppointmentsPage(),
+    RouteNames.history: (context) => const HistoryPage(),
+    RouteNames.favorites: (context) => const FavoritesPage(),
+    RouteNames.profile: (context) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.user?.isStaffMember == true) {
         return const StaffProfilePage();
       }
       return const ProfilePage();
     },
-    '/user_profile': (context) {
+    // Legacy alias of RouteNames.profile — same builder, kept working for
+    // existing references.
+    RouteNames.userProfile: (context) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.user?.isStaffMember == true) {
         return const StaffProfilePage();
       }
       return const ProfilePage();
     },
-    '/settings': (context) => const SettingsPage(),
-    '/faq': (context) => const FAQPage(),
-    '/staff_schedules': (context) => const StaffSchedulesPage(),
+    RouteNames.settings: (context) => const SettingsPage(),
+    RouteNames.faq: (context) => const FAQPage(),
+    RouteNames.staffSchedules: (context) => const StaffSchedulesPage(),
 
     // ── Staff & Management ────────────────────────────────────────────────
-    '/expert_home': (context) => const ExpertDashboard(),
-    '/expert_dashboard': (context) => const ExpertDashboard(),
-    '/my_times': (context) => const MyTimesPage(),
-    '/receptionist_dashboard': (context) => const ReceptionistDashboard(),
-    '/intern_dashboard': (context) => const InternDashboard(),
-    '/intern_activity': (context) => const InternActivityPage(),
+    // Legacy alias of RouteNames.expertDashboard — same page, kept working
+    // for existing references (stored prefs, deep links).
+    RouteNames.expertHome: (context) => const ExpertDashboard(),
+    RouteNames.expertDashboard: (context) => const ExpertDashboard(),
+    RouteNames.myTimes: (context) => const MyTimesPage(),
+    RouteNames.receptionistDashboard: (context) =>
+        const ReceptionistDashboard(),
+    RouteNames.internDashboard: (context) => const InternDashboard(),
+    RouteNames.internActivity: (context) => const InternActivityPage(),
     // ── New tier-aware owner dashboard ──────────────────────────────────────
-    '/owner_dashboard': (context) => const OwnerDashboardPage(),
-    '/management_dashboard': (context) => const OwnerManagementDashboardPage(),
-    '/management/revenue': (context) => const RevenueControlsPage(),
-    '/management/vouchers': (context) => const VoucherManagementPage(),
-    '/management/salon': (context) => const SalonManagementPage(),
-    '/management/inventory': (context) => const ReceptionistInventoryPage(),
-    '/management/products': (context) => const ReceptionistProductsPage(),
-    '/active_campaigns': (context) => const CampaignManagementPage(),
-    '/feedback_page': (context) => const FeedbackPage(),
-    // Legacy alias — kept for backward compat while migrating references
-    '/salon_owner_dashboard': (context) => const SalonOwnerDashboard(),
-    '/staff': (context) => const StaffManagementPage(),
-    '/management/intern-attendance': (context) =>
+    RouteNames.ownerDashboard: (context) => const OwnerDashboardPage(),
+    RouteNames.managementDashboard: (context) =>
+        const OwnerManagementDashboardPage(),
+    RouteNames.managementRevenue: (context) => const RevenueControlsPage(),
+    RouteNames.managementVouchers: (context) => const VoucherManagementPage(),
+    RouteNames.managementSalon: (context) => const SalonManagementPage(),
+    RouteNames.managementInventory: (context) =>
+        const ReceptionistInventoryPage(),
+    RouteNames.managementProducts: (context) =>
+        const ReceptionistProductsPage(),
+    RouteNames.activeCampaigns: (context) => const CampaignManagementPage(),
+    RouteNames.feedbackPage: (context) => const FeedbackPage(),
+    // Legacy alias of the owner dashboard — kept for backward compat while
+    // migrating references
+    RouteNames.salonOwnerDashboard: (context) => const SalonOwnerDashboard(),
+    RouteNames.staff: (context) => const StaffManagementPage(),
+    RouteNames.managementInternAttendance: (context) =>
         const InternAttendanceReportPage(),
 
-    // ── Legacy Admin (placeholder) ────────────────────────────────────────
-    '/admin_home': (context) => const AdminHomePage(),
+    // ── Admin ─────────────────────────────────────────────────────────────
+    // Legacy alias of RouteNames.admin (placeholder page) — kept working
+    // for existing references.
+    RouteNames.adminHome: (context) => const AdminHomePage(),
 
     // ── Super Admin Dashboard (God Mode) ─────────────────────────────────
-    '/admin': (context) => const AdminDashboardPage(),
-    '/admin/users': (context) => const AdminUserManagementPage(),
-    '/admin/finance': (context) => const AdminFinancialReportsPage(),
-    '/admin/analytics': (context) => const AdminUserAnalyticsPage(),
-    '/admin/compliance': (context) => const AdminCompliancePage(),
-    '/admin/system': (context) => const AdminSystemHealthPage(),
-    '/admin/errors': (context) => const AdminErrorReportsPage(),
-    '/admin/subs': (context) => const AdminSubscriptionManagementPage(),
-    '/admin/create-staff': (context) => const AdminCreateStaffPage(),
-    '/admin/service-requests': (context) => const AdminServiceRequestsPage(),
-    '/admin/feedback-review': (context) => const FeedbackReviewPage(),
+    RouteNames.admin: (context) => const AdminDashboardPage(),
+    RouteNames.adminUsers: (context) => const AdminUserManagementPage(),
+    RouteNames.adminFinance: (context) => const AdminFinancialReportsPage(),
+    RouteNames.adminAnalytics: (context) => const AdminUserAnalyticsPage(),
+    RouteNames.adminCompliance: (context) => const AdminCompliancePage(),
+    RouteNames.adminSystem: (context) => const AdminSystemHealthPage(),
+    RouteNames.adminErrors: (context) => const AdminErrorReportsPage(),
+    RouteNames.adminSubs: (context) => const AdminSubscriptionManagementPage(),
+    RouteNames.adminCreateStaff: (context) => const AdminCreateStaffPage(),
+    RouteNames.adminServiceRequests: (context) =>
+        const AdminServiceRequestsPage(),
+    RouteNames.adminFeedbackReview: (context) => const FeedbackReviewPage(),
 
     // ── Shared / Utility ──────────────────────────────────────────────────
-    '/report': (context) => const ReportsPage(),
-    '/logout': (context) => const LogoutPage(),
+    RouteNames.report: (context) => const ReportsPage(),
+    RouteNames.logout: (context) => const LogoutPage(),
 
     // ── NEW Missing Pages ─────────────────────────────────────────────────
-    '/subscription/upgrade': (context) => const SubscriptionUpgradePage(),
-    '/disputes': (context) => const DisputeResolutionPage(),
+    RouteNames.subscriptionUpgrade: (context) =>
+        const SubscriptionUpgradePage(),
+    RouteNames.disputes: (context) => const DisputeResolutionPage(),
 
     // ── Competitive Parity — Customer ─────────────────────────────────────
-    '/loyalty/history': (context) => const LoyaltyHistoryPage(),
-    '/loyalty/referral': (context) => const ReferralCardPage(),
-    '/gift-card': (context) => const GiftCardPage(),
+    RouteNames.loyaltyHistory: (context) => const LoyaltyHistoryPage(),
+    RouteNames.loyaltyReferral: (context) => const ReferralCardPage(),
+    RouteNames.giftCard: (context) => const GiftCardPage(),
 
     // ── Competitive Parity — Staff / Owner ────────────────────────────────
-    '/pos': (context) => const PosTerminalPage(),
-    '/management/offers': (context) => const OffersManagementPage(),
-    '/management/analytics': (context) => const AnalyticsDashboardPage(),
-    '/management/expenses': (context) => const ExpensesPage(),
-    '/management/payroll': (context) => const PayrollPage(),
-    '/appointments/search': (context) => const AppointmentSearchPage(),
-    '/management/data': (context) => const DataManagementPage(),
+    RouteNames.pos: (context) => const PosTerminalPage(),
+    RouteNames.managementOffers: (context) => const OffersManagementPage(),
+    RouteNames.managementAnalytics: (context) => const AnalyticsDashboardPage(),
+    RouteNames.managementExpenses: (context) => const ExpensesPage(),
+    RouteNames.managementPayroll: (context) => const PayrollPage(),
+    RouteNames.appointmentsSearch: (context) => const AppointmentSearchPage(),
+    RouteNames.managementData: (context) => const DataManagementPage(),
   };
 }

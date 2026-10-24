@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../Providers/features/owner_provider.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
 import 'package:na3eeman/Models/salon/payment_config_model.dart';
 import '../../../../../../core/theme/colors.dart';
 
@@ -14,7 +13,6 @@ class RevenueControlsPage extends StatefulWidget {
 }
 
 class _RevenueControlsPageState extends State<RevenueControlsPage> {
-  final ApiService _apiService = ApiService();
   SalonPaymentConfig? _config;
   bool _isLoading = true;
   bool _isSaving = false;
@@ -30,9 +28,7 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     if (owner.activeSalonId == null) return;
 
     try {
-      final config = await _apiService.getSalonPaymentConfig(
-        owner.activeSalonId!,
-      );
+      final config = await owner.getSalonPaymentConfig(owner.activeSalonId!);
       setState(() {
         _config = config;
         _isLoading = false;
@@ -53,10 +49,8 @@ class _RevenueControlsPageState extends State<RevenueControlsPage> {
     setState(() => _isSaving = true);
 
     try {
-      await _apiService.updateSalonPaymentConfig(
-        _config!.salonId,
-        _config!.toJson(),
-      );
+      final owner = context.read<OwnerProvider>();
+      await owner.updateSalonPaymentConfig(_config!.salonId, _config!.toJson());
       if (mounted) {
         ScaffoldMessenger.of(
           context,

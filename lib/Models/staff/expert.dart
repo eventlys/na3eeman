@@ -24,16 +24,18 @@ class Expert extends StaffMember {
     super.salonId,
     super.isActive = true,
     super.hourlyRate,
+    super.status,
+    super.statusNote,
     this.expertProfile,
-    required this.rating,
-    required this.totalAppointments,
-    required this.totalEarnings,
-    required this.specialties,
-    required this.servicesCount,
+    this.rating = 0.0,
+    this.totalAppointments = 0,
+    this.totalEarnings = 0.0,
+    this.specialties = const [],
+    this.servicesCount = const {},
     this.lastActive,
   }) : super(
          role: StaffRole.expert,
-         phone: expertProfile?.contactPhone,
+         phone: expertProfile?.contactPhone ?? '',
          specialties: specialties,
          performanceMetrics: {
            'rating': rating,
@@ -62,9 +64,9 @@ class Expert extends StaffMember {
       email: user.email,
       joinDate: user.createdAt,
       profileImage: user.profilePic,
-      salonId: salonId,
+      salonId: salonId ?? 0,
       isActive: user.isActive,
-      hourlyRate: hourlyRate,
+      hourlyRate: hourlyRate ?? 0.0,
       expertProfile: profile,
       rating: rating,
       totalAppointments: totalAppointments,
@@ -76,27 +78,20 @@ class Expert extends StaffMember {
   }
 
   factory Expert.fromJson(Map<String, dynamic> json) {
+    final member = StaffMember.fromJson(json);
     return Expert(
-      id: json['id']?.toString() ?? '',
-      userId: json['expert'] as int? ?? json['expert'] as int? ?? 0,
-      name:
-          json['expert_name'] as String? ??
-          json['expert_name'] as String? ??
-          '',
-      email:
-          json['expert_email'] as String? ??
-          json['expert_email'] as String? ??
-          '',
-      joinDate: DateTime.parse(
-        json['hired_at'] as String? ?? DateTime.now().toString(),
-      ),
-      profileImage: json['profile_image'] as String?,
-      salonId: json['salon'] as int?,
+      id: member.id,
+      userId: member.userId,
+      name: member.name,
+      email: member.email,
+      joinDate: member.joinDate,
+      profileImage: member.profileImage,
+      salonId: member.salonId,
       isActive: json['is_active'] as bool? ?? true,
-      hourlyRate: (json['hourly_rate'] as num?)?.toDouble(),
-      expertProfile: (json['expert_profile'] != null)
-          ? ExpertProfile.fromJson(json['expert_profile'])
-          : (json['expert_profile'] != null)
+      hourlyRate: (json['hourly_rate'] as num?)?.toDouble() ?? 0.0,
+      status: json['status'] as String?,
+      statusNote: json['status_note'] as String?,
+      expertProfile: json['expert_profile'] != null
           ? ExpertProfile.fromJson(json['expert_profile'])
           : null,
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,

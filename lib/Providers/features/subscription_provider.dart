@@ -7,7 +7,7 @@ import '../../Services/business_service.dart';
 import '../../Services/api/api_service.dart';
 
 class SubscriptionProvider extends BaseProvider {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
   final SubscriptionService _subscriptionService;
 
   List<SubscriptionPlan> _plans = [];
@@ -19,8 +19,11 @@ class SubscriptionProvider extends BaseProvider {
   Subscription? get currentSubscription => _currentSubscription;
   bool get hasActiveSubscription => _currentSubscription?.isActive == true;
 
-  SubscriptionProvider({required SubscriptionService subscriptionService})
-    : _subscriptionService = subscriptionService;
+  SubscriptionProvider({
+    required SubscriptionService subscriptionService,
+    ApiService? apiService,
+  }) : _subscriptionService = subscriptionService,
+       _apiService = apiService ?? ApiService();
 
   // Methods
   void updateAuth(AuthProvider authProvider) {
@@ -61,6 +64,11 @@ class SubscriptionProvider extends BaseProvider {
       rethrow;
     }
   }
+
+  /// Fetch the raw subscription plan list (pure delegate, no state change).
+  /// Used by widgets that need the plans without mutating provider state.
+  Future<List<dynamic>> getSubscriptionPlans() =>
+      _apiService.getSubscriptionPlans();
 
   Future<void> loadCurrentSubscription() async {
     try {

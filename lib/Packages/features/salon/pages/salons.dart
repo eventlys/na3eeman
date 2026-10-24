@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../../../Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/salon_provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../widgets/expert_salon_card.dart';
@@ -13,7 +14,6 @@ class SalonListPage extends StatefulWidget {
 }
 
 class _SalonListPageState extends State<SalonListPage> {
-  final ApiService _apiService = ApiService();
   List<Map<String, dynamic>> _salons = [];
   bool _isLoading = true;
   String _error = '';
@@ -47,7 +47,10 @@ class _SalonListPageState extends State<SalonListPage> {
         _error = '';
       });
 
-      final response = await _apiService.getSalons(page: 1, limit: 20);
+      final response = await context.read<SalonProvider>().getSalonsRaw(
+        page: 1,
+        limit: 20,
+      );
       final List<dynamic> data = response is List
           ? response
           : (response['results'] ??

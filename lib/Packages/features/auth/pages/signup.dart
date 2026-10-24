@@ -2,14 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
-import '../../../../Providers/locale_provider.dart';
-import '../../../../Services/api/api_service.dart';
-import '../../../../Services/api/auth_service.dart';
-import '../../../../Services/repositories/auth_repository.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../Packages/Core/utils/validators.dart';
 import '../../../../Packages/Core/widgets/password_strength_indicator.dart';
+import '../../../../Routes/route_names.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -130,8 +127,9 @@ class _SignupPageState extends State<SignupPage>
     });
 
     if (_formKey.currentState!.validate()) {
-      final authRepository = AuthRepository(ApiService());
-      final authService = AuthService(authRepository);
+      // Route through the AuthProvider's shared AuthService so the UI layer
+      // never constructs a repository directly.
+      final authService = context.read<AuthProvider>().authService;
 
       setState(() => _isLoading = true);
       try {
@@ -153,7 +151,7 @@ class _SignupPageState extends State<SignupPage>
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushReplacementNamed(context, RouteNames.login);
         }
       } catch (e) {
         if (mounted) {

@@ -5,6 +5,7 @@ import '../../../../Helpers/customized/soonest_appointment_helpers.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class SoonestAppointmentCard extends StatefulWidget {

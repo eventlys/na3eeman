@@ -2,10 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../Packages/Core/constants/app_color.dart';
 import '../../../../Packages/Core/themes/app_theme.dart';
-import '../../../../Packages/Core/widgets/common/app_button.dart';
+import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/common/app_text_field.dart';
 import '../../../../Packages/Core/constants/app_constants.dart';
+
 // import 'package:easy_localization/easy_localization.dart';
 
 /// Dispute/Issue Resolution Page.
@@ -237,9 +238,8 @@ class _NewReportTab extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            AppButton(
-              label: "submit_report".tr(),
-              fullWidth: true,
+            PrimaryButton(
+              text: "submit_report".tr(),
               isLoading: submitting,
               icon: Icons.send_rounded,
               onPressed: submitting ? null : onSubmit,

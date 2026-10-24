@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide RefreshIndicator;
+
 // import 'package:easy_localization/easy_localization.dart';
 
 class RefreshableList extends StatelessWidget {

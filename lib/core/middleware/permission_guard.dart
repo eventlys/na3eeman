@@ -1,3 +1,4 @@
+import '../../Routes/route_names.dart';
 import '../enums/user_type.dart';
 
 /// Middleware to enforce role-based permissions and booking restrictions.
@@ -20,22 +21,22 @@ class PermissionGuard {
   static String getDashboardRoute(UserType userType) {
     switch (userType) {
       case UserType.admin:
-        return '/admin';
+        return RouteNames.admin;
       case UserType.owner:
       case UserType.cofounder:
-        return '/management_dashboard';
+        return RouteNames.managementDashboard;
       case UserType.manager:
       case UserType.ownerExpert:
       case UserType.cofounderExpert:
       case UserType.expert:
       case UserType.artisan:
-        return '/expert_dashboard';
+        return RouteNames.expertDashboard;
       case UserType.receptionist:
-        return '/management_dashboard';
+        return RouteNames.managementDashboard;
       case UserType.intern:
-        return '/intern_dashboard';
+        return RouteNames.internDashboard;
       case UserType.customer:
-        return '/customer_home';
+        return RouteNames.customerHome;
     }
   }
 

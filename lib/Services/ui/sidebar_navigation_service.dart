@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
 import '../../Helpers/logger.dart';
+import '../../Routes/route_names.dart';
 
 class SideNavigationService {
   static final SideNavigationService _instance =
@@ -17,30 +18,30 @@ class SideNavigationService {
   // Navigation methods
   static void navigateToSettings() {
     _logNavigation('Settings');
-    navigatorKey.currentState?.pushNamed('/settings');
+    navigatorKey.currentState?.pushNamed(RouteNames.settings);
   }
 
   static void navigateToFavorites() {
     _logNavigation('Favorites');
-    navigatorKey.currentState?.pushNamed('/favorites');
+    navigatorKey.currentState?.pushNamed(RouteNames.favorites);
   }
 
   static void navigateToLogin() {
     _logNavigation('Login');
     navigatorKey.currentState?.pushNamedAndRemoveUntil(
-      '/login',
+      RouteNames.login,
       (route) => false,
     );
   }
 
   static void navigateToProfile() {
     _logNavigation('Profile');
-    navigatorKey.currentState?.pushNamed('/profile');
+    navigatorKey.currentState?.pushNamed(RouteNames.profile);
   }
 
   static void navigateToAppointments() {
     _logNavigation('Appointments');
-    navigatorKey.currentState?.pushNamed('/appointments');
+    navigatorKey.currentState?.pushNamed(RouteNames.appointments);
   }
 
   static void navigateToBooking() {
@@ -163,7 +164,7 @@ class SideNavigationService {
     // Implement permission checks based on user role
     // For example, some routes might be admin-only
 
-    const restrictedRoutes = ['/admin', '/owner-dashboard'];
+    const restrictedRoutes = [RouteNames.admin, '/owner-dashboard'];
     if (restrictedRoutes.contains(routeName)) {
       // Check if user has appropriate role
       return false; // Implement actual role check

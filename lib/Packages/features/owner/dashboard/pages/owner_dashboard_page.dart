@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:na3eeman/Providers/features/owner_provider.dart';
-// import 'package:na3eeman/core/config/subscription_config.dart';
 import 'package:na3eeman/core/enums/owner_enums.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/notifications/notifications_bottom_sheet.dart';
@@ -114,17 +113,8 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
               ),
             ),
           ),
-          // bottomNavigationBar: owner.isSubscriptionActive
-          //     ? _buildQuickActionsBottomBar(context, owner)
-          //     : null,
         ),
         Sidebar(controller: _sidebarController),
-        // if (kDebugMode)
-        //   const Positioned(
-        //     bottom: 30,
-        //     right: 20,
-        //     child: DevAccountSwitcher(),
-        //   ),
       ],
     );
   }
@@ -157,47 +147,6 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
       ],
     );
   }
-
-  // Widget _buildQuickActionsBottomBar(BuildContext context, OwnerProvider owner) {
-  //   return SafeArea(
-  //     child: Container(
-  //       height: 70,
-  //       decoration: BoxDecoration(
-  //         color: Theme.of(context).cardColor,
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: Colors.black.withValues(alpha:0.05),
-  //             blurRadius: 10,
-  //             offset: const Offset(0, -5),
-  //           ),
-  //         ],
-  //       ),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: [
-  //           _buildBottomNavItem(context, 'Offers', Icons.local_offer_rounded, Colors.orange, () => CampaignManagement.showCreateOfferDialog(context)),
-  //           _buildBottomNavItem(context, 'Ads', Icons.campaign_rounded, Colors.purple, () => CampaignManagement.showCreateAdDialog(context)),
-  //           _buildBottomNavItem(context, 'Feedback', Icons.rate_review_rounded, Colors.teal, () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedbackManagementPage()))),
-  //           _buildBottomNavItem(context, 'Tip', Icons.attach_money_rounded, Colors.green, () => AssignTipModal.show(context)),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildBottomNavItem(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
-  //   return InkWell(
-  //     onTap: onTap,
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         Icon(icon, color: color, size: 24),
-  //         const SizedBox(height: 4),
-  //         Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).hintColor)),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   List<Widget> _buildUniversalDashboardWidgets(
     BuildContext context,

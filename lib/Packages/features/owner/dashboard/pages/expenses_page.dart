@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 
@@ -81,8 +82,9 @@ class _ExpensesPageState extends State<ExpensesPage> {
       _error = null;
     });
     try {
-      final api = ApiService();
-      final res = await api.get('/salons/expenses/');
+      final res = await context.read<OwnerProvider>().apiGet(
+        '/salons/expenses/',
+      );
       if (res is List) {
         setState(
           () => _expenses = List<Map<String, dynamic>>.from(
@@ -237,8 +239,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                     onPressed: () async {
                       Navigator.pop(ctx);
                       try {
-                        final api = ApiService();
-                        await api.post(
+                        await context.read<OwnerProvider>().apiPost(
                           '/salons/expenses/',
                           data: {
                             'category': selectedCategory,

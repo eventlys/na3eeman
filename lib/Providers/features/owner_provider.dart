@@ -1,5 +1,6 @@
 import '../base_provider.dart';
 import '../../Services/api/api_service.dart';
+import '../../Models/salon/payment_config_model.dart';
 import 'auth_provider.dart';
 import 'package:na3eeman/Models/auth/owner_profile.dart';
 import '../../core/enums/owner_enums.dart';
@@ -25,10 +26,13 @@ import '../../Helpers/logger.dart';
 /// }
 /// ```
 class OwnerProvider extends BaseProvider {
+  OwnerProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
+
   OwnerProfile? _profile;
   OwnerMode _mode = OwnerMode.managerMode;
   AuthProvider? _auth;
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
   List<dynamic> _leaderboard = [];
   Map<String, dynamic> _retailSnapshot = {};
   Map<String, dynamic> _dailyEarnings = {};
@@ -236,6 +240,48 @@ class OwnerProvider extends BaseProvider {
       notifyListeners();
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // DATA-ACCESS DELEGATES
+  // Pure pass-throughs used by dashboard pages so widgets never touch
+  // ApiService directly. No business logic lives here.
+  // ---------------------------------------------------------------------------
+
+  /// Generic authenticated GET (raw JSON response).
+  Future<dynamic> apiGet(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+  }) => _apiService.get(endpoint, queryParams: queryParams);
+
+  /// Generic authenticated POST (raw JSON response).
+  Future<dynamic> apiPost(String endpoint, {Map<String, dynamic>? data}) =>
+      _apiService.post(endpoint, data: data);
+
+  /// Downloads a file from [endpoint]; returns the local file path.
+  Future<String?> apiDownloadFile(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+  }) => _apiService.downloadFile(endpoint, queryParams: queryParams);
+
+  Future<SalonPaymentConfig> getSalonPaymentConfig(int salonId) =>
+      _apiService.getSalonPaymentConfig(salonId);
+
+  Future<dynamic> updateSalonPaymentConfig(
+    int salonId,
+    Map<String, dynamic> data,
+  ) => _apiService.updateSalonPaymentConfig(salonId, data);
+
+  Future<List<dynamic>> getSalonVouchers(int salonId) =>
+      _apiService.getSalonVouchers(salonId);
+
+  Future<dynamic> createVoucher(Map<String, dynamic> data) =>
+      _apiService.createVoucher(data);
+
+  Future<dynamic> updateVoucher(int voucherId, Map<String, dynamic> data) =>
+      _apiService.updateVoucher(voucherId, data);
+
+  Future<List<dynamic>> getSubscriptionPlans() =>
+      _apiService.getSubscriptionPlans();
 
   // ---------------------------------------------------------------------------
   // DASHBOARD WIDGETS

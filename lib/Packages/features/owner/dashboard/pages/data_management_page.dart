@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/auth_provider.dart';
 import 'package:na3eeman/Packages/Core/constants/app_roles.dart';
-import 'package:na3eeman/Services/api/api_service.dart';
+import 'package:na3eeman/Providers/features/owner_provider.dart';
 import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
 import 'package:file_picker/file_picker.dart';
@@ -83,7 +83,7 @@ class _DataManagementPageState extends State<DataManagementPage>
           'PDF Report for $_selectedDataset generated and downloaded!',
         );
       } else {
-        final apiService = ApiService();
+        final owner = context.read<OwnerProvider>();
         final params = <String, dynamic>{
           'dataset': _selectedDataset,
           'format': _selectedFormat,
@@ -95,7 +95,7 @@ class _DataManagementPageState extends State<DataManagementPage>
           params['date_to'] = _dateRange!.end.toIso8601String().split('T')[0];
         }
 
-        final filePath = await apiService.downloadFile(
+        final filePath = await owner.apiDownloadFile(
           '/data/export/',
           queryParams: params,
         );
@@ -140,10 +140,10 @@ class _DataManagementPageState extends State<DataManagementPage>
     });
 
     try {
-      final apiService = ApiService();
+      final owner = context.read<OwnerProvider>();
       // Read the file and send as base64-encoded JSON body
       final fileContent = await _readFile(_selectedFilePath!);
-      final result = await apiService.post(
+      final result = await owner.apiPost(
         '/data/import/',
         data: {
           'conflict_mode': _conflictMode,

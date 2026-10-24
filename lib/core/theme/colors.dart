@@ -78,9 +78,38 @@ class AppColors {
 
   // Semantic Colors
   static const Color success = Color(0xFF4CAF50);
+  static const Color successLight = Color(0xFFE8F5E9);
   static const Color error = Color(0xFFE53935);
+  static const Color errorLight = Color(0xFFFFEBEE);
   static const Color warning = Color(0xFFFFB300);
   static const Color info = Color(0xFF2196F3);
+  static const Color infoLight = Color(0xFFE3F2FD);
+  static const Color darkSuccess = Color(0xFF66BB6A);
+  static const Color darkError = Color(0xFFEF5350);
+  static const Color darkInfo = Color(0xFF42A5F5);
+
+  // Neutral Grays
+  static const Color offWhite = Color(0xFFF9F9F9);
+  static const Color darkGray = Color(0xFF4A4A4A);
+  static const Color mediumGray = Color(0xFF9B9B9B);
+  static const Color lightGray = Color(0xFFE8E8E8);
+  static const Color paleGray = Color(0xFFF5F5F5);
+
+  // Dark Theme Surfaces
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkBackgroundEnd = Color(0xFF1A1A1A);
+  static const Color darkSurface = Color(0xFF1E1E1E);
+  static const Color darkCard = Color(0xFF252525);
+  static const Color darkDivider = Color(0xFF333333);
+  static const Color darkText = Color(0xFFF5F5F5);
+  static const Color darkTextSecondary = Color(0xFFBDBDBD);
+  static const Color darkTextHint = Color(0xFF757575);
+
+  // Overlays / Tints
+  static const Color overlay = Color(0x801A1A1A);
+  static const Color overlayLight = Color(0x331A1A1A);
+  static const Color darkWithOpacity = Color(0x1A121212);
+  static const Color avatarTint = Color(0x33144EA0);
 
   // Transparent
   static const Color transparent = Colors.transparent;
@@ -88,5 +117,6 @@ class AppColors {
 
   // Aliases
   static const Color primary = blue;
+  static const Color secondary = pink;
   static const Color creamyBackground = cream;
 }

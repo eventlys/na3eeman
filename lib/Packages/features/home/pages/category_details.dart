@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../../../../Services/api/api_service.dart';
 import '../../../../Models/salon/category_model.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
@@ -33,7 +32,6 @@ class CategoryDetailsPage extends StatefulWidget {
 
 class _CategoryDetailsPageState extends State<CategoryDetailsPage>
     with TickerProviderStateMixin {
-  final ApiService _api = ApiService();
   late SidebarController _sidebarController;
   final TextEditingController _searchController = TextEditingController();
 
@@ -98,7 +96,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
         return;
       }
 
-      final response = await _api.getAppointments(
+      final response = await context.read<SalonProvider>().getAppointmentsRaw(
         customerId: authProvider.user!.id,
         status: 'COMPLETED',
         pageSize: 1,
@@ -108,8 +106,10 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       if (results != null && results.isNotEmpty) {
         final lastAppt = results.first;
         final salonId = lastAppt['salon'];
-        if (salonId != null) {
-          final salonDetails = await _api.getSalonDetails(salonId);
+        if (salonId != null && mounted) {
+          final salonDetails = await context
+              .read<SalonProvider>()
+              .getSalonDetailsRaw(salonId);
           if (mounted) {
             setState(() {
               _previousSalon = salonDetails;
@@ -152,7 +152,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
 
   Future<void> _loadAds() async {
     try {
-      final ads = await _api.getAdsByCategory(widget.category.id);
+      final ads = await context.read<SalonProvider>().getAdsByCategory(
+        widget.category.id,
+      );
       if (mounted) {
         setState(() {
           _ads = ads;
@@ -165,7 +167,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
 
   Future<void> _loadOffers() async {
     try {
-      final offers = await _api.getOffersByCategory(widget.category.id);
+      final offers = await context.read<SalonProvider>().getOffersByCategory(
+        widget.category.id,
+      );
       if (mounted) {
         setState(() {
           _offers = offers;
@@ -182,13 +186,15 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
       final lat = _currentPosition?.latitude ?? 31.9454;
       final lng = _currentPosition?.longitude ?? 35.9284;
 
-      final response = await _api.getNearbySalonsByCategory(
-        latitude: lat,
-        longitude: lng,
-        categoryId: widget.category.id,
-        forGift: widget.giftMode,
-        giftGender: widget.giftGender,
-      );
+      final response = await context
+          .read<SalonProvider>()
+          .getNearbySalonsByCategory(
+            latitude: lat,
+            longitude: lng,
+            categoryId: widget.category.id,
+            forGift: widget.giftMode,
+            giftGender: widget.giftGender,
+          );
 
       if (mounted) {
         setState(() {

@@ -1,7 +1,8 @@
 // ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
 import '../../../../Models/salon/category_model.dart';
-import '../../../../Services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/features/salon_provider.dart';
 import '../../../../Services/enums/gender.dart';
 import '../widgets/category_card.dart';
 
@@ -20,7 +21,6 @@ class CategorySelectionPage extends StatefulWidget {
 }
 
 class _CategorySelectionPageState extends State<CategorySelectionPage> {
-  final ApiService _apiService = ApiService();
   List<Category> _categories = [];
   bool _isLoading = true;
 
@@ -32,7 +32,9 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
 
   Future<void> _loadCategories() async {
     try {
-      final List<dynamic> rawCategories = await _apiService.getCategories();
+      final List<dynamic> rawCategories = await context
+          .read<SalonProvider>()
+          .getCategories();
       final List<Category> categories = rawCategories
           .map((e) => Category.fromJson(e))
           .toList();

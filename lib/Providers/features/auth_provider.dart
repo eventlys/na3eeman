@@ -11,6 +11,7 @@ import 'package:na3eeman/Models/auth/owner_profile.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/auth_service.dart';
 import '../../Services/repositories/auth_repository.dart';
+import '../../Services/use_cases/auth_use_cases.dart';
 import '../../Services/enums/gender.dart';
 import '../../core/enums/app_enums.dart';
 import '../../core/auth/role_permission_manager.dart';
@@ -24,11 +25,46 @@ class AuthProvider extends BaseProvider {
   String? _currentToken;
   final AuthService _authService;
 
-  // Initialize AuthService with required dependencies
-  AuthProvider({AuthRepository? authRepository})
-    : _authService = AuthService(
-        authRepository ?? AuthRepository(ApiService()),
-      );
+  /// The shared [AuthService] backing this provider. Exposed so UI can call
+  /// auth operations (signup, change password) without constructing a
+  /// repository directly.
+  AuthService get authService => _authService;
+
+  final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final ResetPasswordUseCase _resetPasswordUseCase;
+  final VerifyPasswordResetOtpUseCase _verifyPasswordResetOtpUseCase;
+
+  // Resolved once per AuthProvider construction; passed to both AuthService
+  // and the use-case defaults so they all share one repository instance.
+  static AuthRepository _repositoryBinding(
+    AuthRepository repository,
+    void Function(AuthRepository) bind,
+  ) {
+    bind(repository);
+    return repository;
+  }
+
+  // Initialize AuthService and use cases with required dependencies.
+  // Use cases receive the same repository instance as AuthService.
+  AuthProvider({
+    ApiService? apiService,
+    AuthRepository? authRepository,
+    ForgotPasswordUseCase? forgotPasswordUseCase,
+    ResetPasswordUseCase? resetPasswordUseCase,
+    VerifyPasswordResetOtpUseCase? verifyPasswordResetOtpUseCase,
+  }) : _authService = AuthService(
+         _repositoryBinding(
+           authRepository ?? AuthRepository(apiService ?? ApiService()),
+           (r) => authRepository = r,
+         ),
+       ),
+       _forgotPasswordUseCase =
+           forgotPasswordUseCase ?? ForgotPasswordUseCase(authRepository!),
+       _resetPasswordUseCase =
+           resetPasswordUseCase ?? ResetPasswordUseCase(authRepository!),
+       _verifyPasswordResetOtpUseCase =
+           verifyPasswordResetOtpUseCase ??
+           VerifyPasswordResetOtpUseCase(authRepository!);
 
   // Getters
   User? get user => _user;
@@ -195,6 +231,7 @@ class AuthProvider extends BaseProvider {
 
   Future<bool> _handleEmailLogin(String email, String password) async {
     try {
+      // AuthService.login is guarded by LoginUseCase validation.
       final response = await _authService.login(email, password);
 
       if (response['access'] != null) {
@@ -220,15 +257,19 @@ class AuthProvider extends BaseProvider {
       }
     } catch (e) {
       String errorMessage = 'Login failed: $e';
-      if (e is AppError && e.details != null) {
-        String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: ')) {
-          detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+      if (e is AppError) {
+        // Validation errors from LoginUseCase surface their message directly.
+        errorMessage = e.message;
+        if (e.details != null) {
+          String detailMsg = e.details.toString();
+          if (detailMsg.contains('Exception: ')) {
+            detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+          }
+          if (detailMsg.contains('non_field_errors: ')) {
+            detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+          }
+          if (detailMsg.isNotEmpty) errorMessage = detailMsg;
         }
-        if (detailMsg.contains('non_field_errors: ')) {
-          detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
-        }
-        if (detailMsg.isNotEmpty) errorMessage = detailMsg;
       }
 
       setError(errorMessage);
@@ -318,7 +359,7 @@ class AuthProvider extends BaseProvider {
       setLoading(true);
       clearError();
 
-      final result = await _authService.forgotPassword(email);
+      final result = await _forgotPasswordUseCase.execute(email);
 
       setLoading(false);
       return result;
@@ -326,16 +367,21 @@ class AuthProvider extends BaseProvider {
       setLoading(false);
 
       String errorMessage = 'Failed to send OTP. Please try again.';
-      if (e is AppError && e.details != null) {
-        String detailMsg = e.details.toString();
-        if (detailMsg.contains('Exception: ')) {
-          detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
-        }
-        if (detailMsg.contains('non_field_errors: ')) {
-          detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
-        }
-        if (detailMsg.isNotEmpty) {
-          errorMessage = detailMsg;
+      if (e is AppError) {
+        // Validation errors from ForgotPasswordUseCase surface their message.
+        if (e.details == null) {
+          errorMessage = e.message;
+        } else {
+          String detailMsg = e.details.toString();
+          if (detailMsg.contains('Exception: ')) {
+            detailMsg = detailMsg.replaceAll('Exception: ', '').trim();
+          }
+          if (detailMsg.contains('non_field_errors: ')) {
+            detailMsg = detailMsg.replaceAll('non_field_errors: ', '').trim();
+          }
+          if (detailMsg.isNotEmpty) {
+            errorMessage = detailMsg;
+          }
         }
       }
 
@@ -352,7 +398,7 @@ class AuthProvider extends BaseProvider {
       setLoading(true);
       clearError();
 
-      final result = await _authService.verifyPasswordResetOtp(
+      final result = await _verifyPasswordResetOtpUseCase.execute(
         email: email,
         otp: otp,
       );
@@ -377,7 +423,8 @@ class AuthProvider extends BaseProvider {
       setLoading(true);
       clearError();
 
-      final result = await _authService.resetPassword(
+      // ResetPasswordUseCase guards the call with token/password validation.
+      final result = await _resetPasswordUseCase.execute(
         token: token,
         newPassword: newPassword,
       );
@@ -386,11 +433,13 @@ class AuthProvider extends BaseProvider {
       return result;
     } catch (e) {
       setLoading(false);
+      // Validation errors from ResetPasswordUseCase (AppError without
+      // details) surface their message; API failures keep the generic text.
+      final errorMessage = e is AppError && e.details == null
+          ? e.message
+          : 'Password reset failed. Please try again.';
       setError('Password reset failed: $e');
-      return {
-        'success': false,
-        'message': 'Password reset failed. Please try again.',
-      };
+      return {'success': false, 'message': errorMessage};
     }
   }
 

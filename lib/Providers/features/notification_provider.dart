@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../../Services/api/api_service.dart';
 
 class NotificationProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
+
+  NotificationProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
 
   List<dynamic> _notifications = [];
   bool _isLoading = false;

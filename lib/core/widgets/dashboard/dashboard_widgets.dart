@@ -6,7 +6,7 @@ import '../../theme/colors.dart';
 import '../buttons/styled_buttons.dart';
 // import '../../../../Services/api/api_service.dart';
 import '../../../../Providers/features/auth_provider.dart';
-import '../feedback/feedback_dialog.dart';
+import '../../../../Services/ui/overlay_service.dart';
 
 class DashboardCard extends StatelessWidget {
   final Widget child;
@@ -194,7 +194,7 @@ class FeedbackSection extends StatelessWidget {
   const FeedbackSection({super.key});
 
   void _showFeedbackDialog(BuildContext context) {
-    FeedbackDialog.show(context);
+    OverlayService.showFeedback();
   }
 
   @override

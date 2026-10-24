@@ -2,7 +2,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../Services/api/api_service.dart';
 import '../../../../Services/api/endpoints.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
@@ -59,8 +58,9 @@ class _ExpertDashboardState extends State<ExpertDashboard>
     setState(() => _isInsightsLoading = true);
 
     try {
-      final apiService = ApiService();
-      final insights = await apiService.get(Endpoints.expertInsights);
+      final insights = await context.read<StaffProvider>().apiGet(
+        Endpoints.expertInsights,
+      );
       setState(() {
         _expertInsights = insights;
       });
@@ -74,65 +74,6 @@ class _ExpertDashboardState extends State<ExpertDashboard>
       salonId: authProvider.user?.salonId,
     );
   }
-
-  // Widget _buildAIInsightsSection(BuildContext context) {
-  //   if (_isInsightsLoading && _expertInsights == null) {
-  //     return const Center(child: CircularProgressIndicator(color: Colors.white));
-  //   }
-
-  //   final insights = (_expertInsights?['insights'] as List<dynamic>?) ?? [];
-
-  //   return Container(
-  //     padding: const EdgeInsets.all(20),
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withValues(alpha:0.8)],
-  //         begin: Alignment.topLeft,
-  //         end: Alignment.bottomRight,
-  //       ),
-  //       borderRadius: BorderRadius.circular(20),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Theme.of(context).primaryColor.withValues(alpha:0.3),
-  //           blurRadius: 10,
-  //           offset: const Offset(0, 5),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             const Icon(Icons.psychology, color: Colors.white, size: 28),
-  //             const SizedBox(width: 12),
-  //             Text(
-  //               'ai_staff_assistant'.tr(),
-  //               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-  //             ),
-  //           ],
-  //         ),
-  //         const SizedBox(height: 20),
-  //         if (insights.isEmpty)
-  //           Text(
-  //             'no_insights_available_yet_complete_more_appointments'.tr(),
-  //             style: const TextStyle(color: Colors.white70, fontSize: 14),
-  //           )
-  //         else
-  //           ...insights.map((item) {
-  //             return Padding(
-  //               padding: const EdgeInsets.only(bottom: 16),
-  //               child: _buildInsightItem(
-  //                 _getIconForInsight(item['icon']),
-  //                 _getTranslatedInsightLabel(item['label']),
-  //                 _getTranslatedInsightValue(item['value']),
-  //               ),
-  //             );
-  //           }),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   IconData _getIconForInsight(String? iconName) {
     switch (iconName) {
@@ -245,17 +186,8 @@ class _ExpertDashboardState extends State<ExpertDashboard>
                     ),
                   ),
 
-                  // const SizedBox(height: 16),
-                  // ── Time Clock ─────────────────────────────────────────
                   const TimeClockWidget(),
 
-                  // const SizedBox(height: 24),
-
-                  // _buildAIInsightsSection(context),
-
-                  // const SizedBox(height: 32),
-
-                  // const ToolsAndInventoryOverview(),
                   const SizedBox(height: 32),
 
                   TodayAppointmentsOverview(

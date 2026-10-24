@@ -5,8 +5,14 @@ import '../../Services/storage_service.dart';
 import '../../Helpers/logger.dart';
 
 class FavoritesProvider extends BaseProvider {
-  final ApiService _apiService = ApiService();
-  final UnifiedStorageService _storageService = UnifiedStorageService();
+  final ApiService _apiService;
+  final UnifiedStorageService _storageService;
+
+  FavoritesProvider({
+    ApiService? apiService,
+    UnifiedStorageService? storageService,
+  }) : _apiService = apiService ?? ApiService(),
+       _storageService = storageService ?? UnifiedStorageService();
 
   List<Map<String, dynamic>> _favoriteSalons = [];
   bool _hasLoaded = false;

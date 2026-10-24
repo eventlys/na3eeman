@@ -4,7 +4,10 @@ import '../../Services/api/api_service.dart';
 import '../../Services/api/endpoints.dart';
 
 class InternProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
+
+  InternProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
 
   List<InternTask> _tasks = [];
   List<InternFeedback> _feedbacks = [];

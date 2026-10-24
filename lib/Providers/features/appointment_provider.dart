@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:intl/intl.dart';
 import '../base_provider.dart';
 import 'auth_provider.dart';
@@ -9,6 +10,10 @@ import '../../Services/api/api_service.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class AppointmentProvider extends BaseProvider {
+  AppointmentProvider({ApiService? apiService})
+    : _apiService = apiService ?? ApiService();
+
+  final ApiService _apiService;
   final List<SalonAppointment> _appointments = [];
   AuthProvider? _authProvider;
   Map<String, dynamic>? _soonestAppointment;
@@ -68,7 +73,6 @@ class AppointmentProvider extends BaseProvider {
       clearError();
 
       // Fetch from API instead of mocks
-      final apiService = ApiService();
       final Map<String, dynamic> queryParams = {};
       if (query != null && query.isNotEmpty) {
         queryParams['customer_name'] = query;
@@ -76,7 +80,7 @@ class AppointmentProvider extends BaseProvider {
       if (date != null) {
         queryParams['start_date'] = DateFormat('yyyy-MM-dd').format(date);
       }
-      final response = await apiService.get(
+      final response = await _apiService.get(
         '/salons/appointments/',
         queryParams: queryParams.isNotEmpty ? queryParams : null,
       ); // Or Endpoints.appointments
@@ -139,8 +143,7 @@ class AppointmentProvider extends BaseProvider {
   Future<void> delayAppointment(String appointmentId, int minutes) async {
     try {
       setLoading(true);
-      final apiService = ApiService();
-      await apiService.post(
+      await _apiService.post(
         '/salons/appointments/$appointmentId/delay/',
         data: {'minutes': minutes},
       );
@@ -159,8 +162,7 @@ class AppointmentProvider extends BaseProvider {
   Future<void> verifyPayment(String appointmentId) async {
     try {
       setLoading(true);
-      final apiService = ApiService();
-      await apiService.post(
+      await _apiService.post(
         '/salons/appointments/$appointmentId/verify-payment/',
         data: {},
       );
@@ -183,8 +185,7 @@ class AppointmentProvider extends BaseProvider {
       setLoading(true);
       clearError();
 
-      final apiService = ApiService();
-      await apiService.confirmPayment(appointmentId, voucherCode: voucherCode);
+      await _apiService.confirmPayment(appointmentId, voucherCode: voucherCode);
 
       await loadAppointments();
       notifyListeners();
@@ -203,8 +204,7 @@ class AppointmentProvider extends BaseProvider {
   }) async {
     try {
       setLoading(true);
-      final apiService = ApiService();
-      await apiService.post(
+      await _apiService.post(
         '/users/customers/rate/',
         data: {
           'appointment': appointmentId,
@@ -230,8 +230,7 @@ class AppointmentProvider extends BaseProvider {
   ) async {
     try {
       setLoading(true);
-      final apiService = ApiService();
-      await apiService.post(
+      await _apiService.post(
         '/salons/appointments/$appointmentId/reschedule/',
         data: {
           'start_time': newStartTime.toIso8601String(),
@@ -253,8 +252,7 @@ class AppointmentProvider extends BaseProvider {
     try {
       setLoading(true);
       clearError();
-      final apiService = ApiService();
-      await apiService.reportCustomer(appointmentId, reason: reason);
+      await _apiService.reportCustomer(appointmentId, reason: reason);
       await loadAppointments();
       notifyListeners();
     } catch (e) {
@@ -265,6 +263,19 @@ class AppointmentProvider extends BaseProvider {
     }
   }
 
+  /// Create a recurring booking (pure delegate, no state change).
+  Future<dynamic> createRecurringBooking(Map<String, dynamic> data) =>
+      _apiService.createRecurringBooking(data);
+
+  /// Upload a payment proof for an appointment (pure delegate).
+  Future<dynamic> uploadPaymentProof({
+    required dynamic appointmentId,
+    required File proof,
+  }) => _apiService.uploadPaymentProof(
+    appointmentId: appointmentId,
+    proof: proof,
+  );
+
   Future<Map<String, dynamic>> bookAppointment(
     Map<String, dynamic> appointmentData,
   ) async {
@@ -272,8 +283,7 @@ class AppointmentProvider extends BaseProvider {
       setLoading(true);
       clearError();
 
-      final apiService = ApiService();
-      final response = await apiService.bookAppointment(appointmentData);
+      final response = await _apiService.bookAppointment(appointmentData);
 
       // Reload appointments to sync local state
       await loadAppointments();
