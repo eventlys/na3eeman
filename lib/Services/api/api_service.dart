@@ -17,6 +17,10 @@ class ApiService {
   String get baseUrl => AppConfig.baseUrl;
   final UnifiedStorageService _storage = UnifiedStorageService();
 
+  /// In-flight GET requests keyed by URI, for deduplication of concurrent
+  /// identical reads (e.g. two widgets on one screen requesting the same data).
+  final Map<String, Future<dynamic>> _inFlightGet = {};
+
   Future<Map<String, String>> _getHeaders(
     String path, [
     Map<String, String>? customHeaders,
@@ -69,6 +73,21 @@ class ApiService {
       '$baseUrl$path',
     ).replace(queryParameters: stringParams);
 
+    // In-flight dedup: concurrent identical GETs share one network request.
+    final key = 'GET $uri';
+    final inFlight = _inFlightGet[key];
+    if (inFlight != null) return inFlight;
+
+    final request = _performGet(uri, headers);
+    _inFlightGet[key] = request;
+    try {
+      return await request;
+    } finally {
+      _inFlightGet.remove(key);
+    }
+  }
+
+  Future<dynamic> _performGet(Uri uri, Map<String, String> headers) async {
     try {
       final response = await http
           .get(uri, headers: headers)

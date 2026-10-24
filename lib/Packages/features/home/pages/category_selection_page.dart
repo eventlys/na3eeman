@@ -31,10 +31,9 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   }
 
   Future<void> _loadCategories() async {
-    try {
-      final List<dynamic> rawCategories = await context
-          .read<SalonProvider>()
-          .getCategories();
+    // Cache-then-network: apply the cached list instantly, then re-apply
+    // when the background network refresh lands.
+    void apply(List<dynamic> rawCategories) {
       final List<Category> categories = rawCategories
           .map((e) => Category.fromJson(e))
           .toList();
@@ -59,8 +58,16 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
           _isLoading = false;
         });
       }
+    }
+
+    try {
+      final fresh = await context.read<SalonProvider>().getCategoriesCached(
+        onCategories: apply,
+      );
+      // On a cold cache the await already holds the network result.
+      apply(fresh);
     } catch (e) {
-      if (mounted) {
+      if (mounted && _categories.isEmpty) {
         setState(() {
           _categories = [];
           _isLoading = false;

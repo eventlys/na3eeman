@@ -56,6 +56,10 @@ class _ExpertDashboardState extends State<ExpertDashboard>
 
     setState(() => _isInsightsLoading = true);
 
+    final inventoryFuture = inventoryProvider.loadInventoryItems(
+      salonId: authProvider.user?.salonId,
+    );
+
     try {
       final insights = await context
           .read<StaffProvider>()
@@ -69,9 +73,7 @@ class _ExpertDashboardState extends State<ExpertDashboard>
       setState(() => _isInsightsLoading = false);
     }
 
-    await inventoryProvider.loadInventoryItems(
-      salonId: authProvider.user?.salonId,
-    );
+    await inventoryFuture;
   }
 
   IconData _getIconForInsight(String? iconName) {

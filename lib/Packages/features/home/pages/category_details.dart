@@ -107,14 +107,19 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
         final lastAppt = results.first;
         final salonId = lastAppt['salon'];
         if (salonId != null && mounted) {
-          final salonDetails = await context
-              .read<SalonProvider>()
-              .getSalonDetailsRaw(salonId);
-          if (mounted) {
-            setState(() {
-              _previousSalon = salonDetails;
-            });
-          }
+          // Cache-then-network: show the cached salon card instantly, then
+          // update it when the background refresh lands.
+          final salonProvider = context.read<SalonProvider>();
+          await salonProvider.getSalonDetailsCached(
+            salonId,
+            onDetails: (details) {
+              if (mounted) {
+                setState(() {
+                  _previousSalon = details;
+                });
+              }
+            },
+          );
         } else {}
       } else {}
     } catch (e) {

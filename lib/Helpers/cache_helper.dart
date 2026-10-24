@@ -6,6 +6,7 @@ import 'logger.dart';
 class CacheKeys {
   static const String userProfile = 'user_profile';
   static const String salonsList = 'salons_list';
+  static const String categoriesList = 'categories_list';
   static const String appointments = 'user_appointments';
   static const String loyaltyBalance = 'loyalty_balance';
   static const String salonDetailsPrefix = 'salon_details_';
@@ -34,6 +35,9 @@ class CacheHelper {
   late Box _cacheBox;
   bool _isInitialized = false;
 
+  // In-process listeners notified on [store], keyed by cache key.
+  final Map<String, List<void Function(dynamic)>> _listeners = {};
+
   Future<void> initialize() async {
     if (_isInitialized) return;
 
@@ -49,6 +53,29 @@ class CacheHelper {
       AppLogger.error('Failed to initialize cache helper', error: e);
       rethrow;
     }
+  }
+
+  /// Publishes [data] to registered listeners. Used by the provider layer
+  /// for stale-while-revalidate: it registers a listener, emits the cached
+  /// value instantly, then emits the fresh network value. Listeners are
+  /// keyed per [key] and receive every [store] for that key.
+  void _publish(String key, dynamic data) {
+    final listeners = _listeners[key];
+    if (listeners == null) return;
+    for (final listener in List<void Function(dynamic)>.of(listeners)) {
+      listener(data);
+    }
+  }
+
+  /// Registers [listener] for cache-key updates. Returns an unsubscribe
+  /// function; callers must invoke it (e.g. on provider dispose).
+  void Function() addListener(String key, void Function(dynamic) listener) {
+    (_listeners[key] ??= []).add(listener);
+    return () => removeListener(key, listener);
+  }
+
+  void removeListener(String key, void Function(dynamic) listener) {
+    _listeners[key]?.remove(listener);
   }
 
   // Store data in cache
@@ -67,6 +94,7 @@ class CacheHelper {
       };
 
       await _cacheBox.put(key, cacheEntry);
+      _publish(key, data);
 
       AppLogger.debug(
         'Data cached: $key (expires in ${duration.inMinutes} minutes)',
@@ -209,15 +237,30 @@ class CacheHelper {
     return retrieve(CacheKeys.salonsList);
   }
 
+  // Store categories list (parsed maps as returned by the provider layer)
+  Future<void> storeCategoriesList(List<dynamic> categories) async {
+    await store(
+      CacheKeys.categoriesList,
+      categories,
+      duration: CacheDurations.long,
+    );
+  }
+
+  // Retrieve categories list
+  List<dynamic>? retrieveCategoriesList() {
+    return retrieve(CacheKeys.categoriesList);
+  }
+
   // Store salon details
   Future<void> storeSalonDetails(
     int salonId,
-    Map<String, dynamic> details,
-  ) async {
+    Map<String, dynamic> details, {
+    Duration duration = CacheDurations.medium,
+  }) async {
     await store(
       '${CacheKeys.salonDetailsPrefix}$salonId',
       details,
-      duration: CacheDurations.medium,
+      duration: duration,
     );
   }
 

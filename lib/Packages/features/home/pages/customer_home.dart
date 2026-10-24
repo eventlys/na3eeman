@@ -76,17 +76,26 @@ class _CustomerHomePageState extends State<CustomerHomePage>
   }
 
   Future<void> _loadCategories() async {
-    try {
-      final List<dynamic> categories = await context
-          .read<SalonProvider>()
-          .getCategories();
+    // Cache-then-network: render the cached list instantly, then refresh
+    // from the API in the background via the onCategories callback.
+    void apply(List<dynamic> categories) {
       if (mounted) {
         setState(() {
           _allCategories = categories.map((e) => Category.fromJson(e)).toList();
         });
       }
+    }
+
+    try {
+      final fresh = await context.read<SalonProvider>().getCategoriesCached(
+        onCategories: apply,
+      );
+      // On a cold cache the await already holds the network result.
+      apply(fresh);
     } catch (e) {
-      if (mounted) setState(() => _allCategories = []);
+      if (mounted && _allCategories.isEmpty) {
+        setState(() => _allCategories = []);
+      }
     }
   }
 

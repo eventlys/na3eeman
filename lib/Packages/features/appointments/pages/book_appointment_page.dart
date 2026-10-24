@@ -968,8 +968,10 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final expertProvider = context.watch<ExpertProvider>();
-    final experts = expertProvider.experts;
+    final experts = context.select<ExpertProvider, List<dynamic>>(
+      (p) => p.experts,
+    );
+    final expertProvider = context.read<ExpertProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(

@@ -9,13 +9,19 @@ import '../../Models/salon/salon_service_model.dart';
 import '../../Models/inventory/inventory_item.dart';
 import '../../Services/api/api_service.dart';
 import '../../Services/api/endpoints.dart';
+import '../../Helpers/cache_helper.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class SalonProvider extends BaseProvider {
-  SalonProvider({ApiService? apiService})
-    : _apiService = apiService ?? ApiService();
+  SalonProvider({ApiService? apiService, CacheHelper? cacheHelper})
+    : _apiService = apiService ?? ApiService(),
+      _cache = cacheHelper ?? CacheHelper();
 
   final ApiService _apiService;
+  final CacheHelper _cache;
+
+  // Unsubscribe functions for CacheHelper listeners, removed on dispose.
+  final List<void Function()> _cacheSubscriptions = [];
   List<Salon> _salons = [];
   List<Branch> _branches = [];
   List<SalonService> _services = [];
@@ -61,6 +67,75 @@ class SalonProvider extends BaseProvider {
   }) => _apiService.get(endpoint, queryParams: queryParams);
 
   Future<List<dynamic>> getCategories() => _apiService.getCategories();
+
+  /// Stale-while-revalidate categories: emits the cached list immediately
+  /// via [onCategories] (if any), refreshes from the network in the
+  /// background, and emits the fresh list when it lands. Returns the first
+  /// available list (cached, or the network result on a cold cache), so
+  /// cold-cache callers behave exactly like the plain [getCategories] path.
+  Future<List<dynamic>> getCategoriesCached({
+    void Function(List<dynamic>)? onCategories,
+  }) async {
+    final cached = _cache.retrieveCategoriesList();
+    if (cached != null) onCategories?.call(cached);
+
+    void listener(dynamic data) {
+      if (data is List) onCategories?.call(data);
+    }
+
+    final unsubscribe = _cache.addListener(CacheKeys.categoriesList, listener);
+    _cacheSubscriptions.add(unsubscribe);
+
+    try {
+      final fresh = await _apiService.getCategories();
+      await _cache.storeCategoriesList(fresh); // publishes to listener
+      return fresh;
+    } catch (e) {
+      AppLogger.warning('getCategoriesCached network refresh failed: $e');
+      if (cached != null) return cached;
+      rethrow;
+    } finally {
+      unsubscribe();
+      _cacheSubscriptions.remove(unsubscribe);
+    }
+  }
+
+  /// Stale-while-revalidate salon details: same contract as
+  /// [getCategoriesCached], keyed per salon id with a short TTL.
+  Future<Map<String, dynamic>> getSalonDetailsCached(
+    int salonId, {
+    void Function(Map<String, dynamic>)? onDetails,
+  }) async {
+    final cacheKey = '${CacheKeys.salonDetailsPrefix}$salonId';
+    final cached = _cache.retrieveSalonDetails(salonId);
+    if (cached != null) onDetails?.call(cached);
+
+    void listener(dynamic data) {
+      if (data is Map<String, dynamic>) onDetails?.call(data);
+    }
+
+    final unsubscribe = _cache.addListener(cacheKey, listener);
+    _cacheSubscriptions.add(unsubscribe);
+
+    try {
+      final fresh = await _apiService.getSalonDetails(salonId);
+      await _cache.storeSalonDetails(
+        salonId,
+        fresh,
+        duration: CacheDurations.short,
+      ); // publishes to listener
+      return fresh;
+    } catch (e) {
+      AppLogger.warning(
+        'getSalonDetailsCached network refresh failed for $salonId: $e',
+      );
+      if (cached != null) return cached;
+      rethrow;
+    } finally {
+      unsubscribe();
+      _cacheSubscriptions.remove(unsubscribe);
+    }
+  }
 
   Future<List<dynamic>> getAdsByCategory(int categoryId) =>
       _apiService.getAdsByCategory(categoryId);
@@ -151,6 +226,19 @@ class SalonProvider extends BaseProvider {
 
   Future<void> loadSalons() async {
     try {
+      // Cache-then-network (stale-while-revalidate): render the cached list
+      // instantly, then always revalidate against the API and update.
+      final cached = _cache.retrieveSalonsList();
+      if (cached != null && cached.isNotEmpty) {
+        _salons = cached
+            .map<Salon>((json) => Salon.fromJson(json as Map<String, dynamic>))
+            .toList();
+        if (_salons.isNotEmpty && _selectedSalon == null) {
+          _selectedSalon = _salons.first;
+        }
+        notifyListeners();
+      }
+
       final response = await _apiService.get(Endpoints.salons);
       AppLogger.info('loadSalons Response: $response');
       final List<dynamic> results =
@@ -161,6 +249,9 @@ class SalonProvider extends BaseProvider {
       if (_salons.isNotEmpty && _selectedSalon == null) {
         _selectedSalon = _salons.first; // Default select
       }
+      notifyListeners();
+      // Persist the parsed list so retrieval needs no envelope handling.
+      await _cache.storeSalonsList(results);
     } catch (e) {
       AppLogger.info('loadSalons Error: $e');
     }
@@ -331,6 +422,12 @@ class SalonProvider extends BaseProvider {
         AppLogger.info('updateSalonOnBackend Response: $response');
         _selectedSalon = Salon.fromJson(response);
         notifyListeners();
+        // Salon data changed — drop cached copies so the next read
+        // revalidates instead of rendering stale owner edits.
+        await _cache.remove(CacheKeys.salonsList);
+        await _cache.remove(
+          '${CacheKeys.salonDetailsPrefix}${_selectedSalon!.id}',
+        );
       } catch (e) {
         AppLogger.info('updateSalonOnBackend Error: $e');
         rethrow;
@@ -372,5 +469,14 @@ class SalonProvider extends BaseProvider {
       }
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    for (final unsubscribe in _cacheSubscriptions) {
+      unsubscribe();
+    }
+    _cacheSubscriptions.clear();
+    super.dispose();
   }
 }

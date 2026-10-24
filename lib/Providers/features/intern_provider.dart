@@ -23,9 +23,11 @@ class InternProvider with ChangeNotifier {
 
   // Initialize data
   Future<void> initInternDashboard() async {
-    await fetchProfile();
-    await fetchTasks();
-    await fetchInternActivity(); // This fetches feedbacks too if included in dashboard response
+    await Future.wait([
+      fetchProfile(),
+      fetchTasks(),
+      fetchInternActivity(), // This fetches feedbacks too if included in dashboard response
+    ]);
   }
 
   // Profile Operations

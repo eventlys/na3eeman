@@ -25,9 +25,14 @@ class OffersProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final offersData = await _offersService.getSalonOffers(salonId);
-      final adsData = await _offersService.getSalonAdCampaigns(salonId);
-      final packagesData = await _offersService.getSalonPackages(salonId);
+      final results = await Future.wait<List<dynamic>>([
+        _offersService.getSalonOffers(salonId),
+        _offersService.getSalonAdCampaigns(salonId),
+        _offersService.getSalonPackages(salonId),
+      ]);
+      final offersData = results[0];
+      final adsData = results[1];
+      final packagesData = results[2];
 
       _offers = offersData
           .map((e) => OfferModel.fromMap(e as Map<String, dynamic>))

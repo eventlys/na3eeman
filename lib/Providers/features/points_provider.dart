@@ -11,6 +11,7 @@ class PointsProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _hasPendingPenalty = false;
   LoyaltyProgram? _rules;
+  Future<void>? _loadBalanceInFlight;
 
   PointsProvider({ApiService? apiService})
     : _loyaltyService = apiService ?? ApiService();
@@ -20,6 +21,19 @@ class PointsProvider with ChangeNotifier {
   bool get hasPendingPenalty => _hasPendingPenalty;
 
   Future<void> loadBalance([int? customerId]) async {
+    final inFlight = _loadBalanceInFlight;
+    if (inFlight != null) return inFlight;
+
+    final future = _doLoadBalance(customerId);
+    _loadBalanceInFlight = future;
+    try {
+      await future;
+    } finally {
+      _loadBalanceInFlight = null;
+    }
+  }
+
+  Future<void> _doLoadBalance(int? customerId) async {
     _isLoading = true;
     notifyListeners();
 
