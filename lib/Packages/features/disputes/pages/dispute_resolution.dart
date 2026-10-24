@@ -6,7 +6,7 @@ import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Packages/Core/widgets/common/app_card.dart';
 import '../../../../Packages/Core/widgets/common/app_text_field.dart';
-import '../../../../Packages/Core/constants/app_constants.dart';
+import '../../../../Helpers/config.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
 
@@ -228,7 +228,7 @@ class _NewReportTab extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'For payment disputes, please attach your receipt or screenshot via email to ${AppConstants.supportEmail}',
+                      'For payment disputes, please attach your receipt or screenshot via email to ${AppConfig.supportEmail}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),

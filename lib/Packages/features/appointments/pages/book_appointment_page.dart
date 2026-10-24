@@ -7,7 +7,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
 // import '../../../../Services/ui/overlay_service.dart';
-import '../../../../Packages/Core/constants/app_constants.dart';
+import '../../../../Helpers/config.dart';
 import '../../../../Services/ui/navigation_service.dart';
 import '../../../features/salon/widgets/services_section.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
@@ -822,7 +822,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             child: ElevatedButton.icon(
               onPressed: () {
                 final link =
-                    "${AppConstants.webAppUrl}/appointment/${DateTime.now().millisecondsSinceEpoch}";
+                    "${AppConfig.webAppUrl}/appointment/${DateTime.now().millisecondsSinceEpoch}";
                 final message =
                     "I have a gift for you! 🎁 Booked an appointment at Na3eeman. Show this link to the salon: $link";
                 Share.share(message);

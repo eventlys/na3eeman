@@ -15,7 +15,9 @@ class AppConfig {
   static bool get showDebugBanner => Environment.config.showDebugBanner;
   static bool get enableLogging => Environment.config.enableLogging;
 
-  static const String appVersion = '1.0.0';
+  /// App version from package_info (single source of truth is pubspec.yaml).
+  /// Populated at startup; falls back to empty before first fetch.
+  static String appVersion = '';
   static bool get isProduction => Environment.isProduction;
   static bool get isDevelopment => Environment.isDevelopment;
   static bool get isDebug => Environment.isDevelopment;
@@ -40,12 +42,6 @@ class AppConfig {
   static String get webAppUrl => Environment.config.webAppUrl;
 
   // Payment
-
-  // Cache Configuration
-  static const Duration cacheShortDuration = Duration(minutes: 5);
-  static const Duration cacheMediumDuration = Duration(hours: 1);
-  static const Duration cacheLongDuration = Duration(hours: 24);
-  static const int maxCacheSize = 50 * 1024 * 1024; // 50 MB
 
   // Pagination
   static const int defaultPageSize = 20;

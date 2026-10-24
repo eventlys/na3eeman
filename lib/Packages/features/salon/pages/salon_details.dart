@@ -12,7 +12,7 @@ import '../widgets/salon_gallary.dart';
 import '../widgets/salon_info_section.dart';
 import '../widgets/services_section.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
-import '../../../Core/constants/app_constants.dart';
+import '../../../../Helpers/config.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SalonDetailsPage extends StatefulWidget {
@@ -153,7 +153,7 @@ class _SalonDetailsPageState extends State<SalonDetailsPage> {
                 icon: const Icon(Icons.share_outlined, color: AppColors.white),
                 onPressed: () {
                   final link =
-                      "${AppConstants.webAppUrl}/salon/${widget.salonData['id']}";
+                      "${AppConfig.webAppUrl}/salon/${widget.salonData['id']}";
                   Share.share(
                     "check_out_this_salon".tr(args: [salonName, link]),
                   );

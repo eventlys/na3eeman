@@ -72,7 +72,7 @@ class ApiService {
     try {
       final response = await http
           .get(uri, headers: headers)
-          .timeout(const Duration(seconds: 30));
+          .timeout(AppConfig.apiTimeout);
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -94,7 +94,7 @@ class ApiService {
             headers: headers,
             body: data != null ? jsonEncode(data) : null,
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(AppConfig.apiTimeout);
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -116,7 +116,7 @@ class ApiService {
             headers: headers,
             body: data != null ? jsonEncode(data) : null,
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(AppConfig.apiTimeout);
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -138,7 +138,7 @@ class ApiService {
             headers: headers,
             body: data != null ? jsonEncode(data) : null,
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(AppConfig.apiTimeout);
       return _handleResponse(response);
     } catch (e) {
       rethrow;
@@ -155,7 +155,7 @@ class ApiService {
     try {
       final response = await http
           .delete(uri, headers: headers)
-          .timeout(const Duration(seconds: 30));
+          .timeout(AppConfig.apiTimeout);
       return _handleResponse(response);
     } catch (e) {
       rethrow;

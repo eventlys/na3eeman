@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:na3eeman/Packages/Core/constants/app_style.dart';
 
 import '../constants/app_color.dart';
-import '../constants/app_constants.dart';
+import '../../../core/theme/spacing.dart';
 import '../constants/app_strings.dart';
 
 // Reusable Faded Background Widget
@@ -49,7 +49,7 @@ class ThirdPage extends StatelessWidget {
         startColor: AppColor.lightBackground,
         endColor: AppColor.lightPrimary.withValues(alpha: 0.1),
         child: Padding(
-          padding: const EdgeInsets.all(AppConstants.defaultPadding),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -57,7 +57,7 @@ class ThirdPage extends StatelessWidget {
                 AppStrings.thirdPage,
                 style: context.h3.copyWith(color: AppColor.lightText),
               ),
-              const SizedBox(height: AppConstants.defaultPadding),
+              const SizedBox(height: AppSpacing.md),
               ElevatedButton(
                 onPressed: () {
                   AppSnackBar.info(context, 'feature_coming_soon'.tr());
