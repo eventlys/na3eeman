@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Providers/features/owner_provider.dart';
-import '../../../../../Services/repositories/review_repository.dart';
 import '../../../../../Models/salon/review_model.dart';
 import '../../../../../core/theme/colors.dart';
 
@@ -14,7 +13,6 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  final ReviewRepository _reviewRepository = ReviewRepository();
   bool _isLoading = true;
   List<Review> _reviews = [];
   double _averageRating = 0.0;
@@ -30,7 +28,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
     try {
       final salonId = context.read<OwnerProvider>().activeSalonId;
       if (salonId != null) {
-        final reviews = await _reviewRepository.getSalonReviews(salonId);
+        final reviews = await context.read<OwnerProvider>().getSalonReviews(
+          salonId,
+        );
         double total = 0;
         for (var r in reviews) {
           total += r.rating;

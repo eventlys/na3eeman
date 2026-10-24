@@ -1,0 +1,54 @@
+name: Dependency Audit
+on:
+  schedule:
+    # Weekly, Monday 06:17 UTC (off the top-of-hour herd)
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  outdated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Outdated packages (report)
+        run: flutter pub outdated --no-color || true
+
+      - name: Unused dependency check
+        run: |
+          echo "Dependencies declared but never imported under lib/:"
+          missing=0
+          # Extract direct dependency names from pubspec.yaml (dependencies: block)
+          python3 - << 'PY'
+          import re, pathlib, sys
+          spec = pathlib.Path('pubspec.yaml').read_text()
+          m = re.search(r'^dependencies:\n(.*?)^\S', spec, re.S | re.M)
+          block = m.group(1) if m else ''
+          deps = []
+          for line in block.splitlines():
+              mm = re.match(r'^\s{2}([a-z0-9_]+):\s', line)
+              if mm:
+                  deps.append(mm.group(1))
+          libtext = ''
+          for p in pathlib.Path('lib').rglob('*.dart'):
+              libtext += p.read_text(errors='replace')
+          unused = []
+          skip = {'flutter', 'flutter_localizations'}
+          for d in deps:
+              if d in skip:
+                  continue
+              if f'package:{d}/' not in libtext:
+                  unused.append(d)
+          if unused:
+              print('UNUSED:')
+              for d in unused:
+                  print('  ' + d)
+          else:
+              print('OK: every direct dependency is imported in lib/')
+          PY

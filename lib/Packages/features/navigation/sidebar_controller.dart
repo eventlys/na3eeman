@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../Services/api/auth_service.dart';
-import '../../../Services/repositories/auth_repository.dart';
+import 'package:provider/provider.dart';
+import '../../../Providers/features/auth_provider.dart';
 import '../../../Services/ui/overlay_service.dart';
 import '../../../Services/ui/sidebar_navigation_service.dart';
 
 class SidebarController with ChangeNotifier {
   late AnimationController _animationController;
   late Animation<double> animation;
-  late final AuthService _authService;
 
   bool get isOpen => _animationController.isCompleted;
 
   void init(TickerProvider vsync) {
-    // Initialize to prevent late initialization error; the repository
-    // resolves itself from the default ApiService instance internally.
-    _authService = AuthService(AuthRepository());
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: vsync,
@@ -110,7 +106,12 @@ class SidebarController with ChangeNotifier {
     closeSidebar();
     OverlayService.showLogoutConfirmation(
       onConfirm: () {
-        _authService.logout();
+        // Logout goes through the app's AuthProvider so the full auth state
+        // (user, profiles, secure storage) is cleared, not just the service.
+        final context = SideNavigationService.navigatorKey.currentContext;
+        if (context != null) {
+          Provider.of<AuthProvider>(context, listen: false).logout();
+        }
         SideNavigationService.navigateToLogin();
       },
     );

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../../../../../Providers/features/staff_provider.dart';
-import '../../../../../Services/api/endpoints.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../../../core/widgets/snackbar/app_snackbar.dart';
@@ -47,9 +46,7 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final response = await context.read<StaffProvider>().apiGet(
-        Endpoints.appointments,
-      );
+      final response = await context.read<StaffProvider>().fetchAppointments();
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
 
       final today = DateTime.now();

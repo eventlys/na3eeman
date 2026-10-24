@@ -3,6 +3,7 @@ import 'package:na3eeman/Services/enums/points_types.dart';
 import 'package:na3eeman/Services/enums/report_enums.dart';
 import 'package:na3eeman/Services/repositories/loyalty_repository.dart';
 import 'package:na3eeman/Services/repositories/report_repository.dart';
+import 'package:na3eeman/Models/reports/report_request_model.dart';
 
 // Characterization tests for the pure helpers extracted verbatim from the
 // former god service `BusinessService` into the focused repositories.

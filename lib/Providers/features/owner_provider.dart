@@ -1,5 +1,9 @@
 import '../base_provider.dart';
 import '../../Services/api/api_service.dart';
+import '../../Services/repositories/report_repository.dart';
+import '../../Services/repositories/review_repository.dart';
+import '../../Models/reports/report_request_model.dart';
+import '../../Models/salon/review_model.dart';
 import '../../Models/salon/payment_config_model.dart';
 import 'auth_provider.dart';
 import 'package:na3eeman/Models/auth/owner_profile.dart';
@@ -26,13 +30,20 @@ import '../../Helpers/logger.dart';
 /// }
 /// ```
 class OwnerProvider extends BaseProvider {
-  OwnerProvider({ApiService? apiService})
-    : _apiService = apiService ?? ApiService();
+  OwnerProvider({
+    ApiService? apiService,
+    ReportRepository? reportRepository,
+    ReviewRepository? reviewRepository,
+  }) : _apiService = apiService ?? ApiService(),
+       _reportRepository = reportRepository ?? ReportRepository(),
+       _reviewRepository = reviewRepository ?? ReviewRepository();
 
   OwnerProfile? _profile;
   OwnerMode _mode = OwnerMode.managerMode;
   AuthProvider? _auth;
   final ApiService _apiService;
+  final ReportRepository _reportRepository;
+  final ReviewRepository _reviewRepository;
   List<dynamic> _leaderboard = [];
   Map<String, dynamic> _retailSnapshot = {};
   Map<String, dynamic> _dailyEarnings = {};
@@ -282,6 +293,18 @@ class OwnerProvider extends BaseProvider {
 
   Future<List<dynamic>> getSubscriptionPlans() =>
       _apiService.getSubscriptionPlans();
+
+  /// Generates a staff report for [salonId]. Delegates to [ReportRepository]
+  /// so report pages never construct repositories directly.
+  Future<void> generateStaffReport(
+    StaffReportRequest request, {
+    required int salonId,
+  }) => _reportRepository.generateStaffReport(request, salonId: salonId);
+
+  /// Fetches reviews for [salonId]. Delegates to [ReviewRepository] so
+  /// feedback pages never construct repositories directly.
+  Future<List<Review>> getSalonReviews(int salonId) =>
+      _reviewRepository.getSalonReviews(salonId);
 
   // ---------------------------------------------------------------------------
   // DASHBOARD WIDGETS

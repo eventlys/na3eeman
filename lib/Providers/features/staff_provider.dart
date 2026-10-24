@@ -101,6 +101,14 @@ class StaffProvider extends BaseProvider {
   Future<dynamic> apiPost(String endpoint, {Map<String, dynamic>? data}) =>
       _apiService.post(endpoint, data: data);
 
+  /// Fetches the current expert's insights. Keeps the endpoint inside the
+  /// data layer so pages never name it directly.
+  Future<dynamic> fetchExpertInsights() => apiGet(Endpoints.expertInsights);
+
+  /// Fetches appointments. Keeps the endpoint inside the data layer so
+  /// pages never name it directly.
+  Future<dynamic> fetchAppointments() => apiGet(Endpoints.appointments);
+
   Future<void> fetchInternAttendance() async {
     try {
       setLoading(true);

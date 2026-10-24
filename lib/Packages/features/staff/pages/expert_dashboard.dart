@@ -2,7 +2,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../Services/api/endpoints.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
@@ -58,9 +57,9 @@ class _ExpertDashboardState extends State<ExpertDashboard>
     setState(() => _isInsightsLoading = true);
 
     try {
-      final insights = await context.read<StaffProvider>().apiGet(
-        Endpoints.expertInsights,
-      );
+      final insights = await context
+          .read<StaffProvider>()
+          .fetchExpertInsights();
       setState(() {
         _expertInsights = insights;
       });

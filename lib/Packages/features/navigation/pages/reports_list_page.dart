@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
-import '../../../../Services/repositories/report_repository.dart';
+import '../../../../Providers/features/owner_provider.dart';
+import '../../../../Models/reports/report_request_model.dart';
 import '../../../../Services/enums/report_enums.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
@@ -23,7 +24,6 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   ReportTime _selectedTime = ReportTime.monthly;
-  final ReportRepository _reportRepository = ReportRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -238,8 +238,8 @@ class _ReportsPageState extends State<ReportsPage> {
           return;
         }
 
-        // Generate the report via ReportRepository
-        await _reportRepository.generateStaffReport(
+        // Generate the report via OwnerProvider
+        await context.read<OwnerProvider>().generateStaffReport(
           updatedRequest,
           salonId: salonId,
         );

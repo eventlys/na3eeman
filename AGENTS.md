@@ -35,14 +35,18 @@ disputes, and analytics.
 
 ## Architecture & Code Organization
 
-The app uses **Provider** for state management (`lib/Providers/`), **GetIt**
-for dependency injection (`lib/Services/service_locator.dart`), and named
-routes (`lib/Routes/routes.dart`, `lib/core/router/app_router.dart`).
+The app uses **Provider** for state management (`lib/Providers/`, registered in
+`lib/Providers/provider_wrapper.dart`) and named routes
+(`lib/Routes/routes.dart`, route names in `lib/Routes/route_names.dart`).
+Dependency injection is via **constructor injection with lazy singleton
+defaults** (e.g. `XProvider({ApiService? apiService}) : _api = apiService ?? ApiService()`);
+`ApiService` is a `package:http` singleton. The old GetIt `service_locator.dart`
+and `DependencyInjection` were removed (they had zero live callers).
 `lib/main.dart` bootstraps in this order: environment → Firebase → storage →
-crash reporting → notifications/FCM → background service → DI → security scan
-→ `runApp`.
+crash reporting → notifications/FCM → background service → security scan →
+`runApp`.
 
-Directory layout under `lib/` (~440 Dart files):
+Directory layout under `lib/` (~340 Dart files):
 
 - `app/` — root app widget (`app.dart`)
 - `config/environment.dart` — flavor-based config (`AppFlavor`, `EnvironmentConfig`)
@@ -63,13 +67,18 @@ Directory layout under `lib/` (~440 Dart files):
   - `api/` — `api_service.dart` (`package:http` singleton with auth headers,
     timeout, response envelope handling), `api_interceptor_service.dart`,
     `throttler.dart`, `endpoints.dart`
-  - `repositories/` — `auth_repository.dart`, `salon_repository.dart`, etc.
-  - `use_cases/` — `auth_use_cases.dart`, `salon_use_cases.dart`, `appointment_use_cases.dart`
+  - `repositories/` — `auth_repository.dart`, `salon_repository.dart`, plus the
+    focused set split from the old `BusinessService` facade (`appointment_`,
+    `staff_`, `salon_catalog_`, `payment_`, `loyalty_`, `review_`,
+    `subscription_`, `user_`, `report_`)
+  - `use_cases/` — `auth_use_cases.dart`, `appointment_use_cases.dart`
+    (validation-bearing only; pure pass-throughs were removed)
   - `notification/fcm_service.dart`, `core/` (performance, app management),
   `utils/` (location, files, filters), `storage_service.dart`, `security_service.dart`
 - `Providers/` — `ChangeNotifier` providers per feature (`auth_provider.dart`,
   `salon_provider.dart`, `owner_provider.dart`, `subscription_provider.dart`, …),
-  aggregated in `main_providers.dart` / `app_providers.dart`
+  registered in `provider_wrapper.dart` (the single registry) and re-exported by
+  `main_providers.dart` / `app_providers.dart`
 - `Models/` — data models grouped by domain: `auth/`, `salon/`, `appointments/`,
   `commerce/`, `inventory/`, `loyalty/`, `reports/`, `staff/`, `subscription/`
   (note: a duplicate `subscriptions/` folder also exists)
@@ -80,9 +89,10 @@ Directory layout under `lib/` (~440 Dart files):
 
 ### Data flow convention
 
-UI (feature pages/widgets) → Provider (`ChangeNotifier`) → Use Case →
-Repository → `ApiService` (`package:http`) → REST API. Services are resolved
-through the GetIt `locator`. Follow this layering when adding features.
+UI (feature pages/widgets) → Provider (`ChangeNotifier`) → Use Case (only where
+real validation logic lives) → Repository → `ApiService` (`package:http`) → REST
+API. Enforced in CI by `scripts/check_architecture.py` (no `Services/api/` or
+`Services/repositories/` imports allowed under `lib/Packages/`).
 
 ## Build and Run
 
@@ -118,7 +128,6 @@ flutter test --coverage      # CI runs this; output to coverage/lcov.info
   `test/owner/feature_access_service_test.dart` plus `test/test_helpers.dart`).
 - `flutter_test` and `mockito` are used; `test/test_helpers.dart` provides
   shared fixtures (`TestData`) and `setupTestEnvironment()`.
-- There is also `lib/test_driver/app_test.dart` for integration testing.
 - When adding behavior to `lib/core/` services (e.g. feature access,
   permissions), add matching tests under `test/` in the same folder structure.
 
@@ -153,9 +162,10 @@ Defined entirely in `.github/workflows/flutter-ci.yml`:
 `scripts/blutter_scan.sh` runs a local Blutter (Checkmarx) security scan
 against the release APK via Docker.
 
-Root-level utility scripts `check_dates.dart` / `check_dates.py` and
-`check_packages.dart` / `check_packages.py` audit `pubspec.yaml` dependency
-versions and dates; run with `dart run check_packages.dart`.
+Utility scripts live in `scripts/`: `check_packages.dart` (pubspec dependency
+versions), `deduplicate_lang.py`, and the Phase-5 CI gate scripts
+(`check_coverage.py`, `check_locale_parity.py`, `check_architecture.py`,
+`check_dead_code.py`).
 
 ## Conventions
 
@@ -166,10 +176,10 @@ versions and dates; run with `dart run check_packages.dart`.
   `config/`, `core/` are lowercase). Match the existing folder you are editing
   rather than renaming.
 - **State management:** Use Provider/`ChangeNotifier` (register new providers
-  in `lib/Providers/main_providers.dart`). GetX (`get`) is a dependency but
-  Provider is the established pattern.
-- **DI:** Register new services in `ServiceLocator.initialize()` in
-  `lib/Services/service_locator.dart`.
+  in `lib/Providers/provider_wrapper.dart`). Provider is the established pattern.
+- **DI:** Constructor-inject dependencies with a lazy singleton default
+  (e.g. `XProvider({ApiService? apiService}) : _api = apiService ?? ApiService()`).
+  No GetIt locator — it was removed.
 - **Config:** Never hardcode URLs/keys. Read them through `Environment.config`
   / `AppConfig`, sourced from `.env*` files or `--dart-define`.
 - **Logging:** Use `AppLogger` (`lib/Helpers/logger.dart`), gated by

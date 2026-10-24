@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:na3eeman/Providers/features/salon_provider.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/snackbar/app_snackbar.dart';
-import '../../../../../Services/api/endpoints.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class StaffManagementPage extends StatefulWidget {
@@ -37,9 +36,8 @@ class _StaffManagementPageState extends State<StaffManagementPage>
     setState(() => _isLoading = true);
     try {
       final salon = context.read<SalonProvider>().selectedSalon;
-      final response = await context.read<SalonProvider>().apiGet(
-        Endpoints.usersStaff,
-        queryParams: salon != null ? {'salon': salon.id.toString()} : null,
+      final response = await context.read<SalonProvider>().fetchStaff(
+        salonId: salon?.id,
       );
       final List<dynamic> data = response['results'] ?? response['data'] ?? [];
 

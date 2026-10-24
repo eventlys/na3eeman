@@ -44,6 +44,19 @@ jobs:
       - name: Test
         run: flutter test --coverage
 
+      - name: Coverage Ratchet
+        run: python3 scripts/check_coverage.py
+
+      - name: Locale Parity
+        run: python3 scripts/check_locale_parity.py
+
+      - name: Architecture Lint
+        run: python3 scripts/check_architecture.py
+
+      - name: Dead Code Check (advisory)
+        run: python3 scripts/check_dead_code.py
+        continue-on-error: true
+
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin

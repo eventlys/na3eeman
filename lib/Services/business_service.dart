@@ -33,12 +33,14 @@ import 'repositories/user_repository.dart';
 import '../Models/appointments/booking_group_model.dart';
 import '../Models/appointments/salon_appointments_model.dart';
 import '../Models/appointments/soonest_appointment_model.dart';
+import '../Models/reports/report_request_model.dart';
 
 // Report-related classes (ReportRequest, StaffReportRequest, ReportService,
-// ReportData) moved to repositories/report_repository.dart. Re-exported here
-// so existing imports of business_service.dart keep working.
-export 'repositories/report_repository.dart'
-    show ReportRequest, StaffReportRequest, ReportService, ReportData;
+// ReportData) moved to Models/reports/report_request_model.dart and
+// repositories/report_repository.dart. Re-exported here so existing imports
+// of business_service.dart keep working.
+export '../Models/reports/report_request_model.dart';
+export 'repositories/report_repository.dart' show ReportService;
 
 /// Legacy facade over the domain repositories in `lib/Services/repositories/`.
 ///

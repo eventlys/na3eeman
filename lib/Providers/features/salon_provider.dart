@@ -113,6 +113,13 @@ class SalonProvider extends BaseProvider {
     pageSize: pageSize,
   );
 
+  /// Fetches staff users, optionally filtered by [salonId]. Keeps the
+  /// endpoint inside the data layer so pages never name it directly.
+  Future<dynamic> fetchStaff({int? salonId}) => apiGet(
+    Endpoints.usersStaff,
+    queryParams: salonId != null ? {'salon': salonId.toString()} : null,
+  );
+
   // Methods
   void updateAuth(AuthProvider authProvider) {
     _authProvider = authProvider;
