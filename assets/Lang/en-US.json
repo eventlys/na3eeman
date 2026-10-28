@@ -1494,5 +1494,6 @@
   "ban_user": "Ban User",
   "unban_restore": "Unban / Restore",
   "view_profile": "View Profile",
-  "loyalty_points_title": "Loyalty Points"
+  "loyalty_points_title": "Loyalty Points",
+  "google_sign_in_not_configured": "Google sign-in is not configured yet. Please use email login."
 }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../Helpers/config.dart';
 import '../../Helpers/logger.dart';
 import '../../Helpers/registration_helper.dart';
 
@@ -42,11 +43,22 @@ class SocialAuthService {
 
   Future<void> _ensureGoogleInitialized() async {
     if (_googleInitialized) return;
-    await GoogleSignIn.instance.initialize();
+    // On Android, google_sign_in v7 requires the *Web* OAuth client ID
+    // (serverClientId) to obtain credentials the backend can verify.
+    await GoogleSignIn.instance.initialize(
+      serverClientId: AppConfig.googleClientId,
+    );
     _googleInitialized = true;
   }
 
   Future<SocialSignInResult> signInWithGoogle() async {
+    // Fail fast with a clear message if the client ID isn't configured, instead
+    // of surfacing the SDK's clientConfigurationError.
+    final clientId = AppConfig.googleClientId;
+    if (clientId == null || clientId.isEmpty) {
+      AppLogger.error('Google sign-in not configured: GOOGLE_CLIENT_ID missing');
+      return SocialSignInResult.failure('google_sign_in_not_configured');
+    }
     try {
       await _ensureGoogleInitialized();
       final account = await GoogleSignIn.instance.authenticate(

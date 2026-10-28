@@ -1494,5 +1494,6 @@
   "ban_user": "حظر المستخدم",
   "unban_restore": "إلغاء الحظر / استعادة",
   "view_profile": "عرض الملف الشخصي",
-  "loyalty_points_title": "نقاط الولاء"
+  "loyalty_points_title": "نقاط الولاء",
+  "google_sign_in_not_configured": "تسجيل الدخول عبر Google غير مُهيأ بعد. يرجى استخدام تسجيل الدخول بالبريد الإلكتروني."
 }
