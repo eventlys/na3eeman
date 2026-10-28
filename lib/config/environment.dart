@@ -13,14 +13,19 @@ class Environment {
   static Future<void> init({required AppFlavor flavor}) async {
     _flavor = flavor;
 
-    // Load specific .env file based on flavor
+    // Load specific .env file based on flavor. Missing/empty files must not
+    // crash startup — values fall back to --dart-define / defaults.
     String envFile = ".env";
     if (flavor == AppFlavor.dev) {
       envFile = ".env.dev";
     } else if (flavor == AppFlavor.staging) {
       envFile = ".env.staging";
     }
-    await dotenv.load(fileName: envFile);
+    try {
+      await dotenv.load(fileName: envFile);
+    } catch (_) {
+      // .env missing or empty — continue with dart-define / defaults.
+    }
 
     switch (flavor) {
       case AppFlavor.dev:
