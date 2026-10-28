@@ -50,6 +50,8 @@ dependencies:
   sentry_flutter: ^10.0.0-alpha.2
   flutter_secure_storage: ^10.3.1
   google_fonts: ^8.0.2
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^8.1.0
   easy_localization: ^3.0.7+1
   path_provider: ^2.1.1
   geolocator: ^14.0.2

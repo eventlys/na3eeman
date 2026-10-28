@@ -8,6 +8,8 @@ import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Packages/Core/utils/validators.dart';
 import '../../../../Packages/Core/widgets/password_strength_indicator.dart';
 import '../../../../Routes/route_names.dart';
+import '../../../../Services/ui/navigation_service.dart';
+import '../widgets/social_sign_in_buttons.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -433,6 +435,25 @@ class _SignupPageState extends State<SignupPage>
                         text: "sign_up".tr(),
                         isLoading: _isLoading,
                         onPressed: _isLoading ? null : _handleSignup,
+                      ),
+
+                      const SizedBox(height: 24),
+                      SocialSignInButtons(
+                        selectedRole: 'customer',
+                        selectedGender: _selectedGender,
+                        onSuccess: () {
+                          final authProvider = context.read<AuthProvider>();
+                          final userRole =
+                              authProvider.userType?.name.toLowerCase() ??
+                              'customer';
+                          final tier = authProvider.user?.subscriptionTier?.name
+                              .toUpperCase();
+                          NavigationService.navigateToHomeBasedOnRole(
+                            context,
+                            userRole,
+                            tier: tier,
+                          );
+                        },
                       ),
 
                       const SizedBox(height: 24),

@@ -9,6 +9,7 @@ import 'package:na3eeman/core/theme/colors.dart';
 import 'package:na3eeman/core/widgets/notifications/notifications_bottom_sheet.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 import 'package:na3eeman/core/widgets/dashboard/dashboard_widgets.dart';
+import 'package:na3eeman/core/widgets/fade_slide_in.dart';
 
 import 'package:na3eeman/Packages/features/navigation/sidebar.dart';
 import 'package:na3eeman/Packages/features/navigation/sidebar_controller.dart';
@@ -153,13 +154,21 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
     OwnerProvider owner,
   ) {
     return [
-      const Padding(
-        padding: EdgeInsets.only(bottom: 24),
-        child: TodayAppointmentsOverview(),
+      const FadeSlideIn(
+        index: 0,
+        interval: Duration(milliseconds: 120),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 24),
+          child: TodayAppointmentsOverview(),
+        ),
       ),
-      const Padding(
-        padding: EdgeInsets.only(bottom: 24),
-        child: FeedbackSection(),
+      const FadeSlideIn(
+        index: 1,
+        interval: Duration(milliseconds: 120),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 24),
+          child: FeedbackSection(),
+        ),
       ),
     ];
   }

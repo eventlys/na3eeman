@@ -8,6 +8,7 @@ import 'package:na3eeman/Services/security_service.dart';
 import 'package:na3eeman/Providers/main_providers.dart';
 import 'package:na3eeman/core/widgets/buttons/styled_buttons.dart';
 import 'package:na3eeman/core/widgets/snackbar/app_snackbar.dart';
+import '../widgets/social_sign_in_buttons.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -176,15 +177,7 @@ class _LoginPageState extends State<LoginPage>
         Navigator.pop(context); // Remove loading indicator
 
         if (success) {
-          final userRole =
-              authProvider.userType?.name.toLowerCase() ?? 'customer';
-          final user = authProvider.user;
-          final String? tier = user?.subscriptionTier?.name.toUpperCase();
-          NavigationService.navigateToHomeBasedOnRole(
-            context,
-            userRole,
-            tier: tier,
-          );
+          _navigateHome(authProvider);
         } else {
           final errorMsg =
               authProvider.error != null && authProvider.error!.isNotEmpty
@@ -194,6 +187,13 @@ class _LoginPageState extends State<LoginPage>
         }
       }
     }
+  }
+
+  void _navigateHome(AuthProvider authProvider) {
+    final userRole = authProvider.userType?.name.toLowerCase() ?? 'customer';
+    final user = authProvider.user;
+    final String? tier = user?.subscriptionTier?.name.toUpperCase();
+    NavigationService.navigateToHomeBasedOnRole(context, userRole, tier: tier);
   }
 
   @override
@@ -338,6 +338,17 @@ class _LoginPageState extends State<LoginPage>
                         onPressed: _handleBiometricLogin,
                         icon: const Icon(Icons.fingerprint_rounded),
                         label: Text("login_with_biometrics".tr()),
+                      ),
+
+                      const SizedBox(height: 24),
+                      SocialSignInButtons(
+                        onSuccess: () {
+                          final authProvider = Provider.of<AuthProvider>(
+                            context,
+                            listen: false,
+                          );
+                          _navigateHome(authProvider);
+                        },
                       ),
 
                       const SizedBox(height: 40),

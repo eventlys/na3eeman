@@ -8,6 +8,7 @@ import '../../../../../Providers/features/staff_provider.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/widgets/dashboard/dashboard_widgets.dart';
 import '../../../../../core/widgets/snackbar/app_snackbar.dart';
+import '../../../../../core/widgets/fade_slide_in.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 // import '../../../../../Providers/main_providers.dart';
@@ -383,12 +384,17 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
                   ? appt['status'] != 'done_status'.tr()
                   : appt['status'] == _selectedFilter,
             )
-            .map((appt) {
+            .toList()
+            .asMap()
+            .entries
+            .map((entry) {
+              final appt = entry.value;
               final isActive = _isAppointmentActive(appt);
+              final Widget item;
 
               if (isActive) {
                 // Swipe Actions for Active Appointments
-                return Dismissible(
+                item = Dismissible(
                   key: Key(appt['id'] as String),
                   background: _buildSwipeBackground(
                     color: AppColors.success,
@@ -419,8 +425,15 @@ class _TodayAppointmentsOverviewState extends State<TodayAppointmentsOverview> {
                   },
                   // child: _buildAppointmentItemWrapper(appt),
                 );
+              } else {
+                item = _buildAppointmentItemWrapper(appt);
               }
-              return _buildAppointmentItemWrapper(appt);
+
+              return FadeSlideIn(
+                index: entry.key,
+                interval: const Duration(milliseconds: 60),
+                child: item,
+              );
             }),
       ],
     );

@@ -5,6 +5,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
 import '../../../../core/widgets/dashboard/dashboard_widgets.dart'; // Added
+import '../../../../core/widgets/fade_slide_in.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'receptionist/receptionist_inventory_page.dart'; // Added
 import '../../salon/pages/salon_owner_dashboard.dart';
@@ -712,36 +713,40 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                   itemCount: appointments.length,
                   itemBuilder: (context, index) {
                     final appt = appointments[index];
-                    return _buildAppointmentListItem(
-                      expert: appt.expertName ?? 'Expert #${appt.expertId}',
-                      dateTime: DateFormat(
-                        'date_time_compact'.tr(),
-                      ).format(appt.startTime),
-                      price: 'amount_jod_fixed'.tr(
-                        args: [appt.totalAmount?.toString() ?? '0.00'],
-                      ),
-                      products:
-                          appt.services
-                              .where((s) => s.serviceType == 'PRODUCT')
-                              .map((s) => s.name)
-                              .join(', ')
-                              .isEmpty
-                          ? 'none'.tr()
-                          : appt.services
+                    return FadeSlideIn(
+                      index: index,
+                      interval: const Duration(milliseconds: 50),
+                      child: _buildAppointmentListItem(
+                        expert: appt.expertName ?? 'Expert #${appt.expertId}',
+                        dateTime: DateFormat(
+                          'date_time_compact'.tr(),
+                        ).format(appt.startTime),
+                        price: 'amount_jod_fixed'.tr(
+                          args: [appt.totalAmount?.toString() ?? '0.00'],
+                        ),
+                        products:
+                            appt.services
                                 .where((s) => s.serviceType == 'PRODUCT')
                                 .map((s) => s.name)
-                                .join(', '),
-                      offer:
-                          appt.services
-                              .where((s) => s.serviceType == 'PACKAGE')
-                              .map((s) => s.name)
-                              .join(', ')
-                              .isEmpty
-                          ? 'none'.tr()
-                          : appt.services
+                                .join(', ')
+                                .isEmpty
+                            ? 'none'.tr()
+                            : appt.services
+                                  .where((s) => s.serviceType == 'PRODUCT')
+                                  .map((s) => s.name)
+                                  .join(', '),
+                        offer:
+                            appt.services
                                 .where((s) => s.serviceType == 'PACKAGE')
                                 .map((s) => s.name)
-                                .join(', '),
+                                .join(', ')
+                                .isEmpty
+                            ? 'none'.tr()
+                            : appt.services
+                                  .where((s) => s.serviceType == 'PACKAGE')
+                                  .map((s) => s.name)
+                                  .join(', '),
+                      ),
                     );
                   },
                 );

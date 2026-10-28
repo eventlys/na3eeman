@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
+import '../../../../core/widgets/fade_slide_in.dart';
 import '../../../../Services/business_service.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
@@ -414,11 +415,15 @@ class InventoryManagerState extends State<InventoryManager> {
                             itemCount: inventoryItems.length,
                             itemBuilder: (context, index) {
                               final item = inventoryItems[index];
-                              return InventoryListItem(
-                                item: item,
-                                onIncreaseCount: () =>
-                                    _increaseItemCount(item, context),
-                                onDelete: () => _deleteItem(item, context),
+                              return FadeSlideIn(
+                                index: index,
+                                interval: const Duration(milliseconds: 45),
+                                child: InventoryListItem(
+                                  item: item,
+                                  onIncreaseCount: () =>
+                                      _increaseItemCount(item, context),
+                                  onDelete: () => _deleteItem(item, context),
+                                ),
                               );
                             },
                           ),

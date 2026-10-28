@@ -14,6 +14,7 @@ import '../widgets/category_card.dart';
 import '../widgets/customer_feedback_section.dart';
 import '../../../../Models/salon/category_model.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
+import '../../../../core/widgets/fade_slide_in.dart';
 
 class CustomerHomePage extends StatefulWidget {
   const CustomerHomePage({super.key});
@@ -342,9 +343,13 @@ class _CustomerHomePageState extends State<CustomerHomePage>
           itemCount: curatedCategories.length,
           itemBuilder: (context, index) {
             final cat = curatedCategories[index];
-            return CategoryCard(
-              category: cat,
-              onTap: () => _handleCategoryTap(cat, isLadies),
+            return FadeSlideIn(
+              index: index,
+              interval: const Duration(milliseconds: 70),
+              child: CategoryCard(
+                category: cat,
+                onTap: () => _handleCategoryTap(cat, isLadies),
+              ),
             );
           },
         ),

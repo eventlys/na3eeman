@@ -6,6 +6,7 @@ import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
 import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
+import '../../../../core/widgets/fade_slide_in.dart';
 import '../widgets/appointment_accordion.dart';
 
 // import 'package:easy_localization/easy_localization.dart';
@@ -165,7 +166,11 @@ class AppointmentsPageState extends State<AppointmentsPage> {
   Widget _buildContent(List<dynamic> appointments, String userGender) {
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
-        return AppointmentAccordion(appointment: appointments[index]);
+        return FadeSlideIn(
+          index: index,
+          interval: const Duration(milliseconds: 60),
+          child: AppointmentAccordion(appointment: appointments[index]),
+        );
       }, childCount: appointments.length),
     );
   }

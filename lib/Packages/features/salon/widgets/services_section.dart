@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/widgets/fade_slide_in.dart';
 
 class ServicesSection extends StatelessWidget {
   final List<Map<String, dynamic>> services;
@@ -18,15 +19,18 @@ class ServicesSection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
-      children: services
-          .map(
-            (service) => _buildServiceItem(
+      children: [
+        for (var index = 0; index < services.length; index++)
+          FadeSlideIn(
+            index: index,
+            interval: const Duration(milliseconds: 50),
+            child: _buildServiceItem(
               context: context,
-              service: service,
+              service: services[index],
               isDark: isDark,
             ),
-          )
-          .toList(),
+          ),
+      ],
     );
   }
 

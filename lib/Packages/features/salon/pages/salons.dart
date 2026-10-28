@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/features/salon_provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
+import '../../../../core/widgets/fade_slide_in.dart';
 import '../widgets/expert_salon_card.dart';
 
 class SalonListPage extends StatefulWidget {
@@ -189,29 +190,34 @@ class _SalonListPageState extends State<SalonListPage> {
       itemCount: _filteredSalons.length,
       itemBuilder: (context, index) {
         final salon = _filteredSalons[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: ExpertSalonCard(
-            title: salon['salonName'] ?? salon['title'] ?? 'Unknown',
-            workingHours: salon['workingHours'] ?? '9:00 AM - 00:00 AM',
-            profilePicture:
-                salon['images'] != null && (salon['images'] as List).isNotEmpty
-                ? salon['images'][0].toString()
-                : (salon['salon_logo'] != null
-                      ? 'assets/salons/${salon['salon_logo'].toString().split('/').last}'
-                      : 'assets/logos/salon5.png'),
-            isClickable: true,
-            salonLocation:
-                salon['salonLocation'] ?? salon['location'] ?? 'Downtown',
-            salonRating: (salon['salonRating'] as num?)?.toDouble() ?? 4.5,
-            onCardTap: () => Navigator.pushNamed(
-              context,
-              '/salon_details',
-              arguments: {'salonData': salon},
+        return FadeSlideIn(
+          index: index,
+          interval: const Duration(milliseconds: 70),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: ExpertSalonCard(
+              title: salon['salonName'] ?? salon['title'] ?? 'Unknown',
+              workingHours: salon['workingHours'] ?? '9:00 AM - 00:00 AM',
+              profilePicture:
+                  salon['images'] != null &&
+                      (salon['images'] as List).isNotEmpty
+                  ? salon['images'][0].toString()
+                  : (salon['salon_logo'] != null
+                        ? 'assets/salons/${salon['salon_logo'].toString().split('/').last}'
+                        : 'assets/logos/salon5.png'),
+              isClickable: true,
+              salonLocation:
+                  salon['salonLocation'] ?? salon['location'] ?? 'Downtown',
+              salonRating: (salon['salonRating'] as num?)?.toDouble() ?? 4.5,
+              onCardTap: () => Navigator.pushNamed(
+                context,
+                '/salon_details',
+                arguments: {'salonData': salon},
+              ),
+              onFavoriteChanged: (isFav) {
+                // Handle favorite
+              },
             ),
-            onFavoriteChanged: (isFav) {
-              // Handle favorite
-            },
           ),
         );
       },
