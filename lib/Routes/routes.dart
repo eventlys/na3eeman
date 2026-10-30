@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../Services/ui/navigation_service.dart';
 
 // Auth
 import '../Packages/features/auth/pages/forgot_password.dart';
@@ -83,7 +84,7 @@ import '../Packages/features/admin/pages/feedback_review_page.dart';
 
 // ── NEW: Missing Pages ──
 import '../Packages/features/onboarding/pages/onboarding.dart';
-import '../Packages/features/onboarding/pages/loading_page.dart';
+// import '../Packages/features/onboarding/pages/loading_page.dart';
 import '../Packages/features/subscription/pages/subscription_upgrade.dart';
 import '../Packages/features/disputes/pages/dispute_resolution.dart';
 import '../Providers/features/auth_provider.dart';
@@ -91,7 +92,8 @@ import '../Providers/features/auth_provider.dart';
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
     // ── Entry ─────────────────────────────────────────────────────────────
-    '/': (context) => const LoadingPage(),
+    // '/loading': (context) => const LoadingPage(), // Commented out custom loading page
+    '/': (context) => const DefaultLoadingPage(),
     '/onboarding': (context) => const OnboardingPage(),
     '/login': (context) => LoginPage(),
     '/signup': (context) => const SignupPage(),
@@ -225,4 +227,55 @@ class AppRoutes {
     '/appointments/search': (context) => const AppointmentSearchPage(),
     '/management/data': (context) => const DataManagementPage(),
   };
+}
+
+class DefaultLoadingPage extends StatefulWidget {
+  const DefaultLoadingPage({super.key});
+
+  @override
+  State<DefaultLoadingPage> createState() => _DefaultLoadingPageState();
+}
+
+class _DefaultLoadingPageState extends State<DefaultLoadingPage> {
+  @override
+  void initState() {
+    super.initState();
+    _loadAppStatus();
+  }
+
+  Future<void> _loadAppStatus() async {
+    if (!mounted) return;
+    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // Load auth details from storage (loads token and restores session)
+    await authProvider.loadSavedAuth();
+    
+    if (!mounted) return;
+
+    final bool isLoggedIn = authProvider.isAuthenticated;
+
+    if (isLoggedIn) {
+      final userRole = authProvider.userType?.name ?? 'customer';
+      final user = authProvider.user;
+      final String? tier = user?.subscriptionTier?.name.toUpperCase();
+
+      NavigationService.navigateToHomeBasedOnRole(
+        context,
+        userRole,
+        tier: tier,
+      );
+    } else {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
 }
