@@ -1495,5 +1495,7 @@
   "unban_restore": "Unban / Restore",
   "view_profile": "View Profile",
   "loyalty_points_title": "Loyalty Points",
-  "google_sign_in_not_configured": "Google sign-in is not configured yet. Please use email login."
+  "google_sign_in_not_configured": "Google sign-in is not configured yet. Please use email login.",
+  "appointment_reminder_body": "Your appointment at {salon} is in 1 hour",
+  "notification_generic_salon_name": "your salon"
 }

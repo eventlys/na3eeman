@@ -7,13 +7,26 @@ import '../../Models/auth/user_model.dart';
 import '../../Models/appointments/salon_appointments_model.dart';
 import '../../Services/enums/appointment_status.dart';
 import '../../Services/api/api_service.dart';
+import '../../Services/notification/local_notification_service.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class AppointmentProvider extends BaseProvider {
-  AppointmentProvider({ApiService? apiService})
-    : _apiService = apiService ?? ApiService();
+  AppointmentProvider({
+    ApiService? apiService,
+    LocalNotificationService? notifications,
+  }) : _apiService = apiService ?? ApiService(),
+       _injectedNotifications = notifications;
 
   final ApiService _apiService;
+  final LocalNotificationService? _injectedNotifications;
+
+  // The injectable notification service; defaults to the shared singleton.
+  LocalNotificationService get _notifications =>
+      _injectedNotifications ?? LocalNotificationService();
+
+  /// Maps a salon id to a display name for notification copy. Wired to
+  /// SalonProvider in provider_wrapper.dart; falls back to a generic name.
+  String? Function(int salonId)? salonNameResolver;
   final List<SalonAppointment> _appointments = [];
   AuthProvider? _authProvider;
   Map<String, dynamic>? _soonestAppointment;
@@ -94,6 +107,9 @@ class AppointmentProvider extends BaseProvider {
           AppLogger.error('Error parsing appointment item JSON: $e');
         }
       }
+      // Keep local reminders in sync with the freshly loaded appointments.
+      // Fire-and-forget so notification work never blocks or fails the load.
+      _reconcileNotifications();
       notifyListeners();
     } catch (e) {
       setError(e.toString());
@@ -238,6 +254,9 @@ class AppointmentProvider extends BaseProvider {
         },
       );
 
+      // Cancel the stale reminder; the reload below reconciles a fresh one
+      // from the updated appointment list.
+      _notifications.cancelReminder(appointmentId);
       await loadAppointments();
       await loadSoonestAppointment();
     } catch (e) {
@@ -285,7 +304,9 @@ class AppointmentProvider extends BaseProvider {
 
       final response = await _apiService.bookAppointment(appointmentData);
 
-      // Reload appointments to sync local state
+      // Schedule a reminder for the newly booked appointment, then reload to
+      // sync local state.
+      _scheduleReminderForResponse(response);
       await loadAppointments();
       await loadSoonestAppointment();
 
@@ -295,6 +316,26 @@ class AppointmentProvider extends BaseProvider {
       rethrow;
     } finally {
       setLoading(false);
+    }
+  }
+
+  // Fire-and-forget reminder reconcile; notification failures are logged
+  // inside LocalNotificationService and never affect appointment loading.
+  void _reconcileNotifications() {
+    _notifications.reconcileAppointments(
+      _appointments,
+      salonNameResolver: salonNameResolver,
+    );
+  }
+
+  void _scheduleReminderForResponse(Map<String, dynamic> response) {
+    try {
+      _notifications.scheduleReminder(
+        SalonAppointment.fromJson(response),
+        salonNameResolver: salonNameResolver,
+      );
+    } catch (e) {
+      AppLogger.error('Could not parse booked appointment for reminder: $e');
     }
   }
 }

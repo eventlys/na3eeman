@@ -56,7 +56,9 @@ class SocialAuthService {
     // of surfacing the SDK's clientConfigurationError.
     final clientId = AppConfig.googleClientId;
     if (clientId == null || clientId.isEmpty) {
-      AppLogger.error('Google sign-in not configured: GOOGLE_CLIENT_ID missing');
+      AppLogger.error(
+        'Google sign-in not configured: GOOGLE_CLIENT_ID missing',
+      );
       return SocialSignInResult.failure('google_sign_in_not_configured');
     }
     try {

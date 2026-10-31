@@ -67,6 +67,10 @@ void main() async {
   }
 
   await NotificationHelper().initialize();
+  // Note: local appointment reminders are reconciled on the first
+  // AppointmentProvider.loadAppointments() after startup (and after every
+  // subsequent load), which covers app-start reconcile without blocking
+  // startup here.
   await FCMService().initialize();
   await BackgroundService().initialize();
 

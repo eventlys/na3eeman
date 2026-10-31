@@ -1495,5 +1495,7 @@
   "unban_restore": "إلغاء الحظر / استعادة",
   "view_profile": "عرض الملف الشخصي",
   "loyalty_points_title": "نقاط الولاء",
-  "google_sign_in_not_configured": "تسجيل الدخول عبر Google غير مُهيأ بعد. يرجى استخدام تسجيل الدخول بالبريد الإلكتروني."
+  "google_sign_in_not_configured": "تسجيل الدخول عبر Google غير مُهيأ بعد. يرجى استخدام تسجيل الدخول بالبريد الإلكتروني.",
+  "appointment_reminder_body": "موعدك في {salon} بعد ساعة",
+  "notification_generic_salon_name": "الصالون"
 }

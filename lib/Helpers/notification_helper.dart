@@ -2,10 +2,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../Routes/route_names.dart';
+import '../Services/ui/sidebar_navigation_service.dart';
 import 'logger.dart';
 
 class NotificationHelper {
@@ -195,9 +198,10 @@ class NotificationHelper {
   }) async {
     try {
       final reminderTime = appointmentTime.subtract(reminderBefore);
-      final title = 'Appointment Reminder';
-      final body =
-          'Your appointment at $salonName is in ${reminderBefore.inHours} hour(s)';
+      final title = 'appointment_reminder'.tr();
+      final body = 'appointment_reminder_body'.tr(
+        namedArgs: {'salon': salonName},
+      );
 
       await scheduleNotification(
         id: appointmentId.hashCode,
@@ -418,7 +422,13 @@ class NotificationHelper {
             'appointment_time': appointmentTime,
           },
         );
-        // Navigate to appointment details
+        // Navigate to the appointments list. navigatorKey.currentState is
+        // null when the app was terminated (no Navigator is mounted yet), so
+        // this is a no-op in the cold-start case; handling the launch
+        // notification via getNotificationAppLaunchDetails() is a follow-up.
+        SideNavigationService.navigatorKey.currentState?.pushNamed(
+          RouteNames.appointments,
+        );
         break;
 
       case 'loyalty_points':
@@ -428,7 +438,10 @@ class NotificationHelper {
           'Loyalty points notification tapped',
           extra: {'points': points, 'source': source},
         );
-        // Navigate to loyalty screen
+        // Same cold-start limitation as above.
+        SideNavigationService.navigatorKey.currentState?.pushNamed(
+          RouteNames.loyaltyHistory,
+        );
         break;
 
       default:

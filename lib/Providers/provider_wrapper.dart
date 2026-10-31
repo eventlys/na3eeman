@@ -59,12 +59,24 @@ List<SingleChildWidget> providers = [
         salonProvider!..updateAuth(authProvider),
   ),
 
-  ChangeNotifierProxyProvider<AuthProvider, AppointmentProvider>(
+  ChangeNotifierProxyProvider2<
+    AuthProvider,
+    SalonProvider,
+    AppointmentProvider
+  >(
     create: (_) => AppointmentProvider(),
-    update: (_, authProvider, appointmentProvider) =>
-        appointmentProvider!..updateAuth(authProvider),
+    update: (_, authProvider, salonProvider, appointmentProvider) {
+      final provider = appointmentProvider!..updateAuth(authProvider);
+      // Resolve salon names for appointment reminder notifications.
+      provider.salonNameResolver = (salonId) {
+        for (final salon in salonProvider.salons) {
+          if (salon.id == salonId) return salon.salonName;
+        }
+        return null;
+      };
+      return provider;
+    },
   ),
-
   ChangeNotifierProxyProvider<AuthProvider, CartProvider>(
     create: (_) => CartProvider(),
     update: (_, authProvider, cartProvider) =>
