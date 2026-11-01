@@ -89,18 +89,22 @@ class ProfileWidgets {
                     backgroundColor: Theme.of(
                       context,
                     ).primaryColor.withValues(alpha: 0.05),
-                    backgroundImage: userData['profilePic'] != null
-                        ? AssetImage(
-                            userData['profilePic'],
-                          ) // Use local for now
+                    backgroundImage:
+                        (userData['profilePic']?.toString() ?? '').startsWith(
+                          'http',
+                        )
+                        ? NetworkImage(userData['profilePic'].toString())
                         : null,
-                    child: userData['profilePic'] == null
-                        ? Icon(
+                    child:
+                        (userData['profilePic']?.toString() ?? '').startsWith(
+                          'http',
+                        )
+                        ? null
+                        : Icon(
                             Icons.person,
                             size: 60,
                             color: Theme.of(context).primaryColor,
-                          )
-                        : null,
+                          ),
                   ),
                 ),
                 if (isEditing)

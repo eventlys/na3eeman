@@ -39,8 +39,9 @@ class LocalizationHelper {
       final languageCode = locale.languageCode;
 
       // Load the JSON file from assets
+      // Keep in sync with the easy_localization asset path in main.dart.
       final jsonString = await rootBundle.loadString(
-        'assets/locales/$languageCode.json',
+        'assets/Lang/$languageCode-${locale.countryCode ?? 'US'}.json',
       );
 
       final Map<String, dynamic> jsonMap = json.decode(jsonString);

@@ -62,17 +62,17 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
   final _salonUrlController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  String _selectedIssueType = 'Fake Products';
-  final List<String> _issueTypes = [
-    'Fake Products',
-    'Poor Quality',
-    'Wrong Description',
-    'Late Delivery',
-    'No Delivery',
-    'Rude Behavior',
-    'Overpricing',
-    'Safety Concern',
-    'Other',
+  String _selectedIssueType = 'issue_fake_products';
+  final List<String> _issueTypes = const [
+    'issue_fake_products',
+    'issue_poor_quality',
+    'issue_wrong_description',
+    'issue_late_delivery',
+    'issue_no_delivery',
+    'issue_rude_behavior',
+    'issue_overpricing',
+    'issue_safety_concern',
+    'issue_other',
   ];
 
   @override
@@ -115,7 +115,10 @@ class _ReportSalonOverlayState extends State<ReportSalonOverlay> {
                     DropdownButtonFormField<String>(
                       initialValue: _selectedIssueType,
                       items: _issueTypes.map((String type) {
-                        return DropdownMenuItem(value: type, child: Text(type));
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(type.tr()),
+                        );
                       }).toList(),
                       onChanged: (String? newValue) {
                         setState(() {

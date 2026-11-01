@@ -1501,5 +1501,15 @@
   "first_name": "الاسم الأول",
   "last_name": "اسم العائلة",
   "specialization": "التخصص",
-  "no_data_available": "لا توجد بيانات متاحة"
+  "no_data_available": "لا توجد بيانات متاحة",
+  "no_analytics_data": "لا توجد بيانات تحليلية متاحة بعد",
+  "issue_fake_products": "منتجات مقلدة",
+  "issue_poor_quality": "جودة رديئة",
+  "issue_wrong_description": "وصف غير صحيح",
+  "issue_late_delivery": "تأخر التسليم",
+  "issue_no_delivery": "عدم التسليم",
+  "issue_rude_behavior": "سلوك مسيء",
+  "issue_overpricing": "أسعار مبالغ فيها",
+  "issue_safety_concern": "مخاوف تتعلق بالسلامة",
+  "issue_other": "أخرى"
 }

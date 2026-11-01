@@ -198,13 +198,15 @@ class _SalonListPageState extends State<SalonListPage> {
             child: ExpertSalonCard(
               title: salon['salonName'] ?? salon['title'] ?? 'Unknown',
               workingHours: salon['workingHours'] ?? '9:00 AM - 00:00 AM',
-              profilePicture:
-                  salon['images'] != null &&
-                      (salon['images'] as List).isNotEmpty
-                  ? salon['images'][0].toString()
-                  : (salon['salon_logo'] != null
-                        ? 'assets/salons/${salon['salon_logo'].toString().split('/').last}'
-                        : 'assets/logos/salon10.png'),
+              profilePicture: () {
+                final images = salon['images'];
+                if (images is List && images.isNotEmpty) {
+                  final first = images[0]?.toString() ?? '';
+                  if (first.startsWith('http')) return first;
+                }
+                final logo = salon['salon_logo']?.toString() ?? '';
+                return logo.startsWith('http') ? logo : '';
+              }(),
               isClickable: true,
               salonLocation:
                   salon['salonLocation'] ?? salon['location'] ?? 'Downtown',

@@ -21,6 +21,18 @@ class ModernSalonGallery extends StatefulWidget {
 }
 
 class _ModernSalonGalleryState extends State<ModernSalonGallery> {
+  Widget _buildImageFallback(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+      child: Icon(
+        Icons.store_rounded,
+        color: Theme.of(context).primaryColor,
+        size: 48,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final images = widget.imageUrls ?? const <String>[];
@@ -84,11 +96,11 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                                       ? Image.network(
                                           images[index],
                                           fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  _buildImageFallback(context),
                                         )
-                                      : Image.asset(
-                                          images[index],
-                                          fit: BoxFit.cover,
-                                        ),
+                                      : _buildImageFallback(context),
                                 );
                               },
                             ),
@@ -134,23 +146,9 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                           fit: BoxFit.cover,
                           width: double.infinity,
                           errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
-                                'assets/logos/salon10.png',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
+                              _buildImageFallback(context),
                         )
-                      : Image.asset(
-                          images[index],
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
-                                'assets/logos/salon10.png',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                        ),
+                      : _buildImageFallback(context),
                 ),
               );
             },

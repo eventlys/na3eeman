@@ -55,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
           'phone': user.phone,
           'role': user.role.toString().split('.').last,
           'gender': user.gender.toString().split('.').last,
-          'profilePic': 'assets/mojies/image65.png', // Temporary local asset
+          'profilePic': user.profilePic,
           'location': user.location,
           'bio': 'Expert enthusiast',
           'isSubscribed': true,

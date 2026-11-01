@@ -7,7 +7,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../Helpers/favorites_helper.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/loading_indicator.dart';
 import '../../../Core/utils/helpers/refresh_widgets.dart';
@@ -202,8 +201,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   child: ExpertSalonCard(
                     title: salon['salonName'] ?? 'Unknown Salon',
                     workingHours: salon['businessHours'] ?? '9:00 AM - 6:00 PM',
-                    profilePicture:
-                        salon['image'] ?? AppImages.defaultSalonImage,
+                    profilePicture: () {
+                      final image = salon['image']?.toString() ?? '';
+                      return image.startsWith('http') ? image : '';
+                    }(),
                     size: const Size(350, 115), // Adjust size as needed
                     isClickable: true,
                     salonLocation: salon['address'] ?? '',

@@ -72,6 +72,19 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
     }
   }
 
+  Widget _buildImageFallback(BuildContext context) {
+    return Container(
+      width: 90,
+      height: 90,
+      color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+      child: Icon(
+        Icons.store_rounded,
+        color: Theme.of(context).primaryColor,
+        size: 32,
+      ),
+    );
+  }
+
   void _toggleFavorite() {
     setState(() {
       _isFavorite = !_isFavorite;
@@ -128,41 +141,10 @@ class _ExpertSalonCardState extends State<ExpertSalonCard>
                           width: 90,
                           height: 90,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 90,
-                              height: 90,
-                              color: Theme.of(
-                                context,
-                              ).primaryColor.withValues(alpha: 0.05),
-                              child: Icon(
-                                Icons.store_rounded,
-                                color: Theme.of(context).primaryColor,
-                                size: 32,
-                              ),
-                            );
-                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              _buildImageFallback(context),
                         )
-                      : Image.asset(
-                          widget.profilePicture,
-                          width: 90,
-                          height: 90,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 90,
-                              height: 90,
-                              color: Theme.of(
-                                context,
-                              ).primaryColor.withValues(alpha: 0.05),
-                              child: Icon(
-                                Icons.store_rounded,
-                                color: Theme.of(context).primaryColor,
-                                size: 32,
-                              ),
-                            );
-                          },
-                        ),
+                      : _buildImageFallback(context),
                 ),
               ),
               const SizedBox(width: 16),

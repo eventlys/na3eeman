@@ -169,14 +169,37 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
 
   Widget _buildPayoutList() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Mocking payouts for now as backend doesn't have a payout model yet
-    final payouts = [
-      {'salon': 'Golden Scissors', 'amount': '420.00', 'status': 'Pending'},
-      {'salon': 'Elite Experts', 'amount': '1,250.00', 'status': 'Processed'},
-    ];
+    final payouts =
+        (context
+                .watch<AdminAnalyticsProvider>()
+                .financialStats?['recent_payouts']
+            as List?) ??
+        const [];
+
+    if (payouts.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.almostBlack600 : AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDark
+                ? AppColors.white.withValues(alpha: 0.05)
+                : AppColors.almostBlack50,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            'no_data_available'.tr(),
+            style: const TextStyle(color: AppColors.almostBlack300),
+          ),
+        ),
+      );
+    }
 
     return Column(
-      children: payouts.map((p) {
+      children: payouts.map((payout) {
+        final p = Map<String, dynamic>.from(payout as Map);
         final isPending = p['status'] == 'Pending';
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
@@ -197,7 +220,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      p['salon']!,
+                      p['salon']?.toString() ?? '',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
@@ -222,7 +245,7 @@ class _AdminFinancialReportsPageState extends State<AdminFinancialReportsPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  p['status']!,
+                  p['status']?.toString() ?? '',
                   style: TextStyle(
                     color: isPending ? AppColors.warning : AppColors.success,
                     fontSize: 12,

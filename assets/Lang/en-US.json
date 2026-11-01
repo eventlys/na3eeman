@@ -1501,5 +1501,15 @@
   "first_name": "First Name",
   "last_name": "Last Name",
   "specialization": "Specialization",
-  "no_data_available": "No data available"
+  "no_data_available": "No data available",
+  "no_analytics_data": "Analytics data is not available yet",
+  "issue_fake_products": "Fake Products",
+  "issue_poor_quality": "Poor Quality",
+  "issue_wrong_description": "Wrong Description",
+  "issue_late_delivery": "Late Delivery",
+  "issue_no_delivery": "No Delivery",
+  "issue_rude_behavior": "Rude Behavior",
+  "issue_overpricing": "Overpricing",
+  "issue_safety_concern": "Safety Concern",
+  "issue_other": "Other"
 }

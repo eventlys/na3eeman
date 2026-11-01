@@ -318,8 +318,10 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
                 'last_salon'.tr(),
             workingHours:
                 '${_previousSalon!['openingTime'] ?? '09:00 AM'} - ${_previousSalon!['closingTime'] ?? '11:00 PM'}',
-            profilePicture:
-                'assets/salons/${_previousSalon!['salon_logo']?.toString().split('/').last ?? 'salon1.jpeg'}',
+            profilePicture: () {
+              final logo = _previousSalon!['salon_logo']?.toString() ?? '';
+              return logo.startsWith('http') ? logo : '';
+            }(),
             isClickable: true,
             salonLocation: _previousSalon!['location'] ?? 'amman_jordan'.tr(),
             salonRating:
@@ -430,8 +432,10 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
           title: salon['salonName'] ?? salon['salon_name'],
           workingHours:
               '${salon['openingTime'] ?? '09:00 AM'} - ${salon['closingTime'] ?? '11:00 PM'}',
-          profilePicture:
-              'assets/salons/${salon['salon_logo']?.toString().split('/').last ?? 'salon1.jpeg'}',
+          profilePicture: () {
+            final logo = salon['salon_logo']?.toString() ?? '';
+            return logo.startsWith('http') ? logo : '';
+          }(),
           isClickable: true,
           salonLocation: salon['location'] ?? 'amman_jordan'.tr(),
           salonRating:
