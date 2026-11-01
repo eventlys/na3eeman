@@ -57,5 +57,30 @@
 	<string>Na3eeman uses your location to show nearby salons and accurate distances.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Na3eeman saves images you choose to your photo library.</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>AppIcon60x60</string>
+			</array>
+			<key>CFBundleIconName</key>
+			<string>AppIcon</string>
+		</dict>
+	</dict>
+	<key>CFBundleIcons~ipad</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>AppIcon60x60</string>
+				<string>AppIcon76x76</string>
+			</array>
+			<key>CFBundleIconName</key>
+			<string>AppIcon</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

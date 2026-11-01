@@ -21,6 +21,21 @@ class ApiService {
   /// identical reads (e.g. two widgets on one screen requesting the same data).
   final Map<String, Future<dynamic>> _inFlightGet = {};
 
+  /// Single shared in-flight token refresh so concurrent 401s trigger only one
+  /// refresh request.
+  Future<bool>? _refreshingToken;
+
+  /// True when [path] is an auth/public endpoint that must not carry (or trigger
+  /// a refresh from) the access token.
+  bool _isAuthEndpoint(String path) {
+    return path.contains(Endpoints.login) ||
+        path.contains(Endpoints.register) ||
+        path.contains(Endpoints.tokenRefresh) ||
+        path.contains('/auth/password/reset/') ||
+        path.contains('/auth/logout') ||
+        path.contains('/auth/social/login');
+  }
+
   Future<Map<String, String>> _getHeaders(
     String path, [
     Map<String, String>? customHeaders,
@@ -31,11 +46,7 @@ class ApiService {
     };
 
     // Skip Authorization header for public endpoints to avoid issues with stale tokens
-    final bool isPublicEndpoint =
-        path.contains(Endpoints.login) ||
-        path.contains(Endpoints.register) ||
-        path.contains('/auth/password/reset/') ||
-        path.contains('/auth/social/login');
+    final bool isPublicEndpoint = _isAuthEndpoint(path);
 
     if (!isPublicEndpoint) {
       final token = await _storage.getAuthToken();
@@ -49,6 +60,60 @@ class ApiService {
     }
 
     return headers;
+  }
+
+  /// On a 401, refresh the access token once and retry. Returns the retried
+  /// response, or `null` if this wasn't a 401 / refresh failed / not retryable.
+  Future<http.Response?> _refreshAndRetry(
+    http.Response response,
+    String path,
+    Future<http.Response> Function() retry,
+  ) async {
+    if (response.statusCode != 401 || _isAuthEndpoint(path)) return null;
+    final refreshed = await _refreshAccessToken();
+    if (!refreshed) return null;
+    return await retry();
+  }
+
+  /// Refresh the access token using the stored refresh token.
+  /// Returns true on success. DRF SimpleJWT returns `{access, refresh?}`.
+  Future<bool> _refreshAccessToken() {
+    return _refreshingToken ??= _doRefreshAccessToken().whenComplete(() {
+      _refreshingToken = null;
+    });
+  }
+
+  Future<bool> _doRefreshAccessToken() async {
+    try {
+      final refreshToken = await _storage.getRefreshToken();
+      if (refreshToken == null || refreshToken.isEmpty) return false;
+
+      final uri = Uri.parse('$baseUrl${Endpoints.tokenRefresh}');
+      final response = await http
+          .post(
+            uri,
+            headers: const {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode({'refresh': refreshToken}),
+          )
+          .timeout(AppConfig.apiTimeout);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['access'] != null) {
+          await _storage.setAuthToken(body['access'].toString());
+          if (body['refresh'] != null) {
+            await _storage.setRefreshToken(body['refresh'].toString());
+          }
+          return true;
+        }
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<dynamic> get(
@@ -78,7 +143,7 @@ class ApiService {
     final inFlight = _inFlightGet[key];
     if (inFlight != null) return inFlight;
 
-    final request = _performGet(uri, headers);
+    final request = _performGetWithRetry(uri, headers, path);
     _inFlightGet[key] = request;
     try {
       return await request;
@@ -87,15 +152,21 @@ class ApiService {
     }
   }
 
-  Future<dynamic> _performGet(Uri uri, Map<String, String> headers) async {
-    try {
-      final response = await http
-          .get(uri, headers: headers)
-          .timeout(AppConfig.apiTimeout);
-      return _handleResponse(response);
-    } catch (e) {
-      rethrow;
-    }
+  /// Performs a GET with one 401→refresh→retry pass.
+  Future<dynamic> _performGetWithRetry(
+    Uri uri,
+    Map<String, String> headers,
+    String path,
+  ) async {
+    var response = await http
+        .get(uri, headers: headers)
+        .timeout(AppConfig.apiTimeout);
+    final retried = await _refreshAndRetry(response, path, () async {
+      final freshHeaders = await _getHeaders(path);
+      return http.get(uri, headers: freshHeaders).timeout(AppConfig.apiTimeout);
+    });
+    if (retried != null) response = retried;
+    return _handleResponse(response);
   }
 
   Future<dynamic> post(
@@ -105,19 +176,19 @@ class ApiService {
   }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
+    final body = data != null ? jsonEncode(data) : null;
 
-    try {
-      final response = await http
-          .post(
-            uri,
-            headers: headers,
-            body: data != null ? jsonEncode(data) : null,
-          )
+    var response = await http
+        .post(uri, headers: headers, body: body)
+        .timeout(AppConfig.apiTimeout);
+    final retried = await _refreshAndRetry(response, path, () async {
+      final freshHeaders = await _getHeaders(path, customHeaders);
+      return http
+          .post(uri, headers: freshHeaders, body: body)
           .timeout(AppConfig.apiTimeout);
-      return _handleResponse(response);
-    } catch (e) {
-      rethrow;
-    }
+    });
+    if (retried != null) response = retried;
+    return _handleResponse(response);
   }
 
   Future<dynamic> put(
@@ -127,19 +198,19 @@ class ApiService {
   }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
+    final body = data != null ? jsonEncode(data) : null;
 
-    try {
-      final response = await http
-          .put(
-            uri,
-            headers: headers,
-            body: data != null ? jsonEncode(data) : null,
-          )
+    var response = await http
+        .put(uri, headers: headers, body: body)
+        .timeout(AppConfig.apiTimeout);
+    final retried = await _refreshAndRetry(response, path, () async {
+      final freshHeaders = await _getHeaders(path, customHeaders);
+      return http
+          .put(uri, headers: freshHeaders, body: body)
           .timeout(AppConfig.apiTimeout);
-      return _handleResponse(response);
-    } catch (e) {
-      rethrow;
-    }
+    });
+    if (retried != null) response = retried;
+    return _handleResponse(response);
   }
 
   Future<dynamic> patch(
@@ -149,19 +220,19 @@ class ApiService {
   }) async {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
+    final body = data != null ? jsonEncode(data) : null;
 
-    try {
-      final response = await http
-          .patch(
-            uri,
-            headers: headers,
-            body: data != null ? jsonEncode(data) : null,
-          )
+    var response = await http
+        .patch(uri, headers: headers, body: body)
+        .timeout(AppConfig.apiTimeout);
+    final retried = await _refreshAndRetry(response, path, () async {
+      final freshHeaders = await _getHeaders(path, customHeaders);
+      return http
+          .patch(uri, headers: freshHeaders, body: body)
           .timeout(AppConfig.apiTimeout);
-      return _handleResponse(response);
-    } catch (e) {
-      rethrow;
-    }
+    });
+    if (retried != null) response = retried;
+    return _handleResponse(response);
   }
 
   Future<dynamic> delete(
@@ -171,14 +242,17 @@ class ApiService {
     final headers = await _getHeaders(path, customHeaders);
     final uri = Uri.parse('$baseUrl$path');
 
-    try {
-      final response = await http
-          .delete(uri, headers: headers)
+    var response = await http
+        .delete(uri, headers: headers)
+        .timeout(AppConfig.apiTimeout);
+    final retried = await _refreshAndRetry(response, path, () async {
+      final freshHeaders = await _getHeaders(path, customHeaders);
+      return http
+          .delete(uri, headers: freshHeaders)
           .timeout(AppConfig.apiTimeout);
-      return _handleResponse(response);
-    } catch (e) {
-      rethrow;
-    }
+    });
+    if (retried != null) response = retried;
+    return _handleResponse(response);
   }
 
   Future<String?> downloadFile(
@@ -457,26 +531,33 @@ class ApiService {
     required Map<String, String> fields,
     List<File>? images,
   }) async {
-    final uri = Uri.parse('$baseUrl/salons/salons/$salonId/');
-    final request = http.MultipartRequest('PATCH', uri);
+    Future<http.Response> send() async {
+      final uri = Uri.parse('$baseUrl/salons/salons/$salonId/');
+      final request = http.MultipartRequest('PATCH', uri);
 
-    final token = await _storage.getAuthToken();
-    if (token != null) {
-      request.headers['Authorization'] = 'Bearer $token';
-    }
-
-    request.fields.addAll(fields);
-
-    if (images != null && images.isNotEmpty) {
-      for (var image in images) {
-        request.files.add(
-          await http.MultipartFile.fromPath('images', image.path),
-        );
+      final token = await _storage.getAuthToken();
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
       }
+
+      request.fields.addAll(fields);
+
+      if (images != null && images.isNotEmpty) {
+        for (var image in images) {
+          request.files.add(
+            await http.MultipartFile.fromPath('images', image.path),
+          );
+        }
+      }
+
+      final streamedResponse = await request.send();
+      return http.Response.fromStream(streamedResponse);
     }
 
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
+    var response = await send();
+    if (response.statusCode == 401 && await _refreshAccessToken()) {
+      response = await send();
+    }
     return _handleResponse(response);
   }
 

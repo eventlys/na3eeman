@@ -385,32 +385,31 @@ class _HistoryPageState extends State<HistoryPage> {
                 onChanged: (val) => setState(() => selectedDuration = val!),
               ),
               const SizedBox(height: 16),
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                tileColor: Theme.of(
-                  context,
-                ).primaryColor.withValues(alpha: 0.05),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              Material(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(12),
+                clipBehavior: Clip.antiAlias,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  title: Text(
+                    'starting_date'.tr(),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  subtitle: Text(
+                    DateFormat('date_format_long'.tr()).format(startDate),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: const Icon(Icons.calendar_month_rounded),
+                  onTap: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: startDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 90)),
+                    );
+                    if (date != null) setState(() => startDate = date);
+                  },
                 ),
-                title: Text(
-                  'starting_date'.tr(),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                subtitle: Text(
-                  DateFormat('date_format_long'.tr()).format(startDate),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: const Icon(Icons.calendar_month_rounded),
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: startDate,
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(const Duration(days: 90)),
-                  );
-                  if (date != null) setState(() => startDate = date);
-                },
               ),
             ],
           ),

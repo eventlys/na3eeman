@@ -6,6 +6,7 @@ import '../../../../Providers/features/appointment_provider.dart';
 import '../../../../Providers/features/profit_provider.dart';
 import '../../../../Providers/features/inventory_provider.dart';
 import '../../../../Providers/features/offers_provider.dart';
+import '../../../../Providers/features/owner_provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/styled_buttons.dart';
 import '../../../../core/widgets/notifications/notifications_bottom_sheet.dart';
@@ -47,12 +48,16 @@ class _SalonOwnerDashboardState extends State<SalonOwnerDashboard>
   }
 
   void _loadData() {
+    final salonId = context.read<OwnerProvider>().activeSalonId;
     context.read<ProfitProvider>().loadProfitData(
       startDate: DateTime.now().subtract(const Duration(days: 30)),
       endDate: DateTime.now(),
     );
     context.read<AppointmentProvider>().loadAppointments();
-    context.read<InventoryProvider>().loadLowStockItems();
+    // Inventory/low-stock need a salon — skip gracefully when none is selected.
+    if (salonId != null) {
+      context.read<InventoryProvider>().loadLowStockItems(salonId: salonId);
+    }
     context.read<OffersProvider>().loadOffers();
   }
 

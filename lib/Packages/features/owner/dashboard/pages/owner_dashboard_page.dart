@@ -134,7 +134,7 @@ class _OwnerDashboardPageState extends State<OwnerDashboardPage>
               onPressed: _sidebarController.toggleSidebar,
             ),
             const SizedBox(width: 8),
-            const GlobalSearchBar(),
+            const Expanded(child: GlobalSearchBar()),
           ],
         ),
       ),

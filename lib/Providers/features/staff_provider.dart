@@ -44,7 +44,12 @@ class StaffProvider extends BaseProvider {
 
       final salonId = _authProvider?.user?.salonId;
       if (salonId == null && _authProvider?.isAdmin != true) {
-        throw Exception('No active salon found for current user');
+        // No salon assigned yet — not an error, just nothing to load.
+        _staff = [];
+        _experts = [];
+        setLoading(false);
+        notifyListeners();
+        return;
       }
 
       // For Admin, they might need to select a salon first, but for Owner/Staff it's their salon

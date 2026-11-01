@@ -107,7 +107,9 @@ class CacheHelper {
   // Retrieve data from cache
   dynamic retrieve(String key) {
     if (!_isInitialized) {
-      AppLogger.warning('Cache not initialized when retrieving: $key');
+      // Startup race: a provider may read before AppStateProvider.initialize()
+      // completes. Treat as a cache miss (revalidate over network) rather than
+      // warning — the data will be cached once initialized.
       return null;
     }
 

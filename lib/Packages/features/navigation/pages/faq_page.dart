@@ -31,11 +31,13 @@ class _FAQPageState extends State<FAQPage> {
         _error = null;
       });
       final List<Map<String, dynamic>> data = await _contentService.getFAQs();
+      if (!mounted) return;
       setState(() {
         _faqs = data.map((e) => FAQModel.fromJson(e)).toList();
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _isLoading = false;

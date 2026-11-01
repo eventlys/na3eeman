@@ -157,33 +157,31 @@ class GlobalSearchBar extends StatelessWidget {
     // Management roles (Owner, Receptionist) navigate to staff list
     final isManagement = user?.isOwner == true || user?.isReceptionist == true;
 
-    return Expanded(
-      child: Container(
-        height: 42,
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.almostBlack500 : Colors.grey[100],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: TextField(
-          readOnly: true,
-          onTap: () =>
-              Navigator.pushNamed(context, isManagement ? '/staff' : '/salons'),
-          decoration: InputDecoration(
-            hintText: isManagement
-                ? 'expert_management'.tr()
-                : "search_services_salons".tr(),
-            hintStyle: TextStyle(
-              fontSize: 13,
-              color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
-            ),
-            prefixIcon: Icon(
-              Icons.search,
-              size: 20,
-              color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
-            ),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 7),
+    return Container(
+      height: 42,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.almostBlack500 : Colors.grey[100],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextField(
+        readOnly: true,
+        onTap: () =>
+            Navigator.pushNamed(context, isManagement ? '/staff' : '/salons'),
+        decoration: InputDecoration(
+          hintText: isManagement
+              ? 'expert_management'.tr()
+              : "search_services_salons".tr(),
+          hintStyle: TextStyle(
+            fontSize: 13,
+            color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
           ),
+          prefixIcon: Icon(
+            Icons.search,
+            size: 20,
+            color: isDark ? AppColors.cream600 : AppColors.almostBlack300,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 7),
         ),
       ),
     );

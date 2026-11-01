@@ -79,7 +79,7 @@ class _ReceptionistDashboardState extends State<ReceptionistDashboard>
                     onPressed: _toggleSidebar,
                   ),
                   const SizedBox(width: 8),
-                  const GlobalSearchBar(),
+                  const Expanded(child: GlobalSearchBar()),
                 ],
               ),
             ),
