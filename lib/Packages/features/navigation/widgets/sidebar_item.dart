@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/theme/spacing.dart';
 
 class SidebarItem extends StatelessWidget {
   final String title;
@@ -22,12 +23,13 @@ class SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final trailingIconColor = Theme.of(context).iconTheme.color;
 
     final leadingContent = Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppSpacing.brSm,
       ),
       child: _buildIcon(isDark, context),
     );
@@ -40,19 +42,24 @@ class SidebarItem extends StatelessWidget {
 
     if (children != null && children!.isNotEmpty) {
       return Container(
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        margin: const EdgeInsets.symmetric(
+          vertical: AppSpacing.xs,
+          horizontal: AppSpacing.sm,
+        ),
         decoration: BoxDecoration(
           color: backgroundColor ?? Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppSpacing.brMd,
         ),
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
             leading: leadingContent,
             title: Text(title, style: titleStyle),
-            iconColor: AppColors.almostBlack200,
-            collapsedIconColor: AppColors.almostBlack200,
-            childrenPadding: const EdgeInsets.only(left: 16),
+            iconColor: trailingIconColor,
+            collapsedIconColor: trailingIconColor,
+            childrenPadding: const EdgeInsetsDirectional.only(
+              start: AppSpacing.md,
+            ),
             children: children!.map((childItem) {
               return SidebarItem(
                 title: childItem.title,
@@ -67,22 +74,28 @@ class SidebarItem extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      margin: const EdgeInsets.symmetric(
+        vertical: AppSpacing.xs,
+        horizontal: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: backgroundColor ?? Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppSpacing.brMd,
       ),
       child: ListTile(
         onTap: onTap,
         leading: leadingContent,
         title: Text(title, style: titleStyle),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.chevron_right_rounded,
-          color: AppColors.almostBlack200,
-          size: 20,
+          color: trailingIconColor,
+          size: AppSpacing.iconMd,
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.brMd),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
       ),
     );
   }
@@ -91,16 +104,19 @@ class SidebarItem extends StatelessWidget {
     if (assetIcon != null) {
       return Image.asset(
         assetIcon!,
-        width: 20,
-        height: 20,
+        width: AppSpacing.iconBase,
+        height: AppSpacing.iconBase,
         color: Theme.of(context).primaryColor,
-        errorBuilder: (_, _, _) =>
-            Icon(Icons.circle, size: 20, color: Theme.of(context).primaryColor),
+        errorBuilder: (_, _, _) => Icon(
+          Icons.circle,
+          size: AppSpacing.iconBase,
+          color: Theme.of(context).primaryColor,
+        ),
       );
     }
     return Icon(
       icon ?? Icons.circle,
-      size: 20,
+      size: AppSpacing.iconBase,
       color: Theme.of(context).primaryColor,
     );
   }

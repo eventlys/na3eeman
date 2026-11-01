@@ -9,7 +9,6 @@ class AnimatedSidebarItem extends StatelessWidget {
   final int delay;
   final Color backgroundColor;
   final Color textColor;
-  final double iconSize;
 
   const AnimatedSidebarItem({
     super.key,
@@ -18,7 +17,6 @@ class AnimatedSidebarItem extends StatelessWidget {
     required this.delay,
     this.backgroundColor = Colors.transparent,
     this.textColor = Colors.black,
-    this.iconSize = 30.0,
   });
 
   @override

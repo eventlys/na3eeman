@@ -18,6 +18,7 @@ import '../../../../../core/widgets/rules/rules_guide_sheet.dart';
 import '../../../../Services/core/user_service.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../Routes/route_names.dart';
+import '../../../../core/theme/spacing.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -68,21 +69,27 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(
           "settings".tr(),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: AppSpacing.fontLg,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: AppSpacing.iconMd,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pageH),
         physics: const BouncingScrollPhysics(),
         children: [
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.listGap),
 
           // Account Settings
           _buildSectionHeader('account_settings'.tr()),
@@ -104,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () => _showSubscriptionManagementModal(),
             ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.sectionGap),
 
           // App Preferences
           _buildSectionHeader('app_preferences'.tr()),
@@ -158,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.sectionGap),
 
           // Support & Feedback
           _buildSectionHeader('support_feedback'.tr()),
@@ -178,7 +185,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () => _showReportProblemDialog(),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.sectionGap),
 
           // More
           _buildSectionHeader('more'.tr()),
@@ -198,16 +205,16 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () => _showUserGuide(),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Delete Account
           Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: TextButton.icon(
               icon: const Icon(
                 Icons.person_remove_rounded,
                 color: Colors.red,
-                size: 20,
+                size: AppSpacing.iconMd,
               ),
               label: Text(
                 "delete_account".tr(),
@@ -219,23 +226,21 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               onPressed: () => _showDeleteAccountConfirmation(),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 backgroundColor: Colors.red.withValues(alpha: 0.1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppSpacing.brSm),
               ),
             ),
           ),
 
           // Logout
           Padding(
-            padding: const EdgeInsets.only(bottom: 32),
+            padding: const EdgeInsets.only(bottom: AppSpacing.xl),
             child: TextButton.icon(
               icon: const Icon(
                 Icons.logout_rounded,
                 color: Colors.redAccent,
-                size: 20,
+                size: AppSpacing.iconMd,
               ),
               label: Text(
                 "logout".tr(),
@@ -251,11 +256,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 backgroundColor: Colors.redAccent.withValues(alpha: 0.05),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppSpacing.brSm),
               ),
             ),
           ),
@@ -266,7 +269,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xs,
+        AppSpacing.md,
+        AppSpacing.xs,
+        AppSpacing.sm,
+      ),
       child: Text(
         title.toUpperCase(),
         style: TextStyle(
@@ -286,15 +294,8 @@ class _SettingsPageState extends State<SettingsPage> {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+      leading: _buildLeadingIcon(context, icon),
       title: Text(
         title,
         style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
@@ -302,12 +303,15 @@ class _SettingsPageState extends State<SettingsPage> {
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              style: TextStyle(
+                fontSize: AppSpacing.fontSm,
+                color: Colors.grey[600],
+              ),
             )
           : null,
       trailing: const Icon(
         Icons.chevron_right_rounded,
-        size: 22,
+        size: AppSpacing.iconBase,
         color: Colors.grey,
       ),
       onTap: onTap,
@@ -322,22 +326,15 @@ class _SettingsPageState extends State<SettingsPage> {
     required ValueChanged<bool> onChanged,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+      leading: _buildLeadingIcon(context, icon),
       title: Text(
         title,
         style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
       ),
       subtitle: Text(
         subtitle,
-        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+        style: TextStyle(fontSize: AppSpacing.fontSm, color: Colors.grey[600]),
       ),
       trailing: Transform.scale(
         scale: 0.8,
@@ -348,6 +345,23 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       onTap: () => onChanged(!value),
+    );
+  }
+
+  /// Shared leading icon box for settings tiles: same padding, radius, and
+  /// icon size everywhere so icons align across rows.
+  Widget _buildLeadingIcon(BuildContext context, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
+        borderRadius: AppSpacing.brSm,
+      ),
+      child: Icon(
+        icon,
+        color: Theme.of(context).primaryColor,
+        size: AppSpacing.iconMd,
+      ),
     );
   }
 
@@ -365,18 +379,21 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.7,
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.pageV),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: AppSpacing.brSheet,
         ),
         child: Column(
           children: [
             Text(
               'subscription_plans'.tr(),
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: AppSpacing.fontXl,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             Expanded(
               child: _isLoadingPlans
                   ? const Center(child: CircularProgressIndicator())
@@ -389,7 +406,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     )
                   : SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.pageH,
+                      ),
                       child: Row(
                         children: _plans!
                             .map(
@@ -419,13 +438,17 @@ class _SettingsPageState extends State<SettingsPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: 280,
-      margin: const EdgeInsets.only(right: 16, bottom: 20, top: 12),
-      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.only(
+        right: AppSpacing.md,
+        bottom: AppSpacing.pageH,
+        top: AppSpacing.listGap,
+      ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: isRecommended
             ? Theme.of(context).primaryColor
             : (isDark ? Colors.grey[900] : Colors.white),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppSpacing.brXl,
         border: Border.all(
           color: isRecommended
               ? Colors.transparent
@@ -444,17 +467,20 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           if (isRecommended)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: AppSpacing.xs,
+              ),
+              margin: const EdgeInsets.only(bottom: AppSpacing.listGap),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppSpacing.brLg,
               ),
               child: Text(
                 'recommended'.tr(),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 10,
+                  fontSize: AppSpacing.fontXs,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -462,14 +488,14 @@ class _SettingsPageState extends State<SettingsPage> {
           Text(
             title,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: AppSpacing.fontLg,
               fontWeight: FontWeight.bold,
               color: isRecommended
                   ? Colors.white
                   : (isDark ? Colors.white : Colors.black),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             price,
             style: TextStyle(
@@ -480,7 +506,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   : Theme.of(context).primaryColor,
             ),
           ),
-          const Divider(height: 32),
+          const Divider(height: AppSpacing.xl),
           Expanded(
             child: ListView(
               shrinkWrap: true,
@@ -488,24 +514,26 @@ class _SettingsPageState extends State<SettingsPage> {
               children: features
                   .map(
                     (f) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                       child: Row(
                         children: [
                           Icon(
                             Icons.check_circle,
                             color: isRecommended ? Colors.white : Colors.green,
-                            size: 16,
+                            size: AppSpacing.iconSm,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            f,
-                            style: TextStyle(
-                              color: isRecommended
-                                  ? Colors.white
-                                  : (isDark
-                                        ? Colors.grey[300]
-                                        : Colors.grey[700]),
-                              fontSize: 13,
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              f,
+                              style: TextStyle(
+                                color: isRecommended
+                                    ? Colors.white
+                                    : (isDark
+                                          ? Colors.grey[300]
+                                          : Colors.grey[700]),
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ],
@@ -533,9 +561,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 foregroundColor: isRecommended
                     ? Theme.of(context).primaryColor
                     : Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppSpacing.brSm),
                 elevation: 0,
               ),
               child: Text('select_plan'.tr()),
@@ -547,11 +573,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _rateApp() async {
-    final url = Uri.parse('market://details?id=com.example.na3eeman');
+    final url = Uri.parse('market://details?id=com.na3eman.app');
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
-      if (mounted) {
+      // Fall back to the web Play Store link if the market app isn't available.
+      final webUrl = Uri.parse(
+        'https://play.google.com/store/apps/details?id=com.na3eman.app',
+      );
+      if (await canLaunchUrl(webUrl)) {
+        await launchUrl(webUrl, mode: LaunchMode.externalApplication);
+      } else if (mounted) {
         AppSnackBar.error(context, 'could_not_open_app_store'.tr());
       }
     }
@@ -563,20 +595,18 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('report_a_problem'.tr()),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.brLg),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('describe_problem'.tr()),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextField(
               controller: controller,
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: 'enter_details_here'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: AppSpacing.brSm),
               ),
             ),
           ],
@@ -592,9 +622,7 @@ class _SettingsPageState extends State<SettingsPage> {
               AppSnackBar.success(context, 'report_submitted_thanks'.tr());
             },
             style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppSpacing.brSm),
             ),
             child: Text('submit'.tr()),
           ),
@@ -621,7 +649,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (dialogContext) => AlertDialog(
         title: Text('delete_account'.tr()),
         content: Text('delete_account_confirmation_desc'.tr()),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.brLg),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),

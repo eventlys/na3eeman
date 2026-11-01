@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../Models/ui/menu_item_model.dart';
 import '../../../Providers/features/auth_provider.dart';
 import '../../../core/enums/app_enums.dart';
-import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import 'sidebar_controller.dart';
 import 'widgets/animated_sidebar_item.dart';
 import 'widgets/sidebar_background.dart';
@@ -96,7 +96,7 @@ class Sidebar extends StatelessWidget {
 
               // Footer / Branding
               Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -127,7 +127,7 @@ class Sidebar extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     FutureBuilder<PackageInfo>(
                       future: PackageInfo.fromPlatform(),
                       builder: (context, snapshot) {
@@ -136,9 +136,10 @@ class Sidebar extends StatelessWidget {
                             : '2.0.0';
                         return Text(
                           'Version $version',
-                          style: const TextStyle(
-                            color: AppColors.almostBlack300,
-                            fontSize: 10,
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodySmall?.color
+                                ?.withValues(alpha: 0.6),
+                            fontSize: AppSpacing.fontXs,
                           ),
                         );
                       },
@@ -231,7 +232,7 @@ class Sidebar extends StatelessWidget {
         .toList();
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
       itemCount: filteredItems.length,
       itemBuilder: (context, index) {
         final item = filteredItems[index];
