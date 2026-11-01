@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../Providers/main_providers.dart';
-import '../../../Services/enums/gender.dart';
 
 class NavItem {
   final String id;
-  final String activeIconPath;
-  final String inactiveIconPath;
+  final IconData icon;
   final String route;
   final String label;
 
   const NavItem({
     required this.id,
-    required this.activeIconPath,
-    required this.inactiveIconPath,
+    required this.icon,
     required this.route,
     required this.label,
   });
@@ -28,22 +25,8 @@ class NavigationConfig {
     }
   }
 
-  static String getProfileAvatar(
-    AppStateProvider appStateProvider,
-    bool isActive,
-  ) {
-    // Get gender from provider to determine avatar
-    final gender = appStateProvider.userGender;
-
-    if (isActive) {
-      return gender == Gender.female
-          ? 'assets/icons/avatar_female_view.png'
-          : 'assets/icons/avatar_male_view.png';
-    } else {
-      return gender == Gender.female
-          ? 'assets/icons/avatar_female.png'
-          : 'assets/icons/avatar_male.png';
-    }
+  static IconData getProfileAvatar(AppStateProvider appStateProvider) {
+    return Icons.person;
   }
 
   static List<NavItem> getNavItems(
@@ -54,46 +37,37 @@ class NavigationConfig {
     final allItems = [
       NavItem(
         id: 'home',
-        activeIconPath: 'assets/icons/home_view.png',
-        inactiveIconPath: 'assets/icons/home_front.png',
+        icon: Icons.home,
         route: getHomeRoute(appStateProvider),
         label: "home".tr(),
       ),
       NavItem(
         id: 'search',
-        activeIconPath: 'assets/icons/search_view.png',
-        inactiveIconPath: 'assets/icons/search.png',
+        icon: Icons.search,
         route: '/search',
         label: 'Search',
       ),
       NavItem(
         id: 'history',
-        activeIconPath: 'assets/icons/clock_view.png',
-        inactiveIconPath: 'assets/icons/clock.png',
+        icon: Icons.access_time,
         route: '/history',
         label: "history".tr(),
       ),
       NavItem(
         id: 'admin',
-        activeIconPath: 'assets/icons/admin_view.png',
-        inactiveIconPath: 'assets/icons/admin.png',
+        icon: Icons.admin_panel_settings,
         route: '/owner',
         label: "admin".tr(),
       ),
       NavItem(
         id: 'staff',
-        activeIconPath: 'assets/icons/staff_view.png',
-        inactiveIconPath: 'assets/icons/staff.png',
+        icon: Icons.people,
         route: '/staff',
         label: "staff".tr(),
       ),
       NavItem(
         id: 'profile',
-        activeIconPath: getProfileAvatar(
-          appStateProvider,
-          currentRoute == '/profile',
-        ),
-        inactiveIconPath: getProfileAvatar(appStateProvider, false),
+        icon: getProfileAvatar(appStateProvider),
         route: '/profile',
         label: "profile".tr(),
       ),

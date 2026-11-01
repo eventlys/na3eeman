@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import 'otp_verification_page.dart';
@@ -97,8 +96,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "email".tr(),
-                prefixIcon: ImageIcon(
-                  AssetImage(AppImages.mail_view),
+                prefixIcon: Icon(
+                  Icons.mail,
                   color: isDark ? AppColor.darkText : AppColor.lightText,
                 ),
                 border: OutlineInputBorder(
@@ -193,10 +192,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   children: [
                     Row(
                       children: [
-                        ImageIcon(
-                          AssetImage(
-                            _isSuccess ? AppImages.check : AppImages.error_view,
-                          ),
+                        Icon(
+                          _isSuccess ? Icons.check_circle : Icons.error_outline,
                           size: 20,
                           color: _isSuccess
                               ? (isDark
@@ -239,8 +236,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          ImageIcon(
-                            AssetImage(AppImages.info),
+                          Icon(
+                            Icons.info,
                             size: 16,
                             color: isDark
                                 ? AppColor.darkWarning

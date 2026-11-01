@@ -86,8 +86,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   _shouldAnimate && _lastTappedId == item.id;
 
               return NeomorphicSphere(
-                activeIconPath: item.activeIconPath,
-                inactiveIconPath: item.inactiveIconPath,
+                icon: item.icon,
                 size: 80,
                 isActive: isActive,
                 shouldAnimate: shouldAnimateForThisItem,

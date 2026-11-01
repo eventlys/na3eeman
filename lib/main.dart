@@ -1,4 +1,5 @@
 // ignore_for_file: deprecated_member_use
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -36,14 +37,19 @@ void main() async {
   await Environment.init(flavor: flavor);
 
   try {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: Environment.config.firebaseApiKey,
-        appId: Environment.config.firebaseAppId,
-        messagingSenderId: Environment.config.firebaseMessagingSenderId,
-        projectId: Environment.config.firebaseProjectId,
-      ),
-    );
+    if (Platform.isIOS) {
+      // iOS reads config from the bundled GoogleService-Info.plist.
+      await Firebase.initializeApp();
+    } else {
+      await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: Environment.config.firebaseApiKey,
+          appId: Environment.config.firebaseAppId,
+          messagingSenderId: Environment.config.firebaseMessagingSenderId,
+          projectId: Environment.config.firebaseProjectId,
+        ),
+      );
+    }
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   } catch (e) {
     AppLogger.error('Firebase initialization failed: $e');

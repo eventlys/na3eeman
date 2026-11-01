@@ -109,7 +109,12 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
                 color: AppColors.almostBlack.withValues(alpha: 0.5),
               ),
               SizedBox(width: 8),
-              Text(AppConfig.supportEmail, style: TextStyle(fontSize: 12)),
+              Expanded(
+                child: Text(
+                  AppConfig.supportEmail,
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
             ],
           ),
           SizedBox(height: 8),
@@ -121,7 +126,12 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
                 color: AppColors.almostBlack.withValues(alpha: 0.5),
               ),
               SizedBox(width: 8),
-              Text('+1 (555) 123-4567', style: TextStyle(fontSize: 12)),
+              Expanded(
+                child: Text(
+                  '+1 (555) 123-4567',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
             ],
           ),
           SizedBox(height: 8),
@@ -133,9 +143,11 @@ class _ContactUsOverlayState extends State<ContactUsOverlay> {
                 color: AppColors.almostBlack.withValues(alpha: 0.5),
               ),
               SizedBox(width: 8),
-              Text(
-                'working_hours_mon_fri'.tr(),
-                style: const TextStyle(fontSize: 12),
+              Expanded(
+                child: Text(
+                  'working_hours_mon_fri'.tr(),
+                  style: const TextStyle(fontSize: 12),
+                ),
               ),
             ],
           ),

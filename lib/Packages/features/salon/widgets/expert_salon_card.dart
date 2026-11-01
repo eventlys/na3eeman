@@ -26,11 +26,6 @@ class ExpertSalonCard extends StatefulWidget {
     this.onCardTap,
     this.onFavoriteChanged,
     this.initialIsFavorite = false,
-    // Add legacy support for unused paths to prevent breakage elsewhere
-    String? bottomLeftIconPath,
-    String? bottomRightIconPath,
-    String? middleRightIconPath,
-    String? middleRightActiveIconPath,
     Size? size,
   });
 

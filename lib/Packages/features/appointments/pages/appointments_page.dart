@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../../core/widgets/fade_slide_in.dart';
 import '../widgets/appointment_accordion.dart';
@@ -149,18 +148,12 @@ class AppointmentsPageState extends State<AppointmentsPage> {
         : AppColor.lightTextSecondary;
   }
 
-  String _getErrorIcon(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-    return brightness == Brightness.dark
-        ? AppImages.error_view
-        : AppImages.error;
+  IconData _getErrorIcon(BuildContext context) {
+    return Icons.error_outline;
   }
 
-  String _getCalendarIcon(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-    return brightness == Brightness.dark
-        ? AppImages.calender_view
-        : AppImages.calender;
+  IconData _getCalendarIcon(BuildContext context) {
+    return Icons.calendar_today;
   }
 
   Widget _buildContent(List<dynamic> appointments, String userGender) {
@@ -198,10 +191,9 @@ class AppointmentsPageState extends State<AppointmentsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
+              Icon(
                 _getErrorIcon(context),
-                width: 64,
-                height: 64,
+                size: 64,
                 color: _getErrorColor(context),
               ),
               const SizedBox(height: 16),
@@ -233,10 +225,9 @@ class AppointmentsPageState extends State<AppointmentsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
+              Icon(
                 _getCalendarIcon(context),
-                width: 64,
-                height: 64,
+                size: 64,
                 color: _getIconColor(context),
               ),
               const SizedBox(height: 16),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'dart:ui';
 
 class BgIcon extends StatefulWidget {
-  final String iconPath;
+  final IconData icon;
   final double blurLevel;
   final double size;
   final double rotationDegree;
@@ -13,7 +12,7 @@ class BgIcon extends StatefulWidget {
 
   const BgIcon({
     super.key,
-    required this.iconPath,
+    required this.icon,
     required this.blurLevel,
     required this.size,
     required this.rotationDegree,
@@ -66,25 +65,13 @@ class BgIconState extends State<BgIcon> with SingleTickerProviderStateMixin {
           offset: _positionAnimation.value,
           child: Transform.rotate(
             angle: _rotationAnimation.value * (pi / 180),
-            child: Container(
+            child: SizedBox(
               width: widget.size,
               height: widget.size,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: widget.iconPath.startsWith('http')
-                      ? NetworkImage(widget.iconPath)
-                      : AssetImage(widget.iconPath) as ImageProvider,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: BackdropFilter(
-                filter: widget.blurLevel > 0
-                    ? ImageFilter.blur(
-                        sigmaX: widget.blurLevel,
-                        sigmaY: widget.blurLevel,
-                      )
-                    : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                child: Container(color: Colors.transparent),
+              child: Icon(
+                widget.icon,
+                size: widget.size * 0.6,
+                color: Colors.white.withValues(alpha: 0.15),
               ),
             ),
           ),

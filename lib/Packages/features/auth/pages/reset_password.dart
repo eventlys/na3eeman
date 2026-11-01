@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Helpers/password_helper.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import '../../../Core/widgets/password_strength_indicator.dart';
@@ -130,10 +129,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               obscureText: !_passwordVisible,
               decoration: InputDecoration(
                 labelText: "new_password".tr(),
-                prefixIcon: Image.asset(
-                  AppImages.lock,
-                  width: 20,
-                  height: 20,
+                prefixIcon: Icon(
+                  Icons.lock,
+                  size: 20,
                   color: isDark
                       ? AppColor.darkTextSecondary
                       : AppColor.lightTextSecondary,
@@ -151,10 +149,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   borderSide: BorderSide(color: AppColor.primary, width: 2),
                 ),
                 suffixIcon: IconButton(
-                  icon: Image.asset(
-                    _passwordVisible ? AppImages.eye_view : AppImages.eye,
-                    width: 20,
-                    height: 20,
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    size: 20,
                     color: isDark
                         ? AppColor.darkTextSecondary
                         : AppColor.lightTextSecondary,
@@ -196,10 +193,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               obscureText: !_confirmPasswordVisible,
               decoration: InputDecoration(
                 labelText: "confirm_password".tr(),
-                prefixIcon: Image.asset(
-                  AppImages.secure,
-                  width: 20,
-                  height: 20,
+                prefixIcon: Icon(
+                  Icons.verified_user,
+                  size: 20,
                   color: isDark
                       ? AppColor.darkTextSecondary
                       : AppColor.lightTextSecondary,
@@ -217,12 +213,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   borderSide: BorderSide(color: AppColor.primary, width: 2),
                 ),
                 suffixIcon: IconButton(
-                  icon: Image.asset(
+                  icon: Icon(
                     _confirmPasswordVisible
-                        ? AppImages.eye_view
-                        : AppImages.eye,
-                    width: 20,
-                    height: 20,
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    size: 20,
                     color: isDark
                         ? AppColor.darkTextSecondary
                         : AppColor.lightTextSecondary,
@@ -299,10 +294,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   children: [
                     Row(
                       children: [
-                        Image.asset(
-                          _isSuccess ? AppImages.tick : AppImages.error,
-                          width: 20,
-                          height: 20,
+                        Icon(
+                          _isSuccess ? Icons.check_circle : Icons.error_outline,
+                          size: 20,
                           color: _isSuccess
                               ? isDark
                                     ? AppColor.darkSuccess
@@ -349,12 +343,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           padding: const EdgeInsets.only(bottom: 8),
                           child: Row(
                             children: [
-                              Image.asset(
+                              Icon(
                                 step['completed']
-                                    ? AppImages.tick
-                                    : AppImages.clock,
-                                width: 16,
-                                height: 16,
+                                    ? Icons.check_circle
+                                    : Icons.access_time,
+                                size: 16,
                                 color: step['completed']
                                     ? AppColor.featureCheckLight
                                     : (isDark

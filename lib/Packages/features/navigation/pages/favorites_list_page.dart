@@ -91,12 +91,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _clearAllFavorites,
         backgroundColor: AppColor.secondary,
-        child: ImageIcon(AssetImage(AppImages.trash), color: AppColor.light),
+        child: Icon(Icons.delete, color: AppColor.light),
       ),
       actions: [
         IconButton(
-          icon: ImageIcon(
-            AssetImage(AppImages.refresh),
+          icon: Icon(
+            Icons.refresh,
             color: isDark ? AppColor.darkText : AppColor.lightText,
           ),
           onPressed: _refreshData,
@@ -130,8 +130,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ImageIcon(
-                    AssetImage(AppImages.heart),
+                  Icon(
+                    Icons.favorite_border,
                     size: 64,
                     color:
                         (isDark
@@ -202,16 +202,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   child: ExpertSalonCard(
                     title: salon['salonName'] ?? 'Unknown Salon',
                     workingHours: salon['businessHours'] ?? '9:00 AM - 6:00 PM',
-                    bottomLeftIconPath:
-                        AppImages.location, // Use your location icon
-                    bottomRightIconPath: AppImages.star, // Use your star icon
-                    middleRightIconPath:
-                        AppImages.heart, // Use your heart outline icon
-                    middleRightActiveIconPath:
-                        AppImages.heart, // Use your heart filled icon
                     profilePicture:
-                        salon['image'] ??
-                        AppImages.salon1, // Use your default salon image
+                        salon['image'] ?? AppImages.defaultSalonImage,
                     size: const Size(350, 115), // Adjust size as needed
                     isClickable: true,
                     salonLocation: salon['address'] ?? '',
@@ -275,24 +267,19 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ),
             const SizedBox(height: 20),
             _buildDetailRow(
-              AppImages.location,
+              Icons.location_on,
               'Address',
               salon['address'] ?? 'Not available',
               isDark,
             ),
             const SizedBox(height: 12),
             if (salon['phone'] != null) ...[
-              _buildDetailRow(
-                AppImages.phone,
-                'Phone',
-                salon['phone']!,
-                isDark,
-              ),
+              _buildDetailRow(Icons.phone, 'Phone', salon['phone']!, isDark),
               const SizedBox(height: 12),
             ],
             if (salon['rating'] != null) ...[
               _buildDetailRow(
-                AppImages.star,
+                Icons.star,
                 'Rating',
                 salon['rating'].toStringAsFixed(1),
                 isDark,
@@ -301,7 +288,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ],
             if (salon['totalReviews'] != null) ...[
               _buildDetailRow(
-                AppImages.X_view,
+                Icons.rate_review,
                 'Reviews',
                 salon['totalReviews'].toString(),
                 isDark,
@@ -310,7 +297,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ],
             if (salon['services'] != null && salon['services'] is List) ...[
               _buildDetailRow(
-                AppImages.scissors,
+                Icons.content_cut,
                 'Services',
                 (salon['services'] as List).join(', '),
                 isDark,
@@ -319,7 +306,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ],
             if (salon['businessHours'] != null) ...[
               _buildDetailRow(
-                AppImages.clock,
+                Icons.access_time,
                 'Hours',
                 salon['businessHours']!,
                 isDark,
@@ -328,7 +315,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ],
             if (salon['description'] != null) ...[
               _buildDetailRow(
-                AppImages.info,
+                Icons.info,
                 'Description',
                 salon['description']!,
                 isDark,
@@ -371,7 +358,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   Widget _buildDetailRow(
-    String iconPath,
+    IconData icon,
     String label,
     String value,
     bool isDark,
@@ -379,7 +366,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ImageIcon(AssetImage(iconPath), size: 20, color: AppColor.primary),
+        Icon(icon, size: 20, color: AppColor.primary),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

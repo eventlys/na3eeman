@@ -45,10 +45,16 @@ class FCMService {
         AppLogger.info('User granted FCM permission');
       }
 
-      // Get token
-      String? token = await _fcm!.getToken();
-      AppLogger.info('FCM Token: $token');
-      // TODO: Send token to backend
+      // Get token. On iOS this throws `apns-token-not-set` if the APNS token
+      // isn't available yet (simulator / not yet provisioned) — that must not
+      // abort the whole init or the message listeners below never register.
+      try {
+        String? token = await _fcm!.getToken();
+        AppLogger.info('FCM Token: $token');
+        // TODO: Send token to backend
+      } catch (e) {
+        AppLogger.warning('FCM token unavailable yet (APNS not ready): $e');
+      }
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {

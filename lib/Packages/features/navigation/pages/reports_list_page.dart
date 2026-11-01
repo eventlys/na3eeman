@@ -8,7 +8,6 @@ import '../../../../Providers/features/owner_provider.dart';
 import '../../../../Models/reports/report_request_model.dart';
 import '../../../../Services/enums/report_enums.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import 'report_download_dialog.dart';
@@ -105,28 +104,28 @@ class _ReportsPageState extends State<ReportsPage> {
           _ReportItem(
             title: "staff_performance_report".tr(),
             description: 'Detailed analysis of expert performance',
-            icon: AppImages.file_star,
+            icon: Icons.star,
             color: AppColor.lightInfo,
             darkColor: AppColor.darkInfo,
           ),
           _ReportItem(
             title: 'Financial Report',
             description: 'Revenue, expenses and profit analysis',
-            icon: AppImages.money,
+            icon: Icons.payments,
             color: AppColor.lightSuccess,
             darkColor: AppColor.darkSuccess,
           ),
           _ReportItem(
             title: 'Appointment Report',
             description: 'Booking and scheduling overview',
-            icon: AppImages.calender,
+            icon: Icons.calendar_today,
             color: AppColor.lightWarning,
             darkColor: AppColor.darkWarning,
           ),
           _ReportItem(
             title: 'Inventory Report',
             description: 'Product usage and stock levels',
-            icon: AppImages.inventory,
+            icon: Icons.inventory_2,
             color: AppColor.lightAccent,
             darkColor: AppColor.darkAccent,
           ),
@@ -147,7 +146,7 @@ class _ReportsPageState extends State<ReportsPage> {
   Widget _buildReportCard(
     String title,
     String description,
-    String icon,
+    IconData icon,
     Color lightColor,
     Color darkColor,
   ) {
@@ -168,7 +167,7 @@ class _ReportsPageState extends State<ReportsPage> {
             color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
-          child: Image.asset(icon, width: 24, height: 24, color: color),
+          child: Icon(icon, size: 24, color: color),
         ),
         title: Text(
           title,
@@ -192,12 +191,7 @@ class _ReportsPageState extends State<ReportsPage> {
               color: AppColor.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Image.asset(
-              AppImages.download,
-              width: 20,
-              height: 20,
-              color: AppColor.primary,
-            ),
+            child: Icon(Icons.download, size: 20, color: AppColor.primary),
           ),
           onPressed: () => _downloadReport(title),
         ),
@@ -298,7 +292,7 @@ class _ReportsPageState extends State<ReportsPage> {
 class _ReportItem {
   final String title;
   final String description;
-  final String icon;
+  final IconData icon;
   final Color color;
   final Color darkColor;
 

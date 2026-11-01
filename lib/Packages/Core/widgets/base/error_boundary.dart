@@ -2,7 +2,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_color.dart';
-import '../../constants/app_images.dart';
 import '../../utils/helpers/themes_helpers.dart';
 import '../../../../Helpers/error_handler.dart';
 
@@ -153,12 +152,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            Image.asset(
-              AppImages.info,
-              width: 24,
-              height: 24,
-              color: _getErrorColors()['primary'],
-            ),
+            Icon(Icons.info, size: 24, color: _getErrorColors()['primary']),
             const SizedBox(width: 8),
             Text("error_details".tr()),
           ],
@@ -349,12 +343,7 @@ class ErrorBoundaryBuilder extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            _getErrorIcon(),
-            width: 48,
-            height: 48,
-            color: colors['icon'],
-          ),
+          Icon(_getErrorIcon(), size: 48, color: colors['icon']),
           const SizedBox(height: 12),
           Text(
             "builder_error".tr(),
@@ -430,23 +419,17 @@ class ErrorBoundaryBuilder extends StatelessWidget {
     };
   }
 
-  String _getErrorIcon() {
+  IconData _getErrorIcon() {
     if (userGender != null) {
       switch (userGender!) {
         case UserGender.male:
-          return isDarkMode
-              ? AppImages.avatar_male_view
-              : AppImages.avatar_male;
+          return Icons.face;
         case UserGender.female:
-          return isDarkMode
-              ? AppImages.avatar_female_view
-              : AppImages.avatar_female;
+          return Icons.face_3;
         case UserGender.nonBinary:
-          return isDarkMode
-              ? AppImages.not_allowed_gray
-              : AppImages.not_allowed;
+          return Icons.block;
       }
     }
-    return isDarkMode ? AppImages.error_view : AppImages.error;
+    return Icons.error_outline;
   }
 }

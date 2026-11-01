@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../Helpers/expert_list_helper.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import 'package:provider/provider.dart';
 
 class ExpertCard extends StatelessWidget {
@@ -114,10 +113,9 @@ class ExpertCard extends StatelessWidget {
               ],
             ),
             trailing: PopupMenuButton<String>(
-              icon: Image.asset(
-                isDarkTheme ? AppImages.three_dots : AppImages.three_dots,
-                width: 20,
-                height: 20,
+              icon: Icon(
+                Icons.more_vert,
+                size: 20,
                 color: isDarkTheme ? AppColor.darkText : AppColor.lightText,
               ),
               onSelected: (value) {
@@ -135,10 +133,9 @@ class ExpertCard extends StatelessWidget {
                   value: 'edit',
                   child: Row(
                     children: [
-                      Image.asset(
-                        isDarkTheme ? AppImages.pencil_view : AppImages.pencil,
-                        width: 18,
-                        height: 18,
+                      Icon(
+                        Icons.edit,
+                        size: 18,
                         color: isDarkTheme
                             ? AppColor.darkText
                             : AppColor.lightText,
@@ -159,10 +156,9 @@ class ExpertCard extends StatelessWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      Image.asset(
-                        isDarkTheme ? AppImages.trash_view : AppImages.trash,
-                        width: 18,
-                        height: 18,
+                      Icon(
+                        Icons.delete,
+                        size: 18,
                         color: isDarkTheme
                             ? AppColor.darkError
                             : AppColor.lightError,

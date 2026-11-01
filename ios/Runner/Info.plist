@@ -45,5 +45,17 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Na3eeman uses Face ID to let you sign in quickly and securely.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Na3eeman needs access to your photo library so you can choose images for your profile and salon.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Na3eeman needs access to your camera so you can take photos for your profile and salon.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Na3eeman uses your location to show nearby salons and accurate distances.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Na3eeman uses your location to show nearby salons and accurate distances.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Na3eeman saves images you choose to your photo library.</string>
 </dict>
 </plist>

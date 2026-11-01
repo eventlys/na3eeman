@@ -24,7 +24,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "privacy_policy".tr(),
-      icon: 'assets/icons/lock.png',
+      icon: Icons.lock,
       content: PrivacyPolicyOverlay(),
     );
   }
@@ -34,7 +34,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "security_policy".tr(),
-      icon: 'assets/icons/secure.png',
+      icon: Icons.verified_user,
       content: SecurityPolicyOverlay(),
     );
   }
@@ -44,7 +44,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "application_rules".tr(),
-      icon: 'assets/icons/report.png',
+      icon: Icons.flag,
       content: AppRulesOverlay(),
     );
   }
@@ -54,7 +54,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "invite_friends".tr(),
-      icon: 'assets/icons/plus.png',
+      icon: Icons.person_add,
       content: InviteFriendsOverlay(),
     );
   }
@@ -64,7 +64,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "contact_us".tr(),
-      icon: 'assets/icons/mail_view.png',
+      icon: Icons.mail,
       content: ContactUsOverlay(),
       isForm: true,
     );
@@ -75,7 +75,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "report_salon".tr(),
-      icon: 'assets/icons/report.png',
+      icon: Icons.flag,
       content: ReportSalonOverlay(),
       isForm: true,
     );
@@ -86,7 +86,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "report_a_problem".tr(),
-      icon: 'assets/icons/report.png',
+      icon: Icons.flag,
       content: ReportProblemOverlay(),
       isForm: true,
     );
@@ -97,7 +97,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "your_feedback_matters".tr(),
-      icon: 'assets/icons/chat_text.png',
+      icon: Icons.chat_bubble,
       content: FeedbackOverlay(),
       isForm: true,
     );
@@ -108,7 +108,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "user_reports".tr(),
-      icon: 'assets/icons/file_star_view.png',
+      icon: Icons.star,
       content: UserReportsOverlay(),
     );
   }
@@ -118,7 +118,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "logout".tr(),
-      icon: 'assets/icons/exit.png',
+      icon: Icons.logout,
       content: LogoutConfirmationOverlay(onConfirm: onConfirm),
     );
   }
@@ -133,7 +133,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "book_appointment".tr(),
-      icon: 'assets/icons/calendar.png',
+      icon: Icons.calendar_today,
       content: AppointmentBookingOverlay(
         salonId: salonId,
         services: services,
@@ -154,7 +154,7 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "complete_payment".tr(),
-      icon: 'assets/icons/payment.png',
+      icon: Icons.payment,
       content: PaymentOverlay(
         amount: amount,
         appointmentId: appointmentId,
@@ -171,14 +171,14 @@ class OverlayService {
     if (context == null) return;
     _showDialog(
       title: "loyalty_points_earned".tr(),
-      icon: 'assets/icons/star.png',
+      icon: Icons.star,
       content: LoyaltyPointsOverlay(points: points, source: source),
     );
   }
 
   static void _showDialog({
     required String title,
-    required String icon,
+    required IconData icon,
     required Widget content,
     bool isForm = false,
   }) {
@@ -212,7 +212,11 @@ class OverlayService {
                 // Header
                 Row(
                   children: [
-                    Image.asset(icon, width: 30, height: 30),
+                    Icon(
+                      icon,
+                      size: 30,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -222,6 +226,8 @@ class OverlayService {
                           fontWeight: FontWeight.bold,
                           color: isDark ? Colors.white : Colors.black,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     IconButton(

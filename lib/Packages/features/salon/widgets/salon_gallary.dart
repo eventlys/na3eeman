@@ -23,14 +23,7 @@ class ModernSalonGallery extends StatefulWidget {
 class _ModernSalonGalleryState extends State<ModernSalonGallery> {
   @override
   Widget build(BuildContext context) {
-    final images =
-        widget.imageUrls ??
-        [
-          'assets/logos/gallery1.png',
-          'assets/logos/gallery2.png',
-          'assets/logos/gallery3.png',
-          'assets/logos/gallery4.png',
-        ];
+    final images = widget.imageUrls ?? const <String>[];
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -142,7 +135,7 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                           width: double.infinity,
                           errorBuilder: (context, error, stackTrace) =>
                               Image.asset(
-                                'assets/logos/salon_placeholder.png',
+                                'assets/logos/salon10.png',
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),
@@ -153,7 +146,7 @@ class _ModernSalonGalleryState extends State<ModernSalonGallery> {
                           width: double.infinity,
                           errorBuilder: (context, error, stackTrace) =>
                               Image.asset(
-                                'assets/logos/salon_placeholder.png',
+                                'assets/logos/salon10.png',
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),

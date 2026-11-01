@@ -161,7 +161,7 @@ class Sidebar extends StatelessWidget {
     final List<MenuItem> allItems = [
       MenuItem(
         title: 'admin_panel'.tr(),
-        assetIcon: 'assets/icons/secure.png',
+        icon: Icons.verified_user,
         delay: 0,
         onTap: () => Navigator.pushNamed(context, '/admin'),
         requiresAuth: true,
@@ -169,7 +169,7 @@ class Sidebar extends StatelessWidget {
       ),
       MenuItem(
         title: 'management'.tr(),
-        assetIcon: 'assets/icons/setting.png',
+        icon: Icons.settings,
         delay: 1,
         onTap: () => Navigator.pushNamed(context, '/management_dashboard'),
         requiresAuth: true,
@@ -181,7 +181,7 @@ class Sidebar extends StatelessWidget {
       ),
       MenuItem(
         title: 'my_times'.tr(),
-        assetIcon: 'assets/icons/clock.png',
+        icon: Icons.access_time,
         delay: 1,
         onTap: () => Navigator.pushNamed(context, '/my_times'),
         requiresAuth: true,
@@ -194,7 +194,7 @@ class Sidebar extends StatelessWidget {
       ),
       MenuItem(
         title: 'FAQs'.tr(),
-        assetIcon: 'assets/icons/info.png',
+        icon: Icons.info,
         delay: 3,
         onTap: () {
           controller.closeSidebar();
@@ -203,7 +203,7 @@ class Sidebar extends StatelessWidget {
       ),
       MenuItem(
         title: 'history'.tr(),
-        assetIcon: 'assets/icons/info.png',
+        icon: Icons.history,
         delay: 3,
         onTap: () {
           controller.closeSidebar();
@@ -214,13 +214,13 @@ class Sidebar extends StatelessWidget {
       ),
       MenuItem(
         title: 'settings'.tr(),
-        assetIcon: 'assets/icons/setting.png',
+        icon: Icons.settings,
         delay: 4,
         onTap: controller.navigateToSettings,
       ),
       MenuItem(
         title: 'logout'.tr(),
-        assetIcon: 'assets/icons/exit.png',
+        icon: Icons.logout,
         delay: 5,
         onTap: controller.showLogoutConfirmation,
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../Packages/Core/constants/app_color.dart';
-import '../Packages/Core/constants/app_images.dart';
 import 'package:na3eeman/Helpers/logger.dart';
 
 class LoginHelper {
@@ -150,11 +149,11 @@ class LoginHelper {
   Map<String, dynamic> getSocialLoginConfig(String provider) {
     switch (provider.toLowerCase()) {
       case 'google':
-        return {'icon': ImageIcon(AssetImage(AppImages.google))};
+        return {'icon': const Icon(Icons.g_mobiledata)};
       case 'facebook':
-        return {'icon': ImageIcon(AssetImage(AppImages.facebook))};
+        return {'icon': const Icon(Icons.facebook)};
       default:
-        return {'icon': ImageIcon(AssetImage(AppImages.apple))};
+        return {'icon': const Icon(Icons.apple)};
     }
   }
 

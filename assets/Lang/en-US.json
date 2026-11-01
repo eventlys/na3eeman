@@ -1497,5 +1497,9 @@
   "loyalty_points_title": "Loyalty Points",
   "google_sign_in_not_configured": "Google sign-in is not configured yet. Please use email login.",
   "appointment_reminder_body": "Your appointment at {salon} is in 1 hour",
-  "notification_generic_salon_name": "your salon"
+  "notification_generic_salon_name": "your salon",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "specialization": "Specialization",
+  "no_data_available": "No data available"
 }

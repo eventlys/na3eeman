@@ -84,8 +84,7 @@ class CustomNeumorphicContainer extends StatelessWidget {
 }
 
 class NeomorphicSphere extends StatefulWidget {
-  final String activeIconPath;
-  final String inactiveIconPath;
+  final IconData icon;
   final double size;
   final Color? sphereColor;
   final Color? shadowColor;
@@ -101,8 +100,7 @@ class NeomorphicSphere extends StatefulWidget {
 
   const NeomorphicSphere({
     super.key,
-    required this.activeIconPath,
-    required this.inactiveIconPath,
+    required this.icon,
     this.size = 70,
     this.sphereColor,
     this.shadowColor,
@@ -285,9 +283,6 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
   @override
   Widget build(BuildContext context) {
     final isActive = widget.isActive;
-    final currentIconPath = isActive
-        ? widget.activeIconPath
-        : widget.inactiveIconPath;
     final currentIconSize = isActive ? widget.iconSize + 10 : widget.iconSize;
 
     return GestureDetector(
@@ -299,11 +294,10 @@ class NeomorphicSphereState extends State<NeomorphicSphere>
         alignment: Alignment.center,
         children: [
           if (isActive) _buildAnimatedSphere(context),
-          Image.asset(
-            currentIconPath,
-            width: currentIconSize,
-            height: currentIconSize,
-            fit: BoxFit.contain,
+          Icon(
+            widget.icon,
+            size: currentIconSize,
+            color: isActive ? AppColor.white : AppColor.primaryOrange,
           ),
         ],
       ),

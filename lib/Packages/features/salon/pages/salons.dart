@@ -204,7 +204,7 @@ class _SalonListPageState extends State<SalonListPage> {
                   ? salon['images'][0].toString()
                   : (salon['salon_logo'] != null
                         ? 'assets/salons/${salon['salon_logo'].toString().split('/').last}'
-                        : 'assets/logos/salon5.png'),
+                        : 'assets/logos/salon10.png'),
               isClickable: true,
               salonLocation:
                   salon['salonLocation'] ?? salon['location'] ?? 'Downtown',

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import '../constants/app_color.dart';
-import '../constants/app_images.dart'; // Updated import
 import 'bg_circle.dart';
 import 'bg_icon.dart';
 
@@ -11,7 +10,7 @@ class FloatingBackground extends StatefulWidget {
   final List<BgObjectConfig>? objectConfigs;
   final Widget child;
   final String objectType; // 'icons', 'circles', or 'mixed'
-  final List<String>? iconPaths; // List of icon paths for auto-generation
+  final List<IconData>? iconPaths; // List of icons for auto-generation
   final List<Color>?
   colors; // Optional custom colors (uses AppColor by default)
   final double minSize; // Minimum size for random generation
@@ -69,13 +68,13 @@ class FloatingBackgroundState extends State<FloatingBackground> {
 
         // Generate random configuration
         if (widget.objectType == 'icons') {
-          final iconPath = _getRandomIconPath(widget.iconPaths);
+          final icon = _getRandomIcon(widget.iconPaths);
           final size = _getRandomSize();
           final (startPosition, endPosition) = _getRandomPositions();
 
           newConfig = BgObjectConfig(
             objectType: 'icons',
-            iconPath: iconPath,
+            icon: icon,
             color: Colors.transparent,
             blurLevel: _random.nextDouble() * 5.0,
             size: size,
@@ -91,7 +90,7 @@ class FloatingBackgroundState extends State<FloatingBackground> {
 
           newConfig = BgObjectConfig(
             objectType: 'circles',
-            iconPath: '',
+            icon: Icons.circle,
             color: color,
             blurLevel: _random.nextDouble() * 5.0,
             size: size,
@@ -107,10 +106,10 @@ class FloatingBackgroundState extends State<FloatingBackground> {
           final (startPosition, endPosition) = _getRandomPositions();
 
           if (isIcon) {
-            final iconPath = _getRandomIconPath(widget.iconPaths);
+            final icon = _getRandomIcon(widget.iconPaths);
             newConfig = BgObjectConfig(
               objectType: 'icons',
-              iconPath: iconPath,
+              icon: icon,
               color: Colors.transparent,
               blurLevel: _random.nextDouble() * 5.0,
               size: size,
@@ -123,7 +122,7 @@ class FloatingBackgroundState extends State<FloatingBackground> {
             final color = _getRandomColor();
             newConfig = BgObjectConfig(
               objectType: 'circles',
-              iconPath: '',
+              icon: Icons.circle,
               color: color,
               blurLevel: _random.nextDouble() * 5.0,
               size: size,
@@ -216,41 +215,31 @@ class FloatingBackgroundState extends State<FloatingBackground> {
     return (Offset(startX, startY), Offset(endX, endY));
   }
 
-  String _getRandomIconPath(List<String>? customIconPaths) {
-    if (customIconPaths != null && customIconPaths.isNotEmpty) {
-      return customIconPaths[_random.nextInt(customIconPaths.length)];
+  IconData _getRandomIcon(List<IconData>? customIcons) {
+    if (customIcons != null && customIcons.isNotEmpty) {
+      return customIcons[_random.nextInt(customIcons.length)];
     }
 
-    // Use app icons from AppImages
-    final appIcons = [
-      AppImages.scissor,
-      AppImages.scissors,
-      AppImages.scissors1,
-      AppImages.scissors2,
-      AppImages.chair,
-      AppImages.comb,
-      AppImages.razor,
-      AppImages.mirror,
-      AppImages.admin,
-      AppImages.staff,
-      AppImages.heart,
-      AppImages.star,
-      AppImages.money,
-      AppImages.calender,
-      AppImages.clock,
-      AppImages.phone,
-      AppImages.mail,
-      AppImages.location,
-      AppImages.camera,
-      AppImages.settings,
-    ].where((path) => path.isNotEmpty).toList();
+    // Decorative salon-themed Material icons
+    const appIcons = [
+      Icons.content_cut,
+      Icons.chair,
+      Icons.face,
+      Icons.admin_panel_settings,
+      Icons.people,
+      Icons.favorite,
+      Icons.star,
+      Icons.payments,
+      Icons.calendar_today,
+      Icons.access_time,
+      Icons.phone,
+      Icons.mail,
+      Icons.location_on,
+      Icons.camera_alt,
+      Icons.settings,
+    ];
 
-    if (appIcons.isNotEmpty) {
-      return appIcons[_random.nextInt(appIcons.length)];
-    }
-
-    // Fallback to placeholder
-    return AppImages.placeholderImage;
+    return appIcons[_random.nextInt(appIcons.length)];
   }
 
   Color _getRandomColor() {
@@ -322,7 +311,7 @@ class FloatingBackgroundState extends State<FloatingBackground> {
   Widget _buildObject(BgObjectConfig config) {
     if (config.objectType == 'icons') {
       return BgIcon(
-        iconPath: config.iconPath,
+        icon: config.icon,
         blurLevel: config.blurLevel,
         size: config.size,
         rotationDegree: config.rotationDegree,
@@ -342,7 +331,7 @@ class FloatingBackgroundState extends State<FloatingBackground> {
       );
     } else {
       return BgIcon(
-        iconPath: config.iconPath,
+        icon: config.icon,
         blurLevel: config.blurLevel,
         size: config.size,
         rotationDegree: config.rotationDegree,
@@ -356,7 +345,7 @@ class FloatingBackgroundState extends State<FloatingBackground> {
 
 class BgObjectConfig {
   final String objectType; // 'icons' or 'circles'
-  final String iconPath; // Used for icons
+  final IconData icon; // Used for icons
   final Color color; // Used for circles
   final double blurLevel;
   final double size;
@@ -367,7 +356,7 @@ class BgObjectConfig {
 
   BgObjectConfig({
     required this.objectType,
-    required this.iconPath,
+    required this.icon,
     required this.color,
     required this.blurLevel,
     required this.size,

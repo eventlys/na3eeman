@@ -7,7 +7,6 @@ import '../../../../core/widgets/snackbar/app_snackbar.dart';
 import '../../../../core/widgets/fade_slide_in.dart';
 import '../../../../Services/business_service.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../overlays/Inventory_add_item_dialog.dart';
 import 'inventory_list_item.dart';
 import 'inventory_low_stock_alert.dart';
@@ -331,10 +330,9 @@ class InventoryManagerState extends State<InventoryManager> {
                                 ),
                           ),
                           IconButton(
-                            icon: Image.asset(
-                              AppImages.refresh,
-                              width: 24,
-                              height: 24,
+                            icon: Icon(
+                              Icons.refresh,
+                              size: 24,
                               color: AppColor.lightPrimary,
                             ),
                             onPressed: () => _loadItems(),
@@ -362,10 +360,9 @@ class InventoryManagerState extends State<InventoryManager> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                AppImages.error,
-                                width: 64,
-                                height: 64,
+                              Icon(
+                                Icons.error_outline,
+                                size: 64,
                                 color: AppColor.lightError,
                               ),
                               const SizedBox(height: 16),
@@ -435,10 +432,9 @@ class InventoryManagerState extends State<InventoryManager> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  AppImages.inventory,
-                                  width: 64,
-                                  height: 64,
+                                Icon(
+                                  Icons.inventory_2,
+                                  size: 64,
                                   color: AppColor.lightTextSecondary,
                                 ),
                                 const SizedBox(height: 16),
@@ -477,12 +473,7 @@ class InventoryManagerState extends State<InventoryManager> {
                 ),
                 child: IconButton(
                   onPressed: () => _addNewItem(context),
-                  icon: Image.asset(
-                    AppImages.plus,
-                    width: 40,
-                    height: 40,
-                    color: AppColor.light,
-                  ),
+                  icon: Icon(Icons.add, size: 40, color: AppColor.light),
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     foregroundColor: AppColor.light,

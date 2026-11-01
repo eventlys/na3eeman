@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/utils/formatters.dart';
 
 class BranchCard2 extends StatelessWidget {
@@ -84,13 +83,13 @@ class BranchCard2 extends StatelessWidget {
                 children: [
                   _buildInfoItem(
                     context,
-                    isDarkTheme ? AppImages.staff : AppImages.people,
+                    Icons.people,
                     '${branch.totalStaff} staff',
                   ),
                   const SizedBox(width: 16),
                   _buildInfoItem(
                     context,
-                    isDarkTheme ? AppImages.money_view : AppImages.money,
+                    Icons.payments,
                     Formatters.formatCurrency(branch.safeMonthlyRevenue),
                   ),
                 ],
@@ -128,16 +127,15 @@ class BranchCard2 extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(BuildContext context, String iconAsset, String text) {
+  Widget _buildInfoItem(BuildContext context, IconData icon, String text) {
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          iconAsset,
-          width: 16,
-          height: 16,
+        Icon(
+          icon,
+          size: 16,
           color: isDarkTheme
               ? AppColor.darkTextSecondary
               : AppColor.lightTextSecondary,

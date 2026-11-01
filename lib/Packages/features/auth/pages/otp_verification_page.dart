@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../../Providers/main_providers.dart';
 import '../../../../Helpers/otp_helper.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 import '../../../Core/themes/app_scaffold.dart';
 import '../../../Core/themes/button_theme.dart';
 import 'reset_password.dart';
@@ -277,10 +276,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
               ),
               child: Row(
                 children: [
-                  Image.asset(
-                    _isSuccess ? AppImages.tick : AppImages.error,
-                    width: 20,
-                    height: 20,
+                  Icon(
+                    _isSuccess ? Icons.check_circle : Icons.error_outline,
+                    size: 20,
                     color: _isSuccess
                         ? isDark
                               ? AppColor.darkSuccess

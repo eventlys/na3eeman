@@ -87,12 +87,14 @@ class AppRulesOverlay extends StatelessWidget {
           children: [
             Icon(icon, color: AppColors.pink.withValues(alpha: 0.5), size: 20),
             const SizedBox(width: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: AppColors.pink,
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: AppColors.pink,
+                ),
               ),
             ),
           ],

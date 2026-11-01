@@ -1,4 +1,6 @@
 // ignore_for_file: unused_element
+import 'package:flutter/material.dart';
+
 class FavoritesHelper {
   // Format salon data for display
   static String formatSalonName(Map<String, dynamic> salon) {
@@ -35,18 +37,18 @@ class FavoritesHelper {
   }
 
   // Get appropriate icon based on salon type or service
-  static String getSalonIcon(Map<String, dynamic> salon) {
+  static IconData getSalonIcon(Map<String, dynamic> salon) {
     final type = salon['type']?.toString().toLowerCase() ?? '';
 
     if (type.contains('expert') || type.contains('hair')) {
-      return 'assets/icons/scissors.png'; // Update with your actual icon path
-    } else if (type.contains('spa') || type.contains('salon')) {
-      return 'assets/icons/spa.png'; // Update with your actual icon path
+      return Icons.content_cut;
+    } else if (type.contains('spa')) {
+      return Icons.spa;
     } else if (type.contains('nail')) {
-      return 'assets/icons/nail.png'; // Update with your actual icon path
+      return Icons.brush;
     }
 
-    return 'assets/icons/salon.png'; // Default salon icon
+    return Icons.store; // Default salon icon
   }
 
   // Validate salon data

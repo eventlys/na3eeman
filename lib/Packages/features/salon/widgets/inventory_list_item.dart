@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import '../../../../Helpers/inventory_helpers.dart';
 import '../../../Core/constants/app_color.dart';
-import '../../../Core/constants/app_images.dart';
 
 class InventoryListItem extends StatelessWidget {
   final Map<String, dynamic> item;
@@ -87,13 +86,13 @@ class InventoryListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Image.asset(AppImages.plus, width: 24, height: 24),
+              icon: const Icon(Icons.add, size: 24),
               onPressed: onIncreaseCount,
               tooltip: 'Increase count',
             ),
             if (onDelete != null)
               IconButton(
-                icon: Image.asset(AppImages.trash, width: 24, height: 24),
+                icon: const Icon(Icons.delete, size: 24),
                 onPressed: onDelete,
                 tooltip: 'Delete item',
               ),

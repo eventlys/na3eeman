@@ -1497,5 +1497,9 @@
   "loyalty_points_title": "نقاط الولاء",
   "google_sign_in_not_configured": "تسجيل الدخول عبر Google غير مُهيأ بعد. يرجى استخدام تسجيل الدخول بالبريد الإلكتروني.",
   "appointment_reminder_body": "موعدك في {salon} بعد ساعة",
-  "notification_generic_salon_name": "الصالون"
+  "notification_generic_salon_name": "الصالون",
+  "first_name": "الاسم الأول",
+  "last_name": "اسم العائلة",
+  "specialization": "التخصص",
+  "no_data_available": "لا توجد بيانات متاحة"
 }
